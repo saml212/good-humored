@@ -78,3 +78,7 @@ NOTES_PRIVATE*
 .rockie/taste/.draft.json
 .rockie/taste/.archive/
 # END rockie
+
+# Research direction / researcher context — not published while the
+# project is pre-commercialization. Remove this line to publish.
+CLAUDE.md
