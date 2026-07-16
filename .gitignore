@@ -1,3 +1,15 @@
+# Vendored Rockie platform skills (MIT, Synthetic Sciences) — re-pull with
+# `rockie skill pull <name> --out .claude/skills/<name>`. Dependencies, not
+# our source; kept out of the repo so what's committed here is ours.
+.claude/skills/grpo-rl-training/
+.claude/skills/trl-fine-tuning/
+.claude/skills/verl/
+.claude/skills/openrlhf/
+.claude/skills/simpo/
+.claude/skills/unsloth/
+.claude/skills/lm-evaluation-harness/
+.claude/skills/llm-as-judge-evaluation/
+
 # ─── rockie harness block — managed by install.sh ────────────────────
 # Do not edit between the BEGIN and END markers. install.sh will re-merge
 # this block on upgrades. Rules outside the markers are yours and are
