@@ -726,3 +726,47 @@ teaches. Relabel is cached; a v4 relabel re-runs cheap.
 [LEARN] instrument-validation: A constrained-vocabulary instrument needs a FIELD-COVERAGE bar, not just fixture bars.
 Mistake: EXP-008 declared v3 paper-grade off perfect fixture scores; the fixture only contained in-vocabulary topics, so the 110-entry vocabulary's wild-data coverage was never tested — in the field 42.6% of turns fell into the catch-all and the instrument manufactured degradations.
 Correction: Every labeler validation must include a wild-data coverage check (catch-all + unparseable rate ≤5% on real pilot output) alongside fixture invariance/ARI, and no instrument replaces a validated predecessor until it passes both.
+
+---
+
+## EXP-010 — v4 two-tier labeler validation (2026-07-17, pre-registered BEFORE run)
+
+**Status:** registered; validation runs launching.
+
+**Hypothesis (one sentence):** A two-tier labeler — 127-entry canonical
+vocabulary with an enforced alias table for the head, free-specific-noun
+escape for the tail — holds v3's fixture-level consistency without v3's
+field-level catch-all collapse, because the failure EXP-008's addendum
+documented was structural (closed vocabulary vs long tail), not a
+labeling-quality problem.
+
+**Design (3-wave build, adversarial audit round 1 NO-GO → structural
+redesign → round 2 qualified GO; commit a2aff32):**
+1. Fixture validation: `validate_rejector --prompt-version v4` (canon
+   path only — the 32-item fixture contains only in-vocabulary golds by
+   construction; free-tier safety is validated by 2 and 3, not this).
+2. Invariance probes: 18 byte-verbatim wild jokes, 3 evidenced trap
+   families × 6 (scarecrow/farming, skeleton/death, bicycle/bike-alias).
+3. Field run: v4 labels all 1,532 wild pilot turns
+   (`field_coverage --labeler v4`); escape/canon/unparseable rates with
+   per-tier histograms.
+
+**Bars and predictions (registered blind — no v4 field data exists):**
+- Fixture: invariance ≥0.90, ARI ≥0.80 (bars unchanged from EXP-008);
+  predicted invariance **0.95** (exp-010-v4-fixture).
+- Probes: ≥5/6 correct-and-consistent per family; predicted overall
+  correct fraction **0.94** (17/18) (exp-010-v4-probes).
+- Field: escape_rate REPORTED, predicted **0.17** (exp-010-v4-field;
+  structural floor 0.154 — auditor and builder derived it independently
+  and matched); unparseable ≤0.02, predicted ~0.01. NO catch-all bar —
+  the audit proved any such bar unreachable and the redesign made the
+  catch-all structurally impossible instead.
+
+**Directional-safety caveat (registered up front, from the re-audit):**
+free-tier jitter splits rather than merges — conservative for POSITIVE
+collapse claims only; it cannot license "no collapse" claims, since
+label-splitting can mask real repetition that joke-text novelty checks
+would catch. Any v4-based no-collapse claim must cross-check verbatim
+joke repeats.
+
+Result: _(pending)_
