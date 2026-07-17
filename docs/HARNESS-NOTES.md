@@ -101,6 +101,8 @@ Status: OPEN unless noted.
 | L10 | `[LEARN]` blocks: no feedback on whether the hook actually captured one (fire-and-forget from the agent's side) | OPEN (UX) |
 | L11 | install.sh never prunes skills later moved to `excluded_from_overlay` — pre-policy installs carry dead-weight skills forever (rsync has no `--delete`, correctly, but no prune/notice path either) | OPEN — [#36](https://github.com/Rockielab/rockie-claude/issues/36) |
 | L12 | Reinstall's idempotent schema.sql reapply churns workflow.db's checksum with zero data change — false data-loss scare for any before/after-checksum audit; needs a docs note (verified benign via schema diff + row counts) | OPEN — [#37](https://github.com/Rockielab/rockie-claude/issues/37) |
+| L13 | pre-commit-gate fires on commits in UNRELATED repos/scratch clones (cwd-scoping doesn't exempt them) — forces CLEAN_BYPASS on legitimate upstream work, training agents to reach for the bypass | OPEN — [#39](https://github.com/Rockielab/rockie-claude/issues/39) |
+| L14 | Skills-survive-compaction shipped (rockie-claude #38, rockie-codex #34, rockie-nugget #25 — all merged 2026-07-17). Cross-harness dogfood: skill paths diverge silently (`.claude/skills/` vs `.agents/skills/` vs `./skills/`); claude/codex get compaction re-surfacing free via unmatched SessionStart, Goose has NO compaction lifecycle event at all (rockie-nugget#24 tracks); commit-trailer rules differ per repo (informal vs DCO-required vs unstated) | SHIPPED + follow-ups filed |
 
 ### rockie CLI
 
