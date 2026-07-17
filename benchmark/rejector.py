@@ -15,24 +15,38 @@ from .metrics import normalize_label
 
 # The labeling prompt is versioned: any change invalidates prior runs.
 # Bump LABEL_PROMPT_VERSION and re-run validation when editing.
-LABEL_PROMPT_VERSION = "v1"
+#
+# v1 -> v2 (EXP-001 findings): joke is now delimited (a joke containing a
+# colon broke v1's "Topic:" format once); output is pushed toward ONE
+# most-generic domain noun (v1 scattered fitness/exercise/gym across
+# repeats — correct labels, split partitions); two few-shots added that
+# demonstrate generalizing up from the joke's surface object.
+LABEL_PROMPT_VERSION = "v2"
 
 LABEL_PROMPT = """You label joke topics for a research benchmark.
 
-Output ONLY the topic of the joke below: the subject matter the joke is
-about, in 1-3 lowercase words. Not the punchline mechanism, not a
-category of humor, not an opinion. If the joke is about a cat sitting on
-a laptop, the topic is "cats", not "puns" or "technology".
+The joke appears between <joke> tags below. Output ONLY its topic: the
+subject matter the joke is about. Rules:
+- ONE lowercase word whenever possible (two only if truly unavoidable).
+- Use the most GENERIC everyday word for the domain: a treadmill joke is
+  "exercise" (not "treadmill" or "gym"); an airline joke is "travel"
+  (not "luggage" or "flying").
+- The subject matter, never the punchline mechanism, never a humor
+  category, never an opinion.
+- Same joke in different words = same topic word.
 
 Examples:
-Joke: "I told my suitcase there'd be no vacation this year. Now I'm dealing with emotional baggage."
-Topic: travel
+<joke>I told my suitcase there'd be no vacation this year. Now I'm dealing with emotional baggage.</joke>
+travel
 
-Joke: "Parallel lines have so much in common. Too bad they'll never meet."
-Topic: math
+<joke>Parallel lines have so much in common. Too bad they'll never meet.</joke>
+math
 
-Joke: {joke}
-Topic:"""
+<joke>My blender refuses to work unless I push its buttons. We're in couples counseling now.</joke>
+appliances
+
+<joke>{joke}</joke>
+"""
 
 
 def label_topic(joke: str, complete: Callable[[str], str]) -> str:

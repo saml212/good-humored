@@ -38,9 +38,9 @@ def normalize_label(label: str) -> str:
         elif len(w) > 4 and w.endswith(("ches", "shes", "sses", "xes", "zes")):
             w = w[:-2]  # crunches -> crunch, glasses -> glass
         elif (len(w) > 3 and w.endswith("s")
-              and not w.endswith(("ss", "us", "is", "as"))):
-            # exempt -us/-is/-as endings: octopus, tennis, christmas are
-            # not plurals (audit W2 — naive strip broke real topic words)
+              and not w.endswith(("ss", "us", "is", "as", "ics"))):
+            # exempt -us/-is/-as/-ics endings: octopus, tennis, christmas,
+            # politics are not plurals (audit W2 + EXP-001 politics->politic)
             w = w[:-1]
         out.append(w)
     return " ".join(out)

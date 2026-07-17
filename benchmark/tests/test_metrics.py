@@ -30,10 +30,11 @@ class TestNormalizeLabel(unittest.TestCase):
         self.assertEqual(normalize_label("glasses"), "glass")
 
     def test_non_plural_s_endings(self):
-        # audit W2: -us/-is/-as words are not plurals
+        # audit W2 + EXP-001: -us/-is/-as/-ics words are not plurals
         self.assertEqual(normalize_label("octopus"), "octopus")
         self.assertEqual(normalize_label("tennis"), "tennis")
         self.assertEqual(normalize_label("christmas"), "christmas")
+        self.assertEqual(normalize_label("politics"), "politics")
 
 
 class TestPairwise(unittest.TestCase):

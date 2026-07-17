@@ -25,8 +25,8 @@
 {"id": "gym-a", "group": "gym", "gold_topic": "exercise", "pair_type": "original", "joke": "I bought a treadmill and it's the most expensive coat rack I've ever owned."}
 {"id": "gym-b", "group": "gym", "gold_topic": "exercise", "pair_type": "reworded", "joke": "My treadmill gets daily use, mostly as a place to hang jackets."}
 {"id": "gym-c", "group": "gym", "gold_topic": "exercise", "pair_type": "same_topic", "joke": "My gym membership and I have an open relationship. We only see each other twice a year."}
-{"id": "weather-a", "group": "weather", "gold_topic": "weather", "pair_type": "original", "joke": "It was so cold outside I saw a politician with his hands in his own pockets."}
-{"id": "weather-b", "group": "weather", "gold_topic": "weather", "pair_type": "reworded", "joke": "How cold was it? Cold enough that the politician finally warmed his hands in his own pockets."}
+{"id": "weather-a", "group": "weather", "gold_topic": "weather", "pair_type": "original", "joke": "It was so cold this morning that my shadow refused to leave the house."}
+{"id": "weather-b", "group": "weather", "gold_topic": "weather", "pair_type": "reworded", "joke": "How cold was it this morning? Cold enough that my own shadow stayed home."}
 {"id": "weather-c", "group": "weather", "gold_topic": "weather", "pair_type": "same_topic", "joke": "The forecast said 100% chance of rain, so my umbrella stayed home out of spite."}
 {"id": "ambig-1", "group": "ambiguous", "gold_topic": "school", "alt_topics": ["dogs", "teachers"], "pair_type": "ambiguous", "joke": "My dog ate my homework, which was awkward, because I'm the teacher."}
 {"id": "ambig-2", "group": "ambiguous", "gold_topic": "banking", "alt_topics": ["work", "money"], "pair_type": "ambiguous", "joke": "I used to be a banker, but I lost interest."}
