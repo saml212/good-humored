@@ -94,3 +94,88 @@ calibrated semantic label space (EXP-003, zero new API calls) — the same
 equivalence machinery the cascade metrics need anyway. If invariance ≥ 0.90
 under semantic equivalence, the instrument is valid with the documented caveat
 that all downstream metrics use the same equivalence.
+
+---
+
+## EXP-003 — semantic re-score of EXP-002 labels (2026-07-17)
+
+**Setup:** zero new API calls. LabelSpace (all-MiniLM-L6-v2, threshold 0.70
+calibrated on a 64-pair fixture) over EXP-002's raw labels.
+
+**Result — negative, twice, instructively:**
+- Union-find clustering: invariance 0.900 ✓ but `pet` hub-bridged `cat`↔`dog`
+  into ONE cluster (both ≥0.70 to `pet`) → ARI crashed 0.837→0.659. A false
+  merge manufactures collapse evidence — the one bias this benchmark cannot
+  afford.
+- Complete-linkage rewrite (hub-chaining structurally impossible): cat/dog
+  correctly split, but greedy linkage handed `pet` to `dog` (higher pairwise
+  sim) → cats-b joined the dog cluster → ARI 0.697, invariance back to 0.800.
+
+**Verdict:** `pet` is a HYPERNYM, not a synonym — no flat clustering can place
+it. Semantic equivalence over free labels is fragile wherever hypernyms occur.
+Complete linkage kept (strictly safer than union-find); semantic layer demoted
+to a *reported-alongside* view, never the primary metric.
+
+## EXP-003b — sonnet as rejector (2026-07-17)
+
+**Hypothesis:** Sonnet holds label granularity consistently: raw ARI ≥ 0.85,
+raw invariance ≥ 0.90. **Predicted delta vs haiku ARI: +0.06. Actual: −0.204.**
+
+**Result:** Sonnet is WORSE as an instrument: ARI 0.633 (haiku: 0.837),
+invariance 0.700 (haiku: 0.800), consistency 0.729 (haiku: 0.760).
+
+**Verdict:** Negative result, kept loud: bigger ≠ better instrument. Richer
+models label with richer vocabulary — more granularity variance, the opposite
+of what a measurement instrument needs. Haiku stays.
+
+---
+
+## EXP-004 — cascade pilot, 10 models (2026-07-17, pre-registered BEFORE launch)
+
+**Status:** awaiting adversarial audit GO.
+
+**Hypothesis:** frontier and open-weight models share a substantially
+overlapping joke-topic pool and walk overlapping escape paths under
+accumulating rejection; a nontrivial fraction degrade (repeat an already
+rejected topic, or refuse) within 30 turns.
+
+**Setup:** depth 30, N=4 runs/model, rejector = claude:haiku (validated
+EXP-002; known limitation: invariance 0.800, conservative bias direction).
+Models (10): claude:haiku, claude:sonnet, claude:opus, claude:fable,
+codex:sol (gpt-5.6-sol), codex:mini (gpt-5.4-mini), codex:5.4 (gpt-5.4),
+api:deepseek (deepseek-chat), api:qwen (qwen-plus-2025-07-28), api:glm
+(glm-4.5-air). PRIMARY metrics on RAW labels; semantic (complete-linkage
+LabelSpace) reported alongside, never primary.
+
+**Predicted deltas (registered before run):**
+- Cross-model mean topic-set Jaccard (raw): **≈ 0.35**
+- Within-model mean set Jaccard across runs (raw), averaged over models:
+  ≈ 0.55 (models repeat themselves more than they match each other)
+- ≥ 4/10 models hit degradation (repeat/refusal) by turn 30
+
+**Compute on paper:** 10 models × 4 runs × 30 turns × 2 calls ≈ 2,400 calls
+(~1,200 subscription-CLI + ~480 API at pennies + 2,400 haiku rejector...
+corrected: 1,200 model-under-test calls + 1,200 rejector calls). No GPU.
+Serial ≈ 2–3.5 h; parallelized by model ≈ 1 h.
+
+**Known validity limits (stated before data):** CLI providers have no
+temperature control and encode multi-turn as transcript-in-prompt; per-model
+run count N=4 is pilot-scale; the rejector's granularity jitter dilutes
+overlap metrics (conservative for collapse claims). This is a PILOT — effect
+directions and protocol shakeout, not paper numbers.
+
+**Result:** _(pending)_
+
+**Verdict:** _(pending)_
+
+## Instrument decision (2026-07-17, pilot grade)
+
+**Haiku + LABEL_PROMPT v2, raw string scoring** is the instrument. Passed:
+ARI 0.837 ≥ 0.80, beats baseline, zero punchline-mechanism labels across all
+runs (the load-bearing topic-vs-joke discrimination). Unmet: invariance 0.800
+vs the pre-registered 0.90 bar — recorded as UNMET, not re-bared. Why proceed
+at pilot grade: the residual failure is granularity jitter (`pet`/`cat`), and
+its bias direction is CONSERVATIVE for collapse claims — label noise splits
+topics, making models look MORE diverse, so any collapse we find survives the
+noise; diversity findings get flagged instead. Paper-grade fix on the roadmap:
+constrained-vocabulary two-pass labeling instead of free labels.
