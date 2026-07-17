@@ -770,3 +770,44 @@ would catch. Any v4-based no-collapse claim must cross-check verbatim
 joke repeats.
 
 Result: _(pending)_
+
+---
+
+## EXP-006b — Result (2026-07-17)
+
+**Design amendment (recorded, not hidden):** registered as "v3 empirical
+rates"; v3 was field-invalidated (EXP-008 addendum) before its rates
+could be extracted, so the run used **v4's** fixture rates — same
+construct (labeler error rates vs gold, same 87-labeling fixture
+protocol, same hand-classification taxonomy), successor labeler. The
+classifier hand-re-derived the documented v2 tally (49/13/24/1) from raw
+logs first and matched it exactly before classifying v4 — the precedent
+set was verified, not guessed.
+
+**v4 rate triple (canon-path fixture only):** match 0.690 / synonym
+0.103 / generalize 0.115 / other 0.092 (v2: 0.563 / 0.149 / 0.276 /
+0.011). Match up 13 points, synonym and generalize both roughly halved —
+but **other-class errors rose 8×**, all surface-object capture (mouse,
+flamingo, pilot, appliance, umbrella): the two-tier design's free path
+admits specific surface nouns where v2's retry pressure pushed toward
+topic abstraction. A real, measured cost of the v4 design.
+
+**Result (identical simulator protocol, seed 20260717, 2000
+reps/regime):** pilot-regime (moderate) net bias **−0.1001** (v2:
+−0.0350; registered prediction: −0.015 — a large miss, sign correct,
+calibration closed honestly). Mechanism: "other" errors are maximally
+dispersive in the simulator, and their 8× rise overwhelms the halved
+generalize-up inflation. Full table in
+experiment-runs/2026-07-17-noise-robustness-v4/results.json.
+
+**Verdict:** The hypothesis ("cleaner instrument → bias shrinks toward
+zero") is WRONG in an informative way: v4 is more accurate per label yet
+MORE conservative in aggregate, because its error mass moved from
+overlap-manufacturing (generalize-up) to overlap-destroying (dispersive
+other). Two genuinely good regime-level changes: v2's low-regime overlap
+MANUFACTURING is gone (+0.021 → −0.017) and disjoint inflation is muted
+(+0.046 → +0.018) — the two spots where noise could fake a collapse
+finding are both closed under v4. Measured overlap under v4 remains an
+UPPER bound at pilot regimes, now with more margin. Scope caveat: these
+are fixture/canon-path rates; the field-tier noise profile awaits the
+EXP-010 field run.

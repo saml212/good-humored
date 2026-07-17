@@ -1,0 +1,119 @@
+{
+  "families": {
+    "farming_scarecrow": {
+      "n": 6,
+      "jokes": [
+        "Why did the scarecrow win an award? Because he was outstanding in his field.",
+        "Why did the scarecrow win an award? Because he was outstanding in his field!",
+        "Why did the scarecrow win an award? He was outstanding in his field!",
+        "Why did the scarecrow win an award? He was outstanding in his field.",
+        "I was wondering why the scarecrow won an award. Turns out he was outstanding in his field.",
+        "The scarecrow won an award. He was outstanding in his field."
+      ],
+      "labels": [
+        "farming",
+        "farming",
+        "farming",
+        "farming",
+        "farming",
+        "farming"
+      ],
+      "tiers": [
+        "canon",
+        "canon",
+        "canon",
+        "canon",
+        "canon",
+        "canon"
+      ],
+      "invariant": true,
+      "has_strict_majority": true,
+      "majority_label": "farming",
+      "expected_label": "farming",
+      "majority_matches_expected": true,
+      "label_histogram": {
+        "farming": 6
+      },
+      "tier_histogram": {
+        "canon": 6
+      }
+    },
+    "skeleton_guts": {
+      "n": 6,
+      "jokes": [
+        "Why don\u2019t skeletons fight each other? They don\u2019t have the guts.",
+        "Why don't skeletons fight each other? They don't have the guts!",
+        "Why don't skeletons fight each other?  \n\nThey don\u2019t have the guts.",
+        "Why don't skeletons fight each other? They don't have the guts.",
+        "Why don't skeletons ever fight each other?\n\nThey don't have the guts!",
+        "I have a skeleton joke, but I don't have the guts to tell it."
+      ],
+      "labels": [
+        "skeleton",
+        "skeleton",
+        "skeleton",
+        "skeleton",
+        "skeleton",
+        "skeleton"
+      ],
+      "tiers": [
+        "canon",
+        "canon",
+        "canon",
+        "canon",
+        "canon",
+        "canon"
+      ],
+      "invariant": true,
+      "has_strict_majority": true,
+      "majority_label": "skeleton",
+      "expected_label": "skeleton",
+      "majority_matches_expected": true,
+      "label_histogram": {
+        "skeleton": 6
+      },
+      "tier_histogram": {
+        "canon": 6
+      }
+    },
+    "bicycle_two_tired": {
+      "n": 6,
+      "jokes": [
+        "Why did the bicycle fall over? Because it was two-tired.",
+        "Why did the bicycle fall over? It was two-tired!",
+        "Why did the bicycle fall over?  \n\nIt was two-tired!",
+        "Why did the bicycle fall over? It was two tired.",
+        "Why did the bicycle fall over? Because it was two-tired!",
+        "Why don't bicycles ever fall over?  \n\nBecause they\u2019re two-tired!"
+      ],
+      "labels": [
+        "bicycle",
+        "bicycle",
+        "bicycle",
+        "bicycle",
+        "bicycle",
+        "bicycle"
+      ],
+      "tiers": [
+        "canon",
+        "canon",
+        "canon",
+        "canon",
+        "canon",
+        "canon"
+      ],
+      "invariant": true,
+      "has_strict_majority": true,
+      "majority_label": "bicycle",
+      "expected_label": "bicycle",
+      "majority_matches_expected": true,
+      "label_histogram": {
+        "bicycle": 6
+      },
+      "tier_histogram": {
+        "canon": 6
+      }
+    }
+  },
+  "provider": "claude:haiku"
+}

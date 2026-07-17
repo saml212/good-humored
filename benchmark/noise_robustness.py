@@ -109,6 +109,20 @@ _LOG_TALLIES = {
     "haiku_v1": dict(match=41, synonym=18, generalize=4, other=18, n=81),
     "haiku_v2": dict(match=49, synonym=13, generalize=24, other=1, n=87),
     "sonnet_v2": dict(match=50, synonym=10, generalize=15, other=12, n=87),
+    # haiku_v4 - EXP-006b (2026-07-17): the two-tier labeler's canon-path
+    # fixture run against the SAME rejector_validation.jsonl fixture as the
+    # v1/v2/sonnet_v2 logs above, classified by hand with the identical
+    # taxonomy and the identical two exclusions (cats-c, ambig-1/2), giving
+    # the same surviving n=87 (29 items x 3 repeats) as haiku_v2/sonnet_v2.
+    # Source: experiment-runs/2026-07-17-v4-validation/fixture/
+    #   labels_raw.20260717T100726.jsonl
+    # Note this is the FIXTURE-ONLY tally (canon path only, per
+    # validate_rejector.py's own v4 docstring) — it says nothing about the
+    # free tier's or alias table's field behavior; v3's addendum (EXP-008)
+    # is the standing reminder that fixture-only validation can hide
+    # wild-data failure modes, so this rate triple should not be read as
+    # the final word on v4's field noise profile.
+    "haiku_v4": dict(match=60, synonym=9, generalize=10, other=8, n=87),
 }
 
 
