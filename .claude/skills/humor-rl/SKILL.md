@@ -74,9 +74,14 @@ phenomenon and is invisible to any stateless per-batch reward.
 
 ## Data
 
-Choose the reward data deliberately; humor labels are noisier than they look
-(annotator agreement is only moderate, κ ≈ 0.49, so treat "gold labels" as
-samples from a preference distribution rather than truth).
+Choose the reward data deliberately; humor labels are noisier than they look.
+Sun et al. (2022, "ExPUNations") report Cohen's κ = 0.41 for funniness
+ratings specifically (κ = 0.49 in that same paper is agreement on pun-word
+semantic validity, a narrower judgment — cite 0.41, not 0.49, for "how noisy
+are funniness labels"). Either way: moderate at best, so treat "gold labels"
+as samples from a preference distribution rather than truth. See
+`references/psychology.md` §7 and `references/negative-results.md` §4 for
+the full correction and the disagreement-modeling literature this implies.
 
 - **Oogiri-Corpus / Oogiri-Master** — ~100 candidate responses per prompt, each
   rated independently by ~100 judges who cannot see other ratings. Explicitly

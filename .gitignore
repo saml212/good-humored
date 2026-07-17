@@ -82,3 +82,8 @@ NOTES_PRIVATE*
 # Research direction / researcher context — not published while the
 # project is pre-commercialization. Remove this line to publish.
 CLAUDE.md
+
+# Reference-corpus PDFs — downloaded for reading only. Third-party
+# copyrighted papers; never commit. Citations/summaries live in
+# references/*.md and references/papers.bib instead.
+references/pdfs/

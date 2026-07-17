@@ -1,0 +1,1142 @@
+% references/papers.bib
+%
+% Bibliography for the good-humored reference corpus. Every entry here was
+% checked against a primary source (arXiv abstract/HTML, ACL Anthology,
+% OpenReview, publisher page, or a direct paper fetch) by at least one of the
+% five research passes behind this corpus — see README.md, negative-results.md,
+% datasets.md, code-and-models.md, and psychology.md for what each paper
+% actually found and why it matters here.
+%
+% Where a full author list could not be confirmed, only the surnames captured
+% during research are listed — this is an honest gap, not a placeholder to be
+% trusted blindly. Check the source URL before using in a submission.
+%
+% arXiv IDs use YYMM.NNNNN; several entries are dated 2026 because this corpus
+% was compiled in July 2026 and the field has kept moving.
+
+%% ============================================================
+%% 1. HUMOR GENERATION WITH LLMs — benchmarks, methods, models
+%% ============================================================
+
+@misc{narad2025humorbench,
+  title         = {Which LLMs Get the Joke? Probing Non-STEM Reasoning Abilities with HumorBench},
+  author        = {Narad, Reuben and Suresh, Siddharth and Chen, Jiayi and Dysart-Bricken, Pine S. L. and Mankoff, Bob and Nowak, Robert and Zhang, Jifan and Jain, Lalit},
+  year          = {2025},
+  eprint        = {2507.21476},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.CL},
+  url           = {https://arxiv.org/abs/2507.21476},
+  note          = {No code/data release found as of this corpus's compilation.}
+}
+
+@misc{ajayi2026humorgen,
+  title         = {HumorGen: Cognitive Synergy for Humor Generation in Large Language Models via Persona-Based Distillation},
+  author        = {Ajayi, Edward and Mitra, Prasenjit},
+  year          = {2026},
+  eprint        = {2604.09629},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.CL},
+  url           = {https://arxiv.org/abs/2604.09629},
+  note          = {v1 2026-03-19, v2 2026-05-27. Introduces the Humor Transfer Bench (HTB). No code/data/model release found.}
+}
+
+@misc{ajayi2026humorrank,
+  title         = {HumorRank: A Tournament-Based Leaderboard for Evaluating Humor Generation in Large Language Models},
+  author        = {Ajayi, Edward and Mitra, Prasenjit},
+  year          = {2026},
+  eprint        = {2604.19786},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.CL},
+  url           = {https://arxiv.org/abs/2604.19786},
+  note          = {Reports Kendall tau = 0.889 inter-judge agreement (judges agree with each other, not necessarily with humans). Live leaderboard: humorrank-leaderboard.pages.dev.}
+}
+
+@misc{wang2024clost,
+  title         = {Innovative Thinking, Infinite Humor: Humor Research of LLMs through Structured Thought Leaps},
+  author        = {Wang, Han and Zhao, Yilin and Li, Dian and Wang, Xiaohan and Liu, Gang and Lan, Xuguang and Wang, Hui},
+  year          = {2024},
+  eprint        = {2410.10370},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.CL},
+  url           = {https://arxiv.org/abs/2410.10370},
+  note          = {v2 2025-04-11. Unpublished preprint as of this compilation (no venue). No code/data found.}
+}
+
+@inproceedings{zhong2024clot,
+  title         = {Let's Think Outside the Box: Exploring Leap-of-Thought in Large Language Models with Creative Humor Generation},
+  author        = {Zhong, Shanshan and Huang, Zhongzhan and Gao, Shanghua and Wen, Wushao and Lin, Liang and Zitnik, Marinka and Zhou, Pan},
+  booktitle     = {CVPR},
+  year          = {2024},
+  eprint        = {2312.02439},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.CL},
+  url           = {https://arxiv.org/abs/2312.02439},
+  note          = {Introduces Oogiri-GO dataset (>130K samples) and the CLoT training paradigm. Code: github.com/sail-sg/CLoT (usable). Dataset: huggingface.co/datasets/zhongshsh/CLoT-Oogiri-GO (usable).}
+}
+
+@misc{vural2026irs,
+  title         = {Learning to Think Like a Cartoon Captionist: Incongruity-Resolution Supervision for Multimodal Humor Understanding},
+  author        = {Vural, Hatice Merve and Kukul, Doga and Ozlu, Ege Erdem and Arikan, Demir Ekin and Mankoff, Bob and Erdem, Erkut and Erdem, Aykut},
+  year          = {2026},
+  eprint        = {2604.15210},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.CL},
+  url           = {https://arxiv.org/abs/2604.15210},
+  note          = {Zero-shot transfer tested on YesBut and DeepEval (Appendix F). Authors state code/splits will be released; not yet available. Parts of the training corpus cannot be redistributed (licensing).}
+}
+
+@misc{castro2026mwahaha,
+  title         = {SemEval-2026 Task 1: MWAHAHA, Models Write Automatic Humor And Humans Annotate},
+  author        = {Castro, Santiago and Chiruzzo, Luis and G{\'o}ngora, Santiago and Rahili, Sina and Deng, Yuwei and Sastre, Julieta and Amoroso, Nicol{\'a}s and Rey, Agustina and Ros{\'a}, Aiala and Moncecchi, Guillermo and Meaney, J. A. and Prada, Marta and Mihalcea, Rada},
+  year          = {2026},
+  howpublished  = {ACL Anthology 2026.semeval-1.454},
+  url           = {https://aclanthology.org/2026.semeval-1.454/},
+  note          = {First SemEval task on humor GENERATION (vs. detection). Task site: pln-fing-udelar.github.io/semeval-2026-humor-gen/. Codabench: codabench.org/competitions/9719/.}
+}
+
+@misc{lmfaoooo2026semeval,
+  title         = {lmfaoooo at SemEval-2026 Task 1: Humor Is an Audience. Preference Modeling for Constrained Humor Generation},
+  author        = {Unknown},
+  year          = {2026},
+  eprint        = {2606.00022},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.CL},
+  url           = {https://arxiv.org/abs/2606.00022},
+  note          = {MWAHAHA participant system: diversity-maximization + preference-learning selection via the Evalica toolkit. Author names not captured during research; verify before citing formally.}
+}
+
+@misc{turgeman2026dadjokes,
+  title         = {One Joke to Rule them All? On the (Im)possibility of Generalizing Humor Detection},
+  author        = {Turgeman, Mor and Shani, Chen and Shahaf, Dafna},
+  year          = {2026},
+  eprint        = {2508.19402},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.CL},
+  url           = {https://arxiv.org/abs/2508.19402},
+  note          = {CHum 2026 (aclanthology.org/2026.chum-1.1/). NOTE: this is humor DETECTION transfer, not generation. Dad Jokes is the best enabler of transfer to other datasets but the hardest to transfer TO. Code: github.com/morturr/HumorTransferLearning (incomplete -- not usable Monday).}
+}
+
+@misc{murakami2025oogirimaster,
+  title         = {Oogiri-Master: Benchmarking Humor Understanding via Oogiri},
+  author        = {Murakami, Soichiro and Kamigaito, Hidetaka and Takamura, Hiroya and Okumura, Manabu},
+  year          = {2025},
+  eprint        = {2512.21494},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.CL},
+  url           = {https://arxiv.org/abs/2512.21494},
+  note          = {~100 candidates/prompt, each rated by ~100 independent judges (no rater sees others' scores) -- popularity-bias-free by design. License: CC BY-NC-SA 4.0. Builder code (not the data itself): github.com/CyberAgentAILab/oogiri-dataset-builder.}
+}
+
+@article{huang2025lotbench,
+  title         = {A Causality-aware Paradigm for Evaluating Creativity of Multimodal Large Language Models},
+  author        = {Huang, Zhongzhan and Zhong, Shanshan and Zhou, Pan and Gao, Shanghua and Zitnik, Marinka and Lin, Liang},
+  journal       = {IEEE Transactions on Pattern Analysis and Machine Intelligence},
+  year          = {2025},
+  eprint        = {2501.15147},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.CV},
+  url           = {https://arxiv.org/abs/2501.15147},
+  note          = {Project page: lotbench.github.io. Code/data marked "coming soon" as of this compilation -- not usable Monday despite peer-reviewed (TPAMI) status.}
+}
+
+@inproceedings{mirowski2024comedians,
+  title         = {A Robot Walks into a Bar: Can Language Models Serve as Creativity Support Tools for Comedy? An Evaluation of LLMs' Humour Alignment with Comedians},
+  author        = {Mirowski, Piotr Wojciech and Love, Juliette and Mathewson, Kory W. and Mohamed, Shakir},
+  booktitle     = {Proceedings of the 2024 ACM Conference on Fairness, Accountability, and Transparency (FAccT '24)},
+  year          = {2024},
+  doi           = {10.1145/3630106.3658993},
+  eprint        = {2405.20956},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.CY},
+  url           = {https://arxiv.org/abs/2405.20956},
+  note          = {20 professional comedians, 3-hour workshops. Comedians called LLM output "the most bland, boring thing" and attributed it partly to safety-tuning. Qualitative study; no code/data.}
+}
+
+@inproceedings{hessel2023androids,
+  title         = {Do Androids Laugh at Electric Sheep? Humor "Understanding" Benchmarks from The New Yorker Caption Contest},
+  author        = {Hessel, Jack and Marasovi{\'c}, Ana and Hwang, Jena D. and Lee, Lillian and Da, Jeff and Zellers, Rowan and Mankoff, Robert and Choi, Yejin},
+  booktitle     = {Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (ACL 2023), Volume 1},
+  pages         = {688--714},
+  year          = {2023},
+  eprint        = {2209.06293},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.CL},
+  url           = {https://aclanthology.org/2023.acl-long.41/},
+  note          = {Dataset usable now: huggingface.co/datasets/jmhessel/newyorker_caption_contest (CC-BY-4.0). Code: github.com/jmhessel/caption_contest_corpus.}
+}
+
+@misc{zhang2024humorinai,
+  title         = {Humor in AI: Massive Scale Crowd-Sourced Preferences and Benchmarks for Cartoon Captioning},
+  author        = {Zhang, Jifan and Jain, Lalit and Guo, Yang and Chen, Jiayi and Zhou, Kuan Lok and Suresh, Siddharth and Wagenmaker, Andrew and Sievert, Scott and Rogers, Timothy and Jamieson, Kevin and Mankoff, Robert and Nowak, Robert},
+  booktitle     = {NeurIPS 2024 Datasets and Benchmarks Track},
+  year          = {2024},
+  eprint        = {2406.10522},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.CL},
+  url           = {https://arxiv.org/abs/2406.10522},
+  note          = {Over 250M human ratings on 2.2M+ captions across 8 years of NYCC. Reports RLHF/DPO limitations on creative tasks; SFT regressed BELOW zero-shot; DPO increased diversity in this setup. HF dataset: huggingface.co/datasets/yguooo/newyorker_caption_ranking. Code: github.com/yguooo/cartoon-caption-generation.}
+}
+
+@inproceedings{zhou2025bridging,
+  title         = {Bridging the Creativity Understanding Gap: Small-Scale Human Alignment Enables Expert-Level Humor Ranking in LLMs},
+  author        = {Zhou, Kuan Lok and Chen, Jiayi and Suresh, Siddharth and Narad, Reuben and Rogers, Timothy and Jain, Lalit and Nowak, Robert and Mankoff, Bob and Zhang, Jifan},
+  booktitle     = {Findings of EMNLP 2025},
+  year          = {2025},
+  eprint        = {2502.20356},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.CL},
+  url           = {https://aclanthology.org/2025.findings-emnlp.884/},
+  note          = {Raises caption-ranking accuracy from 67.3% to 82.4% via small-scale SFT on human preferences; persona-prompting alone had minimal effect (a negative result about a plausible easy fix).}
+}
+
+@misc{loakman2025survey,
+  title         = {Who's Laughing Now? Overview of Computational Humour Generation and Explanation},
+  author        = {Loakman, Tyler and Thorne, William and Lin, Chenghua},
+  booktitle     = {INLG 2025},
+  year          = {2025},
+  eprint        = {2509.21175},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.CL},
+  url           = {https://arxiv.org/abs/2509.21175}
+}
+
+@misc{su2025punsurvey,
+  title         = {A Survey of Pun Generation: Datasets, Evaluations and Methodologies},
+  author        = {Su, Yang and Zhu, Nan and Wang, Sixing and Huang, Xin and Benavides-Prado, Diana and Witbrock, Michael},
+  booktitle     = {Findings of EMNLP 2025},
+  year          = {2025},
+  eprint        = {2507.04793},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.CL},
+  url           = {https://arxiv.org/abs/2507.04793}
+}
+
+@misc{kim2026counterfactual,
+  title         = {Investigating Counterfactual Unfairness in LLMs towards Identities through Humor},
+  author        = {Kim and Son and Park and Ka and Lee and Lee and Jang and Oh and Yu},
+  year          = {2026},
+  eprint        = {2604.18729},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.CL},
+  url           = {https://arxiv.org/abs/2604.18729},
+  note          = {Given names not confirmed. Jokes attributed to "privileged" speakers refused up to 67.5% more often and rated malicious 64.7% more often than identical jokes attributed to other speakers -- current safety-RLHF humor judgments are speaker-identity-confounded.}
+}
+
+@misc{kim2025aihumorskills,
+  title         = {AI Humor Generation: Cognitive, Social and Creative Skills for Effective Humor},
+  author        = {Kim, Jonathan and Chilton, Lydia B.},
+  year          = {2025},
+  eprint        = {2502.07981},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.HC},
+  url           = {https://arxiv.org/abs/2502.07981},
+  note          = {Given names inferred from Columbia HCI authorship convention; verify before formal citation.}
+}
+
+@misc{sharshar2026harmorhumor,
+  title         = {Harm or Humor: A Multimodal, Multilingual Benchmark for Overt and Covert Harmful Humor},
+  author        = {Sharshar, Ahmed and Elgendy, Ahmed and Ahmed and Rohaim, Mohamed and Wang},
+  year          = {2026},
+  eprint        = {2603.17759},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.CL},
+  url           = {https://arxiv.org/abs/2603.17759},
+  note          = {Full given names not confirmed. 3,000 texts / 6,000 images (En+Ar) + 1,200 videos.}
+}
+
+@misc{borodach2025decoders,
+  title         = {Decoders Laugh as Loud as Encoders},
+  author        = {Borodach and Dandekar and Dandekar and Panat},
+  year          = {2025},
+  eprint        = {2509.04779},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.CL},
+  url           = {https://arxiv.org/abs/2509.04779},
+  note          = {Given names not confirmed. Decoder (GPT-4o F1=0.85) vs. encoder (RoBERTa F1=0.86) humor detection essentially tied.}
+}
+
+@inproceedings{horvitz2024unfun,
+  title         = {Getting Serious about Humor: Crafting Humor Datasets with Unfunny Large Language Models},
+  author        = {Horvitz, Zachary and Chen, Jingru and Aditya, Sanjana and Srivastava, Vishakh and West, Robert and Yu, Zhou and McKeown, Kathleen},
+  booktitle     = {Proceedings of ACL 2024 (Short Papers)},
+  year          = {2024},
+  eprint        = {2403.00794},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.CL},
+  url           = {https://aclanthology.org/2024.acl-short.76/},
+  note          = {Given first names partially inferred; verify. LLMs reliably "unfun" jokes to build paired humorous/non-humorous data, incl. English-Hindi code-mixed.}
+}
+
+@misc{hong2026comedyclub,
+  title         = {Multi-Agent Comedy Club: Investigating Community Discussion Effects on LLM Humor Generation},
+  author        = {Hong and Li and Rong and Shen and Lu},
+  year          = {2026},
+  eprint        = {2602.14770},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.CL},
+  url           = {https://arxiv.org/abs/2602.14770},
+  note          = {Given names not confirmed. Conditions a single monologue-generator on stored community/critic feedback between rounds -- NOT live multi-agent banter. Closest found item to the "multi-turn conversational humor" gap, but does not fill it.}
+}
+
+@misc{toplyn2023witscript,
+  title         = {Witscript: A System for Generating Improvised Jokes in a Conversation},
+  author        = {Toplyn, Joe},
+  year          = {2023},
+  eprint        = {2302.02008},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.CL},
+  url           = {https://arxiv.org/abs/2302.02008},
+  note          = {See also arXiv:2301.02695 (Witscript 3). Symbolic-algorithm + fine-tuned-LM hybrid, built by a former Letterman/Leno head writer.}
+}
+
+@misc{arxiv2024cleancomedy,
+  title         = {CleanComedy: Creating Friendly Humor through Generative Techniques},
+  author        = {Unknown},
+  year          = {2024},
+  eprint        = {2412.09203},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.CL},
+  url           = {https://arxiv.org/abs/2412.09203},
+  note          = {Author names not captured. Toxicity-filtered English+Russian joke corpus. Title inferred from arXiv listing -- verify exact title before citing.}
+}
+
+@misc{arxiv2026nothumanfunnier,
+  title         = {Not Human, Funnier: AI Comedic Persona and Machine Identity},
+  author        = {Unknown},
+  booktitle     = {CHI 2026},
+  year          = {2026},
+  eprint        = {2602.12763},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.HC},
+  url           = {https://arxiv.org/abs/2602.12763},
+  note          = {Author names and exact title not fully captured -- verify. AI agents leaning into machine identity (not imitating human comedians) rated funnier by live audiences (N=32).}
+}
+
+%% ============================================================
+%% 2. CHum WORKSHOP (dedicated ACL-affiliated humor venue)
+%% ============================================================
+
+@misc{fettach2026cardsagainstllms,
+  title         = {Cards Against LLMs: Benchmarking Humor Alignment in LLMs},
+  author        = {Fettach and Bied and Toivonen and De Bie},
+  booktitle     = {CHum 2026},
+  year          = {2026},
+  eprint        = {2604.08757},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.CL},
+  url           = {https://arxiv.org/abs/2604.08757},
+  note          = {Given names not confirmed. 5 frontier LLMs play Cards Against Humanity (9,894 rounds); models agree with each other far more than with humans; apparent "humor preference" partly explained by position bias.}
+}
+
+@misc{mirowski2025theaterstage,
+  title         = {The Theater Stage as Laboratory: Review of Real-Time Comedy LLM Systems for Live Performance},
+  author        = {Mirowski, Piotr Wojciech and Mathewson, Kory W. and Branch},
+  booktitle     = {CHum 2025 (1st Workshop on Computational Humor, COLING 2025)},
+  year          = {2025},
+  eprint        = {2501.08474},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.CY},
+  url           = {https://arxiv.org/abs/2501.08474},
+  note          = {Position paper: argues AI comedy should be judged live in front of audiences, not static LLM-judge scores.}
+}
+
+@misc{chum2025proceedings,
+  title         = {Proceedings of the 1st Workshop on Computational Humor (CHum 2025)},
+  editor        = {Hempelmann, Christian F. and others},
+  booktitle     = {COLING 2025},
+  year          = {2025},
+  url           = {https://aclanthology.org/volumes/2025.chum-1/},
+  note          = {11 papers. See loakman2025survey and mirowski2025theaterstage for individually cited entries from this volume.}
+}
+
+@misc{chum2026proceedings,
+  title         = {Proceedings of the 2nd Workshop on Computational Humor (CHum 2026)},
+  editor        = {Hempelmann, Christian F. and others},
+  booktitle     = {ACL 2026},
+  year          = {2026},
+  url           = {https://aclanthology.org/volumes/2026.chum-1/},
+  note          = {8 papers, including turgeman2026dadjokes and fettach2026cardsagainstllms. Other titles noted in negative-results.md and README.md were not individually bibbed pending author confirmation: "Navigating the Joke Space" (Amir, Ngo, Toplyn, Hickerson), "Does Bigger Mean Funnier?" (Agrawal, Mamidi), "TIC-TALK" (Zribi et al.), "The Roast of GPT4o" (Lemmens, Genette, Veale, Daelemans).}
+}
+
+%% ============================================================
+%% 3. HUMOR DETECTION DATASETS & CLASSIC RESOURCES
+%% ============================================================
+
+@article{annamoradnejad2024colbert,
+  title         = {ColBERT: Using BERT Sentence Embedding in Parallel Neural Networks for Computational Humor},
+  author        = {Annamoradnejad, Issa and Zoghi, Gohar},
+  journal       = {Expert Systems with Applications},
+  volume        = {249},
+  pages         = {123685},
+  year          = {2024},
+  eprint        = {2004.12765},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.CL},
+  url           = {https://arxiv.org/abs/2004.12765},
+  note          = {200K short texts (100K jokes / 100K non-jokes), 98.2% F1. Code+data: github.com/Moradnejad/ColBERT-Using-BERT-Sentence-Embedding-for-Humor-Detection (MIT).}
+}
+
+@inproceedings{weller2019humor,
+  title         = {Humor Detection: A Transformer Gets the Last Laugh},
+  author        = {Weller, Orion and Seppi, Kevin},
+  booktitle     = {Proceedings of EMNLP-IJCNLP 2019},
+  year          = {2019},
+  eprint        = {1909.00252},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.CL},
+  url           = {https://aclanthology.org/D19-1372/},
+  note          = {~16,000 Reddit-rating-labeled instances. Code+data: github.com/orionw/RedditHumorDetection.}
+}
+
+@inproceedings{petrovic2013unsupervised,
+  title         = {Unsupervised Joke Generation from Big Data},
+  author        = {Petrovi{\'c}, Sa{\v{s}}a and Matthews, David},
+  booktitle     = {Proceedings of the 51st Annual Meeting of the Association for Computational Linguistics (Volume 2)},
+  year          = {2013},
+  url           = {https://aclanthology.org/P13-2041/},
+  note          = {First fully unsupervised humor-generation system ("I like my X like my Y, Z" template). Reimplementation: github.com/amylase/nazokake.}
+}
+
+@inproceedings{amin2020survey,
+  title         = {A Survey on Approaches to Computational Humor Generation},
+  author        = {Amin, Miriam and Burghardt, Manuel},
+  booktitle     = {Proceedings of the International Conference on Language Technologies for All (LT4All)},
+  year          = {2020},
+  url           = {https://aclanthology.org/2020.latechclfl-1.4/},
+  note          = {Classic pre-LLM survey of the field.}
+}
+
+@misc{barriere2025standup4ai,
+  title         = {StandUp4AI: A New Multilingual Dataset for Humor Detection in Stand-up Comedy Videos},
+  author        = {Barriere, Valentin and Gomez, Nahuel and Hemamou, Leo and Callejas, Sofia and Ravenet, Brian},
+  booktitle     = {Findings of EMNLP 2025},
+  year          = {2025},
+  eprint        = {2505.18903},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.CL},
+  url           = {https://aclanthology.org/2025.findings-emnlp.919/},
+  note          = {330+ hours, 7-language multilingual stand-up corpus, automatically laughter-annotated (word-level, not binary) -- actual laughter as label, not upvotes or an LLM judge.}
+}
+
+@inproceedings{ravi2024smallbutfunny,
+  title         = {Small But Funny: A Feedback-Driven Approach to Humor Distillation},
+  author        = {Ravi, Sahithya and Huber, Patrick and Shrivastava, Akshat and Sagar, Aditya and Aly, Ahmed and Shwartz, Vered and Einolghozati, Arash},
+  booktitle     = {Proceedings of the 62nd Annual Meeting of the Association for Computational Linguistics (Volume 1)},
+  pages         = {13078--13090},
+  year          = {2024},
+  eprint        = {2402.18113},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.CL},
+  url           = {https://aclanthology.org/2024.acl-long.706/},
+  note          = {Distills humor from a larger teacher to a smaller student via feedback loops -- direct evidence humor is a distillable/trainable signal.}
+}
+
+@inproceedings{chen2024jokemaster,
+  title         = {Are U a Joke Master? Pun Generation via Multi-Stage Curriculum Learning towards a Humor LLM},
+  author        = {Chen, Yang and Yang, Chong and Hu, Tu and Chen, Xinhao and Lan, Man and Cai, Li and Zhuang, Xinlin and Lin, Xuan and Lu, Xin and Zhou, Aimin},
+  booktitle     = {Findings of ACL 2024},
+  pages         = {878--890},
+  year          = {2024},
+  url           = {https://aclanthology.org/2024.findings-acl.51/},
+  note          = {Cites the ChatGPT joke probe finding ("ChatGPT's humor generation... confined to 25 unique jokes") as its own motivation. Code: github.com/cubenlp/PGCL.}
+}
+
+%% ============================================================
+%% 4. NEGATIVE RESULTS -- humor-specific
+%% ============================================================
+
+@inproceedings{jentzsch2023chatgpt,
+  title         = {ChatGPT is fun, but it is not funny! Humor is still challenging Large Language Models},
+  author        = {Jentzsch, Sophie and Kersting, Kristian},
+  booktitle     = {Proceedings of the 13th Workshop on Computational Approaches to Subjectivity, Sentiment, and Social Media Analysis (WASSA 2023)},
+  year          = {2023},
+  eprint        = {2306.04563},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.CL},
+  url           = {https://aclanthology.org/2023.wassa-1.29/},
+  note          = {THE mode-collapse ground truth: >90% of 1,008 generated jokes were the same 25 jokes (verified exact: 909/1008 = 90.2% identical). Code: github.com/DLR-SC/JokeGPT-WASSA23.}
+}
+
+@misc{agg2025funniestjoke,
+  title         = {Generating the Funniest Joke with RL (according to GPT-4.1)},
+  author        = {{agg (LessWrong username)}},
+  year          = {2025},
+  howpublished  = {LessWrong},
+  url           = {https://www.lesswrong.com/posts/xMGmibZpPDnawjHXk/generating-the-funniest-joke-with-rl-according-to-gpt-4-1},
+  note          = {Posted 2025-05-16. GRPO on Qwen3-8B with GPT-4.1 as judge; TWO distinct reward-hacking collapses documented (classic-joke regurgitation, then absurdist non-sequitur generation under a harder rubric).}
+}
+
+@misc{lanchantin2025divpo,
+  title         = {Diverse Preference Optimization},
+  author        = {Lanchantin, Jack and Chen, Angelica and Dhuliawala, Shehzaad and Yu, Ping and Weston, Jason and Sukhbaatar, Sainbayar and Kulikov, Ilia},
+  year          = {2025},
+  eprint        = {2501.18101},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.CL},
+  url           = {https://arxiv.org/abs/2501.18101},
+  note          = {States post-training generally (RL, preference optimization, or SFT) sharpens the output distribution and reduces diversity. DivPO fix reports +45.6% persona diversity, +74.6% story diversity at similar win rate vs. standard DPO (percentages corroborated by two independent secondary sources; not raw-fetched from the PDF -- treat as likely but not primary-confirmed).}
+}
+
+@article{doshi2024genai,
+  title         = {Generative AI Enhances Individual Creativity but Reduces the Collective Diversity of Novel Content},
+  author        = {Doshi, Anil R. and Hauser, Oliver P.},
+  journal       = {Science Advances},
+  volume        = {10},
+  number        = {28},
+  year          = {2024},
+  doi           = {10.1126/sciadv.adn5290},
+  eprint        = {2312.00506},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.CY},
+  url           = {https://www.science.org/doi/10.1126/sciadv.adn5290},
+  note          = {Randomized experiment: LLM-assisted stories individually rated more creative, but the CORPUS was measurably more similar to itself than a human-only corpus -- collective-diversity loss without any RL involved.}
+}
+
+@article{sun2022expunations,
+  title         = {ExPUNations: Augmenting Puns with Keywords and Explanations},
+  author        = {Sun, Jiao and Narayan-Chen, Anjali and Oraby, Shereen and Cervone, Alessandra and Chung, Tagyoung and Huang, Jing and Liu, Yang and Peng, Nanyun},
+  booktitle     = {Proceedings of EMNLP 2022},
+  year          = {2022},
+  url           = {https://aclanthology.org/2022.emnlp-main.304/},
+  note          = {SOURCE of the "kappa=0.49" figure -- but that measures agreement on pun-word semantic validity, NOT funniness. Same paper's funniness-rating agreement is Cohen's kappa=0.41 (Table 4) -- the more honest citation for "humor labels are noisy."}
+}
+
+%% ============================================================
+%% 5. DIVERSITY-PRESERVING RL / MODE COLLAPSE (general, adjacent)
+%% ============================================================
+
+@misc{li2025gem,
+  title         = {Preserving Diversity in Supervised Fine-Tuning of Large Language Models},
+  author        = {Li, Ziniu and Chen, Congliang and Xu, Tian and Qin, Zeyu and Xiao, Jiancong and Luo, Zhi-Quan and Sun, Ruoyu},
+  booktitle     = {ICLR 2025},
+  year          = {2025},
+  eprint        = {2408.16673},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.CL},
+  url           = {https://arxiv.org/abs/2408.16673},
+  note          = {SFT-stage reverse-KL + entropy regularization to preserve diversity BEFORE RL. Code: github.com/liziniu/GEM (usable now, license unspecified).}
+}
+
+@misc{li2025dphrl,
+  title         = {The Choice of Divergence: A Neglected Key to Mitigating Diversity Collapse in RL with Verifiable Reward},
+  author        = {Li, Long and Zhou, Zhijian and Hao, Jiaran and Liu, Jason Klein and Miao, Yanting and Pang, Wei and Tan, Xiaoyu and Chu, Wei and Wang, Zhe and Pan, Shirui and Qu, Chao and Qi, Yuan},
+  year          = {2025},
+  eprint        = {2509.07430},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.LG},
+  url           = {https://arxiv.org/abs/2509.07430},
+  note          = {Diagnoses Pass@1-up/Pass@k-down under RLVR; proposes mass-covering f-divergence rehearsal penalty vs. reference policy. Code: github.com/seamoke/DPH-RL (Apache-2.0, usable now).}
+}
+
+@misc{xiwenc2025dragrpo,
+  title         = {Exploring Diversity-Aware Reward Adjustment for R1-Zero-Like Training},
+  author        = {Unknown},
+  year          = {2025},
+  eprint        = {2505.09655},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.CL},
+  url           = {https://arxiv.org/abs/2505.09655},
+  note          = {Author names not captured. Reward-side submodular-mutual-information diversity adjustment in GRPO groups. Code: github.com/xiwenc1/DRA-GRPO (MIT, usable now, small).}
+}
+
+@misc{li2025darling,
+  title         = {Jointly Reinforcing Diversity and Quality in Language Model Generations},
+  author        = {Li, Tianjian and Zhang, Yiming and Yu, Ping and Saha, Swarnadeep and Khashabi, Daniel and Weston, Jason and Lanchantin, Jack and Wang, Tianlu},
+  year          = {2025},
+  eprint        = {2509.02534},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.CL},
+  url           = {https://arxiv.org/abs/2509.02534},
+  note          = {Meta. Learned partition-function diversity classifier + quality reward jointly optimized online, built on verl. Explicitly validated on CREATIVE WRITING + competition math. Code: github.com/facebookresearch/darling (MIT, full pipeline, usable now). Highest-relevance diversity-preserving RL codebase found for this project.}
+}
+
+@misc{arxiv2025dqo,
+  title         = {Post-training Large Language Models for Diverse High-Quality Responses},
+  author        = {Unknown},
+  booktitle     = {ICLR 2026},
+  year          = {2025},
+  eprint        = {2509.04784},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.CL},
+  url           = {https://arxiv.org/abs/2509.04784},
+  note          = {Author names not captured. Determinantal-point-process group diversity score atop PPO/GRPO. No code found -- paper/announcement only.}
+}
+
+@misc{openreview2026infogrpo,
+  title         = {Info-GRPO},
+  author        = {Unknown},
+  year          = {2026},
+  howpublished  = {OpenReview},
+  url           = {https://openreview.net/forum?id=d5qElNtXS5},
+  note          = {Full title/authors not captured. Contrastive mutual-information term between latent variables and policy. No code found.}
+}
+
+@misc{arxiv2025edgegrpo,
+  title         = {EDGE-GRPO: Entropy-Driven Group Advantage Reweighting},
+  author        = {Unknown},
+  year          = {2025},
+  eprint        = {2507.21848},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.CL},
+  url           = {https://arxiv.org/abs/2507.21848},
+  note          = {Exact title/authors not fully captured -- verify. Entropy-driven advantage reweighting for GRPO. No code found.}
+}
+
+@misc{arxiv2026overtraining,
+  title         = {Understanding Diversity Collapse in RLVR via the Lens of Overtraining},
+  author        = {Unknown},
+  year          = {2026},
+  eprint        = {2606.15455},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.LG},
+  url           = {https://arxiv.org/html/2606.15455v1},
+  note          = {Author names not captured. Frames diversity collapse as an overtraining phenomenon (further gradient updates past "solved" sharpen around on-policy-favored trajectories). No code found.}
+}
+
+@misc{arxiv2026strategyphrasing,
+  title         = {Are We Measuring Strategy or Phrasing? The Gap Between Surface- and Approach-Level Diversity in LLM Math Reasoning},
+  author        = {Unknown},
+  year          = {2026},
+  eprint        = {2606.29985},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.CL},
+  url           = {https://arxiv.org/pdf/2606.29985},
+  note          = {Author names not captured. Distinguishes surface-level (lexical) from approach-level (strategic) diversity -- directly relevant to distinguishing "reworded joke" from "genuinely different joke mechanism."}
+}
+
+@misc{jiang2026beyondmodecollapse,
+  title         = {Beyond Mode Collapse: Distribution Matching for Diverse Reasoning},
+  author        = {Unknown},
+  year          = {2026},
+  eprint        = {2605.19461},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.LG},
+  url           = {https://arxiv.org/abs/2605.19461},
+  note          = {Authors from Shanghai AI Lab / Tongji / Fudan / CUHK (names not individually captured). Precise mechanistic account: GRPO's mode collapse stems from reverse-KL minimization's mode-seeking behavior.}
+}
+
+@misc{arxiv2026advantagecollapse,
+  title         = {Advantage Collapse in Group Relative Policy Optimization: Diagnosis and Mitigation},
+  author        = {Unknown},
+  booktitle     = {ICML 2026},
+  year          = {2026},
+  eprint        = {2605.21125},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.LG},
+  url           = {https://arxiv.org/abs/2605.21125},
+  note          = {Author names not captured; ICML 2026 acceptance corroborated by multiple listings. Reports 28-45% of GRPO training batch groups experience full advantage collapse -- exact figure [UNVERIFIED at primary-text level, sourced from search synthesis only].}
+}
+
+@misc{takase2024gflownet,
+  title         = {GFlowNet Fine-tuning for Diverse Correct Solutions in Mathematical Reasoning Tasks},
+  author        = {Takase, Ryoichi and others},
+  year          = {2024},
+  eprint        = {2410.20147},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.LG},
+  url           = {https://arxiv.org/abs/2410.20147},
+  note          = {Full author list not captured. Trains so output distribution is proportional to reward rather than reward-maximizing -- structurally avoids collapse-to-single-best-answer. Related code (not independently audited): github.com/GFNOrg/gfn-lm-tuning, github.com/Adam-yni/GFlowNets-FineTuning [UNVERIFIED license/last-commit].}
+}
+
+%% ============================================================
+%% 6. RL ON OTHER CREATIVE DOMAINS (lessons transfer to humor)
+%% ============================================================
+
+@misc{arxiv2026dpwriter,
+  title         = {DPWriter: Diverse Planning Branching and Group-Aware Diversity Reward for Creative Writing},
+  author        = {Unknown},
+  year          = {2026},
+  eprint        = {2601.09609},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.CL},
+  url           = {https://arxiv.org/abs/2601.09609},
+  note          = {Exact title/authors not fully captured -- verify. Injects divergence at planning stage; rewards distinct trajectories within a GRPO group.}
+}
+
+@misc{arxiv2026elias,
+  title         = {Elias in the Lighthouse, Again? Diagnosing Low Diversity in LLM Stories},
+  author        = {Unknown},
+  year          = {2026},
+  eprint        = {2605.26492},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.CL},
+  url           = {https://arxiv.org/abs/2605.26492},
+  note          = {Author names not captured. Aligned model variants lose 3-6x token-level entropy, cluster into "semantic basins," repeat "anchor" phrases across generations.}
+}
+
+@misc{arxiv2025cdrlhf,
+  title         = {Curiosity-Driven RLHF for Mitigating Diversity Collapse},
+  author        = {Unknown},
+  year          = {2025},
+  eprint        = {2501.11463},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.CL},
+  url           = {https://arxiv.org/abs/2501.11463},
+  note          = {Exact title/authors not fully captured -- verify. Intrinsic novelty-seeking reward alongside extrinsic preference reward.}
+}
+
+@misc{arxiv2026annotations,
+  title         = {Annotations Mitigate Post-Training Mode Collapse},
+  author        = {Unknown},
+  booktitle     = {ICML 2026},
+  year          = {2026},
+  eprint        = {2605.09995},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.CL},
+  url           = {https://arxiv.org/abs/2605.09995},
+  note          = {Author names not captured (reported Apple-affiliated). Pretrains on documents + semantic annotations; sampled annotations reintroduce pretraining-level diversity post-training.}
+}
+
+@misc{arxiv2025crpo,
+  title         = {Creative Preference Optimization},
+  author        = {Unknown},
+  booktitle     = {Findings of EMNLP 2025},
+  year          = {2025},
+  eprint        = {2505.14442},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.CL},
+  url           = {https://arxiv.org/abs/2505.14442},
+  note          = {Author names not captured. Multiple explicit creativity dimensions (novelty/diversity/surprise/quality) in a DPO-style objective; trained on MuCE (200K-response preference dataset, 30+ psychology experts). Outperformed GPT-4o on automated+human creativity eval.}
+}
+
+@misc{arxiv2026storyalign,
+  title         = {StoryAlign: A Benchmark for Reward Models on Story Preference},
+  author        = {Unknown},
+  year          = {2026},
+  eprint        = {2605.04831},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.CL},
+  url           = {https://arxiv.org/abs/2605.04831},
+  note          = {Author names not captured. 1,133 verified instances; best existing RM only 66.3% accuracy. Code: github.com/THU-KEG/StoryAlign. Template for a "HumorRMB"-style reward-model benchmark.}
+}
+
+@misc{arxiv2026tournamentgrpo,
+  title         = {Tournament-GRPO},
+  author        = {Unknown},
+  year          = {2026},
+  eprint        = {2605.26958},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.CL},
+  url           = {https://arxiv.org/abs/2605.26958},
+  note          = {Author names not captured. Converts pointwise LLM-judge scores (which saturate/miscalibrate under optimization pressure) into pairwise-tournament-derived group rewards -- directly addresses LLM-judge reward hacking via relative ranking.}
+}
+
+@misc{arxiv2026dcr,
+  title         = {The Reasoning-Creativity Trade-off: Distributional Creative Reasoning},
+  author        = {Unknown},
+  year          = {2026},
+  eprint        = {2601.00747},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.LG},
+  url           = {https://arxiv.org/abs/2601.00747},
+  note          = {Author names not captured. Unifies STaR/GRPO/DPO/entropy-bonus as special cases of one objective; proves a "diversity decay theorem."}
+}
+
+@misc{arxiv2026codenames,
+  title         = {Playing with Words, Improving with Rewards},
+  author        = {Unknown},
+  year          = {2026},
+  eprint        = {2605.27832},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.CL},
+  url           = {https://arxiv.org/abs/2605.27832},
+  note          = {Author names not captured. RLVR on Codenames (verifiable-reward creative-association game), Qwen3 1.7B/4B/8B: scale-dependent precision/creativity trade-off.}
+}
+
+@inproceedings{arxiv2025musicadversarial,
+  title         = {Generative Adversarial Post-Training Mitigates Reward Hacking in Live Human-AI Music Interaction},
+  author        = {Unknown},
+  booktitle     = {ICLR 2026},
+  year          = {2025},
+  eprint        = {2511.17879},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.SD},
+  url           = {https://arxiv.org/abs/2511.17879},
+  note          = {Author names not captured. RL melody-to-chord accompaniment reward-hacks into repetitive-but-harmonic output; fixed via co-evolving discriminator, validated with a live user study. Closest real-world non-text analogue to humor-RL collapsing into safe, repetitive jokes.}
+}
+
+%% ============================================================
+%% 7. MULTI-TURN / AGENTIC RL INFRASTRUCTURE (gap #2)
+%% ============================================================
+
+@inproceedings{abdulhai2025lmrlgym,
+  title         = {LMRL Gym: Benchmarks for Multi-Turn Reinforcement Learning with Language Models},
+  author        = {Abdulhai, Marwa and White, Isadora and Snell, Charlie and Sun, Charles and Hong, Joey and Zhai, Yuexiang and Xu, Kelvin and Levine, Sergey},
+  booktitle     = {ICML 2025},
+  year          = {2025},
+  eprint        = {2311.18232},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.LG},
+  url           = {https://arxiv.org/abs/2311.18232},
+  note          = {8 multi-turn tasks with online simulators + offline datasets + baselines. Code: github.com/abdulhaim/LMRL-Gym (MIT, but JAX-locked and last pushed July 2024 -- stale as of this compilation).}
+}
+
+@misc{wang2025ragen,
+  title         = {RAGEN: Understanding Self-Evolution in LLM Agents via Multi-Turn Reinforcement Learning},
+  author        = {Wang, Zihan and Wang, Kangrui and Wang, Qineng and Zhang, Pingyue and Li, Linjie and Yang, Zhengyuan and Jin, Xing and Yu, Kefan and Nguyen, Minh Nhat and Liu, Licheng and Gottlieb, Eli and Lu, Yiping and Cho, Kyunghyun and Wu, Jiajun and Fei-Fei, Li and Wang, Lijuan and Choi, Yejin and Li, Manling},
+  year          = {2025},
+  eprint        = {2504.20073},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.LG},
+  url           = {https://arxiv.org/abs/2504.20073},
+  note          = {Introduces StarPO (trajectory-level multi-turn RL) and the "Echo Trap" failure mode. Code: github.com/RAGEN-AI/RAGEN (MIT, actively maintained, 2,750+ stars). Best-maintained multi-turn RL codebase found for this project.}
+}
+
+@inproceedings{feng2025gigpo,
+  title         = {Group-in-Group Policy Optimization for LLM Agent Training},
+  author        = {Feng, Lang and others},
+  booktitle     = {NeurIPS 2025},
+  year          = {2025},
+  eprint        = {2505.10978},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.LG},
+  url           = {https://arxiv.org/abs/2505.10978},
+  note          = {Full author list not captured. Two-level credit assignment (episode-level macro + step-level micro via anchor-state grouping). Code: github.com/langfengQ/verl-agent (Apache-2.0, actively maintained, released HF weights + W&B logs).}
+}
+
+@misc{arxiv2025agentlightning,
+  title         = {Agent Lightning: Train ANY AI Agents with Reinforcement Learning},
+  author        = {Unknown},
+  year          = {2025},
+  eprint        = {2508.03680},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.LG},
+  url           = {https://arxiv.org/abs/2508.03680},
+  note          = {Microsoft Research; individual authors not captured. Decouples agent execution from RL training. Code: github.com/microsoft/agent-lightning (MIT, 17K+ stars, very actively maintained).}
+}
+
+%% ============================================================
+%% 8. PERSONALIZED REWARD MODELING (audience-dependence of humor)
+%% ============================================================
+
+@inproceedings{chen2025pad,
+  title         = {Personalized Alignment at Decoding-time},
+  author        = {Chen, Ruizhe and Zhang, Xiaotian and Luo, Meng and Chai, Wenhao and Liu, Zuozhu},
+  booktitle     = {ICLR 2025},
+  year          = {2025},
+  eprint        = {2410.04070},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.CL},
+  url           = {https://openreview.net/forum?id=e7AUJpP8bV},
+  note          = {CONFIRMED: uses "humor" as one of three seed personalization dimensions (harmless/helpful/humor), evaluated via HF model mohameddhiab/humor-no-humor. Code: github.com/zjuruizhechen/PAD (inference/eval usable; training module never shipped). Strongest peer-reviewed precedent for humor as a personalization axis.}
+}
+
+@misc{li2025persrmr1,
+  title         = {PersRM-R1: A Reasoning-Based Reward Model for Few-Shot Personalization},
+  author        = {Li, Mengdi and Chen, Guanqiao and Zhao, Xufeng and Wen, Haochen and Yang, Shu and Wang, Di},
+  year          = {2025},
+  eprint        = {2508.14076},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.CL},
+  url           = {https://arxiv.org/abs/2508.14076},
+  note          = {Infers preference from 1-few exemplars, emits an explicit reasoning trace before a scalar score. Code: github.com/Jeffrey-Guanqiao/PersRM-R1 (exists but undocumented -- proceed with caution). No confirmed venue.}
+}
+
+@inproceedings{ryan2025synthesizeme,
+  title         = {SynthesizeMe: Personalized Reward Models via Persona Induction},
+  author        = {Ryan, Michael J. and Shaikh, Omar and Bhagirath, Aditri and Frees, Daniel and Held, William and Yang, Diyi},
+  booktitle     = {Proceedings of ACL 2025 (Volume 1: Long Papers)},
+  pages         = {8045--8078},
+  year          = {2025},
+  eprint        = {2506.05598},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.CL},
+  url           = {https://aclanthology.org/2025.acl-long.397/},
+  note          = {No demographic metadata needed; +4.4% personalized-judge accuracy on Chatbot Arena. Code: github.com/SALT-NLP/SynthesizeMe (MIT, best-documented personalized-RM code found, pip-installable, usable now).}
+}
+
+@misc{ma2026personalizedrewardbench,
+  title         = {Personalized RewardBench},
+  author        = {Ma, Qiyao and Gao, Dechen and Cai, Rui and Zhao, Boqi and Zhou, Hanchu and Zhang, Junshan and Zhao, Zhe},
+  year          = {2026},
+  eprint        = {2604.07343},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.CL},
+  url           = {https://arxiv.org/abs/2604.07343},
+  note          = {(query, user profile, chosen, rejected) tuples differing only on personalization-relevant rubric aspects. Best RMs peak at 75.94% accuracy. Code: github.com/Martin-qyma/Personalized-RewardBench. HF dataset: huggingface.co/datasets/QiyaoMa/Personalized-RewardBench (Apache-2.0, usable now). NOT the same benchmark as the one built inside ryan2025synthesizeme -- do not conflate.}
+}
+
+@misc{zhang2024diverging,
+  title         = {Diverging Preferences: When do Annotators Disagree and do Models Know?},
+  author        = {Zhang, Michael J. Q. and Wang, Zheng and Hwang, Jena D. and Dong, Yixiao and Delalleau, Olivier and Choi, Yejin and Choi, Eunsol and Ren, Xiang and Pyatkin, Valentina},
+  year          = {2024},
+  eprint        = {2410.14632},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.CL},
+  url           = {https://arxiv.org/abs/2410.14632},
+  note          = {Taxonomy of 10 disagreement-source categories in RLHF preference data; proposes distributional (not point-estimate) reward models. Directly the problem statement for a humor reward model.}
+}
+
+%% ============================================================
+%% 9. PSYCHOLOGY -- humor production ability and intelligence
+%% ============================================================
+
+@article{greengross2011humor,
+  title         = {Humor Ability Reveals Intelligence, Predicts Mating Success, and Is Higher in Males},
+  author        = {Greengross, Gil and Miller, Geoffrey},
+  journal       = {Intelligence},
+  volume        = {39},
+  number        = {4},
+  pages         = {188--192},
+  year          = {2011},
+  doi           = {10.1016/j.intell.2011.03.006}
+}
+
+@article{christensen2018clever,
+  title         = {Clever People: Intelligence and Humor Production Ability},
+  author        = {Christensen, Alexander P. and Silvia, Paul J. and Nusbaum, Emily C. and Beaty, Roger E.},
+  journal       = {Psychology of Aesthetics, Creativity, and the Arts},
+  volume        = {12},
+  number        = {2},
+  pages         = {136--143},
+  year          = {2018},
+  note          = {The direct primary-source basis for the project's cited r$\approx$.29--.40 range: Gc r=.49, Gr r=.38, Gf r=.22; discussion cites prior work at vocabulary r$\approx$.37--.38, fluid intelligence r$\approx$.13--.29.}
+}
+
+@article{feingold1991psychometric,
+  title         = {Psychometric Intelligence and Verbal Humor Ability},
+  author        = {Feingold, Alan and Mazzella, Ronald},
+  journal       = {Personality and Individual Differences},
+  volume        = {12},
+  number        = {5},
+  pages         = {427--435},
+  year          = {1991},
+  doi           = {10.1016/0191-8869(91)90060-O}
+}
+
+@article{feingold1993preliminary,
+  title         = {Preliminary Validation of a Multidimensional Model of Wittiness},
+  author        = {Feingold, Alan and Mazzella, Ronald},
+  journal       = {Journal of Personality},
+  volume        = {61},
+  number        = {3},
+  pages         = {439--456},
+  year          = {1993},
+  doi           = {10.1111/j.1467-6494.1993.tb00288.x},
+  note          = {Self/peer "wittiness" ratings correlate with each other but NOT with objectively-measured humor production -- perceived and demonstrated funniness are separable constructs.}
+}
+
+@article{howrigan2008humor,
+  title         = {Humor as a Mental Fitness Indicator},
+  author        = {Howrigan, Daniel P. and MacDonald, Kevin B.},
+  journal       = {Evolutionary Psychology},
+  volume        = {6},
+  number        = {4},
+  pages         = {652--666},
+  year          = {2008},
+  note          = {r=.29 (p<.01) between g and rater-judged humor; survives controlling for Big Five (beta=+.20, p=.010). Lower bound of the project's cited r$\approx$.29--.40 range.}
+}
+
+@article{kellner2017creative,
+  title         = {The Role of Creative Potential and Intelligence for Humor Production},
+  author        = {Kellner, Roland and Benedek, Mathias},
+  journal       = {Psychology of Aesthetics, Creativity, and the Arts},
+  volume        = {11},
+  number        = {1},
+  pages         = {52--58},
+  year          = {2017},
+  doi           = {10.1037/aca0000065},
+  note          = {Crystallized intelligence and divergent-thinking fluency independently predict humor-production quality.}
+}
+
+@article{arslan2021moreamorous,
+  title         = {Are More Humorous Children More Intelligent? A Case from Turkish Culture},
+  author        = {Arslan, Deniz and Sak, Ugur and Ate{\c{s}}g{\"o}z, Nur Nihal},
+  journal       = {HUMOR},
+  volume        = {34},
+  number        = {4},
+  pages         = {567--588},
+  year          = {2021},
+  doi           = {10.1515/humor-2021-0054},
+  note          = {N=217 Turkish 6th/7th graders; intelligence explained 68% of variance in humor-production ability. The children's-study target figure.}
+}
+
+@article{masten1986humor,
+  title         = {Humor and Competence in School-Aged Children},
+  author        = {Masten, Ann S.},
+  journal       = {Child Development},
+  volume        = {57},
+  number        = {2},
+  pages         = {461--473},
+  year          = {1986},
+  note          = {Corroborated indirectly via citation in howrigan2008humor; not independently primary-read.}
+}
+
+@article{greengross2025heritability,
+  title         = {Heritability of Humor Production Ability: A Twin Study},
+  author        = {Greengross, Gil and Segal, Nancy L. and Zellers, Sylvia and Silvia, Paul and Steves, Claire J. and Kaprio, Jaakko},
+  journal       = {Twin Research and Human Genetics},
+  volume        = {28},
+  number        = {3},
+  pages         = {265--272},
+  year          = {2025},
+  doi           = {10.1017/thg.2025.10010},
+  note          = {Objective humor-production task showed NO significant additive genetic effect -- more environmentally malleable/trainable than self-rated humor, which is good news for an RL training approach.}
+}
+
+@article{greengross2020sexdifferences,
+  title         = {Sex Differences in Humor Production Ability: A Meta-Analysis},
+  author        = {Greengross, Gil and Silvia, Paul J. and Nusbaum, Emily C.},
+  journal       = {Journal of Research in Personality},
+  volume        = {84},
+  pages         = {103886},
+  year          = {2020},
+  note          = {36 effect sizes / 28 studies, N=5,057; d=0.321 favoring men's rated humor output. A quantified, documented rater-bias confound relevant to reward-model auditing.}
+}
+
+@article{greengross2012comedians,
+  title         = {Personality Traits, Intelligence, Humor Styles, and Humor Production Ability of Professional Stand-up Comedians Compared to College Students},
+  author        = {Greengross, Gil and Martin, Rod A. and Miller, Geoffrey},
+  journal       = {Psychology of Aesthetics, Creativity, and the Arts},
+  volume        = {6},
+  number        = {1},
+  pages         = {74--82},
+  year          = {2012},
+  doi           = {10.1037/a0025774},
+  note          = {N=31 comedians vs. 400 students. Comedians scored higher on ALL FOUR HSQ styles, not just the benign two; success predicted positively by affiliative and negatively by self-defeating humor.}
+}
+
+%% ============================================================
+%% 10. PSYCHOLOGY -- humor theories
+%% ============================================================
+
+@article{mcgraw2010benign,
+  title         = {Benign Violations: Making Immoral Behavior Funny},
+  author        = {McGraw, A. Peter and Warren, Caleb},
+  journal       = {Psychological Science},
+  volume        = {21},
+  number        = {8},
+  pages         = {1141--1149},
+  year          = {2010},
+  note          = {Founding empirical paper for Benign Violation Theory: humor requires simultaneous appraisal of violation AND benign-ness. Five experiments, N=36--80 each.}
+}
+
+@incollection{mcgraw2014benigntheory,
+  title         = {Benign Violation Theory},
+  author        = {McGraw, A. Peter and Warren, Caleb},
+  booktitle     = {Encyclopedia of Humor Studies},
+  pages         = {75--77},
+  year          = {2014}
+}
+
+@incollection{suls1972twostage,
+  title         = {A Two-Stage Model for the Appreciation of Jokes and Cartoons: An Information-Processing Analysis},
+  author        = {Suls, Jerry M.},
+  booktitle     = {The Psychology of Humor: Theoretical Perspectives and Empirical Issues},
+  editor        = {Goldstein, Jeffrey H. and McGhee, Paul E.},
+  publisher     = {Academic Press},
+  pages         = {81--100},
+  year          = {1972},
+  note          = {Foundational incongruity-resolution theory paper. This is the direct academic ancestor of the project's "familiar-but-expectation-breaking" thesis.}
+}
+
+@article{wyer1992comprehension,
+  title         = {A Theory of Humor Elicitation},
+  author        = {Wyer, Robert S. and Collins, James E.},
+  journal       = {Psychological Review},
+  volume        = {99},
+  number        = {4},
+  pages         = {663--688},
+  year          = {1992},
+  note          = {Extends Suls: argues resolution alone is insufficient; a joke needs further "elaboration" (extracting additional implications) to be funny.}
+}
+
+@article{hatzithomas2024playmirth,
+  title         = {Play-mirth Theory: A Cognitive Appraisal Theory of Humor},
+  author        = {Hatzithomas, Leonidas},
+  journal       = {Frontiers in Psychology},
+  volume        = {15},
+  pages         = {1473742},
+  year          = {2024},
+  note          = {Newest theoretical entry found. Two simultaneous appraisals: a "playful turn" and motive-consistency. Explicitly argues incongruity/unexpectedness alone cannot discriminate humorous from non-humorous stimuli.}
+}
+
+@book{latta1999basichumor,
+  title         = {The Basic Humor Process: A Cognitive-Shift Theory and the Case against Incongruity},
+  author        = {Latta, Robert L.},
+  series        = {Humor Research 5},
+  publisher     = {Mouton de Gruyter},
+  year          = {1999},
+  note          = {Argues AGAINST incongruity theory in favor of a "cognitive-shift" mechanism. Note: a claim of an "N+V theory" attributed to Latta could NOT be verified under that name -- see psychology.md.}
+}
+
+@incollection{ruch1992assessment,
+  title         = {Assessment of Appreciation of Humor: Studies with the 3 WD Humor Test},
+  author        = {Ruch, Willibald},
+  booktitle     = {Advances in Personality Assessment, Vol. 9},
+  editor        = {Spielberger, Charles D. and Butcher, James N.},
+  publisher     = {Lawrence Erlbaum},
+  pages         = {27--75},
+  year          = {1992}
+}
+
+@article{thorson1993multidimensional,
+  title         = {Development and Validation of a Multidimensional Sense of Humor Scale},
+  author        = {Thorson, James A. and Powell, F. C.},
+  journal       = {Journal of Clinical Psychology},
+  volume        = {49},
+  number        = {1},
+  pages         = {13--23},
+  year          = {1993}
+}
+
+@incollection{kaufman2008mateselection,
+  title         = {The Role of Creativity and Humor in Human Mate Selection},
+  author        = {Kaufman, Scott Barry and Kozbelt, Aaron and Bromley, Melanie L. and Miller, Geoffrey F.},
+  booktitle     = {Mating Intelligence},
+  editor        = {Geher, Glenn and Miller, Geoffrey},
+  publisher     = {Lawrence Erlbaum},
+  year          = {2008},
+  note          = {Theoretical chapter, not new empirical data.}
+}
+
+%% ============================================================
+%% 11. HUMOR STYLES QUESTIONNAIRE
+%% ============================================================
+
+@article{martin2003hsq,
+  title         = {Individual Differences in Uses of Humor and Their Relation to Psychological Well-Being: Development of the Humor Styles Questionnaire},
+  author        = {Martin, Rod A. and Puhlik-Doris, Patricia and Larsen, Gwen and Gray, Jeanette and Weir, Kelly},
+  journal       = {Journal of Research in Personality},
+  volume        = {37},
+  number        = {1},
+  pages         = {48--75},
+  year          = {2003},
+  note          = {Four styles: Affiliative, Self-enhancing (benign); Aggressive, Self-defeating (potentially detrimental). Standard instrument for decomposing "humor" into styles with opposite valence.}
+}
+
+%% ============================================================
+%% 12. AUDIENCE-DEPENDENCE OF HUMOR & RATER DISAGREEMENT
+%% ============================================================
+
+@article{uma2021disagreement,
+  title         = {Learning from Disagreement: A Survey},
+  author        = {Uma, Alexandra N. and Fornaciari, Tommaso and Hovy, Dirk and Paun, Silviu and Plank, Barbara and Poesio, Massimo},
+  journal       = {Journal of Artificial Intelligence Research},
+  volume        = {72},
+  pages         = {1385--1470},
+  year          = {2021},
+  doi           = {10.1613/JAIR.1.12752}
+}
+
+@article{davani2022dealing,
+  title         = {Dealing with Disagreements: Looking Beyond the Majority Vote in Subjective Annotations},
+  author        = {Davani, Aida Mostafazadeh and D{\'i}az, Mark and Prabhakaran, Vinodkumar},
+  journal       = {Transactions of the Association for Computational Linguistics},
+  volume        = {10},
+  pages         = {92--110},
+  year          = {2022},
+  doi           = {10.1162/tacl_a_00449}
+}
+
+@article{cao2023culture,
+  title         = {The Impact of Culture and Social Distance on Humor Appreciation, Sharing, and Production},
+  author        = {Cao, Yuanjun and Hou, Yaqi and Dong, Zixin and Ji, Li-Jun},
+  journal       = {Social Psychological and Personality Science},
+  volume        = {14},
+  number        = {2},
+  pages         = {207--217},
+  year          = {2023},
+  doi           = {10.1177/19485506211065938},
+  note          = {Culture x social-distance interaction: Chinese participants find distant-other jokes reliably funnier than close-other jokes; Americans show no such difference (F(1,201)=2.08, p=.151).}
+}
