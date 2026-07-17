@@ -1,0 +1,924 @@
+{
+  "source_pilot_dir": "experiment-runs/2026-07-17-cascade-pilot",
+  "source_analysis_json": "experiment-runs/2026-07-17-cascade-pilot/analysis.json",
+  "source_novelty_json": "experiment-runs/2026-07-17-cascade-pilot/novelty.json",
+  "seed": 0,
+  "data_integrity_check": {
+    "reconstruction_matches_analysis_json": true,
+    "max_cross_model_abs_diff": 0.0,
+    "max_per_model_abs_diff": 0.0,
+    "n_models_reconstructed": 10,
+    "n_models_in_analysis_json": 10
+  },
+  "headline_cross_model_overlap": {
+    "claim": "Pre-registered hypothesis: models share a substantially overlapping topic pool (predicted cross-model jaccard ~0.35). FAILED -- see EXP-004.",
+    "observed_mean_cross_jaccard": 0.10172115335417337,
+    "predicted": 0.35,
+    "null_test": {
+      "pooled_frequency_baseline": {
+        "p_value": 1.0,
+        "n_perm": 10000,
+        "hypothesis": "observed overlap higher than a bag-of-topics shared-pool baseline predicts \u2014 see docstring for assumptions",
+        "AUTHORITATIVE_FOR_THIS_CLAIM": true
+      },
+      "label_shuffle": {
+        "p_value": 1.0,
+        "n_perm": 10000,
+        "hypothesis": "model-identity effect (heterogeneity across models); NOT a test of shared-pool sharing \u2014 see docstring",
+        "AUTHORITATIVE_FOR_THIS_CLAIM": false,
+        "warning": "Documented wrong null for a shared-pool claim (near-zero power -- see stats.cross_model_null docstring and test_stats.py). Reported for transparency only; do not cite this p-value as evidence about pool-sharing."
+      }
+    },
+    "bootstrap_ci": {
+      "run_pair_level": {
+        "point": 0.10172115335417337,
+        "lo": 0.09616911090266883,
+        "hi": 0.10717339767819166,
+        "n_boot": 10000,
+        "n": 580,
+        "alpha": 0.05,
+        "method": "monte_carlo",
+        "unit": "one value per (run_i-of-model_A, run_j-of-model_B) pair, pooled across all 45 model pairs",
+        "matches_point_estimate": true,
+        "caveat": "non-independent observations (each run appears in many pairs) -- CI is likely too narrow; see module docstring on _flat_cross_run_jaccards."
+      },
+      "model_pair_level": {
+        "point": 0.10609242279592469,
+        "lo": 0.0922274803648439,
+        "hi": 0.1208709161755077,
+        "n_boot": 10000,
+        "n": 45,
+        "alpha": 0.05,
+        "method": "monte_carlo",
+        "unit": "one value per model-PAIR mean jaccard (45 model pairs), the more conservative/exchangeable unit",
+        "point_vs_headline_diff": 0.004371269441751327
+      }
+    }
+  },
+  "headline_within_model_divergence": {
+    "claim": "Within-model mean set jaccard across runs, averaged over models (predicted ~0.55; observed 0.182 -- calibration closed per EXP-004).",
+    "observed_within_model_mean_jaccard": 0.18241011817409897,
+    "predicted": 0.55,
+    "bootstrap_ci": {
+      "point": 0.18241011817409897,
+      "lo": 0.13910995900807208,
+      "hi": 0.22634060287711508,
+      "n_boot": 10000,
+      "n": 10,
+      "alpha": 0.05,
+      "method": "monte_carlo",
+      "unit": "one value per MODEL (n=10): each model's own mean pairwise within-run set_jaccard",
+      "matches_point_estimate": true
+    },
+    "per_model_point_estimates": {
+      "api:deepseek": 0.15107059055551017,
+      "api:glm": 0.15,
+      "api:qwen": 0.23253556100154305,
+      "codex:5.4": 0.2807693610480382,
+      "codex:mini": 0.25036184686640617,
+      "codex:sol": 0.24657912004260116,
+      "fable": 0.23404255319148937,
+      "haiku": 0.10056745056745058,
+      "opus": 0.06104328941141086,
+      "sonnet": 0.11713140905654053
+    }
+  },
+  "degradation_fingerprint_battery": {
+    "censoring_convention": "degradation depth=null (survived the cascade without repeating or refusing) mapped to depth=30 for every statistic in this section.",
+    "pairwise_permutation_and_cliffs_delta": {
+      "api:deepseek|api:glm": {
+        "stat_mean_diff": -9.0,
+        "p_value": 0.06666666666666667,
+        "n_perm_used": 15,
+        "method": "exact",
+        "p_floor": 0.06666666666666667,
+        "na": 4,
+        "nb": 2,
+        "cliffs_delta": -1.0,
+        "cliffs_delta_magnitude": "large",
+        "p_holm": 1.0,
+        "p_bh": 0.13043478260869565
+      },
+      "api:deepseek|api:qwen": {
+        "stat_mean_diff": -4.5,
+        "p_value": 0.42857142857142855,
+        "n_perm_used": 70,
+        "method": "exact",
+        "p_floor": 0.014285714285714285,
+        "na": 4,
+        "nb": 4,
+        "cliffs_delta": -0.4375,
+        "cliffs_delta_magnitude": "medium",
+        "p_holm": 1.0,
+        "p_bh": 0.6221198156682027
+      },
+      "api:deepseek|codex:5.4": {
+        "stat_mean_diff": -20.0,
+        "p_value": 0.02857142857142857,
+        "n_perm_used": 70,
+        "method": "exact",
+        "p_floor": 0.014285714285714285,
+        "na": 4,
+        "nb": 4,
+        "cliffs_delta": -1.0,
+        "cliffs_delta_magnitude": "large",
+        "p_holm": 1.0,
+        "p_bh": 0.09183673469387756
+      },
+      "api:deepseek|codex:mini": {
+        "stat_mean_diff": -21.5,
+        "p_value": 0.02857142857142857,
+        "n_perm_used": 70,
+        "method": "exact",
+        "p_floor": 0.014285714285714285,
+        "na": 4,
+        "nb": 4,
+        "cliffs_delta": -1.0,
+        "cliffs_delta_magnitude": "large",
+        "p_holm": 1.0,
+        "p_bh": 0.09183673469387756
+      },
+      "api:deepseek|codex:sol": {
+        "stat_mean_diff": -20.5,
+        "p_value": 0.02857142857142857,
+        "n_perm_used": 70,
+        "method": "exact",
+        "p_floor": 0.014285714285714285,
+        "na": 4,
+        "nb": 4,
+        "cliffs_delta": -1.0,
+        "cliffs_delta_magnitude": "large",
+        "p_holm": 1.0,
+        "p_bh": 0.09183673469387756
+      },
+      "api:deepseek|fable": {
+        "stat_mean_diff": -15.5,
+        "p_value": 0.06666666666666667,
+        "n_perm_used": 15,
+        "method": "exact",
+        "p_floor": 0.06666666666666667,
+        "na": 4,
+        "nb": 2,
+        "cliffs_delta": -1.0,
+        "cliffs_delta_magnitude": "large",
+        "p_holm": 1.0,
+        "p_bh": 0.13043478260869565
+      },
+      "api:deepseek|haiku": {
+        "stat_mean_diff": -2.25,
+        "p_value": 0.9142857142857143,
+        "n_perm_used": 70,
+        "method": "exact",
+        "p_floor": 0.014285714285714285,
+        "na": 4,
+        "nb": 4,
+        "cliffs_delta": 0.125,
+        "cliffs_delta_magnitude": "negligible",
+        "p_holm": 1.0,
+        "p_bh": 1.0
+      },
+      "api:deepseek|opus": {
+        "stat_mean_diff": -4.0,
+        "p_value": 0.05714285714285714,
+        "n_perm_used": 70,
+        "method": "exact",
+        "p_floor": 0.014285714285714285,
+        "na": 4,
+        "nb": 4,
+        "cliffs_delta": -0.9375,
+        "cliffs_delta_magnitude": "large",
+        "p_holm": 1.0,
+        "p_bh": 0.13043478260869565
+      },
+      "api:deepseek|sonnet": {
+        "stat_mean_diff": -5.25,
+        "p_value": 0.08571428571428572,
+        "n_perm_used": 70,
+        "method": "exact",
+        "p_floor": 0.014285714285714285,
+        "na": 4,
+        "nb": 4,
+        "cliffs_delta": -0.8125,
+        "cliffs_delta_magnitude": "large",
+        "p_holm": 1.0,
+        "p_bh": 0.16071428571428573
+      },
+      "api:glm|api:qwen": {
+        "stat_mean_diff": 4.5,
+        "p_value": 0.6,
+        "n_perm_used": 15,
+        "method": "exact",
+        "p_floor": 0.06666666666666667,
+        "na": 2,
+        "nb": 4,
+        "cliffs_delta": 0.5,
+        "cliffs_delta_magnitude": "large",
+        "p_holm": 1.0,
+        "p_bh": 0.7714285714285715
+      },
+      "api:glm|codex:5.4": {
+        "stat_mean_diff": -11.0,
+        "p_value": 0.06666666666666667,
+        "n_perm_used": 15,
+        "method": "exact",
+        "p_floor": 0.06666666666666667,
+        "na": 2,
+        "nb": 4,
+        "cliffs_delta": -1.0,
+        "cliffs_delta_magnitude": "large",
+        "p_holm": 1.0,
+        "p_bh": 0.13043478260869565
+      },
+      "api:glm|codex:mini": {
+        "stat_mean_diff": -12.5,
+        "p_value": 0.06666666666666667,
+        "n_perm_used": 15,
+        "method": "exact",
+        "p_floor": 0.06666666666666667,
+        "na": 2,
+        "nb": 4,
+        "cliffs_delta": -1.0,
+        "cliffs_delta_magnitude": "large",
+        "p_holm": 1.0,
+        "p_bh": 0.13043478260869565
+      },
+      "api:glm|codex:sol": {
+        "stat_mean_diff": -11.5,
+        "p_value": 0.06666666666666667,
+        "n_perm_used": 15,
+        "method": "exact",
+        "p_floor": 0.06666666666666667,
+        "na": 2,
+        "nb": 4,
+        "cliffs_delta": -1.0,
+        "cliffs_delta_magnitude": "large",
+        "p_holm": 1.0,
+        "p_bh": 0.13043478260869565
+      },
+      "api:glm|fable": {
+        "stat_mean_diff": -6.5,
+        "p_value": 0.6666666666666666,
+        "n_perm_used": 6,
+        "method": "exact",
+        "p_floor": 0.16666666666666666,
+        "na": 2,
+        "nb": 2,
+        "cliffs_delta": -0.5,
+        "cliffs_delta_magnitude": "large",
+        "p_holm": 1.0,
+        "p_bh": 0.8108108108108107
+      },
+      "api:glm|haiku": {
+        "stat_mean_diff": 6.75,
+        "p_value": 0.4,
+        "n_perm_used": 15,
+        "method": "exact",
+        "p_floor": 0.06666666666666667,
+        "na": 2,
+        "nb": 4,
+        "cliffs_delta": 0.5,
+        "cliffs_delta_magnitude": "large",
+        "p_holm": 1.0,
+        "p_bh": 0.6000000000000001
+      },
+      "api:glm|opus": {
+        "stat_mean_diff": 5.0,
+        "p_value": 0.06666666666666667,
+        "n_perm_used": 15,
+        "method": "exact",
+        "p_floor": 0.06666666666666667,
+        "na": 2,
+        "nb": 4,
+        "cliffs_delta": 1.0,
+        "cliffs_delta_magnitude": "large",
+        "p_holm": 1.0,
+        "p_bh": 0.13043478260869565
+      },
+      "api:glm|sonnet": {
+        "stat_mean_diff": 3.75,
+        "p_value": 0.5333333333333333,
+        "n_perm_used": 15,
+        "method": "exact",
+        "p_floor": 0.06666666666666667,
+        "na": 2,
+        "nb": 4,
+        "cliffs_delta": 0.625,
+        "cliffs_delta_magnitude": "large",
+        "p_holm": 1.0,
+        "p_bh": 0.7058823529411764
+      },
+      "api:qwen|codex:5.4": {
+        "stat_mean_diff": -15.5,
+        "p_value": 0.05714285714285714,
+        "n_perm_used": 70,
+        "method": "exact",
+        "p_floor": 0.014285714285714285,
+        "na": 4,
+        "nb": 4,
+        "cliffs_delta": -0.9375,
+        "cliffs_delta_magnitude": "large",
+        "p_holm": 1.0,
+        "p_bh": 0.13043478260869565
+      },
+      "api:qwen|codex:mini": {
+        "stat_mean_diff": -17.0,
+        "p_value": 0.02857142857142857,
+        "n_perm_used": 70,
+        "method": "exact",
+        "p_floor": 0.014285714285714285,
+        "na": 4,
+        "nb": 4,
+        "cliffs_delta": -1.0,
+        "cliffs_delta_magnitude": "large",
+        "p_holm": 1.0,
+        "p_bh": 0.09183673469387756
+      },
+      "api:qwen|codex:sol": {
+        "stat_mean_diff": -16.0,
+        "p_value": 0.02857142857142857,
+        "n_perm_used": 70,
+        "method": "exact",
+        "p_floor": 0.014285714285714285,
+        "na": 4,
+        "nb": 4,
+        "cliffs_delta": -1.0,
+        "cliffs_delta_magnitude": "large",
+        "p_holm": 1.0,
+        "p_bh": 0.09183673469387756
+      },
+      "api:qwen|fable": {
+        "stat_mean_diff": -11.0,
+        "p_value": 0.2,
+        "n_perm_used": 15,
+        "method": "exact",
+        "p_floor": 0.06666666666666667,
+        "na": 4,
+        "nb": 2,
+        "cliffs_delta": -0.75,
+        "cliffs_delta_magnitude": "large",
+        "p_holm": 1.0,
+        "p_bh": 0.33333333333333337
+      },
+      "api:qwen|haiku": {
+        "stat_mean_diff": 2.25,
+        "p_value": 0.45714285714285713,
+        "n_perm_used": 70,
+        "method": "exact",
+        "p_floor": 0.014285714285714285,
+        "na": 4,
+        "nb": 4,
+        "cliffs_delta": 0.625,
+        "cliffs_delta_magnitude": "large",
+        "p_holm": 1.0,
+        "p_bh": 0.6428571428571428
+      },
+      "api:qwen|opus": {
+        "stat_mean_diff": 0.5,
+        "p_value": 1.0,
+        "n_perm_used": 70,
+        "method": "exact",
+        "p_floor": 0.014285714285714285,
+        "na": 4,
+        "nb": 4,
+        "cliffs_delta": -0.4375,
+        "cliffs_delta_magnitude": "medium",
+        "p_holm": 1.0,
+        "p_bh": 1.0
+      },
+      "api:qwen|sonnet": {
+        "stat_mean_diff": -0.75,
+        "p_value": 0.8571428571428571,
+        "n_perm_used": 70,
+        "method": "exact",
+        "p_floor": 0.014285714285714285,
+        "na": 4,
+        "nb": 4,
+        "cliffs_delta": -0.3125,
+        "cliffs_delta_magnitude": "small",
+        "p_holm": 1.0,
+        "p_bh": 0.9642857142857142
+      },
+      "codex:5.4|codex:mini": {
+        "stat_mean_diff": -1.5,
+        "p_value": 1.0,
+        "n_perm_used": 70,
+        "method": "exact",
+        "p_floor": 0.014285714285714285,
+        "na": 4,
+        "nb": 4,
+        "cliffs_delta": -0.25,
+        "cliffs_delta_magnitude": "small",
+        "p_holm": 1.0,
+        "p_bh": 1.0
+      },
+      "codex:5.4|codex:sol": {
+        "stat_mean_diff": -0.5,
+        "p_value": 1.0,
+        "n_perm_used": 70,
+        "method": "exact",
+        "p_floor": 0.014285714285714285,
+        "na": 4,
+        "nb": 4,
+        "cliffs_delta": -0.0625,
+        "cliffs_delta_magnitude": "negligible",
+        "p_holm": 1.0,
+        "p_bh": 1.0
+      },
+      "codex:5.4|fable": {
+        "stat_mean_diff": 4.5,
+        "p_value": 0.7333333333333333,
+        "n_perm_used": 15,
+        "method": "exact",
+        "p_floor": 0.06666666666666667,
+        "na": 4,
+        "nb": 2,
+        "cliffs_delta": 0.375,
+        "cliffs_delta_magnitude": "medium",
+        "p_holm": 1.0,
+        "p_bh": 0.8684210526315789
+      },
+      "codex:5.4|haiku": {
+        "stat_mean_diff": 17.75,
+        "p_value": 0.02857142857142857,
+        "n_perm_used": 70,
+        "method": "exact",
+        "p_floor": 0.014285714285714285,
+        "na": 4,
+        "nb": 4,
+        "cliffs_delta": 1.0,
+        "cliffs_delta_magnitude": "large",
+        "p_holm": 1.0,
+        "p_bh": 0.09183673469387756
+      },
+      "codex:5.4|opus": {
+        "stat_mean_diff": 16.0,
+        "p_value": 0.02857142857142857,
+        "n_perm_used": 70,
+        "method": "exact",
+        "p_floor": 0.014285714285714285,
+        "na": 4,
+        "nb": 4,
+        "cliffs_delta": 1.0,
+        "cliffs_delta_magnitude": "large",
+        "p_holm": 1.0,
+        "p_bh": 0.09183673469387756
+      },
+      "codex:5.4|sonnet": {
+        "stat_mean_diff": 14.75,
+        "p_value": 0.02857142857142857,
+        "n_perm_used": 70,
+        "method": "exact",
+        "p_floor": 0.014285714285714285,
+        "na": 4,
+        "nb": 4,
+        "cliffs_delta": 1.0,
+        "cliffs_delta_magnitude": "large",
+        "p_holm": 1.0,
+        "p_bh": 0.09183673469387756
+      },
+      "codex:mini|codex:sol": {
+        "stat_mean_diff": 1.0,
+        "p_value": 1.0,
+        "n_perm_used": 70,
+        "method": "exact",
+        "p_floor": 0.014285714285714285,
+        "na": 4,
+        "nb": 4,
+        "cliffs_delta": 0.25,
+        "cliffs_delta_magnitude": "small",
+        "p_holm": 1.0,
+        "p_bh": 1.0
+      },
+      "codex:mini|fable": {
+        "stat_mean_diff": 6.0,
+        "p_value": 0.3333333333333333,
+        "n_perm_used": 15,
+        "method": "exact",
+        "p_floor": 0.06666666666666667,
+        "na": 4,
+        "nb": 2,
+        "cliffs_delta": 0.5,
+        "cliffs_delta_magnitude": "large",
+        "p_holm": 1.0,
+        "p_bh": 0.5172413793103448
+      },
+      "codex:mini|haiku": {
+        "stat_mean_diff": 19.25,
+        "p_value": 0.02857142857142857,
+        "n_perm_used": 70,
+        "method": "exact",
+        "p_floor": 0.014285714285714285,
+        "na": 4,
+        "nb": 4,
+        "cliffs_delta": 1.0,
+        "cliffs_delta_magnitude": "large",
+        "p_holm": 1.0,
+        "p_bh": 0.09183673469387756
+      },
+      "codex:mini|opus": {
+        "stat_mean_diff": 17.5,
+        "p_value": 0.02857142857142857,
+        "n_perm_used": 70,
+        "method": "exact",
+        "p_floor": 0.014285714285714285,
+        "na": 4,
+        "nb": 4,
+        "cliffs_delta": 1.0,
+        "cliffs_delta_magnitude": "large",
+        "p_holm": 1.0,
+        "p_bh": 0.09183673469387756
+      },
+      "codex:mini|sonnet": {
+        "stat_mean_diff": 16.25,
+        "p_value": 0.02857142857142857,
+        "n_perm_used": 70,
+        "method": "exact",
+        "p_floor": 0.014285714285714285,
+        "na": 4,
+        "nb": 4,
+        "cliffs_delta": 1.0,
+        "cliffs_delta_magnitude": "large",
+        "p_holm": 1.0,
+        "p_bh": 0.09183673469387756
+      },
+      "codex:sol|fable": {
+        "stat_mean_diff": 5.0,
+        "p_value": 0.3333333333333333,
+        "n_perm_used": 15,
+        "method": "exact",
+        "p_floor": 0.06666666666666667,
+        "na": 4,
+        "nb": 2,
+        "cliffs_delta": 0.375,
+        "cliffs_delta_magnitude": "medium",
+        "p_holm": 1.0,
+        "p_bh": 0.5172413793103448
+      },
+      "codex:sol|haiku": {
+        "stat_mean_diff": 18.25,
+        "p_value": 0.02857142857142857,
+        "n_perm_used": 70,
+        "method": "exact",
+        "p_floor": 0.014285714285714285,
+        "na": 4,
+        "nb": 4,
+        "cliffs_delta": 1.0,
+        "cliffs_delta_magnitude": "large",
+        "p_holm": 1.0,
+        "p_bh": 0.09183673469387756
+      },
+      "codex:sol|opus": {
+        "stat_mean_diff": 16.5,
+        "p_value": 0.02857142857142857,
+        "n_perm_used": 70,
+        "method": "exact",
+        "p_floor": 0.014285714285714285,
+        "na": 4,
+        "nb": 4,
+        "cliffs_delta": 1.0,
+        "cliffs_delta_magnitude": "large",
+        "p_holm": 1.0,
+        "p_bh": 0.09183673469387756
+      },
+      "codex:sol|sonnet": {
+        "stat_mean_diff": 15.25,
+        "p_value": 0.02857142857142857,
+        "n_perm_used": 70,
+        "method": "exact",
+        "p_floor": 0.014285714285714285,
+        "na": 4,
+        "nb": 4,
+        "cliffs_delta": 1.0,
+        "cliffs_delta_magnitude": "large",
+        "p_holm": 1.0,
+        "p_bh": 0.09183673469387756
+      },
+      "fable|haiku": {
+        "stat_mean_diff": 13.25,
+        "p_value": 0.13333333333333333,
+        "n_perm_used": 15,
+        "method": "exact",
+        "p_floor": 0.06666666666666667,
+        "na": 2,
+        "nb": 4,
+        "cliffs_delta": 0.75,
+        "cliffs_delta_magnitude": "large",
+        "p_holm": 1.0,
+        "p_bh": 0.23076923076923078
+      },
+      "fable|opus": {
+        "stat_mean_diff": 11.5,
+        "p_value": 0.06666666666666667,
+        "n_perm_used": 15,
+        "method": "exact",
+        "p_floor": 0.06666666666666667,
+        "na": 2,
+        "nb": 4,
+        "cliffs_delta": 1.0,
+        "cliffs_delta_magnitude": "large",
+        "p_holm": 1.0,
+        "p_bh": 0.13043478260869565
+      },
+      "fable|sonnet": {
+        "stat_mean_diff": 10.25,
+        "p_value": 0.13333333333333333,
+        "n_perm_used": 15,
+        "method": "exact",
+        "p_floor": 0.06666666666666667,
+        "na": 2,
+        "nb": 4,
+        "cliffs_delta": 0.75,
+        "cliffs_delta_magnitude": "large",
+        "p_holm": 1.0,
+        "p_bh": 0.23076923076923078
+      },
+      "haiku|opus": {
+        "stat_mean_diff": -1.75,
+        "p_value": 0.6571428571428571,
+        "n_perm_used": 70,
+        "method": "exact",
+        "p_floor": 0.014285714285714285,
+        "na": 4,
+        "nb": 4,
+        "cliffs_delta": -0.5,
+        "cliffs_delta_magnitude": "large",
+        "p_holm": 1.0,
+        "p_bh": 0.8108108108108107
+      },
+      "haiku|sonnet": {
+        "stat_mean_diff": -3.0,
+        "p_value": 0.4857142857142857,
+        "n_perm_used": 70,
+        "method": "exact",
+        "p_floor": 0.014285714285714285,
+        "na": 4,
+        "nb": 4,
+        "cliffs_delta": -0.5,
+        "cliffs_delta_magnitude": "large",
+        "p_holm": 1.0,
+        "p_bh": 0.6623376623376623
+      },
+      "opus|sonnet": {
+        "stat_mean_diff": -1.25,
+        "p_value": 0.8,
+        "n_perm_used": 70,
+        "method": "exact",
+        "p_floor": 0.014285714285714285,
+        "na": 4,
+        "nb": 4,
+        "cliffs_delta": -0.0625,
+        "cliffs_delta_magnitude": "negligible",
+        "p_holm": 1.0,
+        "p_bh": 0.923076923076923
+      }
+    },
+    "correction_used_primary": "holm",
+    "correction_note": "BH also computed (p_bh field) for cross-check; Holm is the corrected p-value cited in FINDINGS.md.",
+    "n_pairs_corrected": 45,
+    "anthropic_vs_openai_family_contrast": {
+      "stat_mean_diff": -15.166666666666668,
+      "p_value": 0.00019998000199980003,
+      "n_perm_used": 10000,
+      "method": "monte_carlo",
+      "p_floor": 9.999000099990002e-05,
+      "na": 14,
+      "nb": 12,
+      "cliffs_delta": -0.9166666666666666,
+      "cliffs_delta_magnitude": "large",
+      "anthropic_models": [
+        "haiku",
+        "sonnet",
+        "opus",
+        "fable"
+      ],
+      "openai_models": [
+        "codex:mini",
+        "codex:sol",
+        "codex:5.4"
+      ],
+      "note": "Pooled runs (not model-level means); n_a=14 runs, n_b=12 runs."
+    },
+    "degradation_incidence_audit": {
+      "n_runs_per_model": {
+        "api:deepseek": 4,
+        "api:glm": 2,
+        "api:qwen": 4,
+        "codex:5.4": 4,
+        "codex:mini": 4,
+        "codex:sol": 4,
+        "fable": 2,
+        "haiku": 4,
+        "opus": 4,
+        "sonnet": 4
+      },
+      "n_degraded_runs_per_model": {
+        "api:deepseek": 4,
+        "api:glm": 2,
+        "api:qwen": 4,
+        "codex:5.4": 1,
+        "codex:mini": 0,
+        "codex:sol": 1,
+        "fable": 1,
+        "haiku": 4,
+        "opus": 4,
+        "sonnet": 4
+      },
+      "models_with_at_least_one_degrading_run": [
+        "api:deepseek",
+        "api:glm",
+        "api:qwen",
+        "codex:5.4",
+        "codex:sol",
+        "fable",
+        "haiku",
+        "opus",
+        "sonnet"
+      ],
+      "n_models_with_at_least_one_degrading_run": 9,
+      "n_models_total": 10,
+      "EXPERIMENT_LOG_claim": "'>=1/3 of roster degrades by turn 30 -- met massively (8/10 models)'",
+      "audit_verdict": "The literal count of models with >=1 degrading run among the 10 with per_model data is 9/10 (only ['codex:mini'] shows zero degradation across all its runs), not 8/10 as stated. The EXPERIMENT_LOG figure is not reproduced exactly under the most natural reading of 'degrades' (>=1 run degrades); it may reflect a different counting rule (e.g. majority-of-runs) that isn't specified in the log. Flagged per task instructions, not silently corrected in the log itself."
+    }
+  },
+  "memorization_proportions": {
+    "per_model_wilson_95ci": {
+      "api:deepseek": {
+        "phat": 0.008333333333333333,
+        "lo": 0.0014725557333420923,
+        "hi": 0.045696291245049675,
+        "n": 120
+      },
+      "api:glm": {
+        "phat": 0.024242424242424242,
+        "lo": 0.009466869080261897,
+        "hi": 0.06066672786567241,
+        "n": 165
+      },
+      "api:grok": {
+        "phat": 0.44871794871794873,
+        "lo": 0.3433437231709858,
+        "hi": 0.5589063085943674,
+        "n": 78
+      },
+      "api:kimi": {
+        "phat": 0.5454545454545454,
+        "lo": 0.3465979532073494,
+        "hi": 0.7307970581918668,
+        "n": 22
+      },
+      "api:qwen": {
+        "phat": 0.016666666666666666,
+        "lo": 0.004582564565921141,
+        "hi": 0.0587359629721589,
+        "n": 120
+      },
+      "codex:5.4": {
+        "phat": 0.26666666666666666,
+        "lo": 0.19568455046725244,
+        "hi": 0.352124393861476,
+        "n": 120
+      },
+      "codex:mini": {
+        "phat": 0.075,
+        "lo": 0.03995711539596028,
+        "hi": 0.1364091760599377,
+        "n": 120
+      },
+      "codex:sol": {
+        "phat": 0.21666666666666667,
+        "lo": 0.15236723564151497,
+        "hi": 0.29854362532908374,
+        "n": 120
+      },
+      "fable": {
+        "phat": 0.07865168539325842,
+        "lo": 0.03861982216517404,
+        "hi": 0.15355142382043202,
+        "n": 89
+      },
+      "haiku": {
+        "phat": 0.25833333333333336,
+        "lo": 0.18837396318660649,
+        "hi": 0.3432853005824337,
+        "n": 120
+      },
+      "opus": {
+        "phat": 0.03333333333333333,
+        "lo": 0.0130375510983506,
+        "hi": 0.082580337559106,
+        "n": 120
+      },
+      "sonnet": {
+        "phat": 0.008333333333333333,
+        "lo": 0.0014725557333420923,
+        "hi": 0.045696291245049675,
+        "n": 120
+      }
+    },
+    "pairwise_fisher_exact_holm_corrected": {
+      "anthropic_nonhaiku_vs_openai": {
+        "group_a_hits": 12,
+        "group_a_n": 329,
+        "group_a_rate": 0.0364741641337386,
+        "group_b_hits": 67,
+        "group_b_n": 360,
+        "group_b_rate": 0.18611111111111112,
+        "fisher_p_two_sided": 2.5468528582349523e-10,
+        "p_holm": 5.093705716469905e-10
+      },
+      "grok_vs_anthropic_nonhaiku": {
+        "group_a_hits": 35,
+        "group_a_n": 78,
+        "group_a_rate": 0.44871794871794873,
+        "group_b_hits": 12,
+        "group_b_n": 329,
+        "group_b_rate": 0.0364741641337386,
+        "fisher_p_two_sided": 4.766980287294599e-19,
+        "p_holm": 2.3834901436472995e-18
+      },
+      "grok_vs_openai": {
+        "group_a_hits": 35,
+        "group_a_n": 78,
+        "group_a_rate": 0.44871794871794873,
+        "group_b_hits": 67,
+        "group_b_n": 360,
+        "group_b_rate": 0.18611111111111112,
+        "fisher_p_two_sided": 2.765398060089214e-06,
+        "p_holm": 2.765398060089214e-06
+      },
+      "grok_vs_openweights": {
+        "group_a_hits": 35,
+        "group_a_n": 78,
+        "group_a_rate": 0.44871794871794873,
+        "group_b_hits": 7,
+        "group_b_n": 405,
+        "group_b_rate": 0.01728395061728395,
+        "fisher_p_two_sided": 1.0331399203063893e-24,
+        "p_holm": 6.1988395218383356e-24
+      },
+      "openai_vs_openweights": {
+        "group_a_hits": 67,
+        "group_a_n": 360,
+        "group_a_rate": 0.18611111111111112,
+        "group_b_hits": 7,
+        "group_b_n": 405,
+        "group_b_rate": 0.01728395061728395,
+        "fisher_p_two_sided": 1.4641593686149087e-16,
+        "p_holm": 5.856637474459635e-16
+      },
+      "haiku_vs_anthropic_nonhaiku": {
+        "group_a_hits": 31,
+        "group_a_n": 120,
+        "group_a_rate": 0.25833333333333336,
+        "group_b_hits": 12,
+        "group_b_n": 329,
+        "group_b_rate": 0.0364741641337386,
+        "fisher_p_two_sided": 6.529799322554192e-11,
+        "p_holm": 1.9589397967662576e-10
+      }
+    },
+    "n_contrasts_corrected": 6,
+    "model_level_rates_for_reference": {
+      "anthropic_all": [
+        0.25833333333333336,
+        0.008333333333333333,
+        0.03333333333333333,
+        0.07865168539325842
+      ],
+      "openai": [
+        0.075,
+        0.21666666666666667,
+        0.26666666666666666
+      ],
+      "openweights": [
+        0.008333333333333333,
+        0.016666666666666666,
+        0.024242424242424242
+      ]
+    },
+    "model_level_cliffs_delta_anthropic_all_vs_openai": {
+      "delta": -0.5,
+      "magnitude": "large",
+      "note": "n=4 vs n=3 model-level rates, NOT run-level -- coarse, included as a second view alongside the pooled-count Fisher test above."
+    },
+    "FLAGGED_NUANCE_haiku_dual_role": {
+      "haiku_memorization_rate": 0.25833333333333336,
+      "haiku_wilson_ci": {
+        "phat": 0.25833333333333336,
+        "lo": 0.18837396318660649,
+        "hi": 0.3432853005824337,
+        "n": 120
+      },
+      "warning": "haiku is BOTH the rejector instrument (EXP-001/002/008) AND a model-under-test in this cascade roster. Its 26%% memorization rate is far closer to the GPT-family tier (22-27%%) than to opus (3%%) / sonnet (1%%) / fable (8%%). A family-wide 'Anthropic = near-zero memorization' claim holds for opus/sonnet/fable but NOT for haiku -- stated bluntly per this project's rule against softening Claude-model findings."
+    }
+  },
+  "methodology_notes": {
+    "null_for_shared_pool_claims": "pooled_frequency_baseline ONLY -- label_shuffle is documented wrong for this design and reported for transparency, never cited as evidence.",
+    "permutation_style": "exact enumeration wherever C(n_a+n_b, n_a) <= 100000 (true for every pairwise model comparison in this pilot, max is C(8,4)=70); Monte Carlo (10000 draws, add-one corrected) only for the pooled family-level and cross-model-null tests, whose arrangement counts are intractable to enumerate.",
+    "p_value_floor": "1/70 = 0.0143 for any two N=4-run models (the common case: haiku/sonnet/opus/deepseek/qwen/codex:mini/codex:sol/codex:5.4 all have n_runs=4). Coarser for any pair involving glm or fable (n_runs=2): N=2-vs-N=4 gives C(6,2)=15 (floor 0.067); N=2-vs-N=2 gives C(4,2)=6 (floor 0.167). Every pairwise result in degradation_fingerprint_battery carries its own p_floor.",
+    "multiple_comparisons_correction": "Holm (FWER, step-down) is primary; Benjamini-Hochberg (FDR, step-up) computed alongside for cross-check (p_bh field) but not cited as the corrected value in FINDINGS.md.",
+    "censoring": "Degradation depth=null (survived to the cascade depth cap) is treated as depth=30 for every statistic that touches depth. This is a real modeling choice, not a neutral default -- see module docstring.",
+    "raw_vs_semantic": "RAW topic labels only throughout, matching EXP-004's pre-registered primary metric and BLOCKER-1's fix (canon/semantic labels only ever merge, so scoring them as primary can only inflate overlap).",
+    "n_caveat": "N=2-4 runs/model. Every CI and p-value here should be read as pilot-grade precision, not paper-grade -- wide intervals are the finding, not a defect of the method."
+  }
+}
