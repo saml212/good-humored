@@ -1,33 +1,44 @@
 # The Rejection Cascade: A Path-Based Benchmark for Diversity Collapse in LLM Humor Generation
 
-**Status:** draft skeleton, pilot in flight. Target: NeurIPS/ICLR Datasets & Benchmarks track.
-Numbers marked `[RESULT]` are placeholders — do not fill until the pilot (EXP-004,
-`experiment-runs/2026-07-17-cascade-pilot/`) completes and the adversarial audit
-signs off on scoring. Sections marked `[PENDING]` are structurally drafted,
-content-empty by design.
+**Status:** pilot complete and adversarially audited. Target: NeurIPS/ICLR Datasets
+& Benchmarks track. The eleven-model cascade pilot (EXP-004, `experiment-runs/
+2026-07-17-cascade-pilot/`) has concluded, grounded by the instrument-validation
+arc in Section 4 (EXP-001 through EXP-003b on the rejector, EXP-006 through
+EXP-009 on noise bias, temperature-fakeability, and novelty detection; EXP-005
+validates a separate, second instrument not used in this pilot's numbers). Every
+number in this draft traces to `docs/FINDINGS.md` and `experiment-runs/2026-07-17-
+cascade-pilot/stats_inference.json`; scale, wrapper-confound, and instrument-
+precision limitations are reported in Section 6, not hidden.
 
 ---
 
 ## 1. Abstract
 
-Diversity evaluations for language models sample N outputs and measure spread —
-but spread can be bought with temperature: a model reading down a memorized
-list at temperature 1.0 looks diverse to any sampling-based metric. We
-introduce the **rejection cascade**, a benchmark that instead forces a model
-off its default answer through ~30–50 turns of accumulating, subjective,
-content-agnostic rejection ("I don't find that topic funny — try another"),
-and measures the resulting **topic trajectory** rather than the jokes
-themselves. Path-based exhaustion under accumulating denial cannot be faked by
-sampling temperature. We ground three metric families — within-model path
-divergence, cross-model path overlap, and depth-to-degradation — in the
-verbal-fluency and semantic-foraging literatures, and report an
-instrument-validation arc showing raw topic labels, not embedding-clustered
-ones, are the safer primary metric. Pilot: 12 models, 4 provider families,
-depth 30, N=4. `[RESULT: cross-model Jaccard overlap]`,
-`[RESULT: within-model run-to-run divergence]`, `[RESULT: fraction of models
-degrading by turn 30]`.
+Diversity evaluations for language models sample N outputs and measure
+spread, but spread can be bought with temperature: a model reading down a
+memorized list at temperature 1.0 looks diverse to any sampling-based
+metric. We introduce the rejection cascade, a benchmark that forces a
+model off its default answer through accumulating, content-agnostic
+rejection ("I do not find that topic funny, tell me a different joke"),
+and measures the resulting topic trajectory rather than the jokes
+themselves. In an eleven-model pilot across four provider families (depth
+30, N=2 to 4), cross-model topic overlap is 0.113, below the entire range
+of a pooled-frequency null built from the pilot's topic vocabulary;
+within-model overlap across runs of one model is 0.208. Both invert the
+pre-registered prediction that models share a pool and repeat themselves
+more than they diverge from each other. Nine of eleven models degrade by
+turn 30, into four fingerprints: near-uniform constraint collapse with
+one within-family outlier; adherence with uneven memorization; adherence
+through a small, heavily memorized repertoire; and fast degradation with
+low memorization among open-weight models. A disclosed post-hoc contrast
+separates two labs by 13.17 turns of degradation depth (p = 0.0002),
+robust to dropping the dual-role rejector model. Five further experiments
+validate the instruments: temperature-unfakeability, a constrained-
+vocabulary labeler, and a semantic novelty check. We report every
+limitation the pilot carries, including a wrapper confound and an
+uncorrected pairwise battery.
 
-*(Word count: ~150 — see report.)*
+*(Word count: 230.)*
 
 ---
 
@@ -92,13 +103,14 @@ published precedents, none of which we find to be a kill — but two (Denial
 Prompting, MUTATE) are close enough that the differentiation must be made
 explicit and load-bearing, not a polite footnote. Section 4 gives the
 protocol, the metric family, and — as a first-class part of the method, not
-an appendix — the four-experiment arc by which we validated the measurement
-instrument (the rejector) before trusting any cascade number. Section 5
-reports the pilot design and its known confounds; results are pending.
-Section 6 is an honest limitations section, because several of those
-limitations bound what any downstream claim in Section 5 can support.
-Section 7 previews the reverse-transfer question this benchmark exists,
-ultimately, to make askable.
+an appendix — the experiment arc by which we validated the measurement
+instruments (the rejector, the labeler, and the temperature-fakeability
+claim) before trusting any cascade number. Section 5 reports the pilot
+design, its known confounds, and the resulting eleven-model fingerprint
+results. Section 6 states every limitation plainly, because several of
+those limitations bound what any downstream claim in Section 5 can
+support. Section 7 previews the reverse-transfer question this benchmark
+exists, ultimately, to make askable.
 
 ---
 
@@ -241,17 +253,17 @@ overlap is built to answer.
 ### 4.1 The cascade protocol
 
 A model under test is asked for a joke. A separate, cheap rejector model
-responds with a content-agnostic verdict — "I don't find that topic funny,
-tell me a different joke" — and **explicitly labels the topic it is
-rejecting** (e.g., `cat`), so that the trajectory is a readable list of topic
+responds with a content-agnostic verdict — "I do not find that topic
+funny, tell me a different joke" — and **explicitly labels the topic it
+is rejecting** (e.g., `cat`), so that the trajectory is a readable list of topic
 labels rather than a vibe. Rejections **accumulate**: turn *k* carries the
 topic labels of all *k*−1 prior rejections, not a sliding window. This design
 choice is load-bearing, not incidental — a sliding window would let a model
 loop back to an early topic (`cat`) once it aged out of the window, hiding
 exactly the exhaustion the benchmark exists to detect. The cascade runs to a
-fixed depth (pilot: 30 turns) for N independent runs per model (pilot: N=4),
-with no GPU required — API or CLI calls to the model under test plus a
-Haiku-tier rejector.
+fixed depth (pilot: 30 turns) for N independent runs per model (pilot
+target: N=4; realized N=2-4, Section 5.1), with no GPU required — API or
+CLI calls to the model under test plus a Haiku-tier rejector.
 
 ### 4.2 Three metric families and their psychological lineage
 
@@ -362,6 +374,21 @@ the caveat that it may be partly a labeling-noise artifact. The paper-grade
 fix on the roadmap — constrained-vocabulary, two-pass labeling — is
 discussed in Section 6.
 
+**The roadmap fix has since landed (EXP-008).** A closed, 110-entry topic
+vocabulary (LABEL_PROMPT v3) that deliberately omits the hypernym/synonym
+pairs responsible for EXP-003's failure (`pet` sitting above `cat` and
+`dog`; `medicine` above `health`) clears every bar the instrument has ever
+been held to, including the one v2 missed: reworded-pair invariance
+**1.000** (bar 0.90), ARI-vs-gold **0.924** (bar 0.80), repeat consistency
+**0.958**. The registered swing risk — that species-level granularity would
+let a straddling fixture item (a flamingo joke) scatter across
+`bird`/`animal`/`marriage` — did not materialize; majority labels are
+canonical across the fixture, including that item. Constrained-vocabulary
+labeling (v3) is the paper-grade instrument. The pilot reported in Section 5
+ran on v2, for the reasons argued above; a v3 post-hoc relabel of the
+pilot's already-collected jokes (zero additional API calls) is queued as a
+robustness check (Section 6).
+
 ### 4.4 Memorized-joke novelty check
 
 Any generation eval in this domain must check output against a
@@ -375,19 +402,135 @@ corpus of internet jokes behind it, and building that corpus (target scale:
 is a stated prerequisite for the cascade's benchmark results to be reported
 as paper-grade, not an implementation detail to defer silently.
 
+**EXP-009 adds a semantic tier against the same corpus-coverage ceiling.**
+An n-gram-overlap check against the reference corpus misses a documented
+evasion: a two-word reskin of a memorized template (changing `cat` to
+`dog`) drives exact and near-exact overlap to zero while leaving the
+joke's mechanism unchanged. An embedding-similarity tier (all-MiniLM-L6-v2
+cosine, scored against the 25 templates) closes this gap: at a threshold
+of 0.38 (calibrated for false-positive rate ≤0.05), paraphrase detection is
+**1.000** at edit depths 1 and 2, **0.810** at depth 4, and **1.000** on a
+hand-written full-paraphrase set, against 1.0/0.64/0.0/0.0 for the n-gram
+baseline scored on the identical set. The first validation attempt
+reported 0.0 detection at every depth and read as a negative result; a
+fresh adversarial verification traced this to two validation-harness
+artifacts, not a property of the tier itself — a held-out-set leak
+(negatives independently resampled from the same pool feeding the
+calibration corpus) and a reference-set mismatch (the semantic sweep was
+calibrated against templates plus 50,000 general-corpus rows while the
+n-gram baseline used templates alone, so the two tiers were not scored
+against the same reference). Both are fixed in the reported numbers above,
+and the general methodological point outlives this one experiment: a
+detector-vs-baseline comparison is valid only when every tier scores
+against an identical reference set, or an unrelated corpus-redundancy
+signal gets folded into what looks like a paraphrase-detection number. One
+exploit remains undefended by either tier: padding a verbatim memorized
+joke behind roughly twenty filler sentences drives both the n-gram and the
+semantic score to zero, because both tiers score complete outputs rather
+than sliding windows. Neither tier is a sole defense against this dilution
+exploit until a windowed scoring pass is built; it is carried forward as a
+documented limitation (Section 6), not absorbed into the detection numbers
+above. Because both tiers score against the same small template-plus-
+hand-corpus reference rather than the ~3.1M-joke target corpus, the
+corpus-coverage ceiling stated above applies to the semantic tier exactly
+as it does to the n-gram tier.
+
+### 4.5 Temperature-unfakeability as a methods contribution
+
+The cascade's central methodological claim — that scoring topic-set
+trajectories rather than sampled joke text cannot be gamed by raising
+sampling temperature — had been asserted, not demonstrated, prior to
+EXP-007. On `api:deepseek` (native API, temperature control, N=6 runs per
+setting), raising temperature 0.2 to 1.2 moves surface-diversity
+(`distinct_2`) by **+0.390** while moving within-model set Jaccard by only
+**−0.012**, against a registered bar requiring the sampling-family delta to
+exceed the path-family delta by at least 3×: the observed ratio clears the
+bar by more than 10×. Temperature reorders which topic a model visits next
+(prefix agreement across runs collapses from 0.933 to 0.000) but does not
+expand the pool of topics it draws from.
+
+A single-model result does not establish a methods claim, and the first
+replication attempt is instructive about why. EXP-007b repeated the design
+on `api:qwen` and found a near-zero surface-diversity delta (+0.006)
+alongside a small path-family delta (+0.037) — numbers that, read
+naively, resemble a failed replication. A manipulation check added after
+the fact shows why the numbers carry no evidential weight: all 6 runs at
+temperature 1.2 open with a byte-identical first joke, as do all 6 at
+temperature 0.2 — the qwen endpoint silently ignores the temperature
+parameter. The experiment supports neither the claim nor its denial,
+because the manipulation never reached the model. EXP-007c replaced qwen
+with glm-4.5-air after pre-probing confirmed its endpoint honors
+temperature (a legal range of [0,1], with an HTTP 400 above it), and
+registered a pass/fail manipulation-check gate before interpreting any
+delta: at least 3 of 6 runs at the top of the range must produce distinct
+first turns. glm cleared the gate at 6/6 (against qwen's 1/6) and
+replicated the differentiator pattern on the honored-endpoint model:
+`distinct_2` **+0.143** (near-exact match to a +0.15 prior), set Jaccard
+**−0.037** (inside the ≤0.05 bound established by EXP-007), ratio **3.9×**
+(bar ≥3×). The claim now stands on two honored-endpoint native-API models,
+not one, and the registered manipulation-check gate — verify that the
+sampling parameter reached the model, with a pass/fail bar, before
+interpreting any delta computed from it — is a reusable methods
+contribution for any future temperature ablation run against a
+third-party API.
+
+### 4.6 Labeler-noise bias is regime-dependent, not universally conservative
+
+Every claim of the form "the cascade's collapse findings survive labeling
+noise" rests on the direction of that noise's bias, asserted since EXP-002
+but not tested until EXP-006. The simulation reproduces the rejector's
+known confusion profile (estimated from EXP-001/002/003b's raw
+repeat-label logs: exact match 0.563, synonym-swap 0.149, generalize-up
+0.276) over synthetic trajectories spanning five true cross-model-overlap
+regimes, 2,000 seeded repetitions per regime. The bias flips sign across
+the range: at high true overlap (0.39–1.00), noise net-understates overlap
+(bias −0.11 to −0.47) — the original conservative-for-collapse argument
+holds exactly where a collapse claim would be made. At low true overlap
+(0.00–0.07), generalize-up merges dominate and noise net-overstates
+overlap (bias +0.02 to +0.05) — the opposite direction. Because the
+pilot's observed cross-model regime (0.10–0.22) sits in this
+low-to-moderate band, Section 5.3's headline cross-model number should be
+read as an upper bound on the true value: real disjointness is at least as
+strong as reported, and the earlier blanket claim that labeling noise is
+conservative is superseded by the regime-dependent result above. The
+constrained-vocabulary labeler (Section 4.3, EXP-008) removes most of the
+generalize-up channel by construction; re-estimating this simulation's
+noise rates under v3 before any paper-grade collapse claim is queued work
+(Section 6).
+
+### 4.7 A second validated instrument, not used in this pilot's numbers
+
+The cascade's rejector is not the only measurement instrument this project
+subjected to a pre-registered validation arc. A Haiku-tier judge scoring
+banter replies by context-ablation (the delta between a reply scored with
+and without its preceding turn) separates genuinely contextual replies
+from verbatim canned jokes with an effect size of **6.17** (bar 3.0) and
+resists surface keyword overlap (echo-resistance r = **0.224**, bar ≤0.5).
+This instrument belongs to a separate, multi-turn conversational-humor
+environment and contributes no numbers to Section 5; it is reported here
+because it was validated the same week under the same registered-bars
+discipline, and because its one carried-forward caveat — generic, on-topic
+pleasantry already earns roughly two-thirds of a genuinely contextual
+reply's delta — is the kind of instrument-level scrutiny this paper argues
+a humor benchmark cannot skip.
+
 ---
 
 ## 5. Experiments
 
 ### 5.1 Pilot setup
 
-Twelve models across four access lanes: four via the `claude` subscription
-CLI (haiku, sonnet, opus, fable), three via the `codex` CLI (sol, mini,
-5.4), four via direct provider APIs (deepseek, qwen, glm, kimi), and one via
-a direct API added as a fourth lane once a working key became available
-(grok). Depth 30, N=4 runs per model, rejector = the Haiku instrument
-validated in Section 4.3 at pilot grade (known limitation: invariance 0.800,
-conservative bias direction as argued above). Primary metrics are computed
+Twelve models were registered across four access lanes: four via the
+`claude` subscription CLI (haiku, sonnet, opus, fable), three via the
+`codex` CLI (sol = gpt-5.6-sol, mini = gpt-5.4-mini, 5.4 = gpt-5.4), four
+via direct provider APIs (deepseek = deepseek-chat, qwen =
+qwen-plus-2025-07-28, glm = glm-4.5-air, kimi = kimi-k2.5), and grok
+(grok-4.5) via a fifth direct-API lane added once a working key became
+available. Depth 30, N=4 runs per model (registered target),
+rejector = the Haiku instrument validated in Section 4.3 at pilot grade
+(known limitation at launch: invariance 0.800, conservative bias direction
+as argued above; superseded post-pilot by the paper-grade v3 instrument,
+Section 4.3). Primary metrics are computed
 on raw labels; the semantic (complete-linkage) label space is reported
 alongside but is never primary, a constraint enforced in code after an
 adversarial pre-launch audit caught an earlier version of the scoring path
@@ -405,6 +548,20 @@ are predicted to repeat themselves across runs more than they match each
 other); at least a third of the roster degrading (repeating an
 already-rejected topic, or refusing) by turn 30.
 
+**kimi-k2.5 is dropped from the path-level roster reported in Section 5.3.**
+It is a reasoning model whose internal `reasoning_content` token burn grows
+with the cascade's accumulating rejection list; three escalating
+`max_tokens` budgets (400, 2048, 4096) each failed to complete a single
+depth-30 run, the last against a pre-committed "4096 or drop" rule. Zero
+complete cascade runs exist for kimi at any budget tried. Its memorization
+rate (40.0%, [28.6%, 52.6%], 24/60 jokes, Section 6) is retained from
+partial-run scraps because the novelty check does not require a complete
+cascade, but it is reported as a flag alongside the four per-lab
+fingerprints, never folded into them. The path-level roster is therefore
+**eleven models**; grok's retry lane (read-timeout raised from 120s to
+300s after the original lane's failures) completed all four runs and is
+the eleventh.
+
 ### 5.2 Wrapper-confound limitation and planned ablation
 
 The four access lanes are not methodologically equivalent, and this is a
@@ -421,66 +578,291 @@ available, holding the model fixed, and measure whether path-divergence and
 overlap metrics shift with the access method alone — quantifying the
 wrapper confound directly before any cross-family comparison in the full
 roster is treated as a claim about the *models* rather than about the
-*wrappers*.
+*wrappers*. EXP-007 and EXP-007c (Section 4.5) demonstrate
+temperature-unfakeability only on the two lanes where temperature is
+controllable (`api:deepseek`, `api:glm`); that result grounds the choice
+of set-Jaccard as the primary metric but does not itself remove the
+wrapper confound from the `claude`/`codex` lanes' numbers, which remains
+open until the ablation above runs.
 
 ### 5.3 Results
 
-`[PENDING]` — cascade pilot (`experiment-runs/2026-07-17-cascade-pilot/`) is
-in flight; per-lane run counts are uneven as of this draft (e.g., the
-`grok` lane has one completed run of four). Tables to fill once complete
-and audited:
+#### 5.3.1 The pre-registered shared-pool hypothesis fails
 
-- **Table 1:** within-model mean set Jaccard across N=4 runs, per model
-  (raw labels; semantic-layer values reported alongside).
-- **Table 2:** cross-model 12×12 path-overlap matrix (raw labels).
-- **Table 3:** depth-to-degradation per model (turns to first repeat or
-  refusal; censored at 30 if none).
-- **Table 4:** fraction of roster degrading by turn 30, vs. the
-  pre-registered ≥1/3 threshold.
+The predicted deltas of Section 5.1 do not hold, and both fail in the same
+direction: models are more idiosyncratic, not more uniform, than
+registered. Cross-model mean topic-set Jaccard (raw labels, eleven models)
+is **0.113**, against a prediction of ≈0.35. Within-model mean set Jaccard
+across N=4 runs (N=2 for `api:glm`) of the same model is **0.208**,
+against a prediction of ≈0.55 — models were predicted to repeat themselves
+across runs more than they match other models, and by a wide margin they
+do the opposite.
 
-No result numbers are asserted in this draft.
+The cross-model figure is not merely "not significantly above chance."
+Table 2 compares it against a `pooled_frequency_baseline` null: 10,000
+synthetic universes (`benchmark/run_stats_inference.py`, seed 0) in which
+each of the eleven models draws independently from one shared,
+frequency-weighted bag built from the pilot's own 281-topic vocabulary. The observed 0.113 sits below every one
+of the 10,000 draws (null range 0.1189–0.1567); the one-sided p-value is
+1.0 under the add-one convention, i.e. the real cross-model overlap is
+lower than the lowest synthetic draw a genuinely shared pool would
+produce. A second null (`label_shuffle`) is reported for transparency
+only; it is the documented wrong null for a shared-pool claim (near-zero
+power to detect a genuinely shared pool) and is not cited as evidence
+(Section 4.3, `benchmark/stats.py`). Per the labeler-noise simulation
+(Section 4.6), the pilot's observed regime (0.10–0.22) is one where noise
+makes measured overlap an upper bound on the true value — cross-model
+disjointness, if anything, is understated here.
+
+**Table 1: Within-model topic-set Jaccard across N independent runs, by
+model (raw labels).** The mean is a model-level average (n=11); ten models
+contribute six within-run pairs each (N=4), `api:glm` contributes one
+(N=2).
+
+| Family | Model | N | Within-model Jaccard |
+|---|---|---|---|
+| Anthropic | haiku | 4 | 0.101 |
+| Anthropic | sonnet | 4 | 0.117 |
+| Anthropic | opus | 4 | 0.061 |
+| Anthropic | fable | 4 | 0.250 |
+| OpenAI | codex:mini | 4 | 0.250 |
+| OpenAI | codex:sol | 4 | 0.247 |
+| OpenAI | codex:5.4 | 4 | 0.281 |
+| — | grok | 4 | **0.443** |
+| Open-weights | deepseek | 4 | 0.151 |
+| Open-weights | qwen | 4 | 0.233 |
+| Open-weights | glm | 2 | 0.150 |
+| **Mean (11 models)** | | | **0.208** [95% CI 0.1507, 0.2706] |
+
+grok's self-Jaccard (0.443) is close to double the next-highest model
+(codex:5.4, 0.281); it is one point among eleven equally-weighted models
+in the mean, so the model-level headline moves with it directly — which
+is why the per-model column, not the mean alone, carries the finding.
+
+**Table 2: Cross-model overlap headline and its null test.**
+
+| Statistic | Value |
+|---|---|
+| Observed mean cross-model Jaccard (raw labels, 11 models) | **0.1126** |
+| `pooled_frequency_baseline` null: range over 10,000 draws (281 topics) | [0.1189, 0.1567] |
+| `pooled_frequency_baseline` p-value (one-sided; authoritative for this claim) | 1.0 (below entire null range) |
+| Bootstrap CI, model-pair level (n=55 pairs) | [0.0983, 0.1296] |
+| Bootstrap CI, run-pair level (n=800 pairs; non-independent observations, likely too narrow) | [0.1072, 0.1178] |
+
+#### 5.3.2 Four per-lab fingerprints
+
+**Anthropic: constraint collapse, with one within-family outlier.** haiku,
+sonnet, and opus degrade — repeat an already-rejected topic — in 12 of 12
+runs, every run, no exceptions (Table 3). fable breaks this pattern: 1 of
+4 runs degrades, matching the 0-or-1-per-4 adherence rate of the OpenAI
+family rather than its own. Memorization is near-zero for opus, sonnet,
+and fable (pooled 3.1%, 12/389 jokes) but not for haiku (25.8%, [18.8%,
+34.3%]) — statistically indistinguishable from the OpenAI family's
+heavy-recall tier and distinguishable from its own family (Fisher exact
+p = 1.7×10⁻¹², Holm-corrected p = 3.8×10⁻¹²). Haiku is also the rejector
+instrument that judges every run's degradation, including its own
+(Section 4.3); the direction of any resulting bias on haiku's own numbers
+is untested (Section 6).
+
+**OpenAI: constraint adherence, heterogeneous memorization.** All three
+OpenAI models resist degradation (0–1 of 4 runs each), but the family's
+pooled memorization rate (67/360 = 18.6%) is not evenly distributed within
+it: mini's own rate (7.5%) sits closer to Anthropic's low tier, while sol
+(21.7%) and 5.4 (26.7%) carry the family average. Pooled OpenAI
+memorization remains far above pooled open-weights (7/405 = 1.7%; Fisher
+exact p = 1.5×10⁻¹⁶, Holm-corrected p = 5.9×10⁻¹⁶).
+
+**grok: constraint adherence, fixed retrieval repertoire, top
+memorization.** grok never degrades in 4 runs (matching OpenAI's adherence
+pattern) but shows the highest within-model overlap of any model in the
+roster (set Jaccard 0.443, Table 1) and the highest memorization rate
+measured (40.9%, [34.3%, 47.9%], 81/198 jokes). Every pairwise
+Fisher-exact contrast against grok clears Holm correction (vs. pooled
+open-weights, p = 9.4×10⁻³⁷, Holm 5.7×10⁻³⁶; vs. pooled OpenAI,
+p = 2.5×10⁻⁸, Holm 2.5×10⁻⁸; vs. Anthropic non-haiku, p = 1.6×10⁻³¹, Holm
+8.0×10⁻³¹). The fixed repertoire and the heavy memorized-joke reliance
+read as two views of one underlying behavior: the rejection constraint is
+satisfied by retreating into a small, heavily-memorized set of topics, not
+by generating new ones.
+
+**Open-weights: fast degradation, low memorization.** deepseek degrades in
+4 of 4 runs at a median depth of 8.5; qwen shares the pattern less
+consistently (one run reaching turn 24); glm's 2 surviving runs (Section
+6) both degrade. All three show memorization at or below 2.4% (Table 3).
+
+**Table 3: Depth-to-degradation and memorization rate, by model.** Depths
+are turns to first repeat of a rejected topic or outright refusal; a run
+reaching turn 30 without either is right-censored at 30 for every
+statistic that touches depth (marked "—" below). Memorization intervals
+are Wilson score 95% confidence intervals over exact corpus-match counts
+(Section 4.4); per-model joke counts range 60-198 (`stats_inference.json`,
+`memorization_proportions`).
+
+| Family | Model | N | Degradation depths (turn) | Degraded / N | Memorization rate [95% CI] |
+|---|---|---|---|---|---|
+| Anthropic | haiku | 4 | 22, 7, 7, 7 | 4/4 | 25.8% [18.8%, 34.3%] |
+| Anthropic | sonnet | 4 | 20, 11, 10, 14 | 4/4 | 0.8% [0.1%, 4.6%] |
+| Anthropic | opus | 4 | 13, 11, 13, 13 | 4/4 | 3.3% [1.3%, 8.3%] |
+| Anthropic | fable | 4 | 18, —, —, — | 1/4 | 4.7% [2.3%, 9.4%] |
+| OpenAI | codex:mini | 4 | —, —, —, — | 0/4 | 7.5% [4.0%, 13.6%] |
+| OpenAI | codex:sol | 4 | 26, —, —, — | 1/4 | 21.7% [15.2%, 29.9%] |
+| OpenAI | codex:5.4 | 4 | 24, —, —, — | 1/4 | 26.7% [19.6%, 35.2%] |
+| — | grok | 4 | —, —, —, — | 0/4 | 40.9% [34.3%, 47.9%] |
+| Open-weights | deepseek | 4 | 11, 9, 6, 8 | 4/4 | 0.8% [0.1%, 4.6%] |
+| Open-weights | qwen | 4 | 11, 8, 24, 9 | 4/4 | 1.7% [0.5%, 5.9%] |
+| Open-weights | glm | 2 | 21, 14 | 2/2 | 2.4% [0.9%, 6.1%] |
+
+#### 5.3.3 Degradation incidence and the family contrast
+
+Nine of eleven models show at least one degrading run; `codex:mini` and
+`grok` are the only two that never degrade across all four of their runs
+(Table 4), against a pre-registered threshold of ≥1/3 of the roster (met).
+An earlier count against the original ten-model pilot (before fable's and
+grok's fill runs landed) reported "8/10 models degrade"; recounting
+against the completed eleven-model roster under the same rule (≥1 run
+degrades) gives 9/11 — neither figure reproduces the other exactly under
+the most natural reading of "degrades," and this is stated here rather
+than silently reconciled in the underlying experiment log.
+
+**Table 4: Degradation incidence against the pre-registered threshold.**
+
+| Statistic | Value |
+|---|---|
+| Models with ≥1 degrading run | 9 / 11 (81.8%) |
+| Pre-registered threshold | ≥ 1/3 of roster (36.7%) |
+| Threshold met | Yes |
+| Never-degrading models | codex:mini, grok |
+
+The best-supported single contrast for the family-level pattern pools
+Anthropic's 16 runs (haiku, sonnet, opus, fable) against OpenAI's 12
+(mini, sol, 5.4): mean difference **−13.17 turns**, Monte Carlo
+permutation p = **0.0002** (10,000 draws), Cliff's delta **−0.781
+(large)**. This contrast was chosen after the pilot's results made the
+family-level pattern visible; it is a **disclosed post-hoc contrast, not
+pre-registered in EXP-004**, and is reported as strong exploratory
+evidence, not confirmatory evidence — a genuinely pre-registered
+replication would be required to earn that label. Both the mean
+difference and the effect size weakened relative to an earlier
+ten-model snapshot of this same pilot (−15.17 turns, delta −0.917) once
+fable's three additional surviving runs landed, which is the expected
+direction for adding a model that partially breaks the family pattern.
+
+Because haiku is both a model under test and the rejector instrument that
+judges every run's degradation including its own, a robustness check
+drops haiku from the Anthropic pool: sonnet, opus, and fable (12 runs)
+against OpenAI (12 runs) gives mean difference **−11.42 turns**,
+p = **0.0005**, Cliff's delta **−0.708 (large)**. The effect shrinks
+somewhat without haiku but remains large and significant: the dual-role
+confound does not carry the family-level result.
+
+An exploratory dyadic battery over all C(11,2) = 55 model pairs (exact
+permutation, feasible for every pair at this sample size) finds raw
+p-values as low as 0.0286, with several pairs showing perfect separation
+(Cliff's delta = ±1.0). After Holm correction across the 55 comparisons,
+every corrected p-value is 1.0. This is not an error: the achievable
+p-value floor for a two-sided, swap-symmetric statistic at N=4-per-group
+is 2/70 ≈ 0.0286 (the combinatorial 1/70 ≈ 0.0143 floor is unreachable by
+such a statistic), and Holm's correction multiplies that floor by 55,
+which alone exceeds 1. (An earlier snapshot of this pilot, before fable
+and grok's fill runs completed the ten-model roster to eleven, reported
+this as a 45-pair battery, C(10,2); the roster is now C(11,2) = 55 pairs,
+and the conclusion is unchanged.) None of the 55 pairwise comparisons
+should be read as individually significant; the two family-level
+contrasts above are the citable results, and only as strong exploratory
+evidence, never as confirmatory.
 
 ---
 
 ## 6. Discussion and Limitations
 
-**CLI wrapper confound.** As above (5.2) — three of four lanes lack
-temperature control and encode multi-turn state non-natively. This bounds
-every cross-family claim in the current pilot until the planned ablation
-runs.
+**CLI-wrapper confound, bounded, not eliminated.** Three of four access
+lanes (`claude`, `codex`) run through subscription CLIs with no exposed
+temperature control and encode multi-turn context as a transcript
+re-injected into a single prompt rather than a native multi-turn message
+array (Section 5.2). EXP-007 and EXP-007c (Section 4.5) demonstrate
+temperature-unfakeability only on the two lanes where temperature is
+controllable (`api:deepseek`, `api:glm`); that result grounds the choice
+of set-Jaccard as the primary metric but does not itself remove the
+wrapper confound from the `claude`/`codex` lanes' numbers. Every
+cross-family comparison in Section 5.3, including the Anthropic-vs-OpenAI
+family contrast, is bounded by this confound until the planned same-model,
+both-lanes ablation (Section 5.2) runs.
 
-**No temperature control in the pilot.** Because the CLI-driven lanes
-expose no temperature parameter, we cannot currently ask "does the cascade
-finding hold across temperature settings" for those models — only for the
-directly-API-called ones. A paper-grade version needs either uniform direct
-API access across the whole roster or an explicit, reported temperature
-sweep on the subset where it is possible.
+**N = 2–4 runs per model.** Ten of the eleven path-level models have N=4
+runs; `api:glm` has N=2. The combinatorial permutation floor for any two
+N=4-run groups is 1/70 ≈ 0.0143 (practically achievable ≈2/70 ≈ 0.0286,
+Section 5.3.3); any pair involving glm is coarser still. Every confidence
+interval and p-value in Section 5.3 should be read at this precision — the
+width of the interval is part of the finding, not a defect of the method
+to apologize for. glm's two surviving runs were, in addition, produced
+under a mixed generation-config protocol: `max_tokens` was raised from 400
+to 2048 mid-experiment after early attempts silently exhausted the entire
+budget on internal reasoning tokens and returned empty completions;
+glm's effective sample is smaller and less uniform than its raw run count
+implies.
 
-**N=4 pilot scale.** Four runs per model is a protocol shakeout, not a
-statistically powered comparison. Within-model divergence estimated from
-four runs has wide, unreported uncertainty; we treat the pilot's purpose as
-validating the protocol and establishing effect *direction*, not as
-supplying paper-grade numbers.
+**Depth capped at 30 turns.** Degradation depths and "survived" counts in
+Table 3 are relative to this cap, not an absolute ceiling. A model
+recorded as surviving to turn 30 could still degrade at turn 45; the cap
+is a pilot-scale design choice, not evidence of an unbounded generative
+capacity.
 
-**Rejector granularity jitter.** The validated instrument misses its own
-pre-registered invariance bar (0.800 vs. 0.90; Section 4.3). We have argued
-the residual noise's bias direction is conservative for collapse claims —
-noise splits topics, inflating apparent diversity — but this argument has
-not itself been independently stress-tested (e.g., by injecting known
-synthetic collapse into a fixture and confirming the instrument does not
-under-report it). That check belongs on the roadmap alongside the labeling
-fix below.
+**The pilot is labeled with the v2 free-vocabulary labeler, not the
+paper-grade v3.** EXP-008's constrained-vocabulary instrument (Section 4.3)
+was validated after the pilot in Section 5.3 had already run. The core
+problem v2 leaves unresolved is that free-vocabulary labels admit hypernym
+relationships (`pet` over `cat`/`dog`, `medicine` over `health`) that no
+flat clustering method, semantic or string, handles correctly (Section
+4.3, EXP-003). v2's known failure mode — synonym and hypernym jitter on
+pairs like these — has an argued conservative bias direction for collapse
+claims (label noise splits topics, which can only make a model look more
+diverse than it is), which is why proceeding at pilot grade was
+defensible. But every Jaccard number in Section 5.3 could shift once the
+queued v3 post-hoc relabel of the pilot's already-collected jokes (zero
+new API calls) lands; the direction of that shift is not knowable a
+priori for every model, only the aggregate bias direction argued in
+Section 4.6.
 
-**Free-vocabulary labeling roadmap.** The core unresolved problem (Section
-4.3, EXP-003) is that free-vocabulary labels admit hypernym relationships
-(`pet` over `cat`/`dog`) that no flat clustering method — semantic or
-string — handles correctly. The planned paper-grade fix is a constrained,
-two-pass labeling scheme: an unconstrained first-pass label, then a second
-pass that maps the free label onto a fixed, pre-specified topic vocabulary
-(or the nearest entry in one), removing both the synonym-scatter failure of
-raw strings and the hub-bridging failure of embedding clustering by
-construction, at the cost of imposing a vocabulary a reviewer could
-reasonably contest as a research-design choice in itself.
+**Memorization is a corpus-coverage lower bound, for every model, not
+selectively.** The reference corpus behind every memorization percentage
+in Section 5.3 is the 25 ChatGPT joke templates (Jentzsch & Kersting,
+2023) plus a small hand-built corpus; it cannot contain every joke any
+model has memorized. Every percentage reported understates true
+memorization reliance. This ceiling applies identically to the semantic
+novelty tier introduced in Section 4.4, which scores against the same
+small reference set rather than the ~3.1M-joke target corpus.
+
+**Single rejector, and haiku's dual role.** EXP-003b showed that a larger
+model (sonnet) is a *worse* rejector instrument than haiku (ARI 0.633 vs.
+0.837) — richer vocabulary increases label-granularity variance rather
+than reducing it — but only two rejector models have ever been tried, and
+rejector-model generality beyond haiku is untested. Compounding this,
+haiku is both the rejector instrument that labels every trajectory and
+judges every run's degradation, and a model under test in the cascade
+roster (Section 5.3): its own degradation depths and its own memorization
+rate are judged by itself, and the direction of any resulting bias is
+untested. The robustness check that drops haiku from the Anthropic pool
+(Section 5.3.3) shows the family-level degradation contrast does not
+depend on this confound, but the confound is not otherwise fixable
+without either a second, independent rejector or removing haiku from the
+roster entirely — both queued as follow-up work.
+
+**kimi has zero complete cascade runs and is dropped from the path-level
+roster** (Section 5.1). Three escalating `max_tokens` budgets all failed
+against the reasoning-content burn that scales with cascade depth, and the
+diagnosis suggests this will not resolve without a design change
+(streaming with reasoning-budget control, or a non-reasoning kimi
+variant). Its memorization rate is retained as a flag from partial-run
+scraps, uncorroborated by any path-level data, and is never counted among
+the four per-lab fingerprints in Section 5.3.
+
+**The exploratory dyadic battery does not survive correction.** Of the 55
+pairwise model comparisons underlying Table 3, several show perfect
+separation before correction, but every Holm-corrected p-value is 1.0
+(Section 5.3.3). Only the two family-level contrasts, both disclosed as
+post-hoc, should be cited from this pilot, and only as strong exploratory
+evidence — never as confirmatory evidence, which would require a
+genuinely pre-registered replication.
 
 ---
 
@@ -497,12 +879,13 @@ ability and general/verbal intelligence (r ≈ .29–.40; Greengross & Miller,
 2011; Christensen et al., 2018), and given that no published work has run
 the reverse-transfer direction in either humans or models, this is a clean,
 answerable, and — as far as this project's literature review has
-established — unclaimed question. It depends on this benchmark (or a
-successor with a validated instrument and a working novelty-penalty corpus)
-existing first, as the pre-registered, collapse-resistant measurement
-against which any claimed "humor training" would need to be shown not to
-have just re-discovered the twenty-five templates. We treat it as a
-separate paper, not a section of this one.
+established — unclaimed question. It depends on this benchmark — now
+carrying a paper-grade rejector instrument (Section 4.3, EXP-008) and a
+working, if corpus-incomplete, novelty-penalty check (Section 4.4,
+EXP-009) — existing first, as the pre-registered, collapse-resistant
+measurement against which any claimed "humor training" would need to be
+shown not to have re-discovered the twenty-five templates alone. We treat
+it as a separate paper, not a section of this one.
 
 ---
 

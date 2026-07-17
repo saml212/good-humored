@@ -651,3 +651,35 @@ not a bigger constant.
 - kimi scraps recount: 40.0% [28.6, 52.6] (n=60) — stays a flag, never a
   path claim. FINDINGS.md refresh in progress; that document + the JSONs
   are the authoritative statement of these numbers.
+
+---
+
+## EXP-006b — noise-bias re-run with v3 empirical rates (2026-07-17, pre-registered BEFORE run)
+
+**Status:** registered; blocked on the v3 relabel finishing (rates come
+from the v2-vs-v3 label comparison on identical jokes).
+
+**Hypothesis (one sentence):** With the v3 constrained-vocabulary
+labeler's empirical error rates (invariance 1.000 vs v2's 0.800), the
+EXP-006 noise simulation's net bias on cross-model jaccard at the pilot
+regime shrinks toward zero, upgrading the pilot's "measured overlap is an
+upper bound" caveat to a tighter, paper-grade bound.
+
+**Design:** identical simulator + seed protocol as EXP-006
+(benchmark/noise_robustness.py, 2000 reps/regime); only the empirical
+(match/synonym/generalize) rate triple changes, extracted from v2-vs-v3
+label pairs over the full pilot relabel
+(experiment-runs/2026-07-17-cascade-pilot-v3-relabel/).
+
+**Prediction (registered, blind — relabel still running):** net bias at
+the pilot regime ≈ **−0.015** (v2 rates gave −0.035)
+(calibration exp-006b-v3-rates).
+
+Result: _(pending)_
+
+**EXP-004 terminology correction (2026-07-17, caught by the paper
+integration pass):** the verdict above says "three orthogonal failure
+fingerprints" — written when grok had no path data and its recall
+pattern was folded in with OpenAI's. With grok's complete cascade
+profile (addendum 2), the accurate count is **four** per-lab
+fingerprints; FINDINGS.md and paper/DRAFT.md now say four.

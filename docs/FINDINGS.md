@@ -35,7 +35,7 @@ of any model; §2.3).
 
 Both misses point the same way — models are more idiosyncratic, not more
 uniform, than the pre-registration assumed. What emerged instead was not
-"no signal" — it was **three orthogonal per-lab failure fingerprints**, each
+"no signal" — it was **four orthogonal per-lab failure fingerprints**, each
 strong, each different, none matching the shared-pool story:
 
 | Prediction (EXP-004, pre-registered) | Measured | Test | Result |
@@ -69,7 +69,12 @@ claim (near-zero power to detect a genuinely shared pool; see
 
 ---
 
-## 2. Three fingerprints
+## 2. Four fingerprints
+
+(Terminology note: EXP-004's original verdict said "three" — at that
+point grok had no path data and its recall pattern was folded in with
+OpenAI's. grok's complete cascade profile (§2.3) is distinct from
+OpenAI's on two of three axes, so the count is now four.)
 
 ### 2.1 Anthropic — constraint collapse, one outlier, heterogeneous memorization
 
