@@ -207,6 +207,15 @@ _OPENAI_COMPAT_REGISTRY: Dict[str, Dict[str, Optional[str]]] = {
         "base_url": "https://api.moonshot.ai/v1", "base_url_var": None,
         "model": "kimi-k2.5",
     },
+    "grok": {
+        # xAI, OpenAI-compatible. grok-4.5 confirmed on this account via
+        # GET /v1/models (also present: 4.3, 4.20 variants). Grok's
+        # humor-as-brand positioning makes it the single most interesting
+        # cascade subject — it topped LOL Arena.
+        "env_file": "xai.env", "key_var": "XAI_API_KEY",
+        "base_url": "https://api.x.ai/v1", "base_url_var": None,
+        "model": "grok-4.5",
+    },
     "glm": {
         # glm-4-flash 400s "model does not exist" on this account — the
         # catalog has moved on (checked GET /v4/models: glm-4.5, -4.5-air,
