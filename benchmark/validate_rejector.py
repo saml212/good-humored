@@ -27,8 +27,9 @@ import string
 import time
 from collections import Counter
 from pathlib import Path
-from typing import Dict, List
+from typing import Dict, List, Optional
 
+from .label_space import LabelSpace
 from .metrics import adjusted_rand_index, normalize_label
 from .providers import make_claude_cli
 from .rejector import LABEL_PROMPT_VERSION, label_topic
@@ -74,8 +75,20 @@ def has_strict_majority(labels: List[str]) -> bool:
     return top * 2 > len(labels)
 
 
-def score(items: List[Dict], labels: Dict[str, List[str]]) -> Dict:
-    """Compute all validation metrics for one labeler's outputs."""
+def score(items: List[Dict], labels: Dict[str, List[str]],
+          label_space: Optional[LabelSpace] = None) -> Dict:
+    """Compute all validation metrics for one labeler's outputs.
+
+    label_space, if given, canonicalizes every label before any
+    comparison below (design doc: label_space.py) — synonym scatters
+    (fitness/exercise/gym) then count as agreement, not disagreement.
+    Deliberately NOT wired in by default here: this script's whole job
+    is exposing raw rejector inconsistency (EXP-001/002), and silently
+    smoothing that over with semantic merging would hide the exact
+    instrument defect it exists to catch. Callers opt in explicitly."""
+    if label_space is not None:
+        labels = {i: [label_space.canon(l) for l in ls]
+                  for i, ls in labels.items()}
     maj = {i["id"]: majority(labels[i["id"]]) for i in items}
     unambig = [i for i in items if i["pair_type"] != "ambiguous"]
 

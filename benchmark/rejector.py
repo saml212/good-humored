@@ -49,11 +49,25 @@ appliances
 """
 
 
+UNPARSEABLE = "unparseable"
+
+
 def label_topic(joke: str, complete: Callable[[str], str]) -> str:
-    """Label one joke's topic. Returns the normalized label."""
-    raw = complete(LABEL_PROMPT.format(joke=joke))
-    # Take the first line only — cheap models sometimes elaborate.
-    return normalize_label(raw.splitlines()[0])
+    """Label one joke's topic. Returns the normalized label.
+
+    Shape guard (audit WARN-3): on unusual inputs the labeler sometimes
+    emits a sentence of meta-commentary instead of a topic (~1/2 on an
+    adversarial probe). A >4-word "topic" is retried once, then becomes
+    the UNPARSEABLE sentinel — flaggable downstream — rather than
+    silently entering the metric pipeline as a Jaccard-singleton.
+    """
+    for _ in range(2):
+        raw = complete(LABEL_PROMPT.format(joke=joke))
+        # First line only — cheap models sometimes elaborate.
+        label = normalize_label(raw.splitlines()[0])
+        if label and len(label.split()) <= 4:
+            return label
+    return UNPARSEABLE
 
 
 def rejection_message(topic: str, rejected_topics: List[str]) -> str:

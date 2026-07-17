@@ -1,0 +1,64 @@
+{"a": "fitness", "b": "exercise", "should_merge": true, "note": "EXP-001 scatter (LABEL_PROMPT_VERSION v1 comment)"}
+{"a": "gym", "b": "exercise", "should_merge": true, "note": "EXP-001 scatter"}
+{"a": "gym", "b": "fitness", "should_merge": true, "note": "EXP-001 scatter"}
+{"a": "workout", "b": "exercise", "should_merge": true}
+{"a": "travel", "b": "flying", "should_merge": true, "note": "EXP-001 scatter"}
+{"a": "travel", "b": "airplanes", "should_merge": true}
+{"a": "flying", "b": "airplanes", "should_merge": true}
+{"a": "flight", "b": "airplane", "should_merge": true}
+{"a": "plane", "b": "airplane", "should_merge": true}
+{"a": "vacation", "b": "travel", "should_merge": true}
+{"a": "programming", "b": "coding", "should_merge": true}
+{"a": "programmer", "b": "coder", "should_merge": true}
+{"a": "software engineer", "b": "programmer", "should_merge": true}
+{"a": "physician", "b": "doctor", "should_merge": true}
+{"a": "attorney", "b": "lawyer", "should_merge": true}
+{"a": "married", "b": "marriage", "should_merge": true}
+{"a": "spouse", "b": "wife", "should_merge": true}
+{"a": "bicycle", "b": "bike", "should_merge": true}
+{"a": "automobile", "b": "car", "should_merge": true}
+{"a": "movie", "b": "film", "should_merge": true}
+{"a": "television", "b": "tv", "should_merge": true}
+{"a": "couch", "b": "sofa", "should_merge": true}
+{"a": "professor", "b": "teacher", "should_merge": true}
+{"a": "kids", "b": "children", "should_merge": true}
+{"a": "mom", "b": "mother", "should_merge": true}
+{"a": "dad", "b": "father", "should_merge": true}
+{"a": "cellphone", "b": "smartphone", "should_merge": true}
+{"a": "laptop", "b": "computer", "should_merge": true}
+{"a": "napping", "b": "sleep", "should_merge": true}
+{"a": "weightlifting", "b": "gym", "should_merge": true}
+{"a": "puppy", "b": "dog", "should_merge": true}
+{"a": "kitten", "b": "cat", "should_merge": true}
+{"a": "cat", "b": "dog", "should_merge": false}
+{"a": "coffee", "b": "tea", "should_merge": false}
+{"a": "doctors", "b": "lawyers", "should_merge": false}
+{"a": "work", "b": "school", "should_merge": false}
+{"a": "math", "b": "physics", "should_merge": false}
+{"a": "cars", "b": "driving", "should_merge": false, "note": "judgment call: maintenance/ownership vs the act of driving read as distinct joke domains; conservative per design doc"}
+{"a": "food", "b": "cooking", "should_merge": false, "note": "judgment call: food is broad (diet, restaurants, groceries) beyond the act of cooking; conservative per design doc"}
+{"a": "marriage", "b": "wedding", "should_merge": false, "note": "judgment call: spousal-life jokes vs the event/planning jokes read as distinct; conservative per design doc"}
+{"a": "weather", "b": "travel", "should_merge": false}
+{"a": "cats", "b": "kids", "should_merge": false}
+{"a": "gym", "b": "school", "should_merge": false}
+{"a": "programming", "b": "math", "should_merge": false}
+{"a": "dogs", "b": "weather", "should_merge": false}
+{"a": "coffee", "b": "breakfast", "should_merge": false}
+{"a": "work", "b": "marriage", "should_merge": false}
+{"a": "doctors", "b": "teachers", "should_merge": false}
+{"a": "travel", "b": "work", "should_merge": false}
+{"a": "cooking", "b": "cleaning", "should_merge": false}
+{"a": "driving", "b": "travel", "should_merge": false}
+{"a": "exercise", "b": "diet", "should_merge": false}
+{"a": "sleep", "b": "work", "should_merge": false}
+{"a": "phone", "b": "internet", "should_merge": false}
+{"a": "cats", "b": "coffee", "should_merge": false}
+{"a": "marriage", "b": "kids", "should_merge": false}
+{"a": "lawyers", "b": "crime", "should_merge": false}
+{"a": "teachers", "b": "kids", "should_merge": false}
+{"a": "weather", "b": "clothing", "should_merge": false}
+{"a": "movies", "b": "television", "should_merge": false, "note": "near-neighbor of the movie/film and television/tv merge pairs -- different entertainment media, must stay split"}
+{"a": "car", "b": "bicycle", "should_merge": false, "note": "near-neighbor of the automobile/car and bicycle/bike merge pairs -- both vehicles, distinct topics"}
+{"a": "wifi", "b": "internet", "should_merge": false}
+{"a": "laptop", "b": "phone", "should_merge": false, "note": "near-neighbor of the laptop/computer merge pair -- different device topics"}
+{"a": "gym", "b": "diet", "should_merge": false}

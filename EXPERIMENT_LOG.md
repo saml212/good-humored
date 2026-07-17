@@ -141,11 +141,18 @@ rejected topic, or refuse) within 30 turns.
 
 **Setup:** depth 30, N=4 runs/model, rejector = claude:haiku (validated
 EXP-002; known limitation: invariance 0.800, conservative bias direction).
-Models (10): claude:haiku, claude:sonnet, claude:opus, claude:fable,
+Models (11): claude:haiku, claude:sonnet, claude:opus, claude:fable,
 codex:sol (gpt-5.6-sol), codex:mini (gpt-5.4-mini), codex:5.4 (gpt-5.4),
 api:deepseek (deepseek-chat), api:qwen (qwen-plus-2025-07-28), api:glm
-(glm-4.5-air). PRIMARY metrics on RAW labels; semantic (complete-linkage
-LabelSpace) reported alongside, never primary.
+(glm-4.5-air), api:kimi (kimi-k2.5 — k3 was 429-overloaded; added pre-launch
+when Sam supplied a fresh key). PRIMARY metrics on RAW labels; semantic
+(complete-linkage LabelSpace) reported alongside, never primary — enforced in
+code after adversarial audit BLOCKER-1 caught run_pilot scoring canon paths as
+primary (canon only merges → headline could only inflate). Audit's other fixes
+applied pre-launch: key-fragment scrub in API error paths, CLI error-text
+capture, rejector output-shape guard (UNPARSEABLE sentinel). Execution: three
+parallel lanes by provider family (claude / codex / api), ~1–1.7 h wall-clock;
+cross-model overlap computed post-hoc over merged raw paths.
 
 **Predicted deltas (registered before run):**
 - Cross-model mean topic-set Jaccard (raw): **≈ 0.35**
