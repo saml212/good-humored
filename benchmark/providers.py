@@ -206,6 +206,13 @@ _OPENAI_COMPAT_REGISTRY: Dict[str, Dict[str, Optional[str]]] = {
         "env_file": "kimi.env", "key_var": "KIMI_API_KEY",
         "base_url": "https://api.moonshot.ai/v1", "base_url_var": None,
         "model": "kimi-k2.5",
+        # kimi-k2.5 is a REASONING model: it spends tokens on
+        # reasoning_content before message.content. At max_tokens=400 a
+        # cascade-length prompt hits finish_reason=length with ALL tokens
+        # burned on reasoning and content empty (cost EXP-004 all 4 kimi
+        # runs — diagnosed via raw response: reasoning 1397 chars,
+        # content 0). Needs headroom to finish thinking AND answer.
+        "max_tokens": 2048,
     },
     "grok": {
         # xAI, OpenAI-compatible. grok-4.5 confirmed on this account via
@@ -302,7 +309,7 @@ def make_openai_compat(provider_name: str, timeout_s: int = 120,
                   "messages": [{"role": "user", "content": prompt}]}
         if temperature is not None:
             payload["temperature"] = temperature
-        payload["max_tokens"] = 400
+        payload["max_tokens"] = spec.get("max_tokens", 400)
         body = json.dumps(payload).encode("utf-8")
         last_err: Exception = RuntimeError("unreachable")
         for attempt in range(retries + 1):

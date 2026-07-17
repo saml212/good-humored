@@ -212,9 +212,28 @@ alone as a zero-LLM predictor of gold class from the same raw output — if
 raw overlap separates the three classes as well as the judge delta does, the
 judge isn't earning its keep.
 
-**Result:** _(pending)_
+**Result:** ALL FIVE registered bars PASS (180 calls, 0 unparseable,
+27 min): separation(contextual−canned) **6.167** (bar 3.0, predicted 4.5 —
+calibration closed); separation(contextual−generic) 2.067 (bar 1.5,
+predicted 3.0); canned mean_delta −0.100 (bar |≤1.0|, predicted 0±0.5 —
+dead on); repeat_delta_stdev 0.679 (bar ≤1.5); generic-class echo r =
+**0.224** (bar ≤0.5, predicted 0.2–0.3 — dead on), risk_detected False.
+Disproof: zero-LLM keyword overlap ranks the classes in the same order
+(2.8 / 0.8 / 0.1 mean shared content words), so part of the *between-class*
+signal co-varies with surface overlap — recorded, not hidden. But the delta
+does what overlap can't: separates generic-responsive (4.00) from canned
+(−0.10) where overlap is nearly degenerate (0.8 vs 0.1 words), and is
+echo-resistant within class. Surprise vs prediction: generic_responsive
+scored 4.00, far above the predicted 1.5 — the judge credits topical
+responsiveness generously, making contextual-vs-generic (2.07) the
+narrowest margin.
 
-**Verdict:** _(pending)_
+**Verdict:** Track 2 instrument VALIDATED at pilot grade. Context-ablation
+delta with haiku judge is fit to score banter episodes. Caveat for
+training use: because generic on-topic pleasantry already earns ~2/3 of a
+genuinely contextual reply's delta, a Track 2 reward should not use delta
+alone to push past pleasantry-humor — pair with callback bonus (already in
+banter_env) and novelty terms.
 
 ---
 
@@ -294,9 +313,22 @@ the granularity problem gets re-scoped, not iterated.
 **Known validity limits:** vocabulary granularity chosen by one author
 reasoning about categories, not calibrated on a held-out fixture.
 
-**Result:** _(pending)_
+**Result:** DECISIVE PASS, better than predicted (96 calls, 0 retries
+saturated): reworded_invariance **1.000** (bar 0.90, predicted ~0.90, v2
+was 0.800 — calibration closed at 1.000 vs 0.90 predicted); ari_vs_gold
+**0.9237** (predicted 0.90–0.93 — dead center); repeat_consistency 0.958
+(predicted 0.80–0.85, v2 was 0.760); zero no-majority items; keyword
+baseline unchanged at 0.271. The registered swing risk did NOT materialize:
+marriage-a/b both labeled `marriage` — the gold label, not bird/animal
+scatter. Majority labels are canonical across the board (cat, dog,
+marriage, work, doctor, programming, travel, coffee, exercise, weather).
 
-**Verdict:** _(pending)_
+**Verdict:** Constrained vocabulary is the **paper-grade instrument**. All
+pre-registered bars the instrument ever had are now cleared, including the
+one v2 missed. v3 becomes the default for future cascade runs; EXP-004
+pilot ran on v2 (documented; conservative bias direction unchanged) — a v3
+post-hoc relabel of the pilot's stored jokes is queued as a robustness
+check so findings can be reported under both instruments.
 
 ---
 

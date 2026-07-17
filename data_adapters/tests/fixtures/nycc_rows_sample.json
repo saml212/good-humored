@@ -1,0 +1,35 @@
+[
+  {
+    "contest_number": 101,
+    "instance_id": "fixture-row-0",
+    "image_location": "a sailing ship",
+    "image_description": "A man in a suit pets a cat on a pirate ship.",
+    "image_uncanny_description": "Not a typical pirate-ship activity.",
+    "questions": ["Why is he petting a cat?"],
+    "caption_choices": ["Thus, he gave up the spear.", "He calls it Ishmeow."],
+    "winner_source": "official_winner",
+    "label": "B"
+  },
+  {
+    "contest_number": 102,
+    "instance_id": "fixture-row-1",
+    "image_location": "mount sinai",
+    "image_description": "Moses holds a tablet with the wrong alphabet on it.",
+    "image_uncanny_description": "The tablet is not supposed to say that.",
+    "questions": ["Why is the tablet wrong?"],
+    "caption_choices": ["I ran out of stone.", "Autocorrect did this."],
+    "winner_source": "official_winner",
+    "label": "A"
+  },
+  {
+    "contest_number": 103,
+    "instance_id": "fixture-row-2-malformed",
+    "image_location": "an office",
+    "image_description": "A desk with too many staplers.",
+    "image_uncanny_description": "Nobody needs this many staplers.",
+    "questions": ["Why so many staplers?"],
+    "caption_choices": ["Only one caption here."],
+    "winner_source": "official_winner",
+    "label": "A"
+  }
+]

@@ -1,0 +1,8 @@
+{"text": "Because it saw the salad dressing.", "question": "Why did the tomato blush?", "star": 3, "type": "T2T", "image": "img-001"}
+{"text": "It was peer pressure from the ketchup.", "question": "Why did the tomato blush?", "star": 9, "type": "T2T", "image": "img-001"}
+{"text": "It had a crush on the cucumber.", "question": "Why did the tomato blush?", "star": 1, "type": "T2T", "image": "img-001"}
+{"text": "Nobody laughed, so it left.", "question": "Why did the joke leave the party?", "star": 4, "type": "T2T", "image": "img-002"}
+{"text": "It wasn't on purpose, I'm sorry!", "question": null, "star": 5, "type": "I2T", "image": "img-003"}
+{"text": "A picture-only punchline.", "question": null, "star": 2, "type": "I2T", "image": "img-004"}
+{"text": "Orphan riddle with blank prompt.", "question": "", "star": 7, "type": "T2T", "image": "img-005"}
+{"text": "Some multimodal thing.", "question": "shared context", "star": 1, "type": "IT2T", "image": "img-006"}

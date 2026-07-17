@@ -29,6 +29,11 @@ where one exists; anything that couldn't be confirmed is marked
   humor↔alignment literatures with evidence-strength tags (ESTABLISHED /
   SUGGESTIVE / SPECULATIVE). Grounds the README's alignment framing;
   read before strengthening any of those claims.
+- `theory-operationalization.md` — who has already turned humor theory
+  into a computable quantity (surprisal/incongruity, BVT, novelty measures,
+  audience/ToM, foraging), with an ACTIONABILITY line per finding and a
+  ranked shortlist of what's worth building next. Read before adding or
+  redesigning any reward term or benchmark metric.
 - `pdfs/` — local-only, gitignored. Never committed; see "PDF policy" below.
 
 ---
