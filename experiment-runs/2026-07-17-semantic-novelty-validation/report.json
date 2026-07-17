@@ -1,0 +1,3179 @@
+{
+  "experiment": "EXP-009-semantic-novelty-validation",
+  "command": "python3 -m env.validate_semantic_novelty --corpus-dir /Users/samuellarson/Experiments/good-humored-data/corpus --out-dir experiment-runs/2026-07-17-semantic-novelty-validation --corpus-cap 50000",
+  "test_set": {
+    "n_positives": 80,
+    "n_templates": 25,
+    "edit_depths_requested": [
+      1,
+      2,
+      4
+    ],
+    "n_hand_paraphrases": 5,
+    "n_negatives": 100,
+    "negative_sample_seed": 20260717,
+    "negative_rows_scanned": 887639,
+    "reskin_seed": 20260717,
+    "n_excluded_leaks": 11
+  },
+  "wall_time": {
+    "import_seconds": 1.8892307500000003,
+    "model_load_seconds": 1.8614543749999992,
+    "corpus_scan_seconds": 2.475842875,
+    "corpus_scan_rows": 1197790,
+    "corpus_embed_seconds": 40.9037335,
+    "corpus_embed_n_items": 50000,
+    "corpus_embed_throughput_items_per_sec": 1222.382304050558,
+    "query_embed_seconds": 0.44709825000000336,
+    "query_embed_n_items": 180,
+    "ngram_scoring_seconds": 0.004042416999999965,
+    "estimated_full_corpus_embed_seconds": 979.8816589793,
+    "corpus_cap_used": 50000
+  },
+  "ngram": {
+    "shipped_default_threshold": 0.35,
+    "at_shipped_default": {
+      "threshold": 0.35,
+      "detection": {
+        "depth_1": 1.0,
+        "depth_2": 0.64,
+        "depth_4": 0.0,
+        "depth_3": 0.0,
+        "paraphrase": 0.0
+      },
+      "fpr": 0.0
+    },
+    "full_sweep": [
+      {
+        "threshold": 0.05,
+        "detection": {
+          "depth_1": 1.0,
+          "depth_2": 1.0,
+          "depth_4": 0.9047619047619048,
+          "depth_3": 1.0,
+          "paraphrase": 0.0
+        },
+        "fpr": 0.07
+      },
+      {
+        "threshold": 0.06,
+        "detection": {
+          "depth_1": 1.0,
+          "depth_2": 1.0,
+          "depth_4": 0.7619047619047619,
+          "depth_3": 1.0,
+          "paraphrase": 0.0
+        },
+        "fpr": 0.07
+      },
+      {
+        "threshold": 0.07,
+        "detection": {
+          "depth_1": 1.0,
+          "depth_2": 1.0,
+          "depth_4": 0.7619047619047619,
+          "depth_3": 1.0,
+          "paraphrase": 0.0
+        },
+        "fpr": 0.06
+      },
+      {
+        "threshold": 0.08,
+        "detection": {
+          "depth_1": 1.0,
+          "depth_2": 1.0,
+          "depth_4": 0.7619047619047619,
+          "depth_3": 1.0,
+          "paraphrase": 0.0
+        },
+        "fpr": 0.06
+      },
+      {
+        "threshold": 0.09,
+        "detection": {
+          "depth_1": 1.0,
+          "depth_2": 1.0,
+          "depth_4": 0.7619047619047619,
+          "depth_3": 1.0,
+          "paraphrase": 0.0
+        },
+        "fpr": 0.05
+      },
+      {
+        "threshold": 0.1,
+        "detection": {
+          "depth_1": 1.0,
+          "depth_2": 1.0,
+          "depth_4": 0.7619047619047619,
+          "depth_3": 1.0,
+          "paraphrase": 0.0
+        },
+        "fpr": 0.04
+      },
+      {
+        "threshold": 0.11,
+        "detection": {
+          "depth_1": 1.0,
+          "depth_2": 1.0,
+          "depth_4": 0.7619047619047619,
+          "depth_3": 1.0,
+          "paraphrase": 0.0
+        },
+        "fpr": 0.04
+      },
+      {
+        "threshold": 0.12,
+        "detection": {
+          "depth_1": 1.0,
+          "depth_2": 1.0,
+          "depth_4": 0.6666666666666666,
+          "depth_3": 1.0,
+          "paraphrase": 0.0
+        },
+        "fpr": 0.04
+      },
+      {
+        "threshold": 0.13,
+        "detection": {
+          "depth_1": 1.0,
+          "depth_2": 1.0,
+          "depth_4": 0.6666666666666666,
+          "depth_3": 1.0,
+          "paraphrase": 0.0
+        },
+        "fpr": 0.04
+      },
+      {
+        "threshold": 0.14,
+        "detection": {
+          "depth_1": 1.0,
+          "depth_2": 1.0,
+          "depth_4": 0.6666666666666666,
+          "depth_3": 1.0,
+          "paraphrase": 0.0
+        },
+        "fpr": 0.02
+      },
+      {
+        "threshold": 0.15,
+        "detection": {
+          "depth_1": 1.0,
+          "depth_2": 1.0,
+          "depth_4": 0.5714285714285714,
+          "depth_3": 1.0,
+          "paraphrase": 0.0
+        },
+        "fpr": 0.01
+      },
+      {
+        "threshold": 0.16,
+        "detection": {
+          "depth_1": 1.0,
+          "depth_2": 1.0,
+          "depth_4": 0.47619047619047616,
+          "depth_3": 1.0,
+          "paraphrase": 0.0
+        },
+        "fpr": 0.0
+      },
+      {
+        "threshold": 0.17,
+        "detection": {
+          "depth_1": 1.0,
+          "depth_2": 1.0,
+          "depth_4": 0.47619047619047616,
+          "depth_3": 1.0,
+          "paraphrase": 0.0
+        },
+        "fpr": 0.0
+      },
+      {
+        "threshold": 0.18,
+        "detection": {
+          "depth_1": 1.0,
+          "depth_2": 1.0,
+          "depth_4": 0.42857142857142855,
+          "depth_3": 1.0,
+          "paraphrase": 0.0
+        },
+        "fpr": 0.0
+      },
+      {
+        "threshold": 0.19,
+        "detection": {
+          "depth_1": 1.0,
+          "depth_2": 1.0,
+          "depth_4": 0.3333333333333333,
+          "depth_3": 1.0,
+          "paraphrase": 0.0
+        },
+        "fpr": 0.0
+      },
+      {
+        "threshold": 0.2,
+        "detection": {
+          "depth_1": 1.0,
+          "depth_2": 1.0,
+          "depth_4": 0.3333333333333333,
+          "depth_3": 1.0,
+          "paraphrase": 0.0
+        },
+        "fpr": 0.0
+      },
+      {
+        "threshold": 0.21,
+        "detection": {
+          "depth_1": 1.0,
+          "depth_2": 1.0,
+          "depth_4": 0.3333333333333333,
+          "depth_3": 1.0,
+          "paraphrase": 0.0
+        },
+        "fpr": 0.0
+      },
+      {
+        "threshold": 0.22,
+        "detection": {
+          "depth_1": 1.0,
+          "depth_2": 1.0,
+          "depth_4": 0.2857142857142857,
+          "depth_3": 1.0,
+          "paraphrase": 0.0
+        },
+        "fpr": 0.0
+      },
+      {
+        "threshold": 0.23,
+        "detection": {
+          "depth_1": 1.0,
+          "depth_2": 1.0,
+          "depth_4": 0.19047619047619047,
+          "depth_3": 0.5,
+          "paraphrase": 0.0
+        },
+        "fpr": 0.0
+      },
+      {
+        "threshold": 0.24,
+        "detection": {
+          "depth_1": 1.0,
+          "depth_2": 1.0,
+          "depth_4": 0.14285714285714285,
+          "depth_3": 0.5,
+          "paraphrase": 0.0
+        },
+        "fpr": 0.0
+      },
+      {
+        "threshold": 0.25,
+        "detection": {
+          "depth_1": 1.0,
+          "depth_2": 0.96,
+          "depth_4": 0.09523809523809523,
+          "depth_3": 0.5,
+          "paraphrase": 0.0
+        },
+        "fpr": 0.0
+      },
+      {
+        "threshold": 0.26,
+        "detection": {
+          "depth_1": 1.0,
+          "depth_2": 0.96,
+          "depth_4": 0.09523809523809523,
+          "depth_3": 0.5,
+          "paraphrase": 0.0
+        },
+        "fpr": 0.0
+      },
+      {
+        "threshold": 0.27,
+        "detection": {
+          "depth_1": 1.0,
+          "depth_2": 0.96,
+          "depth_4": 0.09523809523809523,
+          "depth_3": 0.5,
+          "paraphrase": 0.0
+        },
+        "fpr": 0.0
+      },
+      {
+        "threshold": 0.28,
+        "detection": {
+          "depth_1": 1.0,
+          "depth_2": 0.92,
+          "depth_4": 0.09523809523809523,
+          "depth_3": 0.5,
+          "paraphrase": 0.0
+        },
+        "fpr": 0.0
+      },
+      {
+        "threshold": 0.29,
+        "detection": {
+          "depth_1": 1.0,
+          "depth_2": 0.88,
+          "depth_4": 0.09523809523809523,
+          "depth_3": 0.25,
+          "paraphrase": 0.0
+        },
+        "fpr": 0.0
+      },
+      {
+        "threshold": 0.3,
+        "detection": {
+          "depth_1": 1.0,
+          "depth_2": 0.72,
+          "depth_4": 0.047619047619047616,
+          "depth_3": 0.25,
+          "paraphrase": 0.0
+        },
+        "fpr": 0.0
+      },
+      {
+        "threshold": 0.31,
+        "detection": {
+          "depth_1": 1.0,
+          "depth_2": 0.72,
+          "depth_4": 0.0,
+          "depth_3": 0.25,
+          "paraphrase": 0.0
+        },
+        "fpr": 0.0
+      },
+      {
+        "threshold": 0.32,
+        "detection": {
+          "depth_1": 1.0,
+          "depth_2": 0.72,
+          "depth_4": 0.0,
+          "depth_3": 0.25,
+          "paraphrase": 0.0
+        },
+        "fpr": 0.0
+      },
+      {
+        "threshold": 0.33,
+        "detection": {
+          "depth_1": 1.0,
+          "depth_2": 0.72,
+          "depth_4": 0.0,
+          "depth_3": 0.25,
+          "paraphrase": 0.0
+        },
+        "fpr": 0.0
+      },
+      {
+        "threshold": 0.34,
+        "detection": {
+          "depth_1": 1.0,
+          "depth_2": 0.64,
+          "depth_4": 0.0,
+          "depth_3": 0.0,
+          "paraphrase": 0.0
+        },
+        "fpr": 0.0
+      },
+      {
+        "threshold": 0.35,
+        "detection": {
+          "depth_1": 1.0,
+          "depth_2": 0.64,
+          "depth_4": 0.0,
+          "depth_3": 0.0,
+          "paraphrase": 0.0
+        },
+        "fpr": 0.0
+      },
+      {
+        "threshold": 0.36,
+        "detection": {
+          "depth_1": 1.0,
+          "depth_2": 0.64,
+          "depth_4": 0.0,
+          "depth_3": 0.0,
+          "paraphrase": 0.0
+        },
+        "fpr": 0.0
+      },
+      {
+        "threshold": 0.37,
+        "detection": {
+          "depth_1": 1.0,
+          "depth_2": 0.64,
+          "depth_4": 0.0,
+          "depth_3": 0.0,
+          "paraphrase": 0.0
+        },
+        "fpr": 0.0
+      },
+      {
+        "threshold": 0.38,
+        "detection": {
+          "depth_1": 1.0,
+          "depth_2": 0.64,
+          "depth_4": 0.0,
+          "depth_3": 0.0,
+          "paraphrase": 0.0
+        },
+        "fpr": 0.0
+      },
+      {
+        "threshold": 0.39,
+        "detection": {
+          "depth_1": 1.0,
+          "depth_2": 0.56,
+          "depth_4": 0.0,
+          "depth_3": 0.0,
+          "paraphrase": 0.0
+        },
+        "fpr": 0.0
+      },
+      {
+        "threshold": 0.4,
+        "detection": {
+          "depth_1": 0.96,
+          "depth_2": 0.56,
+          "depth_4": 0.0,
+          "depth_3": 0.0,
+          "paraphrase": 0.0
+        },
+        "fpr": 0.0
+      },
+      {
+        "threshold": 0.41,
+        "detection": {
+          "depth_1": 0.96,
+          "depth_2": 0.56,
+          "depth_4": 0.0,
+          "depth_3": 0.0,
+          "paraphrase": 0.0
+        },
+        "fpr": 0.0
+      },
+      {
+        "threshold": 0.42,
+        "detection": {
+          "depth_1": 0.96,
+          "depth_2": 0.56,
+          "depth_4": 0.0,
+          "depth_3": 0.0,
+          "paraphrase": 0.0
+        },
+        "fpr": 0.0
+      },
+      {
+        "threshold": 0.43,
+        "detection": {
+          "depth_1": 0.96,
+          "depth_2": 0.36,
+          "depth_4": 0.0,
+          "depth_3": 0.0,
+          "paraphrase": 0.0
+        },
+        "fpr": 0.0
+      },
+      {
+        "threshold": 0.44,
+        "detection": {
+          "depth_1": 0.96,
+          "depth_2": 0.36,
+          "depth_4": 0.0,
+          "depth_3": 0.0,
+          "paraphrase": 0.0
+        },
+        "fpr": 0.0
+      },
+      {
+        "threshold": 0.45,
+        "detection": {
+          "depth_1": 0.96,
+          "depth_2": 0.36,
+          "depth_4": 0.0,
+          "depth_3": 0.0,
+          "paraphrase": 0.0
+        },
+        "fpr": 0.0
+      },
+      {
+        "threshold": 0.46,
+        "detection": {
+          "depth_1": 0.92,
+          "depth_2": 0.36,
+          "depth_4": 0.0,
+          "depth_3": 0.0,
+          "paraphrase": 0.0
+        },
+        "fpr": 0.0
+      },
+      {
+        "threshold": 0.47,
+        "detection": {
+          "depth_1": 0.92,
+          "depth_2": 0.28,
+          "depth_4": 0.0,
+          "depth_3": 0.0,
+          "paraphrase": 0.0
+        },
+        "fpr": 0.0
+      },
+      {
+        "threshold": 0.48,
+        "detection": {
+          "depth_1": 0.92,
+          "depth_2": 0.28,
+          "depth_4": 0.0,
+          "depth_3": 0.0,
+          "paraphrase": 0.0
+        },
+        "fpr": 0.0
+      },
+      {
+        "threshold": 0.49,
+        "detection": {
+          "depth_1": 0.92,
+          "depth_2": 0.28,
+          "depth_4": 0.0,
+          "depth_3": 0.0,
+          "paraphrase": 0.0
+        },
+        "fpr": 0.0
+      },
+      {
+        "threshold": 0.5,
+        "detection": {
+          "depth_1": 0.8,
+          "depth_2": 0.24,
+          "depth_4": 0.0,
+          "depth_3": 0.0,
+          "paraphrase": 0.0
+        },
+        "fpr": 0.0
+      },
+      {
+        "threshold": 0.51,
+        "detection": {
+          "depth_1": 0.8,
+          "depth_2": 0.24,
+          "depth_4": 0.0,
+          "depth_3": 0.0,
+          "paraphrase": 0.0
+        },
+        "fpr": 0.0
+      },
+      {
+        "threshold": 0.52,
+        "detection": {
+          "depth_1": 0.8,
+          "depth_2": 0.24,
+          "depth_4": 0.0,
+          "depth_3": 0.0,
+          "paraphrase": 0.0
+        },
+        "fpr": 0.0
+      },
+      {
+        "threshold": 0.53,
+        "detection": {
+          "depth_1": 0.8,
+          "depth_2": 0.08,
+          "depth_4": 0.0,
+          "depth_3": 0.0,
+          "paraphrase": 0.0
+        },
+        "fpr": 0.0
+      },
+      {
+        "threshold": 0.54,
+        "detection": {
+          "depth_1": 0.56,
+          "depth_2": 0.08,
+          "depth_4": 0.0,
+          "depth_3": 0.0,
+          "paraphrase": 0.0
+        },
+        "fpr": 0.0
+      },
+      {
+        "threshold": 0.55,
+        "detection": {
+          "depth_1": 0.56,
+          "depth_2": 0.08,
+          "depth_4": 0.0,
+          "depth_3": 0.0,
+          "paraphrase": 0.0
+        },
+        "fpr": 0.0
+      },
+      {
+        "threshold": 0.56,
+        "detection": {
+          "depth_1": 0.56,
+          "depth_2": 0.04,
+          "depth_4": 0.0,
+          "depth_3": 0.0,
+          "paraphrase": 0.0
+        },
+        "fpr": 0.0
+      },
+      {
+        "threshold": 0.57,
+        "detection": {
+          "depth_1": 0.56,
+          "depth_2": 0.04,
+          "depth_4": 0.0,
+          "depth_3": 0.0,
+          "paraphrase": 0.0
+        },
+        "fpr": 0.0
+      },
+      {
+        "threshold": 0.58,
+        "detection": {
+          "depth_1": 0.32,
+          "depth_2": 0.0,
+          "depth_4": 0.0,
+          "depth_3": 0.0,
+          "paraphrase": 0.0
+        },
+        "fpr": 0.0
+      },
+      {
+        "threshold": 0.59,
+        "detection": {
+          "depth_1": 0.32,
+          "depth_2": 0.0,
+          "depth_4": 0.0,
+          "depth_3": 0.0,
+          "paraphrase": 0.0
+        },
+        "fpr": 0.0
+      },
+      {
+        "threshold": 0.6,
+        "detection": {
+          "depth_1": 0.24,
+          "depth_2": 0.0,
+          "depth_4": 0.0,
+          "depth_3": 0.0,
+          "paraphrase": 0.0
+        },
+        "fpr": 0.0
+      },
+      {
+        "threshold": 0.61,
+        "detection": {
+          "depth_1": 0.24,
+          "depth_2": 0.0,
+          "depth_4": 0.0,
+          "depth_3": 0.0,
+          "paraphrase": 0.0
+        },
+        "fpr": 0.0
+      },
+      {
+        "threshold": 0.62,
+        "detection": {
+          "depth_1": 0.24,
+          "depth_2": 0.0,
+          "depth_4": 0.0,
+          "depth_3": 0.0,
+          "paraphrase": 0.0
+        },
+        "fpr": 0.0
+      },
+      {
+        "threshold": 0.63,
+        "detection": {
+          "depth_1": 0.08,
+          "depth_2": 0.0,
+          "depth_4": 0.0,
+          "depth_3": 0.0,
+          "paraphrase": 0.0
+        },
+        "fpr": 0.0
+      },
+      {
+        "threshold": 0.64,
+        "detection": {
+          "depth_1": 0.08,
+          "depth_2": 0.0,
+          "depth_4": 0.0,
+          "depth_3": 0.0,
+          "paraphrase": 0.0
+        },
+        "fpr": 0.0
+      },
+      {
+        "threshold": 0.65,
+        "detection": {
+          "depth_1": 0.04,
+          "depth_2": 0.0,
+          "depth_4": 0.0,
+          "depth_3": 0.0,
+          "paraphrase": 0.0
+        },
+        "fpr": 0.0
+      },
+      {
+        "threshold": 0.66,
+        "detection": {
+          "depth_1": 0.04,
+          "depth_2": 0.0,
+          "depth_4": 0.0,
+          "depth_3": 0.0,
+          "paraphrase": 0.0
+        },
+        "fpr": 0.0
+      },
+      {
+        "threshold": 0.67,
+        "detection": {
+          "depth_1": 0.0,
+          "depth_2": 0.0,
+          "depth_4": 0.0,
+          "depth_3": 0.0,
+          "paraphrase": 0.0
+        },
+        "fpr": 0.0
+      },
+      {
+        "threshold": 0.68,
+        "detection": {
+          "depth_1": 0.0,
+          "depth_2": 0.0,
+          "depth_4": 0.0,
+          "depth_3": 0.0,
+          "paraphrase": 0.0
+        },
+        "fpr": 0.0
+      },
+      {
+        "threshold": 0.69,
+        "detection": {
+          "depth_1": 0.0,
+          "depth_2": 0.0,
+          "depth_4": 0.0,
+          "depth_3": 0.0,
+          "paraphrase": 0.0
+        },
+        "fpr": 0.0
+      },
+      {
+        "threshold": 0.7,
+        "detection": {
+          "depth_1": 0.0,
+          "depth_2": 0.0,
+          "depth_4": 0.0,
+          "depth_3": 0.0,
+          "paraphrase": 0.0
+        },
+        "fpr": 0.0
+      },
+      {
+        "threshold": 0.71,
+        "detection": {
+          "depth_1": 0.0,
+          "depth_2": 0.0,
+          "depth_4": 0.0,
+          "depth_3": 0.0,
+          "paraphrase": 0.0
+        },
+        "fpr": 0.0
+      },
+      {
+        "threshold": 0.72,
+        "detection": {
+          "depth_1": 0.0,
+          "depth_2": 0.0,
+          "depth_4": 0.0,
+          "depth_3": 0.0,
+          "paraphrase": 0.0
+        },
+        "fpr": 0.0
+      },
+      {
+        "threshold": 0.73,
+        "detection": {
+          "depth_1": 0.0,
+          "depth_2": 0.0,
+          "depth_4": 0.0,
+          "depth_3": 0.0,
+          "paraphrase": 0.0
+        },
+        "fpr": 0.0
+      },
+      {
+        "threshold": 0.74,
+        "detection": {
+          "depth_1": 0.0,
+          "depth_2": 0.0,
+          "depth_4": 0.0,
+          "depth_3": 0.0,
+          "paraphrase": 0.0
+        },
+        "fpr": 0.0
+      },
+      {
+        "threshold": 0.75,
+        "detection": {
+          "depth_1": 0.0,
+          "depth_2": 0.0,
+          "depth_4": 0.0,
+          "depth_3": 0.0,
+          "paraphrase": 0.0
+        },
+        "fpr": 0.0
+      },
+      {
+        "threshold": 0.76,
+        "detection": {
+          "depth_1": 0.0,
+          "depth_2": 0.0,
+          "depth_4": 0.0,
+          "depth_3": 0.0,
+          "paraphrase": 0.0
+        },
+        "fpr": 0.0
+      },
+      {
+        "threshold": 0.77,
+        "detection": {
+          "depth_1": 0.0,
+          "depth_2": 0.0,
+          "depth_4": 0.0,
+          "depth_3": 0.0,
+          "paraphrase": 0.0
+        },
+        "fpr": 0.0
+      },
+      {
+        "threshold": 0.78,
+        "detection": {
+          "depth_1": 0.0,
+          "depth_2": 0.0,
+          "depth_4": 0.0,
+          "depth_3": 0.0,
+          "paraphrase": 0.0
+        },
+        "fpr": 0.0
+      },
+      {
+        "threshold": 0.79,
+        "detection": {
+          "depth_1": 0.0,
+          "depth_2": 0.0,
+          "depth_4": 0.0,
+          "depth_3": 0.0,
+          "paraphrase": 0.0
+        },
+        "fpr": 0.0
+      },
+      {
+        "threshold": 0.8,
+        "detection": {
+          "depth_1": 0.0,
+          "depth_2": 0.0,
+          "depth_4": 0.0,
+          "depth_3": 0.0,
+          "paraphrase": 0.0
+        },
+        "fpr": 0.0
+      },
+      {
+        "threshold": 0.81,
+        "detection": {
+          "depth_1": 0.0,
+          "depth_2": 0.0,
+          "depth_4": 0.0,
+          "depth_3": 0.0,
+          "paraphrase": 0.0
+        },
+        "fpr": 0.0
+      },
+      {
+        "threshold": 0.82,
+        "detection": {
+          "depth_1": 0.0,
+          "depth_2": 0.0,
+          "depth_4": 0.0,
+          "depth_3": 0.0,
+          "paraphrase": 0.0
+        },
+        "fpr": 0.0
+      },
+      {
+        "threshold": 0.83,
+        "detection": {
+          "depth_1": 0.0,
+          "depth_2": 0.0,
+          "depth_4": 0.0,
+          "depth_3": 0.0,
+          "paraphrase": 0.0
+        },
+        "fpr": 0.0
+      },
+      {
+        "threshold": 0.84,
+        "detection": {
+          "depth_1": 0.0,
+          "depth_2": 0.0,
+          "depth_4": 0.0,
+          "depth_3": 0.0,
+          "paraphrase": 0.0
+        },
+        "fpr": 0.0
+      },
+      {
+        "threshold": 0.85,
+        "detection": {
+          "depth_1": 0.0,
+          "depth_2": 0.0,
+          "depth_4": 0.0,
+          "depth_3": 0.0,
+          "paraphrase": 0.0
+        },
+        "fpr": 0.0
+      },
+      {
+        "threshold": 0.86,
+        "detection": {
+          "depth_1": 0.0,
+          "depth_2": 0.0,
+          "depth_4": 0.0,
+          "depth_3": 0.0,
+          "paraphrase": 0.0
+        },
+        "fpr": 0.0
+      },
+      {
+        "threshold": 0.87,
+        "detection": {
+          "depth_1": 0.0,
+          "depth_2": 0.0,
+          "depth_4": 0.0,
+          "depth_3": 0.0,
+          "paraphrase": 0.0
+        },
+        "fpr": 0.0
+      },
+      {
+        "threshold": 0.88,
+        "detection": {
+          "depth_1": 0.0,
+          "depth_2": 0.0,
+          "depth_4": 0.0,
+          "depth_3": 0.0,
+          "paraphrase": 0.0
+        },
+        "fpr": 0.0
+      },
+      {
+        "threshold": 0.89,
+        "detection": {
+          "depth_1": 0.0,
+          "depth_2": 0.0,
+          "depth_4": 0.0,
+          "depth_3": 0.0,
+          "paraphrase": 0.0
+        },
+        "fpr": 0.0
+      },
+      {
+        "threshold": 0.9,
+        "detection": {
+          "depth_1": 0.0,
+          "depth_2": 0.0,
+          "depth_4": 0.0,
+          "depth_3": 0.0,
+          "paraphrase": 0.0
+        },
+        "fpr": 0.0
+      },
+      {
+        "threshold": 0.91,
+        "detection": {
+          "depth_1": 0.0,
+          "depth_2": 0.0,
+          "depth_4": 0.0,
+          "depth_3": 0.0,
+          "paraphrase": 0.0
+        },
+        "fpr": 0.0
+      },
+      {
+        "threshold": 0.92,
+        "detection": {
+          "depth_1": 0.0,
+          "depth_2": 0.0,
+          "depth_4": 0.0,
+          "depth_3": 0.0,
+          "paraphrase": 0.0
+        },
+        "fpr": 0.0
+      },
+      {
+        "threshold": 0.93,
+        "detection": {
+          "depth_1": 0.0,
+          "depth_2": 0.0,
+          "depth_4": 0.0,
+          "depth_3": 0.0,
+          "paraphrase": 0.0
+        },
+        "fpr": 0.0
+      },
+      {
+        "threshold": 0.94,
+        "detection": {
+          "depth_1": 0.0,
+          "depth_2": 0.0,
+          "depth_4": 0.0,
+          "depth_3": 0.0,
+          "paraphrase": 0.0
+        },
+        "fpr": 0.0
+      },
+      {
+        "threshold": 0.95,
+        "detection": {
+          "depth_1": 0.0,
+          "depth_2": 0.0,
+          "depth_4": 0.0,
+          "depth_3": 0.0,
+          "paraphrase": 0.0
+        },
+        "fpr": 0.0
+      }
+    ]
+  },
+  "semantic": {
+    "reference_set": "templates_only",
+    "target_fpr": 0.05,
+    "recommended_threshold": 0.38,
+    "at_recommended_threshold": {
+      "threshold": 0.38,
+      "detection": {
+        "depth_1": 1.0,
+        "depth_2": 1.0,
+        "depth_4": 0.8095238095238095,
+        "depth_3": 0.5,
+        "paraphrase": 1.0
+      },
+      "fpr": 0.05
+    },
+    "full_sweep": [
+      {
+        "threshold": 0.05,
+        "detection": {
+          "depth_1": 1.0,
+          "depth_2": 1.0,
+          "depth_4": 1.0,
+          "depth_3": 1.0,
+          "paraphrase": 1.0
+        },
+        "fpr": 0.99
+      },
+      {
+        "threshold": 0.06,
+        "detection": {
+          "depth_1": 1.0,
+          "depth_2": 1.0,
+          "depth_4": 1.0,
+          "depth_3": 1.0,
+          "paraphrase": 1.0
+        },
+        "fpr": 0.99
+      },
+      {
+        "threshold": 0.07,
+        "detection": {
+          "depth_1": 1.0,
+          "depth_2": 1.0,
+          "depth_4": 1.0,
+          "depth_3": 1.0,
+          "paraphrase": 1.0
+        },
+        "fpr": 0.98
+      },
+      {
+        "threshold": 0.08,
+        "detection": {
+          "depth_1": 1.0,
+          "depth_2": 1.0,
+          "depth_4": 1.0,
+          "depth_3": 1.0,
+          "paraphrase": 1.0
+        },
+        "fpr": 0.98
+      },
+      {
+        "threshold": 0.09,
+        "detection": {
+          "depth_1": 1.0,
+          "depth_2": 1.0,
+          "depth_4": 1.0,
+          "depth_3": 1.0,
+          "paraphrase": 1.0
+        },
+        "fpr": 0.97
+      },
+      {
+        "threshold": 0.1,
+        "detection": {
+          "depth_1": 1.0,
+          "depth_2": 1.0,
+          "depth_4": 1.0,
+          "depth_3": 1.0,
+          "paraphrase": 1.0
+        },
+        "fpr": 0.95
+      },
+      {
+        "threshold": 0.11,
+        "detection": {
+          "depth_1": 1.0,
+          "depth_2": 1.0,
+          "depth_4": 1.0,
+          "depth_3": 1.0,
+          "paraphrase": 1.0
+        },
+        "fpr": 0.91
+      },
+      {
+        "threshold": 0.12,
+        "detection": {
+          "depth_1": 1.0,
+          "depth_2": 1.0,
+          "depth_4": 1.0,
+          "depth_3": 1.0,
+          "paraphrase": 1.0
+        },
+        "fpr": 0.88
+      },
+      {
+        "threshold": 0.13,
+        "detection": {
+          "depth_1": 1.0,
+          "depth_2": 1.0,
+          "depth_4": 1.0,
+          "depth_3": 1.0,
+          "paraphrase": 1.0
+        },
+        "fpr": 0.88
+      },
+      {
+        "threshold": 0.14,
+        "detection": {
+          "depth_1": 1.0,
+          "depth_2": 1.0,
+          "depth_4": 1.0,
+          "depth_3": 1.0,
+          "paraphrase": 1.0
+        },
+        "fpr": 0.86
+      },
+      {
+        "threshold": 0.15,
+        "detection": {
+          "depth_1": 1.0,
+          "depth_2": 1.0,
+          "depth_4": 1.0,
+          "depth_3": 1.0,
+          "paraphrase": 1.0
+        },
+        "fpr": 0.84
+      },
+      {
+        "threshold": 0.16,
+        "detection": {
+          "depth_1": 1.0,
+          "depth_2": 1.0,
+          "depth_4": 1.0,
+          "depth_3": 1.0,
+          "paraphrase": 1.0
+        },
+        "fpr": 0.82
+      },
+      {
+        "threshold": 0.17,
+        "detection": {
+          "depth_1": 1.0,
+          "depth_2": 1.0,
+          "depth_4": 1.0,
+          "depth_3": 1.0,
+          "paraphrase": 1.0
+        },
+        "fpr": 0.8
+      },
+      {
+        "threshold": 0.18,
+        "detection": {
+          "depth_1": 1.0,
+          "depth_2": 1.0,
+          "depth_4": 1.0,
+          "depth_3": 1.0,
+          "paraphrase": 1.0
+        },
+        "fpr": 0.79
+      },
+      {
+        "threshold": 0.19,
+        "detection": {
+          "depth_1": 1.0,
+          "depth_2": 1.0,
+          "depth_4": 1.0,
+          "depth_3": 1.0,
+          "paraphrase": 1.0
+        },
+        "fpr": 0.75
+      },
+      {
+        "threshold": 0.2,
+        "detection": {
+          "depth_1": 1.0,
+          "depth_2": 1.0,
+          "depth_4": 1.0,
+          "depth_3": 1.0,
+          "paraphrase": 1.0
+        },
+        "fpr": 0.73
+      },
+      {
+        "threshold": 0.21,
+        "detection": {
+          "depth_1": 1.0,
+          "depth_2": 1.0,
+          "depth_4": 1.0,
+          "depth_3": 1.0,
+          "paraphrase": 1.0
+        },
+        "fpr": 0.69
+      },
+      {
+        "threshold": 0.22,
+        "detection": {
+          "depth_1": 1.0,
+          "depth_2": 1.0,
+          "depth_4": 1.0,
+          "depth_3": 1.0,
+          "paraphrase": 1.0
+        },
+        "fpr": 0.67
+      },
+      {
+        "threshold": 0.23,
+        "detection": {
+          "depth_1": 1.0,
+          "depth_2": 1.0,
+          "depth_4": 1.0,
+          "depth_3": 1.0,
+          "paraphrase": 1.0
+        },
+        "fpr": 0.61
+      },
+      {
+        "threshold": 0.24,
+        "detection": {
+          "depth_1": 1.0,
+          "depth_2": 1.0,
+          "depth_4": 1.0,
+          "depth_3": 1.0,
+          "paraphrase": 1.0
+        },
+        "fpr": 0.56
+      },
+      {
+        "threshold": 0.25,
+        "detection": {
+          "depth_1": 1.0,
+          "depth_2": 1.0,
+          "depth_4": 1.0,
+          "depth_3": 1.0,
+          "paraphrase": 1.0
+        },
+        "fpr": 0.5
+      },
+      {
+        "threshold": 0.26,
+        "detection": {
+          "depth_1": 1.0,
+          "depth_2": 1.0,
+          "depth_4": 1.0,
+          "depth_3": 1.0,
+          "paraphrase": 1.0
+        },
+        "fpr": 0.47
+      },
+      {
+        "threshold": 0.27,
+        "detection": {
+          "depth_1": 1.0,
+          "depth_2": 1.0,
+          "depth_4": 0.9523809523809523,
+          "depth_3": 1.0,
+          "paraphrase": 1.0
+        },
+        "fpr": 0.41
+      },
+      {
+        "threshold": 0.28,
+        "detection": {
+          "depth_1": 1.0,
+          "depth_2": 1.0,
+          "depth_4": 0.9047619047619048,
+          "depth_3": 1.0,
+          "paraphrase": 1.0
+        },
+        "fpr": 0.36
+      },
+      {
+        "threshold": 0.29,
+        "detection": {
+          "depth_1": 1.0,
+          "depth_2": 1.0,
+          "depth_4": 0.9047619047619048,
+          "depth_3": 0.75,
+          "paraphrase": 1.0
+        },
+        "fpr": 0.33
+      },
+      {
+        "threshold": 0.3,
+        "detection": {
+          "depth_1": 1.0,
+          "depth_2": 1.0,
+          "depth_4": 0.9047619047619048,
+          "depth_3": 0.75,
+          "paraphrase": 1.0
+        },
+        "fpr": 0.31
+      },
+      {
+        "threshold": 0.31,
+        "detection": {
+          "depth_1": 1.0,
+          "depth_2": 1.0,
+          "depth_4": 0.8571428571428571,
+          "depth_3": 0.75,
+          "paraphrase": 1.0
+        },
+        "fpr": 0.29
+      },
+      {
+        "threshold": 0.32,
+        "detection": {
+          "depth_1": 1.0,
+          "depth_2": 1.0,
+          "depth_4": 0.8571428571428571,
+          "depth_3": 0.75,
+          "paraphrase": 1.0
+        },
+        "fpr": 0.26
+      },
+      {
+        "threshold": 0.33,
+        "detection": {
+          "depth_1": 1.0,
+          "depth_2": 1.0,
+          "depth_4": 0.8571428571428571,
+          "depth_3": 0.75,
+          "paraphrase": 1.0
+        },
+        "fpr": 0.19
+      },
+      {
+        "threshold": 0.34,
+        "detection": {
+          "depth_1": 1.0,
+          "depth_2": 1.0,
+          "depth_4": 0.8571428571428571,
+          "depth_3": 0.75,
+          "paraphrase": 1.0
+        },
+        "fpr": 0.17
+      },
+      {
+        "threshold": 0.35,
+        "detection": {
+          "depth_1": 1.0,
+          "depth_2": 1.0,
+          "depth_4": 0.8095238095238095,
+          "depth_3": 0.75,
+          "paraphrase": 1.0
+        },
+        "fpr": 0.15
+      },
+      {
+        "threshold": 0.36,
+        "detection": {
+          "depth_1": 1.0,
+          "depth_2": 1.0,
+          "depth_4": 0.8095238095238095,
+          "depth_3": 0.75,
+          "paraphrase": 1.0
+        },
+        "fpr": 0.09
+      },
+      {
+        "threshold": 0.37,
+        "detection": {
+          "depth_1": 1.0,
+          "depth_2": 1.0,
+          "depth_4": 0.8095238095238095,
+          "depth_3": 0.5,
+          "paraphrase": 1.0
+        },
+        "fpr": 0.06
+      },
+      {
+        "threshold": 0.38,
+        "detection": {
+          "depth_1": 1.0,
+          "depth_2": 1.0,
+          "depth_4": 0.8095238095238095,
+          "depth_3": 0.5,
+          "paraphrase": 1.0
+        },
+        "fpr": 0.05
+      },
+      {
+        "threshold": 0.39,
+        "detection": {
+          "depth_1": 1.0,
+          "depth_2": 1.0,
+          "depth_4": 0.6190476190476191,
+          "depth_3": 0.25,
+          "paraphrase": 1.0
+        },
+        "fpr": 0.04
+      },
+      {
+        "threshold": 0.4,
+        "detection": {
+          "depth_1": 1.0,
+          "depth_2": 1.0,
+          "depth_4": 0.5714285714285714,
+          "depth_3": 0.25,
+          "paraphrase": 1.0
+        },
+        "fpr": 0.03
+      },
+      {
+        "threshold": 0.41,
+        "detection": {
+          "depth_1": 1.0,
+          "depth_2": 1.0,
+          "depth_4": 0.5238095238095238,
+          "depth_3": 0.0,
+          "paraphrase": 1.0
+        },
+        "fpr": 0.03
+      },
+      {
+        "threshold": 0.42,
+        "detection": {
+          "depth_1": 1.0,
+          "depth_2": 0.96,
+          "depth_4": 0.47619047619047616,
+          "depth_3": 0.0,
+          "paraphrase": 1.0
+        },
+        "fpr": 0.03
+      },
+      {
+        "threshold": 0.43,
+        "detection": {
+          "depth_1": 1.0,
+          "depth_2": 0.92,
+          "depth_4": 0.42857142857142855,
+          "depth_3": 0.0,
+          "paraphrase": 1.0
+        },
+        "fpr": 0.02
+      },
+      {
+        "threshold": 0.44,
+        "detection": {
+          "depth_1": 1.0,
+          "depth_2": 0.92,
+          "depth_4": 0.42857142857142855,
+          "depth_3": 0.0,
+          "paraphrase": 1.0
+        },
+        "fpr": 0.02
+      },
+      {
+        "threshold": 0.45,
+        "detection": {
+          "depth_1": 1.0,
+          "depth_2": 0.92,
+          "depth_4": 0.42857142857142855,
+          "depth_3": 0.0,
+          "paraphrase": 1.0
+        },
+        "fpr": 0.02
+      },
+      {
+        "threshold": 0.46,
+        "detection": {
+          "depth_1": 1.0,
+          "depth_2": 0.92,
+          "depth_4": 0.42857142857142855,
+          "depth_3": 0.0,
+          "paraphrase": 1.0
+        },
+        "fpr": 0.01
+      },
+      {
+        "threshold": 0.47,
+        "detection": {
+          "depth_1": 1.0,
+          "depth_2": 0.88,
+          "depth_4": 0.38095238095238093,
+          "depth_3": 0.0,
+          "paraphrase": 1.0
+        },
+        "fpr": 0.01
+      },
+      {
+        "threshold": 0.48,
+        "detection": {
+          "depth_1": 1.0,
+          "depth_2": 0.8,
+          "depth_4": 0.38095238095238093,
+          "depth_3": 0.0,
+          "paraphrase": 1.0
+        },
+        "fpr": 0.01
+      },
+      {
+        "threshold": 0.49,
+        "detection": {
+          "depth_1": 0.96,
+          "depth_2": 0.8,
+          "depth_4": 0.38095238095238093,
+          "depth_3": 0.0,
+          "paraphrase": 1.0
+        },
+        "fpr": 0.01
+      },
+      {
+        "threshold": 0.5,
+        "detection": {
+          "depth_1": 0.96,
+          "depth_2": 0.8,
+          "depth_4": 0.2857142857142857,
+          "depth_3": 0.0,
+          "paraphrase": 1.0
+        },
+        "fpr": 0.0
+      },
+      {
+        "threshold": 0.51,
+        "detection": {
+          "depth_1": 0.96,
+          "depth_2": 0.8,
+          "depth_4": 0.19047619047619047,
+          "depth_3": 0.0,
+          "paraphrase": 1.0
+        },
+        "fpr": 0.0
+      },
+      {
+        "threshold": 0.52,
+        "detection": {
+          "depth_1": 0.96,
+          "depth_2": 0.68,
+          "depth_4": 0.19047619047619047,
+          "depth_3": 0.0,
+          "paraphrase": 1.0
+        },
+        "fpr": 0.0
+      },
+      {
+        "threshold": 0.53,
+        "detection": {
+          "depth_1": 0.92,
+          "depth_2": 0.68,
+          "depth_4": 0.19047619047619047,
+          "depth_3": 0.0,
+          "paraphrase": 1.0
+        },
+        "fpr": 0.0
+      },
+      {
+        "threshold": 0.54,
+        "detection": {
+          "depth_1": 0.92,
+          "depth_2": 0.68,
+          "depth_4": 0.14285714285714285,
+          "depth_3": 0.0,
+          "paraphrase": 1.0
+        },
+        "fpr": 0.0
+      },
+      {
+        "threshold": 0.55,
+        "detection": {
+          "depth_1": 0.92,
+          "depth_2": 0.64,
+          "depth_4": 0.09523809523809523,
+          "depth_3": 0.0,
+          "paraphrase": 1.0
+        },
+        "fpr": 0.0
+      },
+      {
+        "threshold": 0.56,
+        "detection": {
+          "depth_1": 0.92,
+          "depth_2": 0.6,
+          "depth_4": 0.0,
+          "depth_3": 0.0,
+          "paraphrase": 1.0
+        },
+        "fpr": 0.0
+      },
+      {
+        "threshold": 0.57,
+        "detection": {
+          "depth_1": 0.92,
+          "depth_2": 0.6,
+          "depth_4": 0.0,
+          "depth_3": 0.0,
+          "paraphrase": 1.0
+        },
+        "fpr": 0.0
+      },
+      {
+        "threshold": 0.58,
+        "detection": {
+          "depth_1": 0.92,
+          "depth_2": 0.56,
+          "depth_4": 0.0,
+          "depth_3": 0.0,
+          "paraphrase": 0.8
+        },
+        "fpr": 0.0
+      },
+      {
+        "threshold": 0.59,
+        "detection": {
+          "depth_1": 0.92,
+          "depth_2": 0.52,
+          "depth_4": 0.0,
+          "depth_3": 0.0,
+          "paraphrase": 0.8
+        },
+        "fpr": 0.0
+      },
+      {
+        "threshold": 0.6,
+        "detection": {
+          "depth_1": 0.92,
+          "depth_2": 0.48,
+          "depth_4": 0.0,
+          "depth_3": 0.0,
+          "paraphrase": 0.8
+        },
+        "fpr": 0.0
+      },
+      {
+        "threshold": 0.61,
+        "detection": {
+          "depth_1": 0.88,
+          "depth_2": 0.44,
+          "depth_4": 0.0,
+          "depth_3": 0.0,
+          "paraphrase": 0.8
+        },
+        "fpr": 0.0
+      },
+      {
+        "threshold": 0.62,
+        "detection": {
+          "depth_1": 0.88,
+          "depth_2": 0.4,
+          "depth_4": 0.0,
+          "depth_3": 0.0,
+          "paraphrase": 0.6
+        },
+        "fpr": 0.0
+      },
+      {
+        "threshold": 0.63,
+        "detection": {
+          "depth_1": 0.84,
+          "depth_2": 0.36,
+          "depth_4": 0.0,
+          "depth_3": 0.0,
+          "paraphrase": 0.6
+        },
+        "fpr": 0.0
+      },
+      {
+        "threshold": 0.64,
+        "detection": {
+          "depth_1": 0.76,
+          "depth_2": 0.36,
+          "depth_4": 0.0,
+          "depth_3": 0.0,
+          "paraphrase": 0.6
+        },
+        "fpr": 0.0
+      },
+      {
+        "threshold": 0.65,
+        "detection": {
+          "depth_1": 0.76,
+          "depth_2": 0.36,
+          "depth_4": 0.0,
+          "depth_3": 0.0,
+          "paraphrase": 0.6
+        },
+        "fpr": 0.0
+      },
+      {
+        "threshold": 0.66,
+        "detection": {
+          "depth_1": 0.72,
+          "depth_2": 0.36,
+          "depth_4": 0.0,
+          "depth_3": 0.0,
+          "paraphrase": 0.6
+        },
+        "fpr": 0.0
+      },
+      {
+        "threshold": 0.67,
+        "detection": {
+          "depth_1": 0.68,
+          "depth_2": 0.32,
+          "depth_4": 0.0,
+          "depth_3": 0.0,
+          "paraphrase": 0.4
+        },
+        "fpr": 0.0
+      },
+      {
+        "threshold": 0.68,
+        "detection": {
+          "depth_1": 0.68,
+          "depth_2": 0.28,
+          "depth_4": 0.0,
+          "depth_3": 0.0,
+          "paraphrase": 0.2
+        },
+        "fpr": 0.0
+      },
+      {
+        "threshold": 0.69,
+        "detection": {
+          "depth_1": 0.6,
+          "depth_2": 0.28,
+          "depth_4": 0.0,
+          "depth_3": 0.0,
+          "paraphrase": 0.0
+        },
+        "fpr": 0.0
+      },
+      {
+        "threshold": 0.7,
+        "detection": {
+          "depth_1": 0.56,
+          "depth_2": 0.24,
+          "depth_4": 0.0,
+          "depth_3": 0.0,
+          "paraphrase": 0.0
+        },
+        "fpr": 0.0
+      },
+      {
+        "threshold": 0.71,
+        "detection": {
+          "depth_1": 0.52,
+          "depth_2": 0.2,
+          "depth_4": 0.0,
+          "depth_3": 0.0,
+          "paraphrase": 0.0
+        },
+        "fpr": 0.0
+      },
+      {
+        "threshold": 0.72,
+        "detection": {
+          "depth_1": 0.44,
+          "depth_2": 0.16,
+          "depth_4": 0.0,
+          "depth_3": 0.0,
+          "paraphrase": 0.0
+        },
+        "fpr": 0.0
+      },
+      {
+        "threshold": 0.73,
+        "detection": {
+          "depth_1": 0.4,
+          "depth_2": 0.12,
+          "depth_4": 0.0,
+          "depth_3": 0.0,
+          "paraphrase": 0.0
+        },
+        "fpr": 0.0
+      },
+      {
+        "threshold": 0.74,
+        "detection": {
+          "depth_1": 0.32,
+          "depth_2": 0.12,
+          "depth_4": 0.0,
+          "depth_3": 0.0,
+          "paraphrase": 0.0
+        },
+        "fpr": 0.0
+      },
+      {
+        "threshold": 0.75,
+        "detection": {
+          "depth_1": 0.32,
+          "depth_2": 0.08,
+          "depth_4": 0.0,
+          "depth_3": 0.0,
+          "paraphrase": 0.0
+        },
+        "fpr": 0.0
+      },
+      {
+        "threshold": 0.76,
+        "detection": {
+          "depth_1": 0.24,
+          "depth_2": 0.08,
+          "depth_4": 0.0,
+          "depth_3": 0.0,
+          "paraphrase": 0.0
+        },
+        "fpr": 0.0
+      },
+      {
+        "threshold": 0.77,
+        "detection": {
+          "depth_1": 0.24,
+          "depth_2": 0.08,
+          "depth_4": 0.0,
+          "depth_3": 0.0,
+          "paraphrase": 0.0
+        },
+        "fpr": 0.0
+      },
+      {
+        "threshold": 0.78,
+        "detection": {
+          "depth_1": 0.16,
+          "depth_2": 0.08,
+          "depth_4": 0.0,
+          "depth_3": 0.0,
+          "paraphrase": 0.0
+        },
+        "fpr": 0.0
+      },
+      {
+        "threshold": 0.79,
+        "detection": {
+          "depth_1": 0.16,
+          "depth_2": 0.08,
+          "depth_4": 0.0,
+          "depth_3": 0.0,
+          "paraphrase": 0.0
+        },
+        "fpr": 0.0
+      },
+      {
+        "threshold": 0.8,
+        "detection": {
+          "depth_1": 0.16,
+          "depth_2": 0.04,
+          "depth_4": 0.0,
+          "depth_3": 0.0,
+          "paraphrase": 0.0
+        },
+        "fpr": 0.0
+      },
+      {
+        "threshold": 0.81,
+        "detection": {
+          "depth_1": 0.12,
+          "depth_2": 0.04,
+          "depth_4": 0.0,
+          "depth_3": 0.0,
+          "paraphrase": 0.0
+        },
+        "fpr": 0.0
+      },
+      {
+        "threshold": 0.82,
+        "detection": {
+          "depth_1": 0.08,
+          "depth_2": 0.04,
+          "depth_4": 0.0,
+          "depth_3": 0.0,
+          "paraphrase": 0.0
+        },
+        "fpr": 0.0
+      },
+      {
+        "threshold": 0.83,
+        "detection": {
+          "depth_1": 0.08,
+          "depth_2": 0.04,
+          "depth_4": 0.0,
+          "depth_3": 0.0,
+          "paraphrase": 0.0
+        },
+        "fpr": 0.0
+      },
+      {
+        "threshold": 0.84,
+        "detection": {
+          "depth_1": 0.08,
+          "depth_2": 0.0,
+          "depth_4": 0.0,
+          "depth_3": 0.0,
+          "paraphrase": 0.0
+        },
+        "fpr": 0.0
+      },
+      {
+        "threshold": 0.85,
+        "detection": {
+          "depth_1": 0.04,
+          "depth_2": 0.0,
+          "depth_4": 0.0,
+          "depth_3": 0.0,
+          "paraphrase": 0.0
+        },
+        "fpr": 0.0
+      },
+      {
+        "threshold": 0.86,
+        "detection": {
+          "depth_1": 0.04,
+          "depth_2": 0.0,
+          "depth_4": 0.0,
+          "depth_3": 0.0,
+          "paraphrase": 0.0
+        },
+        "fpr": 0.0
+      },
+      {
+        "threshold": 0.87,
+        "detection": {
+          "depth_1": 0.0,
+          "depth_2": 0.0,
+          "depth_4": 0.0,
+          "depth_3": 0.0,
+          "paraphrase": 0.0
+        },
+        "fpr": 0.0
+      },
+      {
+        "threshold": 0.88,
+        "detection": {
+          "depth_1": 0.0,
+          "depth_2": 0.0,
+          "depth_4": 0.0,
+          "depth_3": 0.0,
+          "paraphrase": 0.0
+        },
+        "fpr": 0.0
+      },
+      {
+        "threshold": 0.89,
+        "detection": {
+          "depth_1": 0.0,
+          "depth_2": 0.0,
+          "depth_4": 0.0,
+          "depth_3": 0.0,
+          "paraphrase": 0.0
+        },
+        "fpr": 0.0
+      },
+      {
+        "threshold": 0.9,
+        "detection": {
+          "depth_1": 0.0,
+          "depth_2": 0.0,
+          "depth_4": 0.0,
+          "depth_3": 0.0,
+          "paraphrase": 0.0
+        },
+        "fpr": 0.0
+      },
+      {
+        "threshold": 0.91,
+        "detection": {
+          "depth_1": 0.0,
+          "depth_2": 0.0,
+          "depth_4": 0.0,
+          "depth_3": 0.0,
+          "paraphrase": 0.0
+        },
+        "fpr": 0.0
+      },
+      {
+        "threshold": 0.92,
+        "detection": {
+          "depth_1": 0.0,
+          "depth_2": 0.0,
+          "depth_4": 0.0,
+          "depth_3": 0.0,
+          "paraphrase": 0.0
+        },
+        "fpr": 0.0
+      },
+      {
+        "threshold": 0.93,
+        "detection": {
+          "depth_1": 0.0,
+          "depth_2": 0.0,
+          "depth_4": 0.0,
+          "depth_3": 0.0,
+          "paraphrase": 0.0
+        },
+        "fpr": 0.0
+      },
+      {
+        "threshold": 0.94,
+        "detection": {
+          "depth_1": 0.0,
+          "depth_2": 0.0,
+          "depth_4": 0.0,
+          "depth_3": 0.0,
+          "paraphrase": 0.0
+        },
+        "fpr": 0.0
+      },
+      {
+        "threshold": 0.95,
+        "detection": {
+          "depth_1": 0.0,
+          "depth_2": 0.0,
+          "depth_4": 0.0,
+          "depth_3": 0.0,
+          "paraphrase": 0.0
+        },
+        "fpr": 0.0
+      }
+    ]
+  },
+  "positives_detail": [
+    {
+      "template_id": "chatgpt25-T1",
+      "kind": "reskin",
+      "requested_depth": 1,
+      "actual_depth": 1,
+      "text": "Why did the beaver win an award?\n\nBecause he was outstanding in his field.",
+      "ngram_score": 0.6,
+      "semantic_score": 0.6215835213661194,
+      "general_corpus_max_sim": 0.6215835213661194
+    },
+    {
+      "template_id": "chatgpt25-T1",
+      "kind": "reskin",
+      "requested_depth": 2,
+      "actual_depth": 2,
+      "text": "Why did the beaver wander an award?\n\nBecause he was outstanding in his field.",
+      "ngram_score": 0.5,
+      "semantic_score": 0.5930640697479248,
+      "general_corpus_max_sim": 0.5930640697479248
+    },
+    {
+      "template_id": "chatgpt25-T1",
+      "kind": "reskin",
+      "requested_depth": 4,
+      "actual_depth": 4,
+      "text": "Why did the beaver wander an walrus?\n\nBecause he was purple in his field.",
+      "ngram_score": 0.14285714285714285,
+      "semantic_score": 0.3884831368923187,
+      "general_corpus_max_sim": 0.610829770565033
+    },
+    {
+      "template_id": "chatgpt25-T2",
+      "kind": "reskin",
+      "requested_depth": 1,
+      "actual_depth": 1,
+      "text": "Why did the trombone turn red?\n\nBecause it saw the salad dressing.",
+      "ngram_score": 0.5384615384615384,
+      "semantic_score": 0.7714951038360596,
+      "general_corpus_max_sim": 0.7714951038360596
+    },
+    {
+      "template_id": "chatgpt25-T2",
+      "kind": "reskin",
+      "requested_depth": 2,
+      "actual_depth": 2,
+      "text": "Why did the trombone shimmer red?\n\nBecause it saw the salad dressing.",
+      "ngram_score": 0.42857142857142855,
+      "semantic_score": 0.7204142808914185,
+      "general_corpus_max_sim": 0.7204142808914185
+    },
+    {
+      "template_id": "chatgpt25-T2",
+      "kind": "reskin",
+      "requested_depth": 4,
+      "actual_depth": 4,
+      "text": "Why did the trombone shimmer wobbly?\n\nBecause it wobble the salad dressing.",
+      "ngram_score": 0.1111111111111111,
+      "semantic_score": 0.5037059187889099,
+      "general_corpus_max_sim": 0.5146707892417908
+    },
+    {
+      "template_id": "chatgpt25-T3",
+      "kind": "reskin",
+      "requested_depth": 1,
+      "actual_depth": 1,
+      "text": "Why was the librarian book sad?\n\nBecause it had too many problems.",
+      "ngram_score": 0.5384615384615384,
+      "semantic_score": 0.7746613621711731,
+      "general_corpus_max_sim": 0.7746613621711731
+    },
+    {
+      "template_id": "chatgpt25-T3",
+      "kind": "reskin",
+      "requested_depth": 2,
+      "actual_depth": 2,
+      "text": "Why was the librarian volcano sad?\n\nBecause it had too many problems.",
+      "ngram_score": 0.42857142857142855,
+      "semantic_score": 0.6011213660240173,
+      "general_corpus_max_sim": 0.6011213660240173
+    },
+    {
+      "template_id": "chatgpt25-T3",
+      "kind": "reskin",
+      "requested_depth": 4,
+      "actual_depth": 4,
+      "text": "Why was the librarian volcano wobbly?\n\nBecause it had too many dentists.",
+      "ngram_score": 0.25,
+      "semantic_score": 0.38541316986083984,
+      "general_corpus_max_sim": 0.5459887385368347
+    },
+    {
+      "template_id": "chatgpt25-T4",
+      "kind": "reskin",
+      "requested_depth": 1,
+      "actual_depth": 1,
+      "text": "Why don\u2019t pretzels trust atoms?\n\nBecause they make up everything.",
+      "ngram_score": 0.45454545454545453,
+      "semantic_score": 0.7218693494796753,
+      "general_corpus_max_sim": 0.7350030541419983
+    },
+    {
+      "template_id": "chatgpt25-T4",
+      "kind": "reskin",
+      "requested_depth": 2,
+      "actual_depth": 2,
+      "text": "Why don\u2019t pretzels waddle atoms?\n\nBecause they make up everything.",
+      "ngram_score": 0.3333333333333333,
+      "semantic_score": 0.5105619430541992,
+      "general_corpus_max_sim": 0.5740963816642761
+    },
+    {
+      "template_id": "chatgpt25-T4",
+      "kind": "reskin",
+      "requested_depth": 4,
+      "actual_depth": 4,
+      "text": "Why don\u2019t pretzels waddle helicopters?\n\nBecause they tumble up everything.",
+      "ngram_score": 0.0,
+      "semantic_score": 0.46099403500556946,
+      "general_corpus_max_sim": 0.5299858450889587
+    },
+    {
+      "template_id": "chatgpt25-T5",
+      "kind": "reskin",
+      "requested_depth": 1,
+      "actual_depth": 1,
+      "text": "Why did the otter go to the doctor?\n\nBecause it was feeling crumbly.",
+      "ngram_score": 0.5714285714285714,
+      "semantic_score": 0.5248026847839355,
+      "general_corpus_max_sim": 0.611333429813385
+    },
+    {
+      "template_id": "chatgpt25-T5",
+      "kind": "reskin",
+      "requested_depth": 2,
+      "actual_depth": 2,
+      "text": "Why did the otter go to the dentist?\n\nBecause it was feeling crumbly.",
+      "ngram_score": 0.29411764705882354,
+      "semantic_score": 0.5101229548454285,
+      "general_corpus_max_sim": 0.6315091252326965
+    },
+    {
+      "template_id": "chatgpt25-T5",
+      "kind": "reskin",
+      "requested_depth": 4,
+      "actual_depth": 4,
+      "text": "Why did the otter go to the dentist?\n\nBecause it was giggle ancient.",
+      "ngram_score": 0.15789473684210525,
+      "semantic_score": 0.41234588623046875,
+      "general_corpus_max_sim": 0.6473575830459595
+    },
+    {
+      "template_id": "chatgpt25-T6",
+      "kind": "reskin",
+      "requested_depth": 1,
+      "actual_depth": 1,
+      "text": "Why couldn\u2019t the pretzel stand up by itself?\n\nBecause it was two-tired.",
+      "ngram_score": 0.5384615384615384,
+      "semantic_score": 0.6375306844711304,
+      "general_corpus_max_sim": 0.6375306844711304
+    },
+    {
+      "template_id": "chatgpt25-T6",
+      "kind": "reskin",
+      "requested_depth": 2,
+      "actual_depth": 2,
+      "text": "Why couldn\u2019t the pretzel tiptoe up by itself?\n\nBecause it was two-tired.",
+      "ngram_score": 0.42857142857142855,
+      "semantic_score": 0.5165890455245972,
+      "general_corpus_max_sim": 0.5820481777191162
+    },
+    {
+      "template_id": "chatgpt25-T6",
+      "kind": "reskin",
+      "requested_depth": 4,
+      "actual_depth": 3,
+      "text": "Why couldn\u2019t the pretzel tiptoe up by itself?\n\nBecause it was two-shimmering.",
+      "ngram_score": 0.3333333333333333,
+      "semantic_score": 0.36533692479133606,
+      "general_corpus_max_sim": 0.5167639255523682
+    },
+    {
+      "template_id": "chatgpt25-T7",
+      "kind": "reskin",
+      "requested_depth": 1,
+      "actual_depth": 1,
+      "text": "Why did the mechanic call his insurance company?\n\nHe had a jump in his car.",
+      "ngram_score": 0.625,
+      "semantic_score": 0.7360572814941406,
+      "general_corpus_max_sim": 0.7360572814941406
+    },
+    {
+      "template_id": "chatgpt25-T7",
+      "kind": "reskin",
+      "requested_depth": 2,
+      "actual_depth": 2,
+      "text": "Why did the mechanic tiptoe his insurance company?\n\nHe had a jump in his car.",
+      "ngram_score": 0.5294117647058824,
+      "semantic_score": 0.6927211880683899,
+      "general_corpus_max_sim": 0.6927211880683899
+    },
+    {
+      "template_id": "chatgpt25-T7",
+      "kind": "reskin",
+      "requested_depth": 4,
+      "actual_depth": 4,
+      "text": "Why did the mechanic tiptoe his spreadsheet pretzel?\n\nHe had a jump in his car.",
+      "ngram_score": 0.3,
+      "semantic_score": 0.4905787706375122,
+      "general_corpus_max_sim": 0.5292900800704956
+    },
+    {
+      "template_id": "chatgpt25-T8",
+      "kind": "reskin",
+      "requested_depth": 1,
+      "actual_depth": 1,
+      "text": "Why did the otter cross the playground?\n\nTo get to the other slide.",
+      "ngram_score": 0.5714285714285714,
+      "semantic_score": 0.7346874475479126,
+      "general_corpus_max_sim": 0.7346874475479126
+    },
+    {
+      "template_id": "chatgpt25-T8",
+      "kind": "reskin",
+      "requested_depth": 2,
+      "actual_depth": 2,
+      "text": "Why did the otter vanishs the playground?\n\nTo get to the other slide.",
+      "ngram_score": 0.4666666666666667,
+      "semantic_score": 0.6136924028396606,
+      "general_corpus_max_sim": 0.6136924028396606
+    },
+    {
+      "template_id": "chatgpt25-T8",
+      "kind": "reskin",
+      "requested_depth": 4,
+      "actual_depth": 4,
+      "text": "Why did the otter vanishs the wizard?\n\nTo get to the other lighthouse.",
+      "ngram_score": 0.2222222222222222,
+      "semantic_score": 0.3085271120071411,
+      "general_corpus_max_sim": 0.5233875513076782
+    },
+    {
+      "template_id": "chatgpt25-T9",
+      "kind": "reskin",
+      "requested_depth": 1,
+      "actual_depth": 1,
+      "text": "Why was the dentist cold?\n\nBecause it left its Windows open.",
+      "ngram_score": 0.5,
+      "semantic_score": 0.6591981053352356,
+      "general_corpus_max_sim": 0.6591981053352356
+    },
+    {
+      "template_id": "chatgpt25-T9",
+      "kind": "reskin",
+      "requested_depth": 2,
+      "actual_depth": 2,
+      "text": "Why was the dentist glowing?\n\nBecause it left its Windows open.",
+      "ngram_score": 0.38461538461538464,
+      "semantic_score": 0.41452693939208984,
+      "general_corpus_max_sim": 0.6077504754066467
+    },
+    {
+      "template_id": "chatgpt25-T9",
+      "kind": "reskin",
+      "requested_depth": 4,
+      "actual_depth": 4,
+      "text": "Why was the dentist glowing?\n\nBecause it sparkle its Pretzels open.",
+      "ngram_score": 0.058823529411764705,
+      "semantic_score": 0.40048807859420776,
+      "general_corpus_max_sim": 0.5549890398979187
+    },
+    {
+      "template_id": "chatgpt25-T10",
+      "kind": "reskin",
+      "requested_depth": 1,
+      "actual_depth": 1,
+      "text": "Why did the astronaut burn his tongue?\n\nHe drank his coffee before it was cool.",
+      "ngram_score": 0.625,
+      "semantic_score": 0.8056853413581848,
+      "general_corpus_max_sim": 0.8056853413581848
+    },
+    {
+      "template_id": "chatgpt25-T10",
+      "kind": "reskin",
+      "requested_depth": 2,
+      "actual_depth": 2,
+      "text": "Why did the astronaut juggle his tongue?\n\nHe drank his coffee before it was cool.",
+      "ngram_score": 0.5294117647058824,
+      "semantic_score": 0.746063232421875,
+      "general_corpus_max_sim": 0.746063232421875
+    },
+    {
+      "template_id": "chatgpt25-T10",
+      "kind": "reskin",
+      "requested_depth": 4,
+      "actual_depth": 4,
+      "text": "Why did the astronaut juggle his trombone?\n\nHe wander his coffee before it was cool.",
+      "ngram_score": 0.23809523809523808,
+      "semantic_score": 0.5592163801193237,
+      "general_corpus_max_sim": 0.5833985805511475
+    },
+    {
+      "template_id": "chatgpt25-T11",
+      "kind": "reskin",
+      "requested_depth": 1,
+      "actual_depth": 1,
+      "text": "Why don\u2019t chipmunks give to charity?\n\nBecause they\u2019re shellfish.",
+      "ngram_score": 0.4,
+      "semantic_score": 0.7118661403656006,
+      "general_corpus_max_sim": 0.7118661403656006
+    },
+    {
+      "template_id": "chatgpt25-T11",
+      "kind": "reskin",
+      "requested_depth": 2,
+      "actual_depth": 2,
+      "text": "Why don\u2019t chipmunks fidget to charity?\n\nBecause they\u2019re shellfish.",
+      "ngram_score": 0.2727272727272727,
+      "semantic_score": 0.6684598326683044,
+      "general_corpus_max_sim": 0.6684598326683044
+    },
+    {
+      "template_id": "chatgpt25-T11",
+      "kind": "reskin",
+      "requested_depth": 4,
+      "actual_depth": 4,
+      "text": "Why don\u2019t chipmunks fidget to helicopter?\n\nBecause they\u2019re dentist.",
+      "ngram_score": 0.0,
+      "semantic_score": 0.3423914313316345,
+      "general_corpus_max_sim": 0.4836415946483612
+    },
+    {
+      "template_id": "chatgpt25-T12",
+      "kind": "reskin",
+      "requested_depth": 1,
+      "actual_depth": 1,
+      "text": "Why did the octopus go to the doctor?\n\nBecause it had a virus.",
+      "ngram_score": 0.5714285714285714,
+      "semantic_score": 0.608511209487915,
+      "general_corpus_max_sim": 0.608511209487915
+    },
+    {
+      "template_id": "chatgpt25-T12",
+      "kind": "reskin",
+      "requested_depth": 2,
+      "actual_depth": 2,
+      "text": "Why did the octopus go to the lighthouse?\n\nBecause it had a virus.",
+      "ngram_score": 0.29411764705882354,
+      "semantic_score": 0.47104862332344055,
+      "general_corpus_max_sim": 0.5359357595443726
+    },
+    {
+      "template_id": "chatgpt25-T12",
+      "kind": "reskin",
+      "requested_depth": 4,
+      "actual_depth": 3,
+      "text": "Why did the octopus go to the lighthouse?\n\nBecause it had a octopus.",
+      "ngram_score": 0.2222222222222222,
+      "semantic_score": 0.40010809898376465,
+      "general_corpus_max_sim": 0.5933107733726501
+    },
+    {
+      "template_id": "chatgpt25-T13",
+      "kind": "reskin",
+      "requested_depth": 1,
+      "actual_depth": 1,
+      "text": "Why did the wizard go to the doctor?\n\nBecause it wasn\u2019t peeling well.",
+      "ngram_score": 0.5714285714285714,
+      "semantic_score": 0.631415605545044,
+      "general_corpus_max_sim": 0.631415605545044
+    },
+    {
+      "template_id": "chatgpt25-T13",
+      "kind": "reskin",
+      "requested_depth": 2,
+      "actual_depth": 2,
+      "text": "Why did the wizard go to the tractor?\n\nBecause it wasn\u2019t peeling well.",
+      "ngram_score": 0.29411764705882354,
+      "semantic_score": 0.4701066315174103,
+      "general_corpus_max_sim": 0.6313140392303467
+    },
+    {
+      "template_id": "chatgpt25-T13",
+      "kind": "reskin",
+      "requested_depth": 4,
+      "actual_depth": 4,
+      "text": "Why did the wizard go to the tractor?\n\nBecause it wasn\u2019t waddle purple.",
+      "ngram_score": 0.15789473684210525,
+      "semantic_score": 0.3837910592556,
+      "general_corpus_max_sim": 0.606831967830658
+    },
+    {
+      "template_id": "chatgpt25-T14",
+      "kind": "reskin",
+      "requested_depth": 1,
+      "actual_depth": 1,
+      "text": "Why did the helicopter file a police report?\n\nBecause it got mugged.",
+      "ngram_score": 0.5384615384615384,
+      "semantic_score": 0.6621840000152588,
+      "general_corpus_max_sim": 0.6621840000152588
+    },
+    {
+      "template_id": "chatgpt25-T14",
+      "kind": "reskin",
+      "requested_depth": 2,
+      "actual_depth": 2,
+      "text": "Why did the helicopter whisper a police report?\n\nBecause it got mugged.",
+      "ngram_score": 0.42857142857142855,
+      "semantic_score": 0.6208577752113342,
+      "general_corpus_max_sim": 0.6208577752113342
+    },
+    {
+      "template_id": "chatgpt25-T14",
+      "kind": "reskin",
+      "requested_depth": 4,
+      "actual_depth": 4,
+      "text": "Why did the helicopter whisper a lighthouse spreadsheet?\n\nBecause it got mugged.",
+      "ngram_score": 0.17647058823529413,
+      "semantic_score": 0.49029701948165894,
+      "general_corpus_max_sim": 0.5080292224884033
+    },
+    {
+      "template_id": "chatgpt25-T15",
+      "kind": "reskin",
+      "requested_depth": 1,
+      "actual_depth": 1,
+      "text": "Why did the trumpet bring two pairs of pants?\n\nIn case he got a hole in one.",
+      "ngram_score": 0.6666666666666666,
+      "semantic_score": 0.7517087459564209,
+      "general_corpus_max_sim": 0.7517087459564209
+    },
+    {
+      "template_id": "chatgpt25-T15",
+      "kind": "reskin",
+      "requested_depth": 2,
+      "actual_depth": 2,
+      "text": "Why did the trumpet tumble two pairs of pants?\n\nIn case he got a hole in one.",
+      "ngram_score": 0.5789473684210527,
+      "semantic_score": 0.7054528594017029,
+      "general_corpus_max_sim": 0.7054528594017029
+    },
+    {
+      "template_id": "chatgpt25-T15",
+      "kind": "reskin",
+      "requested_depth": 4,
+      "actual_depth": 4,
+      "text": "Why did the trumpet tumble two trombones of librarians?\n\nIn case he got a hole in one.",
+      "ngram_score": 0.30434782608695654,
+      "semantic_score": 0.42604103684425354,
+      "general_corpus_max_sim": 0.5642697811126709
+    },
+    {
+      "template_id": "chatgpt25-T16",
+      "kind": "reskin",
+      "requested_depth": 1,
+      "actual_depth": 1,
+      "text": "Why did the kangaroo put his money in the freezer?\n\nHe wanted cold hard cash.",
+      "ngram_score": 0.625,
+      "semantic_score": 0.8130387663841248,
+      "general_corpus_max_sim": 0.8130387663841248
+    },
+    {
+      "template_id": "chatgpt25-T16",
+      "kind": "reskin",
+      "requested_depth": 2,
+      "actual_depth": 2,
+      "text": "Why did the kangaroo hover his money in the freezer?\n\nHe wanted cold hard cash.",
+      "ngram_score": 0.5294117647058824,
+      "semantic_score": 0.7962028384208679,
+      "general_corpus_max_sim": 0.7962028384208679
+    },
+    {
+      "template_id": "chatgpt25-T16",
+      "kind": "reskin",
+      "requested_depth": 4,
+      "actual_depth": 4,
+      "text": "Why did the kangaroo hover his peacock in the accordion?\n\nHe wanted cold hard cash.",
+      "ngram_score": 0.18181818181818182,
+      "semantic_score": 0.5340467095375061,
+      "general_corpus_max_sim": 0.5340467095375061
+    },
+    {
+      "template_id": "chatgpt25-T17",
+      "kind": "reskin",
+      "requested_depth": 1,
+      "actual_depth": 1,
+      "text": "Why don\u2019t accordions fly over the bay?\n\nBecause then they\u2019d be bagels.",
+      "ngram_score": 0.5384615384615384,
+      "semantic_score": 0.682605504989624,
+      "general_corpus_max_sim": 0.682605504989624
+    },
+    {
+      "template_id": "chatgpt25-T17",
+      "kind": "reskin",
+      "requested_depth": 2,
+      "actual_depth": 2,
+      "text": "Why don\u2019t accordions shimmer over the bay?\n\nBecause then they\u2019d be bagels.",
+      "ngram_score": 0.42857142857142855,
+      "semantic_score": 0.5712010860443115,
+      "general_corpus_max_sim": 0.5712010860443115
+    },
+    {
+      "template_id": "chatgpt25-T17",
+      "kind": "reskin",
+      "requested_depth": 4,
+      "actual_depth": 4,
+      "text": "Why don\u2019t accordions shimmer over the bulldozer?\n\nBecause then they\u2019d be wizards.",
+      "ngram_score": 0.1111111111111111,
+      "semantic_score": 0.26077359914779663,
+      "general_corpus_max_sim": 0.4222777187824249
+    },
+    {
+      "template_id": "chatgpt25-T18",
+      "kind": "reskin",
+      "requested_depth": 1,
+      "actual_depth": 1,
+      "text": "Why did the cucumber go to the seance?\n\nTo talk to the other side.",
+      "ngram_score": 0.6,
+      "semantic_score": 0.690108060836792,
+      "general_corpus_max_sim": 0.6997619271278381
+    },
+    {
+      "template_id": "chatgpt25-T18",
+      "kind": "reskin",
+      "requested_depth": 2,
+      "actual_depth": 2,
+      "text": "Why did the cucumber go to the accordion?\n\nTo talk to the other side.",
+      "ngram_score": 0.3333333333333333,
+      "semantic_score": 0.46314099431037903,
+      "general_corpus_max_sim": 0.627108633518219
+    },
+    {
+      "template_id": "chatgpt25-T18",
+      "kind": "reskin",
+      "requested_depth": 4,
+      "actual_depth": 4,
+      "text": "Why did the cucumber go to the accordion?\n\nTo waddle to the other waffle.",
+      "ngram_score": 0.14285714285714285,
+      "semantic_score": 0.39167991280555725,
+      "general_corpus_max_sim": 0.506554901599884
+    },
+    {
+      "template_id": "chatgpt25-T19",
+      "kind": "reskin",
+      "requested_depth": 1,
+      "actual_depth": 1,
+      "text": "Why was the accordion sent to jail?\n\nBecause it held up a pair of pants.",
+      "ngram_score": 0.625,
+      "semantic_score": 0.7560674548149109,
+      "general_corpus_max_sim": 0.7560674548149109
+    },
+    {
+      "template_id": "chatgpt25-T19",
+      "kind": "reskin",
+      "requested_depth": 2,
+      "actual_depth": 2,
+      "text": "Why was the accordion tumble to jail?\n\nBecause it held up a pair of pants.",
+      "ngram_score": 0.5294117647058824,
+      "semantic_score": 0.7142507433891296,
+      "general_corpus_max_sim": 0.7142507433891296
+    },
+    {
+      "template_id": "chatgpt25-T19",
+      "kind": "reskin",
+      "requested_depth": 4,
+      "actual_depth": 4,
+      "text": "Why was the accordion tumble to hedgehog?\n\nBecause it wander up a pair of pants.",
+      "ngram_score": 0.18181818181818182,
+      "semantic_score": 0.5036086440086365,
+      "general_corpus_max_sim": 0.5190723538398743
+    },
+    {
+      "template_id": "chatgpt25-T20",
+      "kind": "reskin",
+      "requested_depth": 1,
+      "actual_depth": 1,
+      "text": "Why did the walrus cross the road?\n\nTo get to the other side.",
+      "ngram_score": 0.5714285714285714,
+      "semantic_score": 0.6832262873649597,
+      "general_corpus_max_sim": 0.7311226725578308
+    },
+    {
+      "template_id": "chatgpt25-T20",
+      "kind": "reskin",
+      "requested_depth": 2,
+      "actual_depth": 2,
+      "text": "Why did the walrus whispers the road?\n\nTo get to the other side.",
+      "ngram_score": 0.4666666666666667,
+      "semantic_score": 0.5807129740715027,
+      "general_corpus_max_sim": 0.7186296582221985
+    },
+    {
+      "template_id": "chatgpt25-T20",
+      "kind": "reskin",
+      "requested_depth": 4,
+      "actual_depth": 4,
+      "text": "Why did the walrus whispers the spreadsheet?\n\nTo get to the other bulldozer.",
+      "ngram_score": 0.2222222222222222,
+      "semantic_score": 0.3802209198474884,
+      "general_corpus_max_sim": 0.6695078015327454
+    },
+    {
+      "template_id": "chatgpt25-T21",
+      "kind": "reskin",
+      "requested_depth": 1,
+      "actual_depth": 1,
+      "text": "Why did the octopus go to the doctor?\n\nBecause it had a byte.",
+      "ngram_score": 0.5714285714285714,
+      "semantic_score": 0.7055613398551941,
+      "general_corpus_max_sim": 0.7055613398551941
+    },
+    {
+      "template_id": "chatgpt25-T21",
+      "kind": "reskin",
+      "requested_depth": 2,
+      "actual_depth": 2,
+      "text": "Why did the octopus go to the mechanic?\n\nBecause it had a byte.",
+      "ngram_score": 0.29411764705882354,
+      "semantic_score": 0.5578183531761169,
+      "general_corpus_max_sim": 0.5578183531761169
+    },
+    {
+      "template_id": "chatgpt25-T21",
+      "kind": "reskin",
+      "requested_depth": 4,
+      "actual_depth": 3,
+      "text": "Why did the octopus go to the mechanic?\n\nBecause it had a spreadsheet.",
+      "ngram_score": 0.2222222222222222,
+      "semantic_score": 0.389085978269577,
+      "general_corpus_max_sim": 0.4580996334552765
+    },
+    {
+      "template_id": "chatgpt25-T22",
+      "kind": "reskin",
+      "requested_depth": 1,
+      "actual_depth": 1,
+      "text": "Why did the bulldozer go to outer space?\n\nTo see the moooon.",
+      "ngram_score": 0.5384615384615384,
+      "semantic_score": 0.7171471118927002,
+      "general_corpus_max_sim": 0.7171471118927002
+    },
+    {
+      "template_id": "chatgpt25-T22",
+      "kind": "reskin",
+      "requested_depth": 2,
+      "actual_depth": 2,
+      "text": "Why did the bulldozer go to ancient space?\n\nTo see the moooon.",
+      "ngram_score": 0.25,
+      "semantic_score": 0.6760849952697754,
+      "general_corpus_max_sim": 0.6760849952697754
+    },
+    {
+      "template_id": "chatgpt25-T22",
+      "kind": "reskin",
+      "requested_depth": 4,
+      "actual_depth": 4,
+      "text": "Why did the bulldozer go to ancient hedgehog?\n\nTo fidget the moooon.",
+      "ngram_score": 0.05263157894736842,
+      "semantic_score": 0.55625319480896,
+      "general_corpus_max_sim": 0.5823431015014648
+    },
+    {
+      "template_id": "chatgpt25-T23",
+      "kind": "reskin",
+      "requested_depth": 1,
+      "actual_depth": 1,
+      "text": "Why did the flamingo put his money in the blender?\n\nHe wanted to make liquid assets.",
+      "ngram_score": 0.6470588235294118,
+      "semantic_score": 0.860099732875824,
+      "general_corpus_max_sim": 0.860099732875824
+    },
+    {
+      "template_id": "chatgpt25-T23",
+      "kind": "reskin",
+      "requested_depth": 2,
+      "actual_depth": 2,
+      "text": "Why did the flamingo stumble his money in the blender?\n\nHe wanted to make liquid assets.",
+      "ngram_score": 0.5555555555555556,
+      "semantic_score": 0.8385195136070251,
+      "general_corpus_max_sim": 0.8385195136070251
+    },
+    {
+      "template_id": "chatgpt25-T23",
+      "kind": "reskin",
+      "requested_depth": 4,
+      "actual_depth": 4,
+      "text": "Why did the flamingo stumble his chipmunk in the spreadsheet?\n\nHe wanted to make liquid assets.",
+      "ngram_score": 0.21739130434782608,
+      "semantic_score": 0.54615718126297,
+      "general_corpus_max_sim": 0.54615718126297
+    },
+    {
+      "template_id": "chatgpt25-T24",
+      "kind": "reskin",
+      "requested_depth": 1,
+      "actual_depth": 1,
+      "text": "Why don\u2019t trumpets fight each other?\n\nThey don\u2019t have the guts.",
+      "ngram_score": 0.5,
+      "semantic_score": 0.4871847629547119,
+      "general_corpus_max_sim": 0.5148114562034607
+    },
+    {
+      "template_id": "chatgpt25-T24",
+      "kind": "reskin",
+      "requested_depth": 2,
+      "actual_depth": 2,
+      "text": "Why don\u2019t trumpets waddle each other?\n\nThey don\u2019t have the guts.",
+      "ngram_score": 0.38461538461538464,
+      "semantic_score": 0.4284510612487793,
+      "general_corpus_max_sim": 0.5420111417770386
+    },
+    {
+      "template_id": "chatgpt25-T24",
+      "kind": "reskin",
+      "requested_depth": 4,
+      "actual_depth": 3,
+      "text": "Why don\u2019t trumpets waddle each other?\n\nThey don\u2019t have the librarians.",
+      "ngram_score": 0.2857142857142857,
+      "semantic_score": 0.2814141809940338,
+      "general_corpus_max_sim": 0.4821857511997223
+    },
+    {
+      "template_id": "chatgpt25-T25",
+      "kind": "reskin",
+      "requested_depth": 1,
+      "actual_depth": 1,
+      "text": "What do you sparkle an alligator in a vest?\n\nAn investigator.",
+      "ngram_score": 0.5,
+      "semantic_score": 0.844211995601654,
+      "general_corpus_max_sim": 0.8760111331939697
+    },
+    {
+      "template_id": "chatgpt25-T25",
+      "kind": "reskin",
+      "requested_depth": 2,
+      "actual_depth": 2,
+      "text": "What do you sparkle an lighthouse in a vest?\n\nAn investigator.",
+      "ngram_score": 0.2857142857142857,
+      "semantic_score": 0.5434784293174744,
+      "general_corpus_max_sim": 0.595780074596405
+    },
+    {
+      "template_id": "chatgpt25-T25",
+      "kind": "reskin",
+      "requested_depth": 4,
+      "actual_depth": 4,
+      "text": "What do you sparkle an lighthouse in a astronaut?\n\nAn umbrella.",
+      "ngram_score": 0.058823529411764705,
+      "semantic_score": 0.2774973213672638,
+      "general_corpus_max_sim": 0.6139494776725769
+    },
+    {
+      "template_id": "chatgpt25-T4",
+      "kind": "paraphrase",
+      "requested_depth": null,
+      "actual_depth": null,
+      "text": "Physicists have serious trust issues with tiny particles, and honestly, everything you can see or touch is put together out of them.",
+      "ngram_score": 0.0,
+      "semantic_score": 0.6176762580871582,
+      "general_corpus_max_sim": 0.6286426186561584
+    },
+    {
+      "template_id": "chatgpt25-T20",
+      "kind": "paraphrase",
+      "requested_depth": null,
+      "actual_depth": null,
+      "text": "What made the hen dash across the street? So she could reach the opposite curb.",
+      "ngram_score": 0.0,
+      "semantic_score": 0.6802366971969604,
+      "general_corpus_max_sim": 0.692470908164978
+    },
+    {
+      "template_id": "chatgpt25-T6",
+      "kind": "paraphrase",
+      "requested_depth": null,
+      "actual_depth": null,
+      "text": "How come the bike kept toppling over on its own? It was simply exhausted, two tires' worth, in fact.",
+      "ngram_score": 0.0,
+      "semantic_score": 0.6668707728385925,
+      "general_corpus_max_sim": 0.7174415588378906
+    },
+    {
+      "template_id": "chatgpt25-T3",
+      "kind": "paraphrase",
+      "requested_depth": null,
+      "actual_depth": null,
+      "text": "What made the algebra textbook feel down? It was weighed down by an overwhelming number of exercises to solve.",
+      "ngram_score": 0.0,
+      "semantic_score": 0.6788760423660278,
+      "general_corpus_max_sim": 0.6788760423660278
+    },
+    {
+      "template_id": "chatgpt25-T17",
+      "kind": "paraphrase",
+      "requested_depth": null,
+      "actual_depth": null,
+      "text": "How come the gulls avoid soaring above the inlet? If they did, they would technically become breakfast pastries.",
+      "ngram_score": 0.0,
+      "semantic_score": 0.5738394260406494,
+      "general_corpus_max_sim": 0.6214556694030762
+    }
+  ],
+  "negatives_scores": {
+    "ngram": [
+      0.0,
+      0.13333333333333333,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.15384615384615385,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.06666666666666667,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.13333333333333333,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.08695652173913043,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.043478260869565216,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.04,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.09523809523809523,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.038461538461538464,
+      0.14285714285714285
+    ],
+    "semantic": [
+      0.280117392539978,
+      0.2606576383113861,
+      0.39768821001052856,
+      0.18371734023094177,
+      0.238338440656662,
+      0.28313764929771423,
+      0.34180784225463867,
+      0.1567617654800415,
+      0.24088212847709656,
+      0.1898968517780304,
+      0.10582471638917923,
+      0.32814961671829224,
+      0.3155039846897125,
+      0.3281073272228241,
+      0.26702362298965454,
+      0.2953248918056488,
+      0.36898908019065857,
+      0.3050840497016907,
+      0.32767632603645325,
+      0.14572913944721222,
+      0.16539740562438965,
+      0.2371656894683838,
+      0.1398741751909256,
+      0.11906355619430542,
+      0.274606317281723,
+      0.2202240526676178,
+      0.202473446726799,
+      0.21512268483638763,
+      0.1630462110042572,
+      0.3500421345233917,
+      0.3506038188934326,
+      0.3354305922985077,
+      0.4577774405479431,
+      0.15338121354579926,
+      0.20125998556613922,
+      0.24820253252983093,
+      0.0421108715236187,
+      0.38692158460617065,
+      0.3433001935482025,
+      0.1190437451004982,
+      0.2764516770839691,
+      0.2508995831012726,
+      0.2206178903579712,
+      0.22486567497253418,
+      0.10362061113119125,
+      0.2449428290128708,
+      0.30455702543258667,
+      0.10605043172836304,
+      0.27765268087387085,
+      0.06954246014356613,
+      0.1198807880282402,
+      0.3551214337348938,
+      0.23811057209968567,
+      0.20171815156936646,
+      0.2310715764760971,
+      0.22326433658599854,
+      0.2653772234916687,
+      0.3639477491378784,
+      0.18669694662094116,
+      0.18319955468177795,
+      0.1987643837928772,
+      0.33397749066352844,
+      0.28383880853652954,
+      0.37718629837036133,
+      0.2403658777475357,
+      0.2748280167579651,
+      0.09289657324552536,
+      0.3507503569126129,
+      0.08990160375833511,
+      0.25556680560112,
+      0.13635940849781036,
+      0.3281606137752533,
+      0.17290617525577545,
+      0.250935822725296,
+      0.14619705080986023,
+      0.3270394504070282,
+      0.2181154489517212,
+      0.19467045366764069,
+      0.26809361577033997,
+      0.222251757979393,
+      0.3194158971309662,
+      0.32918062806129456,
+      0.3236965835094452,
+      0.3673774003982544,
+      0.2482198178768158,
+      0.356051504611969,
+      0.09645269066095352,
+      0.277321994304657,
+      0.20098085701465607,
+      0.10330323129892349,
+      0.23043380677700043,
+      0.3502120077610016,
+      0.26590266823768616,
+      0.266572505235672,
+      0.31921881437301636,
+      0.2459539771080017,
+      0.49870091676712036,
+      0.2218552529811859,
+      0.4291791021823883,
+      0.299095094203949
+    ],
+    "general_corpus_max_sim": [
+      0.5325503349304199,
+      0.5957422256469727,
+      0.5264581441879272,
+      0.7152213454246521,
+      0.6165700554847717,
+      0.6941249370574951,
+      0.9499738812446594,
+      0.812724769115448,
+      0.5424625873565674,
+      0.6225228309631348,
+      0.6279451251029968,
+      0.46963390707969666,
+      0.6399572491645813,
+      0.8231795430183411,
+      0.6514124274253845,
+      0.8589009642601013,
+      0.6795802116394043,
+      0.8855845928192139,
+      0.7512810230255127,
+      0.45081913471221924,
+      0.656574010848999,
+      0.6548706293106079,
+      0.6643521785736084,
+      0.5356557369232178,
+      0.5483613014221191,
+      0.6775491237640381,
+      0.5072058439254761,
+      0.7526439428329468,
+      0.7348073124885559,
+      0.7887119054794312,
+      0.5524894595146179,
+      0.7319905757904053,
+      0.6165478825569153,
+      0.5026916861534119,
+      0.3675532937049866,
+      0.7861887216567993,
+      0.531186580657959,
+      0.5863727331161499,
+      0.600935161113739,
+      0.5528975129127502,
+      0.5509869456291199,
+      0.479343980550766,
+      0.6076679229736328,
+      0.5221496224403381,
+      0.8788666129112244,
+      0.4911295175552368,
+      0.47273358702659607,
+      0.43536651134490967,
+      0.4707994759082794,
+      0.5572248101234436,
+      0.7430945038795471,
+      0.6164737343788147,
+      0.5106388330459595,
+      0.4716721177101135,
+      0.5595938563346863,
+      0.5248525142669678,
+      0.71014004945755,
+      0.6146910190582275,
+      0.8850982785224915,
+      0.6541424989700317,
+      0.6136011481285095,
+      0.5453491806983948,
+      0.5075992345809937,
+      0.6676000356674194,
+      0.6097517013549805,
+      0.8274692893028259,
+      0.5163421034812927,
+      0.9725469946861267,
+      0.5930999517440796,
+      0.44560134410858154,
+      0.6851241588592529,
+      0.5963396430015564,
+      0.515011727809906,
+      0.3710480034351349,
+      0.4925883710384369,
+      0.8287293910980225,
+      0.7003323435783386,
+      0.6751084923744202,
+      0.8326159715652466,
+      0.788445770740509,
+      0.9378867149353027,
+      0.5736997723579407,
+      0.5250325202941895,
+      0.5410647392272949,
+      0.5841905474662781,
+      0.9311987161636353,
+      0.4800277352333069,
+      0.692765474319458,
+      0.5117932558059692,
+      0.5541137456893921,
+      0.4637584686279297,
+      0.5336384773254395,
+      0.6943885684013367,
+      0.5339316725730896,
+      0.5211747288703918,
+      0.6871213912963867,
+      0.5816786289215088,
+      0.5524177551269531,
+      0.8819471001625061,
+      0.7053144574165344
+    ]
+  }
+}

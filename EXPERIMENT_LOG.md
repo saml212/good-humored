@@ -531,3 +531,65 @@ deltas.
 - Success bar unchanged: sampling delta ≥ 3× |path delta|.
 
 Result: _(pending)_
+
+---
+
+## EXP-009 — semantic novelty tier + validation (2026-07-17)
+
+**Hypothesis (one sentence):** An embedding-similarity tier
+(all-MiniLM-L6-v2 cosine vs the 25 known-memorized templates) catches the
+paraphrased/reskinned memorized jokes that the n-gram novelty check
+provably misses (the documented 2-word-reskin evasion).
+
+**Calibration note (honest):** no blind prediction was registered — the
+original builder agent died at the session limit before registration, and
+by the time the corrected rerun was designed, the verifier's reproduction
+had already revealed the answer. Recorded as an unregistered experiment
+rather than pretending a post-hoc "prediction."
+
+**The artifact (kept loud — this is a process result):** the FIRST
+validation run reported semantic detection = 0.0 at every edit depth at
+FPR≤0.05 (recommended threshold 0.94) — the tier looked useless. A fresh
+adversarial verifier proved this was a validation-harness artifact, not a
+finding: (1) a held-out-set LEAK — negatives were drawn from the same pool
+independently reservoir-sampled into the embedded corpus (3 exact-text
+duplicates; negatives max similarity 1.0000); (2) a REFERENCE-SET
+MISMATCH — the n-gram baseline was scored against the 25 templates only,
+but the semantic sweep was calibrated against templates + 50K
+general-corpus rows, and the scraped corpus is pervasively internally
+near-duplicated (only exact-string dedup was ever run), so novel jokes
+legitimately score 0.6–0.97 against *something* — corpus-redundancy
+signal, a different construct from memorized-template paraphrase.
+
+**Result (corrected validation, leak-filtered, templates-only
+calibration, n_excluded_leaks=11):** recommended threshold **0.38** at
+FPR≤0.05; detection depth_1 **1.000**, depth_2 **1.000**, depth_3 0.500
+(n=4), depth_4 **0.810**, hand-written full paraphrases **1.000**.
+n-gram baseline on the identical set: 1.0 / 0.64 / 0.0 / 0.0 / 0.0.
+Report: `experiment-runs/2026-07-17-semantic-novelty-validation/report.json`.
+Runtime aligned with calibration: `SemanticNoveltyPenalty` defaults to
+reference="templates" + threshold 0.38; corpus mode requires an explicit
+threshold (ValueError otherwise). Wired into `reward_stack()` behind
+`semantic_novelty_weight` (default 0.0 — inert until opted in).
+
+**Fresh-audit verdict (separate agent, real-backend probes):** COMMIT.
+Template-first embedding order proven by construction AND execution
+(max abs diff 0.0 vs independent re-encode); validation report reproduced
+byte-identically from scratch; 142/142 env tests. One MAJOR carried
+forward as a documented limitation, NOT fixed: **padding/dilution evades
+every novelty tier** — a verbatim memorized joke behind ~5 filler-sentence
+repetitions zeroes the n-gram term, ~20 zeroes the semantic term. A
+policy can recite verbatim inside boilerplate for zero penalty. Docstrings
+in both modules now carry the numbers + mitigation direction
+(max-over-sliding-windows). Novelty terms are NOT a sole defense for any
+real training run until that lands.
+
+**Verdict:** the semantic tier does exactly what it was built for —
+closes the 2-word-reskin evasion with 100% paraphrase detection at 5%
+FPR — and the adversarial-verification loop caught a would-be false
+negative result before it was logged. The remaining exploit class
+(dilution) is documented, bounded, and next in line.
+
+[LEARN] validation-design: Score every detector tier against the SAME reference set before comparing them.
+Mistake: EXP-009's first validation calibrated the semantic tier against templates+50K general corpus while the n-gram baseline used templates only — the apples-to-oranges reference made a working detector look useless (0% detection at any usable FPR).
+Correction: A detector-vs-baseline comparison is only valid when both score against an identical reference set; any extra corpus signal (near-duplicate redundancy) measures a different construct and must be reported separately, never folded into threshold calibration.

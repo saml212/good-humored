@@ -8,6 +8,10 @@ GRPO training run needs at the moment GPUs arrive:
   rewards.py     -- the decomposed reward stack (README.md "The RL
                      environment" table), as TRL-GRPO-compatible
                      reward_funcs.
+  semantic_novelty.py -- OPTIONAL embedding-based novelty tier (off by
+                     default, see RewardConfig.semantic_novelty_weight)
+                     that closes CorpusNoveltyPenalty's documented
+                     2-word-reskin evasion.
   cascade_env.py -- Track 1 (the rejection cascade) as a step-wise
                      reset()/step() training environment.
   banter_env.py  -- Track 2 (contextual banter) as a step-wise
@@ -28,10 +32,12 @@ from .rewards import (ComprehensibilityReward, CorpusNoveltyPenalty,
                       IntraGroupDiversityReward, JudgePreferenceReward,
                       RewardConfig, SelfRepetitionPenalty, combined_reward,
                       reward_stack)
+from .semantic_novelty import SemanticNoveltyPenalty, SemanticNoveltyUnavailable
 
 __all__ = [
     "RewardConfig", "combined_reward", "reward_stack",
     "JudgePreferenceReward", "CorpusNoveltyPenalty", "SelfRepetitionPenalty",
     "IntraGroupDiversityReward", "ComprehensibilityReward",
+    "SemanticNoveltyPenalty", "SemanticNoveltyUnavailable",
     "CascadeEnv", "BanterEnv",
 ]

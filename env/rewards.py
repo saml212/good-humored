@@ -51,8 +51,21 @@ override for corpus_novelty_penalty / self_repetition_penalty. The
 literal spec for both terms here is trigram-Jaccard only, and dropping
 the hook keeps this file provably pure-stdlib with no guarded-import
 branch to maintain (unlike `benchmark/label_space.py`, which does need
-one). Add an embedding-based tier later, behind a guarded import, if the
-cheap check stops being enough -- see the skill's "Honest limits" section.
+one).
+
+An embedding-based tier now exists as a SEPARATE, OPTIONAL module instead:
+`env/semantic_novelty.py`'s `SemanticNoveltyPenalty` closes
+`CorpusNoveltyPenalty`'s documented 2-word-reskin evasion (see that
+class's "KNOWN, UNFIXED LIMITATION" docstring below) with cosine
+similarity against corpus embeddings. It is wired in here via
+`RewardConfig.semantic_novelty_weight` (default 0.0 -- OFF; a new tier,
+not a silent behavior change to the stack every existing training config
+already depends on) and `reward_stack()` only imports that module lazily,
+inside the function, and only when the weight is nonzero -- so this
+file's own import stays exactly as pure-stdlib as before for every caller
+that doesn't opt in. See `env/semantic_novelty.py`'s module docstring for
+why it lives apart (guarded `sentence_transformers`/`numpy` import) rather
+than merging into this file.
 """
 
 import re
@@ -138,6 +151,20 @@ class RewardConfig:
         self_repetition_weight           = -1.0
         intra_group_diversity_weight     = +0.5
         comprehensibility_weight         = +0.3
+        semantic_novelty_weight          =  0.0   (OFF by default -- see below)
+
+    `semantic_novelty_weight` is a NEW, OPTIONAL tier (env/semantic_novelty.py's
+    `SemanticNoveltyPenalty`) that defaults to 0.0 -- meaning `reward_stack()`
+    and `combined_reward()` behave EXACTLY as before for every existing
+    config that doesn't set it. Set it to **-1.5** (the recommended value,
+    mirroring `corpus_novelty_weight`'s magnitude -- see that module's
+    calibration comment for the validation this was chosen against) to
+    enable it. When nonzero, `reward_stack()` lazily imports
+    `env.semantic_novelty` and appends a `SemanticNoveltyPenalty` term
+    built from `joke_corpus_dir` (reused, not a separate config field) and
+    this weight; that construction can raise `SemanticNoveltyUnavailable`
+    if `sentence_transformers`/`numpy` aren't installed -- see that
+    module for why that's a feature, not a bug.
 
     `judge` and `joke_corpus_dir` are left `None` by default on purpose --
     both are must-inject dependencies (a live judge model; a real
@@ -187,8 +214,14 @@ class RewardConfig:
     min_tokens: int = 5
     max_tokens: int = 120
 
+    # semantic_novelty_penalty (OPTIONAL tier, OFF by default -- see
+    # env/semantic_novelty.py and the class docstring above).
+    # Recommended weight when enabled: -1.5, mirroring corpus_novelty_weight.
+    semantic_novelty_weight: float = 0.0
+
     def __post_init__(self) -> None:
-        _PENALTY_FIELDS = ("corpus_novelty_weight", "self_repetition_weight")
+        _PENALTY_FIELDS = ("corpus_novelty_weight", "self_repetition_weight",
+                          "semantic_novelty_weight")
         _BONUS_FIELDS = ("intra_group_diversity_weight",
                         "comprehensibility_weight")
         for name in _PENALTY_FIELDS:
@@ -325,6 +358,23 @@ class CorpusNoveltyPenalty:
     embedding similarity (the skill's `similarity_fn` hook, deliberately
     NOT carried over here -- see module docstring), which is a real
     dependency cost, not a one-line fix. Not attempted tonight.
+    (2026-07-17 update: `env/semantic_novelty.py` now provides exactly
+    that embedding tier, validated at 100% paraphrase detection /
+    FPR<=0.05 -- opt in via `RewardConfig.semantic_novelty_weight`.)
+
+    KNOWN, UNFIXED LIMITATION #2 -- PADDING/DILUTION (2026-07-17
+    adversarial audit, empirically confirmed): prepending ~5 repetitions
+    of a generic filler sentence to a VERBATIM memorized joke defeats
+    BOTH tiers of this term at once -- the exact-hash tier because the
+    normalized hash no longer matches, and the trigram tier because
+    boilerplate trigrams dilute Jaccard below `threshold`. The
+    semantic tier (`SemanticNoveltyPenalty`) falls to the same trick at
+    ~20 repetitions. A policy can therefore emit a memorized joke
+    verbatim inside a few hundred words of boilerplate and pay zero
+    novelty penalty from every tier. See `env/semantic_novelty.py`'s
+    module docstring for the full numbers and the mitigation direction
+    (max-over-sliding-windows scoring); until that lands, novelty terms
+    must not be the sole anti-memorization defense in a training run.
 
     ALSO NOTE (convention divergence, intentionally NOT patched):
     `benchmark/joke_novelty.py`'s `trigram_jaccard()` returns 0.0 for a
@@ -642,8 +692,9 @@ class ComprehensibilityReward:
 
 
 def reward_stack(config: RewardConfig) -> List[Callable[..., List[float]]]:
-    """Build the 5 reward terms as a LIST of separate TRL reward_funcs,
-    each already scaled by its configured weight.
+    """Build the reward terms as a LIST of separate TRL reward_funcs, each
+    already scaled by its configured weight. 5 terms by default; 6 if
+    `config.semantic_novelty_weight != 0.0` (see below).
 
     Pass this list to `GRPOTrainer(reward_funcs=...)` (rather than
     `combined_reward`'s single summed function) to keep every term
@@ -658,8 +709,18 @@ def reward_stack(config: RewardConfig) -> List[Callable[..., List[float]]]:
     "the novelty term is optional" mode. `config.judge` may legitimately
     be `None` (warns, contributes 0.0) for a dry run before a judge model
     is wired up.
+
+    `config.semantic_novelty_weight` defaults to 0.0 (off): in that case
+    `env.semantic_novelty` is never imported at all, so this function's
+    behavior and dependency footprint are IDENTICAL to before that module
+    existed. When nonzero, `env.semantic_novelty.SemanticNoveltyPenalty`
+    is imported lazily (here, not at this module's top level) and appended
+    as a 6th term, reusing `config.joke_corpus_dir` -- it can raise
+    `SemanticNoveltyUnavailable` if `sentence_transformers`/`numpy` aren't
+    installed; that is deliberate (see that module's docstring), not a bug
+    to work around by catching it here.
     """
-    return [
+    funcs = [
         JudgePreferenceReward(judge=config.judge, weight=config.judge_weight),
         CorpusNoveltyPenalty(
             corpus_dir=config.joke_corpus_dir,
@@ -678,6 +739,12 @@ def reward_stack(config: RewardConfig) -> List[Callable[..., List[float]]]:
             min_tokens=config.min_tokens, max_tokens=config.max_tokens,
             weight=config.comprehensibility_weight),
     ]
+    if config.semantic_novelty_weight != 0.0:
+        from env.semantic_novelty import SemanticNoveltyPenalty  # lazy: see docstring
+        funcs.append(SemanticNoveltyPenalty(
+            corpus_dir=config.joke_corpus_dir,
+            weight=config.semantic_novelty_weight))
+    return funcs
 
 
 def combined_reward(config: RewardConfig) -> Callable[..., List[float]]:
