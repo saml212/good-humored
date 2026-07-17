@@ -25,6 +25,10 @@ where one exists; anything that couldn't be confirmed is marked
   novelty sentence.
 - `corpus-sources.md` — downloadable joke corpora (~3.1M jokes) with
   licenses; feeds the memorized-joke novelty penalty.
+- `humor-honesty-beauty.md` — the humor↔honesty, humor↔beauty, and
+  humor↔alignment literatures with evidence-strength tags (ESTABLISHED /
+  SUGGESTIVE / SPECULATIVE). Grounds the README's alignment framing;
+  read before strengthening any of those claims.
 - `pdfs/` — local-only, gitignored. Never committed; see "PDF policy" below.
 
 ---

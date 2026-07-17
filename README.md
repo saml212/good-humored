@@ -45,6 +45,40 @@ twice is dead. In math, mode collapse costs you diversity; in humor it costs you
 *the entire objective*. That makes humor the ideal stress-test domain for
 diversity-preserving RL: any method that survives here survives anywhere.
 
+### Humor, honesty, and beauty
+
+Humor sits at an unusual intersection: getting a joke and getting a proof both
+require noticing that your model of the world was slightly wrong, then snapping
+to a better one — the "incongruity → resolution" structure that Hardy called
+*inevitability and unexpectedness* in mathematics, and that Hurley, Dennett &
+Adams (*Inside Jokes*, 2011) call **debugging a false belief**. There is direct,
+if single-study, fMRI evidence that joke comprehension recruits the brain
+regions identified in general insight research, with subjects reporting a
+genuine "Aha!" (Tian et al. 2017). Separately, humor *style* — not funniness
+per se — tracks honesty-adjacent personality traits (HEXACO Honesty-Humility;
+Veselka et al. 2010), and an evolutionary literature treats humor production as
+a hard-to-fake signal of verbal intelligence.
+
+We are explicit about where the synthesis outruns the evidence: no study has
+tested mathematical-beauty appreciation and joke appreciation in one paradigm,
+and "funny people are more honest" is not supported as stated. What *is* a
+real, citable pattern is the alignment angle: three independently
+well-supported literatures — humor requires **accurate world models**
+(HumorBench), **theory of mind** (ToM-HCAT, ToMBench), and **explicit
+norm-awareness** (Benign Violation Theory) — line up with the three things
+alignment work already tries to measure and instill: truthfulness,
+intent-modeling, and harm-awareness.
+
+> Humor comprehension is an unusually compressed behavioral test of the same
+> three things alignment cares about — an accurate world model, a working
+> theory of other minds, and a working sense of the norm being violated —
+> even though no one has yet shown that training on humor improves any of
+> the three in general. **That untested transfer is this project's open
+> question.**
+
+Full review with evidence-strength tags and 24 verified citations:
+[`references/humor-honesty-beauty.md`](references/humor-honesty-beauty.md).
+
 ## What's broken today (documented, not speculated)
 
 - **Mode collapse onto memorized jokes:** 90.2% of 1,008 ChatGPT-generated jokes
