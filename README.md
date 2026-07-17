@@ -81,10 +81,10 @@ Full review with evidence-strength tags and 24 verified citations:
 
 ### What a humor-capable model is for (two application hypotheses)
 
-Two concrete use cases, suggested by a collaborator, that the thesis above
-predicts and the environments below are built to enable. Both are stated as
-hypotheses — neither has been tested in this repo yet, and both are
-downstream of capabilities the benchmark already measures.
+Two concrete use cases that the thesis above predicts and the environments
+below are built to enable. Both are stated as hypotheses — neither has
+been tested in this repo yet, and both are downstream of capabilities the
+benchmark already measures.
 
 **1. Making long AI-generated text worth finishing.** Long model output has
 a recognizable failure mode: uniform register, no rhythm, nothing at stake
