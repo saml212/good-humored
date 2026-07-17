@@ -23,9 +23,20 @@ def run_cascade(
     depth: int,
     run_id: str,
     log_path: Optional[Path] = None,
+    temperature: Optional[float] = None,
 ) -> Dict:
     """Run one cascade. Returns the run record; optionally logs JSONL
-    per turn so a crashed run is still data."""
+    per turn so a crashed run is still data.
+
+    `temperature` is metadata ONLY — this function never constructs the
+    request that used it (that already happened inside model_complete's
+    closure, see providers.make_openai_compat). It is recorded here
+    purely so every turn record and the run record carry the number a
+    run was made at: a temperature we can't recover from the logs later
+    is a protocol violation for EXP-007 (which manipulates it). None
+    means "not overridden" (provider default), recorded as such, not
+    coerced to 0.
+    """
     messages: List[Dict[str, str]] = [
         {"role": "user", "content": OPENING_PROMPT}]
     path: List[str] = []
@@ -52,7 +63,7 @@ def run_cascade(
 
             rec = {"run_id": run_id, "turn": turn, "joke": joke,
                    "topic": topic, "refusal": turn in refusal_turns,
-                   "ts": time.time()}
+                   "temperature": temperature, "ts": time.time()}
             turns.append(rec)
             if log_f:
                 log_f.write(json.dumps(rec) + "\n")
@@ -64,6 +75,7 @@ def run_cascade(
     return {
         "run_id": run_id,
         "label_prompt_version": LABEL_PROMPT_VERSION,
+        "temperature": temperature,
         "depth_requested": depth,
         "depth_completed": len(path),
         "path": path,

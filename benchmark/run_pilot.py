@@ -35,18 +35,30 @@ def main() -> None:
     ap.add_argument("--depth", type=int, default=15)
     ap.add_argument("--rejector", default="haiku",
                     help="provider spec for the rejector (default: claude)")
+    ap.add_argument("--temperature", type=float, default=None,
+                    help="sampling temperature applied to the "
+                         "model-under-test provider ONLY (api:* specs "
+                         "only — get_provider rejects it for claude:/"
+                         "codex: CLI specs, a documented confound). The "
+                         "rejector NEVER receives this — the instrument "
+                         "must not vary with the manipulation. Default "
+                         "None = no override (provider default; existing "
+                         "invocations unaffected). Recorded verbatim in "
+                         "every turn's JSONL and in summary.json.")
     ap.add_argument("--out", required=True)
     args = ap.parse_args()
 
     out = Path(args.out)
     out.mkdir(parents=True, exist_ok=True)
+    # Rejector deliberately never sees --temperature: it must stay a
+    # fixed instrument while the manipulation varies the model under test.
     rejector = get_provider(args.rejector)
     models = [m.strip() for m in args.models.split(",") if m.strip()]
 
     paths: Dict[str, List[List[str]]] = {}
     failures: List[Dict] = []
     for model in models:
-        complete = get_provider(model)
+        complete = get_provider(model, temperature=args.temperature)
         paths[model] = []
         for n in range(args.runs):
             run_id = "%s-r%02d" % (model, n)
@@ -54,7 +66,8 @@ def main() -> None:
             try:
                 rec = run_cascade(
                     complete, rejector, args.depth, run_id,
-                    log_path=out / ("turns-%s.jsonl" % run_id))
+                    log_path=out / ("turns-%s.jsonl" % run_id),
+                    temperature=args.temperature)
             except Exception as e:  # fence per run, keep sweeping
                 failures.append({"run_id": run_id, "error": repr(e)})
                 print("FAILED %s: %r" % (run_id, e))
@@ -78,6 +91,7 @@ def main() -> None:
 
     summary: Dict = {"models": models, "runs": args.runs,
                      "depth": args.depth, "rejector": args.rejector,
+                     "temperature": args.temperature,
                      "label_space_degraded": label_space.degraded,
                      "failures": failures, "per_model": {}}
     for model, ps in paths.items():

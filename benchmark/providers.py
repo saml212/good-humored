@@ -233,7 +233,9 @@ _OPENAI_COMPAT_REGISTRY: Dict[str, Dict[str, Optional[str]]] = {
 
 
 def make_openai_compat(provider_name: str, timeout_s: int = 120,
-                       retries: int = 2) -> Callable[[str], str]:
+                       retries: int = 2,
+                       temperature: Optional[float] = 1.0
+                       ) -> Callable[[str], str]:
     """Return a complete(prompt) callable backed by a direct
     OpenAI-compatible /chat/completions endpoint (DeepSeek, Qwen, Kimi,
     GLM) — open-weight cascade subjects via their own API, no local GPU.
@@ -242,6 +244,24 @@ def make_openai_compat(provider_name: str, timeout_s: int = 120,
     time and held only in this closure; it is never returned, printed, or
     written into the repo (the repo is public). stdlib-only (urllib), no
     pip installs.
+
+    `temperature` is the EXP-007 hook (docs/BENCHMARK.md §1): sampling
+    diversity is bought with temperature while cascade path divergence
+    is not, so the temperature actually sent has to be a first-class,
+    recorded number, never an implicit default baked silently into the
+    request.
+      - default (1.0) — unchanged from this function's original hardcoded
+        behavior, so any caller that doesn't ask for temperature control
+        (i.e. every pre-existing spec, resolved through get_provider()
+        without the new kwarg) builds a byte-identical request body to
+        before this parameter existed.
+      - a float (including 0.0) — sent verbatim as "temperature" in the
+        request body. Checked with `is not None`, NOT truthiness: 0.0 is
+        a legitimate, fully-greedy decoding setting and must not be
+        confused with "no override."
+      - None — omits the "temperature" key from the body entirely, so
+        the provider's own server-side default applies (which may not be
+        1.0). This is a deliberate, different thing from "0.0".
     """
     spec = _OPENAI_COMPAT_REGISTRY.get(provider_name)
     if spec is None:
@@ -275,12 +295,15 @@ def make_openai_compat(provider_name: str, timeout_s: int = 120,
     url = base_url.rstrip("/") + "/chat/completions"
 
     def complete(prompt: str) -> str:
-        body = json.dumps({
-            "model": model,
-            "messages": [{"role": "user", "content": prompt}],
-            "temperature": 1.0,
-            "max_tokens": 400,
-        }).encode("utf-8")
+        # Field order matches the pre-temperature-kwarg body exactly when
+        # temperature takes its default (1.0), so the default path is
+        # byte-identical to what this function sent before.
+        payload = {"model": model,
+                  "messages": [{"role": "user", "content": prompt}]}
+        if temperature is not None:
+            payload["temperature"] = temperature
+        payload["max_tokens"] = 400
+        body = json.dumps(payload).encode("utf-8")
         last_err: Exception = RuntimeError("unreachable")
         for attempt in range(retries + 1):
             req = urllib.request.Request(
@@ -330,10 +353,23 @@ PROVIDER_FACTORIES: Dict[str, Callable[..., Callable[[str], str]]] = {
 }
 
 
-def get_provider(spec: str, timeout_s: int = 120,
-                 retries: int = 2) -> Callable[[str], str]:
+def get_provider(spec: str, timeout_s: int = 120, retries: int = 2,
+                 temperature: Optional[float] = None) -> Callable[[str], str]:
     """Parse a "prefix:alias" provider spec (e.g. "codex:mini",
-    "api:deepseek", or bare "haiku") into a complete(prompt) callable."""
+    "api:deepseek", or bare "haiku") into a complete(prompt) callable.
+
+    `temperature`, if given, is forwarded to the underlying factory as a
+    keyword — but ONLY for "api:" (OpenAI-compatible HTTP) specs, which
+    are the only providers with real temperature control. Requesting it
+    for "claude:"/"codex:" (or bare, which defaults to "claude") specs
+    raises immediately: those are single-shot CLI wrappers with no
+    sampling-parameter control, a documented confound (providers.py
+    module docstring; docs/BENCHMARK.md), and silently ignoring the
+    request would let a caller believe a manipulation happened when it
+    didn't. Leaving `temperature` at its default (None) does not touch
+    the factory call at all — every pre-existing call site (that never
+    passed this kwarg) resolves through the exact same code path as
+    before it existed, so old specs stay byte-identical."""
     if ":" in spec:
         prefix, alias = spec.split(":", 1)
     else:
@@ -344,6 +380,17 @@ def get_provider(spec: str, timeout_s: int = 120,
         raise ValueError(
             "unknown provider prefix %r in spec %r (known: %s)"
             % (prefix, spec, ", ".join(sorted(PROVIDER_FACTORIES)))) from None
+    if temperature is not None:
+        if prefix != "api":
+            raise ValueError(
+                "temperature override requested for spec %r (prefix %r), "
+                "but only 'api:' (OpenAI-compatible HTTP) providers support "
+                "temperature control — CLI providers ('claude:'/'codex:', "
+                "and bare aliases, which default to 'claude:') are a "
+                "documented confound and must be left at their single "
+                "fixed decoding setting." % (spec, prefix))
+        return factory(alias, timeout_s=timeout_s, retries=retries,
+                       temperature=temperature)
     return factory(alias, timeout_s=timeout_s, retries=retries)
 
 

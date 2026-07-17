@@ -218,6 +218,45 @@ judge isn't earning its keep.
 
 ---
 
+## EXP-007 — temperature fakeability ablation (2026-07-17, pre-registered BEFORE launch)
+
+**Status:** running.
+
+**Hypothesis:** Raising sampling temperature markedly inflates surface-diversity
+metrics (distinct-2, inverse trigram similarity) over the emitted jokes while
+within-model path divergence over the same runs' topic sequences moves only
+slightly — demonstrating that sampling diversity is temperature-buyable and
+cascade path divergence is not (the benchmark's core differentiator claim,
+until now asserted rhetorically).
+
+**Setup:** api:deepseek (native API, temperature control), rejector = haiku
+(never receives the override), temperatures {0.2, 0.7, 1.2}, N=6, depth 30.
+3 parallel lanes → experiment-runs/2026-07-17-temp-fakeability/temp-*/.
+540 deepseek calls (~$0.15–0.25) + 540 haiku rejector calls.
+Machinery: `--temperature` on run_pilot (API providers only — get_provider
+raises on CLI specs, keeping the wrapper confound un-muddied);
+benchmark/sampling_diversity.py (distinct-n, pairwise trigram similarity);
+26 new tests, all mocked, 212 total green.
+
+**Predicted deltas 0.2 → 1.2 (registered):** distinct_1 +0.13 (0.55→0.68);
+distinct_2 +0.21 (0.42→0.63, calibration: exp-007-temp-fakeability
+distinct_2_delta); mean_pairwise_trigram_jaccard −0.09; within-model
+set_jaccard −0.03 (calibration: path_divergence_set_jaccard_delta);
+prefix_depth ~0; norm_edit_distance ~0.
+
+**Success bar (registered):** |Δ sampling family| ≥ 3× |Δ path divergence| —
+concretely |Δ distinct_2| ≥ 0.15 while |Δ set_jaccard| ≤ 0.05.
+
+**Known validity limits:** single model (deepseek) — pattern should replicate
+on a second API model before the claim generalizes; N=6 per temperature;
+deepseek-chat deprecates 2026-07-24 (launched inside the window).
+
+**Result:** _(pending)_
+
+**Verdict:** _(pending)_
+
+---
+
 ## Instrument decision (2026-07-17, pilot grade)
 
 **Haiku + LABEL_PROMPT v2, raw string scoring** is the instrument. Passed:

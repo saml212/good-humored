@@ -36,17 +36,30 @@ def fake_rejector(prompt):
 
 
 class TestRunPilot(unittest.TestCase):
-    def _run(self, providers, models, runs=2, depth=3):
+    def setUp(self):
+        # (spec, temperature) for every get_provider() call the run made —
+        # lets tests assert WHICH specs got a temperature override.
+        self.get_provider_calls = []
+
+    def _run(self, providers, models, runs=2, depth=3, temperature=None):
         out = tempfile.mkdtemp(prefix="pilot-test-")
+        self.last_out = Path(out)
         argv = ["run_pilot", "--models", ",".join(models),
                 "--runs", str(runs), "--depth", str(depth),
                 "--rejector", "fakerej", "--out", out]
+        if temperature is not None:
+            argv += ["--temperature", str(temperature)]
         providers = dict(providers, fakerej=fake_rejector)
+
+        def fake_get_provider(s, temperature=None):
+            self.get_provider_calls.append((s, temperature))
+            return providers[s]
+
         with mock.patch.object(run_pilot, "get_provider",
-                               side_effect=lambda s: providers[s]), \
+                               side_effect=fake_get_provider), \
              mock.patch.object(sys, "argv", argv):
             run_pilot.main()
-        with open(Path(out) / "summary.json") as f:
+        with open(self.last_out / "summary.json") as f:
             return json.load(f)
 
     def test_failure_fenced_sweep_continues(self):
@@ -77,6 +90,33 @@ class TestRunPilot(unittest.TestCase):
         self.assertGreaterEqual(
             s["cross_model_semantic"]["mean_cross_jaccard"],
             s["cross_model"]["mean_cross_jaccard"])
+
+    def test_temperature_plumbed_to_model_not_rejector(self):
+        s = self._run(
+            {"a": make_fake_model(["cat", "dog", "work"])},
+            ["a"], runs=2, depth=2, temperature=0.2)
+        self.assertEqual(s["temperature"], 0.2)
+        calls = dict(self.get_provider_calls)
+        # model-under-test got the override...
+        self.assertEqual(calls["a"], 0.2)
+        # ...the rejector never did — the instrument must not vary with
+        # the manipulation.
+        self.assertIsNone(calls["fakerej"])
+        # every turn record on disk carries the same number (recoverable
+        # from logs alone, per the "no protocol violation" requirement).
+        turns_files = list(self.last_out.glob("turns-a-r*.jsonl"))
+        self.assertEqual(len(turns_files), 2)
+        for tf in turns_files:
+            with open(tf) as f:
+                for line in f:
+                    self.assertEqual(json.loads(line)["temperature"], 0.2)
+
+    def test_no_temperature_flag_is_none_everywhere(self):
+        s = self._run(
+            {"a": make_fake_model(["cat", "dog", "work"])},
+            ["a"], runs=1, depth=2)
+        self.assertIsNone(s["temperature"])
+        self.assertIsNone(dict(self.get_provider_calls)["a"])
 
 
 if __name__ == "__main__":
