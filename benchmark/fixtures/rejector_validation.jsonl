@@ -1,0 +1,32 @@
+{"id": "cats-a", "group": "cats", "gold_topic": "cats", "pair_type": "original", "joke": "Why did the cat sit on the computer? To keep an eye on the mouse."}
+{"id": "cats-b", "group": "cats", "gold_topic": "cats", "pair_type": "reworded", "joke": "My cat perches on my laptop all day. She says she's keeping tabs on the mouse."}
+{"id": "cats-c", "group": "cats", "gold_topic": "cats", "pair_type": "same_topic", "joke": "I asked my cat what she thought of my cooking. She walked out of the room."}
+{"id": "dogs-a", "group": "dogs", "gold_topic": "dogs", "pair_type": "original", "joke": "My dog is an excellent guard dog. He's been guarding the couch for six years."}
+{"id": "dogs-b", "group": "dogs", "gold_topic": "dogs", "pair_type": "reworded", "joke": "We got a guard dog. So far the only thing he guards is his spot on the sofa."}
+{"id": "dogs-c", "group": "dogs", "gold_topic": "dogs", "pair_type": "same_topic", "joke": "My dog learned to shake hands. Now he won't sign anything without his lawyer."}
+{"id": "marriage-a", "group": "marriage", "gold_topic": "marriage", "pair_type": "original", "joke": "My wife told me to stop impersonating a flamingo. I had to put my foot down."}
+{"id": "marriage-b", "group": "marriage", "gold_topic": "marriage", "pair_type": "reworded", "joke": "My spouse demanded I quit the flamingo impression, so I put my foot down."}
+{"id": "marriage-c", "group": "marriage", "gold_topic": "marriage", "pair_type": "same_topic", "joke": "My husband and I agreed to never go to bed angry. We haven't slept in three weeks."}
+{"id": "work-a", "group": "work", "gold_topic": "work", "pair_type": "original", "joke": "My boss told me to have a good day, so I went home."}
+{"id": "work-b", "group": "work", "gold_topic": "work", "pair_type": "reworded", "joke": "The manager said to have a good day. So I left the office and had one."}
+{"id": "work-c", "group": "work", "gold_topic": "work", "pair_type": "same_topic", "joke": "Our office motto is teamwork: everyone doing what I say."}
+{"id": "doctors-a", "group": "doctors", "gold_topic": "doctors", "pair_type": "original", "joke": "I told my doctor I broke my arm in two places. He told me to stop going to those places."}
+{"id": "doctors-b", "group": "doctors", "gold_topic": "doctors", "pair_type": "reworded", "joke": "Doctor, my arm is broken in two places. His advice: avoid both of them."}
+{"id": "doctors-c", "group": "doctors", "gold_topic": "doctors", "pair_type": "same_topic", "joke": "My doctor said I needed more vitamin sea, so I sent him the bill for my beach trip."}
+{"id": "programmers-a", "group": "programmers", "gold_topic": "programmers", "pair_type": "original", "joke": "Why do programmers prefer dark mode? Because light attracts bugs."}
+{"id": "programmers-b", "group": "programmers", "gold_topic": "programmers", "pair_type": "reworded", "joke": "Programmers like dark mode for one simple reason: bugs are drawn to the light."}
+{"id": "programmers-c", "group": "programmers", "gold_topic": "programmers", "pair_type": "same_topic", "joke": "A programmer's spouse says: buy a loaf of bread, and if they have eggs, get a dozen. The programmer comes home with twelve loaves."}
+{"id": "airplanes-a", "group": "airplanes", "gold_topic": "airplanes", "pair_type": "original", "joke": "The airline lost my luggage, so now my clothes are better traveled than I am."}
+{"id": "airplanes-b", "group": "airplanes", "gold_topic": "airplanes", "pair_type": "reworded", "joke": "My suitcase has seen more countries than me. The airline keeps sending it on solo trips."}
+{"id": "airplanes-c", "group": "airplanes", "gold_topic": "airplanes", "pair_type": "same_topic", "joke": "The pilot announced we'd land shortly. Twenty minutes later he clarified: shortly after fuel runs out."}
+{"id": "coffee-a", "group": "coffee", "gold_topic": "coffee", "pair_type": "original", "joke": "I don't have a coffee problem. I have a coffee solution."}
+{"id": "coffee-b", "group": "coffee", "gold_topic": "coffee", "pair_type": "reworded", "joke": "People say I drink too much coffee. Wrong: caffeine is not my problem, it's my solution."}
+{"id": "coffee-c", "group": "coffee", "gold_topic": "coffee", "pair_type": "same_topic", "joke": "Decaf coffee is like a hairless cat: technically it exists, but why."}
+{"id": "gym-a", "group": "gym", "gold_topic": "exercise", "pair_type": "original", "joke": "I bought a treadmill and it's the most expensive coat rack I've ever owned."}
+{"id": "gym-b", "group": "gym", "gold_topic": "exercise", "pair_type": "reworded", "joke": "My treadmill gets daily use, mostly as a place to hang jackets."}
+{"id": "gym-c", "group": "gym", "gold_topic": "exercise", "pair_type": "same_topic", "joke": "I do crunches every morning. Captain Crunches, with milk."}
+{"id": "weather-a", "group": "weather", "gold_topic": "weather", "pair_type": "original", "joke": "It was so cold outside I saw a politician with his hands in his own pockets."}
+{"id": "weather-b", "group": "weather", "gold_topic": "weather", "pair_type": "reworded", "joke": "How cold was it? Cold enough that the politician finally warmed his hands in his own pockets."}
+{"id": "weather-c", "group": "weather", "gold_topic": "weather", "pair_type": "same_topic", "joke": "The forecast said 100% chance of rain, so my umbrella stayed home out of spite."}
+{"id": "ambig-1", "group": "ambiguous", "gold_topic": "school", "alt_topics": ["dogs", "teachers"], "pair_type": "ambiguous", "joke": "My dog ate my homework, which was awkward, because I'm the teacher."}
+{"id": "ambig-2", "group": "ambiguous", "gold_topic": "banking", "alt_topics": ["work", "money"], "pair_type": "ambiguous", "joke": "I used to be a banker, but I lost interest."}

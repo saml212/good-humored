@@ -15,6 +15,16 @@ where one exists; anything that couldn't be confirmed is marked
 - `code-and-models.md` — repos and weights, audited for whether they
   actually run.
 - `psychology.md` — the humor/intelligence and humor-theory literature.
+- `trajectory-grounding.md` — semantic foraging / verbal-fluency metrics
+  (Troyer clustering/switching, Hills-Jones-Todd patch models), humor-topic
+  sociology, and what each humor theory predicts about topic exhaustion.
+  The scientific basis of the cascade benchmark's metrics.
+- `related-work-cascade.md` — adversarial novelty audit of the rejection
+  cascade: Denial Prompting/NEOCODER, MUTATE, NoveltyBench and the exact
+  differentiation the cascade can honestly claim. Read before writing any
+  novelty sentence.
+- `corpus-sources.md` — downloadable joke corpora (~3.1M jokes) with
+  licenses; feeds the memorized-joke novelty penalty.
 - `pdfs/` — local-only, gitignored. Never committed; see "PDF policy" below.
 
 ---

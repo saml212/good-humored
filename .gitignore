@@ -92,3 +92,4 @@ CLAUDE.md
 # copyrighted papers; never commit. Citations/summaries live in
 # references/*.md and references/papers.bib instead.
 references/pdfs/
+docs/private/

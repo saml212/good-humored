@@ -28,6 +28,33 @@ Path-based exhaustion cannot be faked that way. If a model walks
 `cat → dog → parrot` on *every* run, its "distribution" is a lookup table, and
 the cascade makes that visible in a way sampling structurally cannot.
 
+### Related work (attack-agent verified 2026-07-16 — full analysis in `references/related-work-cascade.md`)
+
+The idea survives, but three papers are mandatory related work:
+
+- **Denial Prompting / NEOCODER** (arXiv:2407.09007, NAACL 2025) — the direct
+  structural ancestor: iteratively denies a *technique* in code generation.
+  T≈5 turns, objective constraints, scalar score — not a semantic path.
+- **MUTATE / "Beyond One Path"** (arXiv:2605.28465) — closest: forces path
+  divergence via a failure memory in a text-adventure env. But rejection there
+  is *objective task failure*; ours is subjective, content-agnostic rejection
+  on an open creative task. It never runs the cross-model comparison.
+- **NoveltyBench §4.3** (arXiv:2504.05228) — "generate another" in-context,
+  8 turns, set-cardinality metric (Distinct-k), no rejection framing, no path.
+
+Cross-model *single-shot* homogeneity is already published (2501.19361;
+2604.08757 humor-specific). So the claim is not "first to show LLMs converge on
+humor" — it is: **first to force subjective, content-agnostic rejection on an
+open social task at ~50-turn depth and treat the resulting topic *sequence* —
+compared across runs and across models — as the measured object.** The
+cross-model trajectory comparison exists nowhere.
+
+Metric lineage (see `references/trajectory-grounding.md`): cluster/switch
+statistics port Troyer et al. (1997) verbal-fluency scoring; the patch-walk
+framing follows Hills, Jones & Todd (2012) optimal semantic foraging; category
+fluency has been run on LLMs unforced and single-model (2405.06714) — the
+cascade is the forced, adversarial, multi-model version.
+
 ### The three metrics
 
 | Metric | Question | Collapse signature |
@@ -64,6 +91,30 @@ and topic-focused. This is not optional scaffolding — it is the experiment's
 internal validity.
 
 ---
+
+## 1b. Track 2 — contextual banter (design sketch, 2026-07-16)
+
+Sam: "we aren't just telling jokes — humor is contextualized." The cascade
+(Track 1) is the sterile diagnostic; Track 2 measures and trains
+*conversational* humor — gap #2, where nothing exists and RLVR damages the
+prerequisite skill.
+
+- **Episode = conversation, not a joke slot.** Multi-turn episodes; reward
+  per-utterance plus trajectory-level bonuses.
+- **Callback bonus:** reusing an entity/theme from ≥k turns earlier in a novel
+  payoff. Detectable cheaply (entity overlap + novelty check vs. the earlier
+  mention), and it is the most mechanical marker of real banter.
+- **Context-ablation scoring (the quantifiable "contextualized" metric):**
+  score(reply | true conversation) − score(reply | randomly swapped
+  conversation). A canned joke scores identically under both — Δ≈0 exposes it.
+  Contextual humor degrades under swap. This turns "humor is contextualized"
+  into a number, and doubles as an anti-canned-joke reward term for training.
+- Data that fits this shape: Oogiri (prompt-conditioned responses), LOL Arena /
+  Bad Cards (contextual prompt-response with human votes).
+
+Track 2 depends on Track 1's rejector/labeling machinery being validated, and
+on the judge infrastructure. Build order unchanged: rejector validation →
+cascade → banter.
 
 ## 2. Entropy-collapse penalization
 
