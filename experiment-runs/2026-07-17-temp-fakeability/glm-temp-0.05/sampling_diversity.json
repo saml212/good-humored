@@ -1,0 +1,18 @@
+{
+  "api:glm": {
+    "n_runs": 6,
+    "n_jokes": 180,
+    "sampling_diversity": {
+      "distinct_1": 0.19347240915208613,
+      "distinct_2": 0.4172636103151863,
+      "mean_pairwise_trigram_jaccard": 0.035436751096279695,
+      "n_texts": 180.0
+    },
+    "path_divergence": {
+      "set_jaccard": 0.2094598734186021,
+      "prefix_depth": 0.13333333333333333,
+      "norm_edit_distance": 0.9444444444444446,
+      "n_pairs": 15.0
+    }
+  }
+}

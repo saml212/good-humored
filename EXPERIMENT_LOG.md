@@ -530,7 +530,28 @@ deltas.
 - set_jaccard delta ≈ **0.00** (exp-007c-glm-replication-path)
 - Success bar unchanged: sampling delta ≥ 3× |path delta|.
 
-Result: _(pending)_
+**Result (2026-07-17):** REPLICATED, all gates passed, 18/18 runs
+complete, zero failures (180 jokes/lane). Manipulation check: **6/6
+distinct turn-1 jokes at temp 0.95** (bar ≥3; contrast qwen's 1/6) — the
+manipulation reached the model. Measured (0.05→0.95, sampling_diversity,
+same instrument as EXP-007/007b): distinct_2 **+0.143** (pred +0.15 — a
+near-exact prior), set_jaccard **−0.037** (pred 0.00, inside EXP-007's
+≤0.05 flat bound), ratio **3.9×** (bar ≥3×). Both calibrations closed.
+Nuance kept honest: the middle lane is non-monotonic (distinct_2 0.417 →
+0.361 → 0.560) — the diversity purchase concentrates in the top of glm's
+[0,1] range; the 0.05 lane's high floor (5/6 distinct firsts) matches the
+pre-probe. Prefix agreement is near-floor at all temps (0.13/0.00/0.07),
+so the deepseek-specific "prefix collapse" sub-claim doesn't transfer —
+glm's walk order is noisy even near-greedy; only the pool-flatness claim
+(the one that matters) replicates.
+
+**Verdict:** The core differentiator claim now stands on TWO
+honored-endpoint native-API models: temperature buys surface diversity
+(deepseek +0.390, glm +0.143) but cannot expand the topic pool (deepseek
+−0.012, glm −0.037). Set-level trajectory metrics remain the
+temperature-unfakeable quantity. qwen stays disqualified (EXP-007b) — an
+endpoint that ignores temperature can neither support nor threaten the
+claim. Lanes: experiment-runs/2026-07-17-temp-fakeability/glm-temp-*.
 
 ---
 
@@ -593,3 +614,16 @@ negative result before it was logged. The remaining exploit class
 [LEARN] validation-design: Score every detector tier against the SAME reference set before comparing them.
 Mistake: EXP-009's first validation calibrated the semantic tier against templates+50K general corpus while the n-gram baseline used templates only — the apples-to-oranges reference made a working detector look useless (0% detection at any usable FPR).
 Correction: A detector-vs-baseline comparison is only valid when both score against an identical reference set; any extra corpus signal (near-duplicate redundancy) measures a different construct and must be reported separately, never folded into threshold calibration.
+
+**EXP-004 addendum — kimi DROPPED from the cascade roster (2026-07-17
+morning, decision rule followed):** kimi-k2.5 is a reasoning model whose
+reasoning_content burn grows with the cascade's accumulating rejection
+list, so no fixed max_tokens survives depth 30: 400 → empty at turn 1
+(original lane), 2048 → died turns 6/12 (first fill), 4096 → died turns
+20/18 (last-chance lane, both runs "empty response"). The pre-committed
+rule was "4096 or drop with documented failure" — 4096 failed, kimi is
+dropped. Zero complete cascade runs ever; its 54.5% memorization rate
+(now +38 turns of scraps to re-count in the novelty refresh) remains a
+scrap-based flag, never a path finding. A future kimi lane needs
+streaming with reasoning-budget control or a non-reasoning kimi variant,
+not a bigger constant.

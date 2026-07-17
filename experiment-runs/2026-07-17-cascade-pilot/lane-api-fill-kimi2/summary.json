@@ -1,0 +1,21 @@
+{
+  "models": [
+    "api:kimi"
+  ],
+  "runs": 2,
+  "depth": 30,
+  "rejector": "haiku",
+  "temperature": null,
+  "label_space_degraded": false,
+  "failures": [
+    {
+      "run_id": "api:kimi-r00",
+      "error": "RuntimeError('api:kimi empty response')"
+    },
+    {
+      "run_id": "api:kimi-r01",
+      "error": "RuntimeError('api:kimi empty response')"
+    }
+  ],
+  "per_model": {}
+}
