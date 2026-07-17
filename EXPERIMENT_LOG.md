@@ -76,6 +76,21 @@ marriage-a/b kept unchanged as a fair test of v2's generalize-up instruction.
 Same scoring, same model (haiku), repeats=3. Prompt v1 → v2; `politics`
 singularization bug fixed.
 
-**Result:** _(pending)_
+**Result:** ARI 0.837 ✓ (bar 0.80, was 0.620 — predicted +0.23, actual +0.217,
+calibration closed). Reworded invariance 0.800 ✗ (bar 0.90, was 0.600).
+Repeat consistency 0.760 (was 0.688). 7/10 groups now perfectly canonical
+across all repeats (`exercise×3`, `travel×3` — v1's synonym scatter is fixed).
 
-**Verdict:** _(pending)_
+**Verdict:** Partial pass. The two remaining invariance misses are `cat` vs
+`pet` and `health` vs `medicine` — semantically identical labels failing
+STRING equality. Also: v2's generalize-up instruction overshoots on edge cases
+(flamingo→`animal`, consistently across the pair — invariant but mis-clustered
+vs gold `marriage`), and `cats-c` (cat + cooking joke) is another dual-topic
+fixture item of the audit-W6 class — my fixture authoring keeps producing
+punchline-pivot jokes; systematic authoring flaw, noted. Decision: do NOT
+iterate to prompt v3 (diminishing returns, granularity tension is inherent to
+free-vocabulary labeling). Instead score EXP-002's raw labels under the
+calibrated semantic label space (EXP-003, zero new API calls) — the same
+equivalence machinery the cascade metrics need anyway. If invariance ≥ 0.90
+under semantic equivalence, the instrument is valid with the documented caveat
+that all downstream metrics use the same equivalence.

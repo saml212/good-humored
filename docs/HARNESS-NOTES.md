@@ -89,7 +89,7 @@ Status: OPEN unless noted.
 
 | # | Finding | Status |
 |---|---|---|
-| L1 | `pre-train-gate` false-blocks read-only commands: extracts the LAST `.py` token in a compound command (grabbed a `find -name "journal.py"` pattern), and `[[:graph:]]` keeps quote chars → malformed path → hard error blocks the command | Fix PR in flight (agent) |
+| L1 | `pre-train-gate` false-blocks read-only commands: extracts the LAST `.py` token in a compound command (grabbed a `find -name "journal.py"` pattern), and `[[:graph:]]` keeps quote chars → malformed path → hard error blocks the command | FIXED — rockie-claude #34, rockie-codex #32 (also fixed both repos' broken-main CI: smoke test ran real `git commit` with no local identity — passed locally via ambient global config, failed on runners) |
 | L2 | `/clean` new-.md blocker fires on the exact files the harness's own template mandates (STATE.md, EXPERIMENT_LOG.md, README.md) — a new user's first real commit is blocked by the harness's own requirements | Fix PR in flight (agent, canonical) |
 | L3 | `pre-commit-gate` blocks the ENTIRE compound command, so `git add X && git commit` dies with the add never having run — and the error doesn't say so. Cost me two phantom-debugging rounds. Error text should state "no part of the command ran" | OPEN |
 | L4 | Audit-then-commit must be two separate Bash calls (PreToolUse evaluates before the in-command audit can write the sentinel). Fine as design, but nothing documents it; every new agent will trip it once | OPEN (docs) |
