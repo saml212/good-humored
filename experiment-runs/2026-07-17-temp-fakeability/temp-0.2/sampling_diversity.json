@@ -1,0 +1,18 @@
+{
+  "api:deepseek": {
+    "n_runs": 6,
+    "n_jokes": 180,
+    "sampling_diversity": {
+      "distinct_1": 0.09967637540453074,
+      "distinct_2": 0.2683333333333333,
+      "mean_pairwise_trigram_jaccard": 0.0603203934831784,
+      "n_texts": 180.0
+    },
+    "path_divergence": {
+      "set_jaccard": 0.16425065203318975,
+      "prefix_depth": 0.9333333333333333,
+      "norm_edit_distance": 0.9577777777777778,
+      "n_pairs": 15.0
+    }
+  }
+}

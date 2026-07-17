@@ -270,9 +270,22 @@ concretely |Δ distinct_2| ≥ 0.15 while |Δ set_jaccard| ≤ 0.05.
 on a second API model before the claim generalizes; N=6 per temperature;
 deepseek-chat deprecates 2026-07-24 (launched inside the window).
 
-**Result:** _(pending)_
+**Result:** BAR CLEARED at 32× the required separation (540 turns, zero
+failures). Sampling family 0.2→1.2: distinct_2 0.268→0.658 (**Δ +0.390**,
+predicted +0.21 — underpredicted); distinct_1 +0.085; pairwise trigram
+jaccard 0.060→0.002 (jokes look near-perfectly "diverse" at temp 1.2).
+Path family: topic-set jaccard 0.164→0.229→0.152 (**Δ −0.012**, predicted
+−0.03; bound |Δ|≤0.05 ✓; non-monotonic, N=6 noise). Both calibrations
+closed. Honest surprise: prefix_depth IS temperature-sensitive
+(0.933→0.000) — near-greedy decoding walks near-identical ORDERINGS.
 
-**Verdict:** _(pending)_
+**Verdict:** The differentiator claim survives, and gets sharper:
+temperature buys lexical/sample diversity (distinct-k) and shuffles the
+ORDER a model walks its topic pool (prefix agreement), but does NOT expand
+the pool itself (set jaccard flat). The set-level trajectory metric is the
+temperature-unfakeable quantity; papers/pitch should say exactly that
+rather than "path divergence" generically. Replication on a second API
+model queued as follow-up before the claim generalizes beyond deepseek.
 
 ---
 
@@ -329,6 +342,54 @@ one v2 missed. v3 becomes the default for future cascade runs; EXP-004
 pilot ran on v2 (documented; conservative bias direction unchanged) — a v3
 post-hoc relabel of the pilot's stored jokes is queued as a robustness
 check so findings can be reported under both instruments.
+
+---
+
+## EXP-006 — labeler-noise bias-direction simulation (2026-07-17)
+
+**Status:** complete.
+
+**Hypothesis:** The claim "labeler noise is conservative for collapse
+claims" (asserted since EXP-002, flagged by adversarial review as
+untested) holds — noise net-understates cross-model jaccard — but
+generalize-up merges (flamingo→animal class) contribute a quantifiable
+inflation component. **Registered prediction:**
+net_bias_on_cross_model_jaccard ≈ −0.06.
+
+**Setup:** offline Monte-Carlo, zero API calls. Noise rates estimated from
+EXP-001/002/003b raw repeat-label logs (haiku v2: match 0.563, synonym-swap
+0.149, generalize-up 0.276, other 0.011). 30-topic ontology with shared
+hypernyms; synthetic 4-model × 4-run × depth-30 trajectories at five true
+overlap regimes; 2000 seeded reps/variant; scored with the real
+benchmark.metrics functions. `benchmark/noise_robustness.py`, seed 20260717.
+
+**Result — the defense is REGIME-DEPENDENT and flips sign:**
+
+| true regime (clean jaccard) | net bias | synonym-only | generalize-only |
+|---|---|---|---|
+| full collapse (1.00) | **−0.466** | −0.379 | −0.192 |
+| high (0.39) | **−0.113** | −0.123 | −0.003 |
+| moderate (0.23) | **−0.035** | −0.074 | +0.036 |
+| low (0.07) | **+0.021** | −0.019 | +0.055 |
+| disjoint (0.00) | **+0.046** | ±0.000 | +0.067 |
+
+Calibration closed at −0.035 (moderate regime, the registered scenario) vs
+−0.06 predicted — direction right, magnitude close, but the prediction was
+regime-naive and the regime structure is the real finding.
+
+**Verdict:** (1) Collapse findings at high overlap SURVIVE noise — the
+original defense holds where collapse is actually claimed. (2) At low true
+overlap, generalize-up merges MANUFACTURE overlap: measured low overlap is
+an OVERESTIMATE of true overlap. Since the EXP-004 pilot is observing
+cross-model jaccard ≈ 0.15–0.22 (low-to-moderate regime), the honest
+statement is: models' topic pools are AT LEAST as distinct as measured,
+and no cross-model collapse claim may be made from this data without the
+regime caveat. (3) The blanket "noise is conservative" sentence in prior
+log entries and the paper draft is hereby superseded by the table above.
+(4) The v3 constrained-vocabulary instrument (EXP-008) eliminates most of
+the generalize-up channel by construction — its noise profile should be
+re-estimated and this simulation re-run with v3 rates before paper-grade
+claims.
 
 ---
 
