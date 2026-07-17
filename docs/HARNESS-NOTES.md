@@ -99,6 +99,8 @@ Status: OPEN unless noted.
 | L8 | Nested `claude -p` inherits project CLAUDE.md from cwd — any harness feature that shells out to a model as an *instrument* must use a neutral cwd. The harness itself does not document or guard this | OPEN (doc/guard) |
 | L9 | STATE.md / EXPERIMENT_LOG.md are mandated by the template but not scaffolded by the installer — every new project recreates them from prose | OPEN |
 | L10 | `[LEARN]` blocks: no feedback on whether the hook actually captured one (fire-and-forget from the agent's side) | OPEN (UX) |
+| L11 | install.sh never prunes skills later moved to `excluded_from_overlay` — pre-policy installs carry dead-weight skills forever (rsync has no `--delete`, correctly, but no prune/notice path either) | OPEN — [#36](https://github.com/Rockielab/rockie-claude/issues/36) |
+| L12 | Reinstall's idempotent schema.sql reapply churns workflow.db's checksum with zero data change — false data-loss scare for any before/after-checksum audit; needs a docs note (verified benign via schema diff + row counts) | OPEN — [#37](https://github.com/Rockielab/rockie-claude/issues/37) |
 
 ### rockie CLI
 
@@ -109,6 +111,7 @@ Status: OPEN unless noted.
 | C3 | `sota-delta` exists in the harness but was never pushed to the catalog (`tenant_visible_count: 296`) | OPEN |
 | C4 | No `rockie skill push` dry-run; pushing writes to the live tenant overlay with no preview — agents were forbidden from using it this session for that reason | OPEN |
 | C5 | Trailer policy conflict: rockie-claude CONTRIBUTING.md + platform-context commit-msg hook forbid `Co-Authored-By: Claude`, while Claude Code's defaults add it — every agent hits this once per repo | OPEN (reconcile) |
+| C6 | `skill pull ml-paper-writing` fails 415 "file is not valid UTF-8" — one bad byte makes a whole catalog entry unpullable, and the error doesn't name the offending file | OPEN — [platform-skills#91](https://github.com/Rockielab/platform-skills/issues/91) |
 
 ## 5. Commercial posture
 

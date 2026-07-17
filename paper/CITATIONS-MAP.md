@@ -17,15 +17,15 @@ written — see the "Bibliographic hygiene" note at the end.
 
 ## Section 2 — Introduction
 
-| Claim | Citation | Verifying file | Notes |
-|---|---|---|---|
-| 90.2% (909/1,008) of ChatGPT jokes were 1 of 25 recurring templates | Jentzsch & Kersting, 2023, WASSA (`jentzsch2023chatgpt`) | `references/negative-results.md` §1 | Primary-text confirmed, code public |
-| A lookup table sampled at temperature can mimic a distribution's shape (motivating claim, not a cited finding) | — (argument, not a citation) | `docs/BENCHMARK.md` "Why this is different from everything published" | Stated as our own argument, correctly uncited |
-| HumorBench: STEM-reasoning training transfers to humor comprehension | Narad et al., 2025, arXiv:2507.21476 (`narad2025humorbench`) | `references/humor-honesty-beauty.md` §3.3(1); `references/README.md` | ESTABLISHED per source's own tag |
-| ToM-HCAT / ToMBench as evidence humor requires theory of mind | ToM-HCAT, *Frontiers in Psychology* 2018 (PMC6099116); Chen et al. 2024, ACL, arXiv:2402.15052 | `references/humor-honesty-beauty.md` §3.3(2) | ESTABLISHED (human side); LLM ToM measurement flagged as "active, real research area," not solved — draft does not claim it's solved |
-| Benign Violation Theory: humor requires norm-violation + benign appraisal | McGraw & Warren, 2010, *Psychological Science* 21(8):1141-1149 (`mcgraw2010benign`) | `references/humor-honesty-beauty.md` §3.3(3); `references/trajectory-grounding.md` §3.4 | ESTABLISHED |
-| The three links are independently established; causal transfer (training on humor → general capability) is untested | — (synthesis) | `references/humor-honesty-beauty.md` §3.3 closing paragraph + "What the README can honestly say" | Source file explicitly states this is *not* established — draft matches that hedge exactly, does not overclaim |
-| Humor correlates with intelligence, r ≈ .29–.40 (Future Work, §7) | Greengross & Miller, 2011, *Intelligence* 39(4):188-192 (`greengross2011humor`); Christensen et al., 2018, *Psych. Aesthetics, Creativity & Arts* 12(2):136-143 (`christensen2018clever`) | `references/psychology.md`; `references/humor-honesty-beauty.md` §1.2 | ESTABLISHED but explicitly noted (in source) as largely one research program (Greengross/Miller/Martin cluster); draft does not claim independent replication |
+| Claim | Citation | Bibkey | Verifying file | Notes |
+|---|---|---|---|---|
+| 90.2% (909/1,008) of ChatGPT jokes were 1 of 25 recurring templates | Jentzsch & Kersting, 2023, WASSA | `jentzsch2023chatgpt` | `references/negative-results.md` §1 | Primary-text confirmed, code public |
+| A lookup table sampled at temperature can mimic a distribution's shape (motivating claim, not a cited finding) | — (argument, not a citation) | — | `docs/BENCHMARK.md` "Why this is different from everything published" | Stated as our own argument, correctly uncited |
+| HumorBench: STEM-reasoning training transfers to humor comprehension | Narad et al., 2025, arXiv:2507.21476 | `narad2025humorbench` | `references/humor-honesty-beauty.md` §3.3(1); `references/README.md` | ESTABLISHED per source's own tag |
+| ToM-HCAT / ToMBench as evidence humor requires theory of mind | ToM-HCAT, *Frontiers in Psychology* 2018 (PMC6099116); Chen et al. 2024, ACL, arXiv:2402.15052 | `aykan2018tomhcat`; `chen2024tombench` | `references/humor-honesty-beauty.md` §3.3(2) | ESTABLISHED (human side); LLM ToM measurement flagged as "active, real research area," not solved — draft does not claim it's solved. Both bibkeys newly added 2026-07-17 (previously *no bib entry*). |
+| Benign Violation Theory: humor requires norm-violation + benign appraisal | McGraw & Warren, 2010, *Psychological Science* 21(8):1141-1149 | `mcgraw2010benign` | `references/humor-honesty-beauty.md` §3.3(3); `references/trajectory-grounding.md` §3.4 | ESTABLISHED |
+| The three links are independently established; causal transfer (training on humor → general capability) is untested | — (synthesis) | `narad2025humorbench`; `aykan2018tomhcat`; `chen2024tombench`; `mcgraw2010benign` (supporting the three independent links) | `references/humor-honesty-beauty.md` §3.3 closing paragraph + "What the README can honestly say" | Source file explicitly states this is *not* established — draft matches that hedge exactly, does not overclaim |
+| Humor correlates with intelligence, r ≈ .29–.40 (Future Work, §7) | Greengross & Miller, 2011, *Intelligence* 39(4):188-192; Christensen et al., 2018, *Psych. Aesthetics, Creativity & Arts* 12(2):136-143 | `greengross2011humor`; `christensen2018clever` | `references/psychology.md`; `references/humor-honesty-beauty.md` §1.2 | ESTABLISHED but explicitly noted (in source) as largely one research program (Greengross/Miller/Martin cluster); draft does not claim independent replication. This is the **intelligence** correlation — see the flagged "wisdom" miswording of this same figure in `CLAUDE.md`, addressed in the "lack citation support" list below (not present in the draft itself). |
 
 **Deliberately excluded:** the humor↔honesty (HEXACO Honesty-Humility) and
 humor↔mathematical-beauty (Zeki mOFC) material in
@@ -41,34 +41,34 @@ the draft.
 
 ## Section 3.1 — Humor generation and its documented failures
 
-| Claim | Citation | Verifying file | Notes |
-|---|---|---|---|
-| 909/1,008 (90.2%) jokes were 1 of 25 templates; top 4 templates > 50% of output | Jentzsch & Kersting, 2023 (`jentzsch2023chatgpt`) | `references/negative-results.md` §1 | Same citation as above; repeated because it anchors both the motivation and the related-work section |
-| GRPO + GPT-4.1-judge reward hacking, two distinct collapses, rubric-hardening relocated rather than fixed the hack | LessWrong post, 2025-05-16 (`agg2025funniestjoke`) | `references/negative-results.md` §1 | Explicitly labeled in source as "a real experiment, not a paper" — draft carries the same caveat ("documented, non-peer-reviewed write-up") |
-| HumorGen: neither DPO nor offline-GRPO beats a well-curated SFT baseline; "a data quality ceiling" | Ajayi & Mitra, 2026, arXiv:2604.09629 (`ajayi2026humorgen`) | `references/negative-results.md` §3 | Numbers cross-checked against raw arXiv HTML after an earlier fetch fabricated a different table (documented in source) — draft uses only the re-verified numbers |
-| NYCC: 250M+ ratings / 2.2M+ captions; SFT regressed below zero-shot; frontier models trail top humans | Zhang et al., 2024, NeurIPS D&B, arXiv:2406.10522 (`zhang2024humorinai`) | `references/negative-results.md` §2a | Verbatim abstract quote confirmed in source |
-| Persona-prompting for audience-adapted humor has "minimal impact"; small-scale SFT on preferences closes the gap | Zhou et al., 2025, EMNLP Findings, arXiv:2502.20356 (`zhou2025bridging`) | `references/negative-results.md` §2b | Exact quote confirmed in source |
+| Claim | Citation | Bibkey | Verifying file | Notes |
+|---|---|---|---|---|
+| 909/1,008 (90.2%) jokes were 1 of 25 templates; top 4 templates > 50% of output | Jentzsch & Kersting, 2023 | `jentzsch2023chatgpt` | `references/negative-results.md` §1 | Same citation as above; repeated because it anchors both the motivation and the related-work section |
+| GRPO + GPT-4.1-judge reward hacking, two distinct collapses, rubric-hardening relocated rather than fixed the hack | LessWrong post, 2025-05-16 | `agg2025funniestjoke` | `references/negative-results.md` §1 | Explicitly labeled in source as "a real experiment, not a paper" — draft carries the same caveat ("documented, non-peer-reviewed write-up"). Re-verified 2026-07-17 by fetching the LessWrong post directly: author "agg", posted 2025-05-16, GRPO on Qwen3-8B, GPT-4.1 judge, two collapses (classic-joke regurgitation, then absurdist non-sequiturs) confirmed. |
+| HumorGen: neither DPO nor offline-GRPO beats a well-curated SFT baseline; "a data quality ceiling" | Ajayi & Mitra, 2026, arXiv:2604.09629 | `ajayi2026humorgen` | `references/negative-results.md` §3 | Numbers cross-checked against raw arXiv HTML after an earlier fetch fabricated a different table (documented in source) — draft uses only the re-verified numbers |
+| NYCC: 250M+ ratings / 2.2M+ captions; SFT regressed below zero-shot; frontier models trail top humans | Zhang et al., 2024, NeurIPS D&B, arXiv:2406.10522 | `zhang2024humorinai` | `references/negative-results.md` §2a | Verbatim abstract quote confirmed in source |
+| Persona-prompting for audience-adapted humor has "minimal impact"; small-scale SFT on preferences closes the gap | Zhou et al., 2025, EMNLP Findings, arXiv:2502.20356 | `zhou2025bridging` | `references/negative-results.md` §2b | Exact quote confirmed in source |
 
 ---
 
 ## Section 3.2 — Diversity and novelty evaluation
 
-| Claim | Citation | Verifying file | Notes |
-|---|---|---|---|
-| Denial Prompting / NEOCODER protocol (technique-denial, T≈5, code domain, correctness signal) | Lu et al., 2024/2025, NAACL, arXiv:2407.09007 | `references/related-work-cascade.md` §1 | *No bib entry* — verified in this file only (HTTP 200 + HTML full-text read), post-dates `papers.bib` compilation |
-| NoveltyBench §4.3: in-context regeneration, 8 turns, no denial framing, Distinct-k set metric | Zhang et al., 2025, arXiv:2504.05228 | `references/related-work-cascade.md` §2 | *No bib entry*, same as above |
-| MUTATE: per-object failure memory, objective task failure, Path Discovery / Divergence Momentum metrics, no cross-model comparison | Park et al., 2026, arXiv:2605.28465 | `references/related-work-cascade.md` §3 | *No bib entry*, same as above; source calls this "the single closest paper found" |
-| Differentiation sentence (subjective/content-agnostic vs. objective/technique rejection; global vs. per-object memory; depth; cross-model+across-run path identity as the novel measured object) | — (our own synthesis, attributed) | `references/related-work-cascade.md`, "Sharpest honest differentiation sentence" (final section) | Quoted near-verbatim from the source file, as instructed |
+| Claim | Citation | Bibkey | Verifying file | Notes |
+|---|---|---|---|---|
+| Denial Prompting / NEOCODER protocol (technique-denial, T≈5, code domain, correctness signal) | Lu, Wang, Li, Jiang, Khudanpur, Jiang & Khashabi, 2024/2025, NAACL, arXiv:2407.09007 | `lu2024denialprompting` | `references/related-work-cascade.md` §1 | **Bib gap closed 2026-07-17**: entry added, re-verified via fresh WebFetch of the arXiv abstract page (title/authors/abstract confirmed; NAACL 2025 venue not visible on the abstract page itself but corroborated by the prior full-text read in `related-work-cascade.md`) |
+| NoveltyBench §4.3: in-context regeneration, 8 turns, no denial framing, Distinct-k set metric | Zhang, Diddee, Holm, Liu, Liu, Samuel, Wang & Ippolito, 2025, arXiv:2504.05228 | `zhang2025noveltybench` | `references/related-work-cascade.md` §2 | **Bib gap closed 2026-07-17**: entry added, re-verified via fresh WebFetch (title/authors/abstract confirmed; the specific "8 turns"/"Distinct-k" §4.3 detail is a full-text-only detail, not visible in the abstract alone, but already corroborated in `related-work-cascade.md`) |
+| MUTATE: per-object failure memory, objective task failure, Path Discovery / Divergence Momentum metrics, no cross-model comparison | Park, Baek, Park & Lee, 2026, arXiv:2605.28465 | `park2026mutate` | `references/related-work-cascade.md` §3 | **Bib gap closed 2026-07-17**: entry added, re-verified via fresh WebFetch (title/authors/abstract confirmed — full given names now on record: Jihyeong Park, Ingeol Baek, Jeonghyun Park, Hwanhee Lee); source calls this "the single closest paper found" |
+| Differentiation sentence (subjective/content-agnostic vs. objective/technique rejection; global vs. per-object memory; depth; cross-model+across-run path identity as the novel measured object) | — (our own synthesis, attributed) | — | `references/related-work-cascade.md`, "Sharpest honest differentiation sentence" (final section) | Quoted near-verbatim from the source file, as instructed |
 
 ---
 
 ## Section 3.3 — Cognitive-science lineage
 
-| Claim | Citation | Verifying file | Notes |
-|---|---|---|---|
-| Clustering (run-length) / switching (transition count) as dissociable fluency-scoring components; dissociates clinical populations independent of raw item count | Troyer, Moscovitch & Winocur, 1997, *Neuropsychology* 11(1):138-146 | `references/trajectory-grounding.md` §1.2 | Confirmed via PubMed (PMID 9055277) + Google Scholar in source; Troyer 2000 normative-data follow-up is flagged UNVERIFIED-SECONDARY in source and is **not** cited in the draft |
-| Optimal foraging in semantic memory; Marginal Value Theorem patch-departure timing predicts recall performance | Hills, Jones & Todd, 2012, *Psychological Review* 119(2):431-440 | `references/trajectory-grounding.md` §1.1, §1.3 | Confirmed via 4+ independent hosts in source |
-| Category fluency ported to an LLM (Llama 2 7B), path-dependent/n-gram-overlap scoring vs. human sequences; unforced, single-model, single-category | Heineman, Koenen & Varma, 2024, arXiv:2405.06714 | `references/trajectory-grounding.md` §1.4; `references/related-work-cascade.md` §7 | *No bib entry*; HTTP 200 verified in both source files |
+| Claim | Citation | Bibkey | Verifying file | Notes |
+|---|---|---|---|---|
+| Clustering (run-length) / switching (transition count) as dissociable fluency-scoring components; dissociates clinical populations independent of raw item count | Troyer, Moscovitch & Winocur, 1997, *Neuropsychology* 11(1):138-146 | `troyer1997clustering` | `references/trajectory-grounding.md` §1.2 | **Bib gap closed 2026-07-17** (was non-arXiv, no entry). Confirmed via PubMed (PMID 9055277) + Google Scholar, re-verified 2026-07-17 via WebSearch. Troyer 2000 normative-data follow-up is flagged UNVERIFIED-SECONDARY in source and is **not** cited in the draft, and has no bib entry (correctly, since unused) |
+| Optimal foraging in semantic memory; Marginal Value Theorem patch-departure timing predicts recall performance | Hills, Jones & Todd, 2012, *Psychological Review* 119(2):431-440 | `hills2012foraging` | `references/trajectory-grounding.md` §1.1, §1.3 | **Bib gap closed 2026-07-17** (was non-arXiv, no entry). Confirmed via 4+ independent hosts in source; re-verified 2026-07-17 via WebSearch (PhilPapers, ResearchGate, MSU-hosted PDF) |
+| Category fluency ported to an LLM (Llama 2 7B), path-dependent/n-gram-overlap scoring vs. human sequences; unforced, single-model, single-category | Heineman, Koenen & Varma, 2024, arXiv:2405.06714 | `heineman2024pathfluency` | `references/trajectory-grounding.md` §1.4; `references/related-work-cascade.md` §7 | **Bib gap closed 2026-07-17**: entry added, re-verified via fresh WebFetch of the arXiv abstract page (title/authors/venue CogSci 2024 confirmed) |
 
 **Deliberately excluded:** the "random walk vs. optimal foraging" debate is
 cited in the draft's foraging discussion only as a general framing (patch
@@ -85,10 +85,10 @@ UNVERIFIED-SECONDARY in `references/trajectory-grounding.md` §1.2/§2.2/
 
 ## Section 3.4 — Cross-model homogeneity
 
-| Claim | Citation | Verifying file | Notes |
-|---|---|---|---|
-| LLM responses more similar to each other than human responses are to each other, across standardized creativity tests | Wenger & Kenett, 2025, arXiv:2501.19361 | `references/related-work-cascade.md` §4 | *No bib entry* |
-| Five frontier LLMs selecting Cards Against Humanity winners agree with each other far more than with humans (9,894 rounds) | Fettach, Bied, Toivonen & De Bie, 2026, arXiv:2604.08757 (`fettach2026cardsagainstllms`) | `references/related-work-cascade.md` §5 | Author given names explicitly flagged "not confirmed" in `papers.bib` note — draft cites surnames only, matching that caveat |
+| Claim | Citation | Bibkey | Verifying file | Notes |
+|---|---|---|---|---|
+| LLM responses more similar to each other than human responses are to each other, across standardized creativity tests | Wenger & Kenett, 2025, arXiv:2501.19361 | `wenger2025homogeneity` | `references/related-work-cascade.md` §4 | **Bib gap closed 2026-07-17**: entry added, re-verified via fresh WebFetch (title "We're Different, We're the Same: Creative Homogeneity Across LLMs", authors Emily Wenger and Yoed N. Kenett, confirmed) |
+| Five frontier LLMs selecting Cards Against Humanity winners agree with each other far more than with humans (9,894 rounds) | Fettach, Bied, Toivonen & De Bie, 2026, arXiv:2604.08757 | `fettach2026cardsagainstllms` | `references/related-work-cascade.md` §5 | Given names were previously flagged "not confirmed" — **now confirmed 2026-07-17** via fresh WebFetch: Yousra Fettach, Guillaume Bied, Hannu Toivonen, Tijl De Bie. `papers.bib` entry updated accordingly; draft itself still cites surnames only per standard author-year style, which remains correct either way. |
 
 ---
 
@@ -102,11 +102,11 @@ UNVERIFIED-SECONDARY in `references/trajectory-grounding.md` §1.2/§2.2/
 
 ## Section 4.2 — Metric families and psychological lineage
 
-| Claim | Citation | Verifying file | Notes |
-|---|---|---|---|
-| Within-model divergence: identical human fluency runs would be pathological, not healthy | Troyer et al., 1997 (interpretation) | `references/trajectory-grounding.md` §1.2, §6.2 | Draft's inference from the source's clustering/switching framing, not a verbatim claim from Troyer et al. |
-| Cross-model overlap as the most diagnostic, least-precedented metric | — (our claim) | `docs/BENCHMARK.md` §1 "The three metrics" table; `references/related-work-cascade.md` overall verdict | Matches source's own framing ("Cross-model overlap is the most interesting of the three") |
-| Depth-to-degradation as an LLM analog of MVT patch-departure/small-well behavior | Hills, Jones & Todd, 2012 | `references/trajectory-grounding.md` §1.1, §6.3 | Interpretive port, flagged as such ("This is our port of...") |
+| Claim | Citation | Bibkey | Verifying file | Notes |
+|---|---|---|---|---|
+| Within-model divergence: identical human fluency runs would be pathological, not healthy | Troyer et al., 1997 (interpretation) | `troyer1997clustering` | `references/trajectory-grounding.md` §1.2, §6.2 | Draft's inference from the source's clustering/switching framing, not a verbatim claim from Troyer et al. |
+| Cross-model overlap as the most diagnostic, least-precedented metric | — (our claim) | — | `docs/BENCHMARK.md` §1 "The three metrics" table; `references/related-work-cascade.md` overall verdict | Matches source's own framing ("Cross-model overlap is the most interesting of the three") |
+| Depth-to-degradation as an LLM analog of MVT patch-departure/small-well behavior | Hills, Jones & Todd, 2012 | `hills2012foraging` | `references/trajectory-grounding.md` §1.1, §6.3 | Interpretive port, flagged as such ("This is our port of...") |
 
 ---
 
@@ -128,10 +128,10 @@ cross-checked against the underlying data.
 
 ## Section 4.4 — Memorized-joke novelty check
 
-| Claim | Citation | Verifying file | Notes |
-|---|---|---|---|
-| 25 templates / 90.2% figure as minimum viable memorized-joke corpus | Jentzsch & Kersting, 2023 (`jentzsch2023chatgpt`) | `docs/BENCHMARK.md` §3; `references/negative-results.md` §1 | Same citation, reused per its stated role as "the minimum viable memorized-joke corpus" |
-| Novelty-penalty mechanism is inert without a real scraped corpus; target ~3.1M jokes | — (design status, not a literature claim) | `docs/BENCHMARK.md` §3; `references/corpus-sources.md` (per `references/README.md` description) | Stated honestly in draft as "a design requirement, not yet a completed feature" |
+| Claim | Citation | Bibkey | Verifying file | Notes |
+|---|---|---|---|---|
+| 25 templates / 90.2% figure as minimum viable memorized-joke corpus | Jentzsch & Kersting, 2023 | `jentzsch2023chatgpt` | `docs/BENCHMARK.md` §3; `references/negative-results.md` §1 | Same citation, reused per its stated role as "the minimum viable memorized-joke corpus" |
+| Novelty-penalty mechanism is inert without a real scraped corpus; target ~3.1M jokes | — (design status, not a literature claim) | — | `docs/BENCHMARK.md` §3; `references/corpus-sources.md` (per `references/README.md` description) | Stated honestly in draft as "a design requirement, not yet a completed feature" |
 
 ---
 
@@ -160,29 +160,35 @@ about our own protocol, by design.
 
 ## Section 7 — Future Work (reverse transfer)
 
-| Claim | Citation | Verifying file | Notes |
-|---|---|---|---|
-| Reverse transfer (train on humor, measure general reasoning) is untested by anyone; HumorBench confirms only the forward direction | Narad et al., 2025 (`narad2025humorbench`) | `docs/BENCHMARK.md` §6 gap 1; `references/README.md` "three open gaps" §1; `CLAUDE.md` "Research Direction" | Repeated framing across three repo docs, all consistent |
-| Humor production ability correlates with intelligence, r ≈ .29–.40 | Greengross & Miller, 2011; Christensen et al., 2018 | `references/psychology.md`; `references/humor-honesty-beauty.md` §1.2 | Same citation as Introduction |
+| Claim | Citation | Bibkey | Verifying file | Notes |
+|---|---|---|---|---|
+| Reverse transfer (train on humor, measure general reasoning) is untested by anyone; HumorBench confirms only the forward direction | Narad et al., 2025 | `narad2025humorbench` | `docs/BENCHMARK.md` §6 gap 1; `references/README.md` "three open gaps" §1; `CLAUDE.md` "Research Direction" | Repeated framing across three repo docs, all consistent |
+| Humor production ability correlates with intelligence, r ≈ .29–.40 | Greengross & Miller, 2011; Christensen et al., 2018 | `greengross2011humor`; `christensen2018clever` | `references/psychology.md`; `references/humor-honesty-beauty.md` §1.2 | Same citation as Introduction |
 
 ---
 
 ## Claims found in repo docs that lack citation support (reported, not papered over)
 
-1. **`CLAUDE.md` "User Context": "correlates with intelligence/wisdom (r = .29–.40 in the psych literature)."**
-   The r ≈ .29–.40 figure is real and well-cited (Greengross & Miller 2011;
-   Christensen et al. 2018) — for **intelligence**. No file in
+1. **UNSUPPORTED (in `CLAUDE.md`, not in the draft) — `CLAUDE.md` "User Context": "correlates with intelligence/wisdom (r = .29–.40 in the psych literature)."**
+   The r ≈ .29–.40 figure is real and well-cited (`greengross2011humor`,
+   `christensen2018clever`) — for **intelligence**. No file in
    `references/` reports any correlation, at that magnitude or any other,
-   between humor and **wisdom**. The draft does not use the word "wisdom"
-   anywhere; this is flagged here as a claim in the project's own
-   `CLAUDE.md` that outruns its cited evidence, not as something
-   reproduced in the paper.
+   between humor and **wisdom** — the "wisdom" half of this sentence is
+   UNSUPPORTED. Re-confirmed 2026-07-17: grepped `paper/DRAFT.md` for
+   "wisdom" (0 matches) — the draft does not use the word anywhere, so no
+   edit to `paper/DRAFT.md` was needed or made. This flags a claim in the
+   project's own `CLAUDE.md` that outruns its cited evidence; `CLAUDE.md`
+   itself is out of scope for this audit's edits.
 
-2. **`STATE.md` "Commercial status": "Anthropic (>$1B/yr on RL environments reportedly)."**
+2. **UNSUPPORTED (in `STATE.md`, not in the draft) — `STATE.md` "Commercial status": "Anthropic (>$1B/yr on RL environments reportedly)."**
    Self-flagged with "reportedly" in the source, and not traceable to any
-   file in `references/`. Not used in the draft (out of scope for a D&B
-   paper), flagged here only because the task asked for an unpapered-over
-   list.
+   file in `references/` — UNSUPPORTED as stated. Re-confirmed 2026-07-17:
+   grepped `paper/DRAFT.md` for "Anthropic", "$1B", "billion", "valuation"
+   (0 real matches — two grep hits on "eval-**uation**s" were false
+   positives from substring matching, not the word "valuation") — the
+   draft makes no dollar or valuation claim about Anthropic anywhere, so no
+   edit to `paper/DRAFT.md` was needed or made. `STATE.md` itself is out of
+   scope for this audit's edits.
 
 3. **`README.md` roadmap step 3 vs. actual `EXP-004`/pilot design.**
    Not a citation gap but a factual inconsistency worth surfacing: the
@@ -227,14 +233,29 @@ about our own protocol, by design.
 
 ## Bibliographic hygiene note
 
-`references/papers.bib` was compiled in an earlier research pass than
-`references/related-work-cascade.md` and `references/trajectory-grounding.md`
-(same day, earlier timestamp). Several citations load-bearing for Sections
-3.2–3.4 of the draft — Denial Prompting/NEOCODER (2407.09007), NoveltyBench
-(2504.05228), MUTATE (2605.28465), Wenger & Kenett (2501.19361), and the
-category-fluency-on-LLMs paper (2405.06714) — are verified (HTTP 200 +
-content read) in the narrative `.md` files but have **no corresponding
-entry in `papers.bib`**. This doesn't affect the draft's honesty (every
-claim is still traced to a verifying file above), but `papers.bib` should
-be extended with these five entries before this draft moves toward a
-camera-ready bibliography — flagging it now so it doesn't get missed.
+**Status as of 2026-07-17: closed.** `references/papers.bib` was originally
+compiled in an earlier research pass than `references/related-work-cascade.md`
+and `references/trajectory-grounding.md` (same day, earlier timestamp), which
+left five arXiv-cited papers load-bearing for Sections 3.2–3.4 without bib
+entries: Denial Prompting/NEOCODER (2407.09007), NoveltyBench (2504.05228),
+MUTATE (2605.28465), Wenger & Kenett (2501.19361), and the
+category-fluency-on-LLMs paper (2405.06714). All five now have verified
+entries (`lu2024denialprompting`, `zhang2025noveltybench`, `park2026mutate`,
+`wenger2025homogeneity`, `heineman2024pathfluency` respectively),
+re-confirmed 2026-07-17 via fresh WebFetch of each arXiv abstract page
+(title/authors/year independently re-checked, not carried over from the
+narrative files' original HTTP-200 checks).
+
+Two further gaps found during this same 2026-07-17 pass and also closed:
+ToM-HCAT (`aykan2018tomhcat`, PMC6099116) and ToMBench (`chen2024tombench`,
+arXiv:2402.15052) were cited by name in Section 2 of the draft but had no
+bib entries either — both added, verified via WebSearch/WebFetch.
+`troyer1997clustering` and `hills2012foraging` (Section 3.3/4.2, non-arXiv)
+were likewise cited-but-unbibbed and are now added, verified via WebSearch
+against PubMed/Google Scholar and PhilPapers/ResearchGate respectively.
+
+The full `papers.bib` corpus (all ~100 entries, not just these seven) was
+independently re-verified in the same pass — see the file's own per-entry
+`note` fields for verification method and any corrections found (several
+author-given-name and title-wording fixes were made; details in each
+entry's note).

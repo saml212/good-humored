@@ -178,6 +178,46 @@ directions and protocol shakeout, not paper numbers.
 
 **Verdict:** _(pending)_
 
+## EXP-005 — banter judge validation (2026-07-17, pre-registered BEFORE run)
+
+**Status:** running.
+
+**Hypothesis:** A Haiku-tier LLM judge's context-ablation delta cleanly
+separates genuinely contextual banter replies from verbatim canned jokes and
+from generic on-topic pleasantries, and is not primarily driven by surface
+keyword overlap between reply and context.
+
+**Setup:** 30-item hand-authored fixture (10 contextual / 10
+generic_responsive / 10 canned — canned drawn verbatim from the 25 ChatGPT
+templates), keyword-disjoint contexts verified programmatically; judge =
+claude:haiku, repeats = 3, swap partner = `swap_partner(i, n)` over file
+order. Runner: `benchmark/validate_banter_judge.py` (22 unit tests with
+perfect/constant/echo fake judges lock in the metric mechanics).
+~180 judge calls, no GPU.
+
+**Success bars (registered):** separation(contextual − canned) ≥ 3.0;
+separation(contextual − generic_responsive) ≥ 1.5; |canned mean_delta| ≤ 1.0;
+repeat_delta_stdev_mean ≤ 1.5; keyword_echo_check.risk_detected == False
+(generic_responsive Pearson r ≤ 0.5).
+
+**Predicted values (registered):** contextual mean_delta ≈ +4.5;
+generic_responsive ≈ +1.5; canned ≈ 0.0 ± 0.5;
+separation(contextual−canned) ≈ +4.5 (calibration:
+exp-005-banter-judge-v1); separation(contextual−generic_responsive) ≈ +3.0;
+repeat_delta_stdev_mean ≈ 1.0–1.5; generic_responsive echo r ≈ 0.2–0.3
+(widest error bars — this is the live residual risk from BENCHMARK.md §1b).
+
+**Disproof check (checklist item 4):** compare against `keyword_overlap`
+alone as a zero-LLM predictor of gold class from the same raw output — if
+raw overlap separates the three classes as well as the judge delta does, the
+judge isn't earning its keep.
+
+**Result:** _(pending)_
+
+**Verdict:** _(pending)_
+
+---
+
 ## Instrument decision (2026-07-17, pilot grade)
 
 **Haiku + LABEL_PROMPT v2, raw string scoring** is the instrument. Passed:
