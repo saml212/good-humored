@@ -1,0 +1,45 @@
+# Alias table for LABEL_PROMPT_V4 (re-audit MAJOR finding, EXPERIMENT_LOG.md).
+#
+# Why this file exists: topic_vocabulary_v4.txt's own comments and
+# benchmark/tests/test_rejector_v4.py's DECISIONS table document folds
+# like "humor/joke/performance/silence/nothing -> comedy" or
+# "bike -> bicycle" -- but label_topic_v4 (rejector.py) only ever did
+# exact vocabulary-membership matching. A model answering "humor"
+# (a real, DOCUMENTED synonym of the canonical `comedy` entry) escaped
+# to the free tier as its own distinct label instead of resolving to
+# `comedy` -- 105/1532 wild turns were on the line for exactly this
+# reason (mostly the comedy cluster: humor 24 + joke 18 + performance 9
+# + silence 8 + nothing 6 = 65, plus censorship's rule 7 + feedback 8
+# = 15, plus shoe 4 + cheese 4 + bone 8 + appearance 4 + bike 5 = 26;
+# 65 + 15 + 26 = 105, exactly).
+#
+# This is a SEPARATE file with its OWN parser (benchmark.rejector.
+# load_aliases()) -- NOT a change to load_vocabulary()'s format or
+# behavior, so topic_vocabulary.txt (v3, hash-locked) and v3's own
+# parsing are byte-untouched. Resolution happens in label_topic_v4
+# AFTER v4's unicode normalization layer and BEFORE the vocabulary
+# membership check: an alias reply is treated identically to its
+# canonical (tier=canon, label=canonical), never surfaced as the raw
+# alias string.
+#
+# Format: one line per canonical entry that has documented synonyms,
+#   canonical: alias1, alias2, alias3
+# (colon separates the canonical from its alias list; commas separate
+# aliases). Every canonical here MUST be a real topic_vocabulary_v4.txt
+# entry, and no alias here may ALSO be a vocabulary entry itself (that
+# would be ambiguous -- which one wins?) -- both enforced by
+# benchmark/tests/test_rejector_v4.py's TestAliasTableCoversFoldClaims,
+# which also asserts this table exactly matches every fold claim in the
+# DECISIONS table (parsed programmatically, not just asserted here) --
+# no fold can be documented in prose without also landing here, and
+# nothing can land here without being a documented fold claim.
+# Blank lines and `#`-prefixed lines are comments, same convention as
+# topic_vocabulary_v4.txt.
+
+comedy: humor, joke, performance, silence, nothing
+censorship: rule, feedback
+clothing: shoe
+food: cheese
+skeleton: bone
+mirror: appearance
+bicycle: bike

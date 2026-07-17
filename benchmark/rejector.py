@@ -9,8 +9,9 @@ Two jobs, deliberately separated:
      nothing (docs/BENCHMARK.md, "load-bearing risk").
 """
 
+import re
 from pathlib import Path
-from typing import Callable, List, Optional
+from typing import Callable, Dict, List, Optional, Tuple
 
 from .metrics import normalize_label
 
@@ -182,6 +183,298 @@ def label_topic_v3(joke: str, complete: Callable[[str], str],
         if label in normalized_vocab:
             return label
     return UNPARSEABLE
+
+
+# ======================================================================
+# v4 — TWO-TIER labeling (EXP-008 addendum "v3 FAILS in the field" +
+# adversarial-audit NO-GO on the first v4 draft, EXPERIMENT_LOG.md;
+# additive, does not touch the v2 or v3 constants/behavior above — v3
+# stays hash-locked and untouched).
+#
+# EXP-008 validated v3's constrained vocabulary at paper grade ON THE
+# FIXTURE (invariance 1.000, ari_vs_gold 0.9237) but the fixture only
+# ever contained in-vocabulary topics, so field coverage was untested by
+# construction. The full-pilot v3 relabel (1,532 wild turns) found v3
+# maps 42.6% of turns to the catch-all `other`.
+#
+# The first v4 draft just grew the closed vocabulary (110 -> 128
+# entries) and kept `other` as the escape hatch. Adversarial audit
+# finding B1: that bar is arithmetically unreachable (the wild long
+# tail below 4 occurrences is 13.6% of turns alone) AND, more
+# importantly, `other` is the wrong fix regardless of vocabulary size —
+# a catch-all MERGES distinct rare topics into one label, manufacturing
+# false repeats, which is the one bias this benchmark cannot afford
+# (CLAUDE.md; EXP-003's `pet` finding, at vocabulary scale instead of
+# pair scale). So v4 is now TWO-TIER instead of closed:
+#   - CANON tier: the joke matches a topic_vocabulary_v4.txt entry.
+#   - FREE tier: nothing on the list fits, so the model instead answers
+#     with its own specific common noun for the topic (v2-style — a
+#     real word, never "other"/"misc"/a category placeholder). A free
+#     label is a genuine, specific answer, not a parse failure.
+# `other` is REMOVED from topic_vocabulary_v4.txt entirely — structurally
+# impossible, not just discouraged, because the retry logic below no
+# longer has any reason to reject an out-of-vocabulary answer (see
+# label_topic_v4's docstring for the mechanics). Downstream, a free-tier
+# label is treated as an ordinary distinct topic (string equality, same
+# as v2's untiered labels) — free-tier wording jitter on a rare topic
+# SPLITS a repeat rather than merging two different rare topics into
+# one, which is the conservative direction for any collapse claim
+# (documented, not just asserted — this is the same argument EXP-006's
+# noise-bias-direction simulation made for v2's free-vocabulary jitter
+# in general).
+LABEL_PROMPT_VERSION_V4 = "v4-two-tier"
+
+VOCABULARY_PATH_V4 = Path(__file__).parent / "fixtures" / "topic_vocabulary_v4.txt"
+
+_VOCABULARY_V4 = load_vocabulary(VOCABULARY_PATH_V4)
+_VOCABULARY_V4_TEXT = ", ".join(_VOCABULARY_V4)
+
+TIER_CANON = "canon"
+TIER_FREE = "free"
+TIER_UNPARSEABLE = "unparseable"
+
+# ---------------------------------------------------------------- aliases
+#
+# Re-audit MAJOR finding: topic_vocabulary_v4.txt's own comments and
+# test_rejector_v4.py's DECISIONS table document folds ("humor" ->
+# `comedy`, "bike" -> `bicycle`, ...) but label_topic_v4 originally did
+# exact vocabulary-membership matching only -- a model answering
+# "humor" (a real, documented synonym) escaped to the free tier as its
+# own distinct label instead of resolving to the canonical `comedy`.
+# 105/1532 wild turns were on the line for exactly this reason (mostly
+# the comedy cluster). ALIASES_PATH_V4 is a SEPARATE file with its own
+# parser (load_aliases below) -- deliberately NOT a change to
+# load_vocabulary()'s format, so v3's shared loader (and
+# topic_vocabulary.txt, hash-locked) is byte-untouched.
+ALIASES_PATH_V4 = (Path(__file__).parent / "fixtures"
+                   / "topic_vocabulary_v4_aliases.txt")
+
+
+def load_aliases(path: Path = ALIASES_PATH_V4) -> Dict[str, str]:
+    """Load the v4 alias table: `canonical: alias1, alias2` lines (blank
+    and `#`-prefixed lines are comments, same convention load_vocabulary
+    uses for topic_vocabulary_v4.txt -- but this is its own file and its
+    own parser, not a load_vocabulary format change). Returns
+    {normalized_alias: normalized_canonical}, one entry per alias (the
+    canonical maps to itself implicitly via the ordinary vocabulary
+    membership check, so it is never a key here)."""
+    aliases: Dict[str, str] = {}
+    with open(path) as f:
+        for line in f:
+            line = line.strip()
+            if not line or line.startswith("#"):
+                continue
+            canonical, _, alias_list = line.partition(":")
+            canonical = normalize_label(canonical)
+            for alias in alias_list.split(","):
+                alias = normalize_label(alias)
+                if alias:
+                    aliases[alias] = canonical
+    return aliases
+
+
+_ALIASES_V4 = load_aliases()
+
+# ------------------------------------------------------ unicode normalization
+#
+# Re-audit MAJOR finding: normalize_label (benchmark/metrics.py, shared
+# with v2/v3) strips ASCII punctuation only, so a reply like "cat! 🐱"
+# normalizes to "cat 🐱" -- the emoji survives as its own whitespace-
+# separated token, so the label never matches the vocabulary's plain
+# "cat" entry and permanently escapes to the free tier as "cat 🐱". v3
+# never hit this in practice because its retry-on-out-of-vocab loop
+# (the very thing v4 correctly removed for B1) happened to give a
+# second chance; v4 has no such safety net, so this needs its own fix.
+#
+# Deliberately NOT folded into the shared normalize_label: v2/v3 are
+# hash-locked and must never see a behavior change, even one that looks
+# harmless. This is a v4-only layer, applied on top of (never instead
+# of) normalize_label.
+_V4_NON_WORD_RE = re.compile(r"[^\w\s]", re.UNICODE)
+_V4_WHITESPACE_RE = re.compile(r"\s+")
+
+
+def v4_normalize_label(raw_line: str) -> str:
+    """v4's normalization: normalize_label's ASCII-punctuation strip +
+    lowercase + naive singularization, THEN strip anything that is not
+    a unicode word character or whitespace (emoji, symbols, stray
+    combining marks) -- unicode-aware via Python's `\\w`, which matches
+    letters/digits/underscore in any script but NOT emoji, so accented
+    words (e.g. "café") round-trip untouched while "cat! 🐱" -> "cat"
+    and "🥚 egg" -> "egg". Internal spaces are preserved (collapsed to
+    one) so multi-word entries ("farm animal") still match; a reply
+    that is ONLY symbols (e.g. just an emoji) normalizes to the empty
+    string, which the caller's existing shape guard already treats as
+    a retry-then-UNPARSEABLE case."""
+    label = normalize_label(raw_line)
+    label = _V4_NON_WORD_RE.sub("", label)
+    label = _V4_WHITESPACE_RE.sub(" ", label).strip()
+    return label
+
+LABEL_PROMPT_V4 = """You label joke topics for a research benchmark.
+
+A list of common topics is given below. Rules:
+- If one of the listed topics is what the joke is actually ABOUT (not a
+  word it merely mentions along the way), answer with that entry,
+  copied verbatim, and nothing else.
+- If NONE of the listed topics fit, do NOT force one and do NOT answer
+  with a category placeholder like "other," "misc," "general," or
+  "miscellaneous" -- instead answer with your own specific, concrete,
+  lowercase common noun for the joke's actual subject: ONE word
+  whenever possible, two only if truly unavoidable, the most generic
+  everyday word for the domain, never the punchline mechanism and never
+  a mood or opinion (the same style rule LABEL_PROMPT v2 uses for
+  free-vocabulary labeling).
+- Same joke in different words = same answer, whether that answer comes
+  from the list or not.
+- A few list entries are close but not interchangeable -- get these
+  right:
+    * `egg` is for jokes specifically about eggs; `food` is for other
+      food/eating/cooking jokes not about egg or another specific
+      listed food (pizza, coffee, ...).
+    * `skeleton` is for Halloween-style bone wordplay ("they don't have
+      the guts") -- this is NEVER `death`, even though skeletons are
+      technically about the dead: the joke's actual subject is bone
+      anatomy wordplay, not mortality. `death` is reserved for jokes
+      actually about dying, funerals, or grief -- never for a skeleton
+      pun just because a skeleton is a dead thing.
+    * `farming` is for crops, scarecrows, fields, or agriculture in
+      general, INCLUDING "outstanding in his/her/its field"-style
+      scarecrow jokes, even though the punchline uses a work-adjacent
+      word like "award." Those scarecrow jokes are NOT `work` (jobs,
+      offices, careers, promotions -- no farm setting), NOT
+      `farm animal` (livestock -- a scarecrow is not an animal), and
+      NOT `farmer` (a joke centered on an actual farmer character,
+      which a scarecrow joke is not).
+    * `hair` is for a person's own hair or facial hair; `hairdresser` is
+      for a joke centered on the hairdressing PROFESSION, not anyone's
+      actual hair.
+    * `comedy` is for jokes about joke-telling, comedians as a generic
+      figure, or performing in general -- this is NOT `artist`, which
+      is for visual/creative-arts professions (a painter, a sculptor),
+      never stand-up comedy.
+    * `censorship` is for jokes or in-character remarks specifically
+      about a topic being banned, forbidden, or rejected -- narrower
+      than `comedy`'s broader joke-about-jokes territory.
+    * chores like laundry, cleaning, sweeping, and non-electric cleaning
+      supplies (soap, brooms, paper towels) are `chore` -- not their own
+      answer and not `appliance`. Electric household appliances
+      (refrigerators, vacuums, lamps) ARE `appliance`.
+    * ordinary job/workplace/promotion wordplay is `work`, even without
+      an office explicitly appearing in the joke.
+    * trip/vehicle/luggage/journey jokes are `travel`, even when the
+      specific mode of transport (train, plane, suitcase) is the only
+      thing mentioned.
+    * genuine wordplay about grammar, vocabulary, or language itself is
+      `language`; purely self-referential paradox jokes about jokes,
+      nothingness, or concepts-referring-to-themselves are `comedy`,
+      not `language`.
+
+Topics:
+%s
+
+The joke appears between <joke> tags below.
+
+Examples:
+<joke>My grandmother knits a sweater shaped like each grandchild's least favorite vegetable. Family dinner is now a guessing contest.</joke>
+family
+
+<joke>I asked the barista for a coffee that matches my personality. She handed me an empty cup.</joke>
+coffee
+
+<joke>Why don't skeletons fight each other? They don't have the guts.</joke>
+skeleton
+
+<joke>My grandmother's tombstone reads: "I told you I was sick."</joke>
+death
+
+<joke>Why did the scarecrow win an award? Because he was outstanding in his field.</joke>
+farming
+
+<joke>Why did the punchline go to therapy? It was tired of being the butt of every joke.</joke>
+comedy
+
+<joke>You've banned cats, dogs, and weather. Fine -- here's a joke about how there's nothing left to joke about.</joke>
+censorship
+
+<joke>Why don't eggs tell jokes? They'd crack each other up.</joke>
+egg
+
+<joke>I'm on an all-food diet. I see food, and I eat it.</joke>
+food
+
+<joke>The building's resident ghost filed a noise complaint against the OTHER resident ghost.</joke>
+ghost
+
+<joke>{joke}</joke>
+""" % _VOCABULARY_V4_TEXT
+
+
+def label_topic_v4(joke: str, complete: Callable[[str], str],
+                   vocabulary: Optional[List[str]] = None,
+                   aliases: Optional[Dict[str, str]] = None
+                   ) -> Tuple[str, str]:
+    """Two-tier labeling (LABEL_PROMPT_VERSION_V4). Returns (label, tier).
+
+    tier is one of:
+      TIER_CANON        — the label matched a topic_vocabulary_v4.txt
+                           entry (after normalize_label).
+      TIER_FREE          — the label did not match the vocabulary, but
+                           was otherwise shape-valid: KEPT as the
+                           model's own specific word, never coerced into
+                           a catch-all. This is the audit's B1 fix — v3
+                           retried (and eventually UNPARSEABLE'd) an
+                           out-of-vocabulary reply; v4 does not, because
+                           there is no vocabulary-membership failure
+                           mode left to retry on. Downstream, a
+                           TIER_FREE label is an ordinary distinct topic
+                           string, scored exactly like a v2 label.
+      TIER_UNPARSEABLE   — the reply itself was malformed (empty, or
+                           more than 4 words after normalization — the
+                           same shape guard label_topic (v2) uses,
+                           audit WARN-3) even after one retry. This is
+                           the ONLY remaining retry trigger; unlike v3,
+                           being out-of-vocabulary never triggers a
+                           retry by itself.
+    When tier is TIER_UNPARSEABLE, label == UNPARSEABLE (the same
+    sentinel v2/v3 use) — exactly as before this two-tier change, just
+    now paired with an explicit tier instead of being the only signal.
+
+    Two re-audit fixes applied in order, both BEFORE the vocabulary
+    membership check: (1) v4_normalize_label strips leftover unicode
+    symbols (emoji) that the shared normalize_label leaves behind, so
+    "cat! 🐱" still resolves to canon `cat` instead of permanently
+    escaping to the free tier as "cat 🐱"; (2) an alias-table lookup
+    (`aliases`, default the module-level table loaded from
+    topic_vocabulary_v4_aliases.txt) resolves a documented synonym
+    ("humor") to its canonical (`comedy`) BEFORE membership is checked
+    — the returned label is always the canonical, never the raw alias,
+    and tier is TIER_CANON in that case (an alias hit IS a vocabulary
+    hit, one level of indirection earlier).
+
+    `vocabulary` defaults to the module-level list loaded from
+    topic_vocabulary_v4.txt at import time; a caller may pass an
+    explicit list (e.g. in tests) so the tier logic can be exercised
+    without touching the fixtures file. `aliases` defaults similarly to
+    the module-level alias table; pass an explicit dict in tests for
+    the same reason.
+    """
+    vocab = vocabulary if vocabulary is not None else _VOCABULARY_V4
+    normalized_vocab = {normalize_label(v) for v in vocab}
+    alias_table = aliases if aliases is not None else _ALIASES_V4
+    for _ in range(2):
+        raw = complete(LABEL_PROMPT_V4.format(joke=joke))
+        # First line only — cheap models sometimes elaborate, same as
+        # v2/v3. Guard against a truly empty reply (splitlines() -> [])
+        # rather than indexing into it directly — a latent crash v2/v3
+        # never hit in practice but this new code path shouldn't risk.
+        lines = raw.splitlines()
+        label = v4_normalize_label(lines[0]) if lines else ""
+        if label and len(label.split()) <= 4:
+            label = alias_table.get(label, label)
+            tier = TIER_CANON if label in normalized_vocab else TIER_FREE
+            return label, tier
+    return UNPARSEABLE, TIER_UNPARSEABLE
 
 
 def rejection_message(topic: str, rejected_topics: List[str]) -> str:

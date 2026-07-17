@@ -1,0 +1,436 @@
+# Constrained topic vocabulary v4 — LABEL_PROMPT_V4 (EXP-008 addendum
+# "v3 FAILS in the field" + adversarial-audit NO-GO, EXPERIMENT_LOG.md).
+#
+# STRUCTURAL REDESIGN (audit finding B1): the first version of this file
+# still had a catch-all `other` entry and a "cover >=4-occurrence wild
+# labels or bust" target. The audit found that bar arithmetically
+# unreachable (the <4-occurrence long tail alone is 13.6% of wild
+# turns -- no closed vocabulary, however large, can cover an
+# unbounded long tail) AND, more importantly, wrong: a catch-all
+# MERGES distinct rare topics into one label, manufacturing false
+# repeats -- exactly the collapse-bias this benchmark cannot afford
+# (the same failure mode `pet` would have caused for cat/dog, at
+# vocabulary scale instead of pair scale). So v4 is now TWO-TIER, and
+# `other` is gone from this file -- structurally impossible, not just
+# discouraged:
+#   - CANON tier: the joke matches one of the entries below.
+#   - FREE tier: nothing below fits, so the labeler (label_topic_v4,
+#     rejector.py) falls through to a v2-style free label -- its own
+#     specific common noun for the topic, never a category word. A
+#     free label is treated downstream as an ordinary distinct topic
+#     (string equality, same as v2) -- ordinary jitter on a rare topic
+#     SPLITS rather than merges, which is the conservative direction
+#     for collapse claims (documented, not just asserted -- see
+#     EXP-006's noise-bias-direction simulation for the general
+#     argument this design leans on).
+# This file is therefore not "the whole vocabulary" -- it is the set of
+# topics common enough in the wild data to deserve a fixed, jitter-proof
+# spelling. Everything else is deliberately left to the free tier
+# instead of being forced into a fourth, fifth, or twentieth marginal
+# canon entry.
+#
+# Method (repeatable, not just asserted): computed the full topic_v2
+# histogram of every turn where topic_v3 == "other" across all 58
+# lane-*/turns-*.relabel-v3.jsonl files in
+# experiment-runs/2026-07-17-cascade-pilot-v3-relabel/ (read-only input,
+# never modified; 1,532 turns total, 653 "other" -- both counts
+# reproduce the addendum's figures exactly). Every DISTINCT topic_v2
+# label that occurs >=4 times in that other-mapped slice was
+# individually triaged by reading sample jokes AND, for the two
+# highest-risk families, by tracing the ACTUAL wild joke text across
+# the whole corpus (not just its v2 label) to check for repeated-item
+# label scatter -- see the `farming` and `skeleton` entries below,
+# both of which the adversarial audit caught scattering even worse than
+# the label-histogram view alone suggested.
+#
+# Same anti-jitter discipline as v3 throughout: ONE canonical entry per
+# concept, synonyms deliberately left OUT and documented, not added
+# alongside. Two near-synonym-shaped pairs are deliberately kept as
+# TWO entries (not folded into one), the same "specific + generic,
+# never a floating synonym" treatment v3 already established for
+# cat/dog/animal -- disambiguation guidance for both lives in
+# LABEL_PROMPT_V4 itself (rejector.py), not just in this comment (audit
+# finding B2: a prior version of this file claimed prompt guidance that
+# was never actually written -- verified by a test now, see
+# benchmark/tests/test_rejector_v4.py's TestPromptGuidanceBacked, which
+# greps LABEL_PROMPT_V4's actual text for a distinctive marker phrase
+# per claim, not just the vocabulary word itself, which would trivially
+# appear in the topic list regardless of whether real guidance exists):
+#   - `egg` (specific, very common recurring joke object) coexists with
+#     `food` (generic, non-species/non-specific food & eating jokes).
+#   - `farmer` (existing v3 profession entry: a joke centered on a
+#     PERSON whose job is farming) coexists with `farming` (agriculture/
+#     crops/scarecrows/rural-life jokes not centered on a farmer
+#     character) AND `farm animal` (livestock, existing v3 entry).
+#     Audit finding M1: the wild "scarecrow...outstanding in his field"
+#     joke (36 verbatim occurrences traced across the corpus) scattered
+#     across v3's `other` (16), `work` (10), `farmer` (9), and
+#     `farm animal` (1) -- a 4-way split on the IDENTICAL joke text, not
+#     just a histogram gap. LABEL_PROMPT_V4 now disambiguates `farming`
+#     against all three neighbors by name, using the scarecrow joke
+#     itself as the worked example.
+#   - `skeleton` (new) is NOT a rename of `death`. Audit finding M2: the
+#     "why don't skeletons fight, they don't have the guts" joke (28
+#     verbatim occurrences traced across the corpus) already scattered
+#     3 ways under free v2 labeling (`death` 11, `bone` 9, `skeleton` 8)
+#     and then landed in v3's `other` in 27/28 occurrences -- the
+#     single worst repeated-item scatter found in the wild data.
+#     `death` stays reserved for genuine mortality/dying/funeral jokes;
+#     `skeleton` takes the bone-anatomy-wordplay cluster. LABEL_PROMPT_V4
+#     states this boundary explicitly and both families are additionally
+#     captured as repeated-item invariance probes (verbatim wild text,
+#     not paraphrased) in
+#     benchmark/fixtures/label_invariance_probes_v4.jsonl, for both a
+#     fake-completer parse-path regression test and a real-labeler
+#     validation script (benchmark/validate_invariance_probes.py) EXP-010
+#     can run.
+#   NOTE, corrected from an earlier draft of this file: literal "ghost"
+#   jokes (e.g. "why don't ghosts lie, you can see right through them")
+#   are NOT folded into `skeleton` -- on inspection they are a distinct
+#   joke mechanism (transparency wordplay, not bone anatomy), and an
+#   earlier version of this file conflated them purely on Halloween-
+#   theme proximity, which is exactly the kind of unrelated-concepts-
+#   under-one-label merge the two-tier redesign exists to stop doing.
+#   `ghost` (5 wild occurrences) is deliberately left to the free tier;
+#   under the old other-catch-all design that would have been a coverage
+#   loss, but it is not one now.
+#
+# Watched pairs (documented, no vocabulary change -- narrower than a
+# "new canon entry earns its place" case, kept here so a future editor
+# checks samples before assuming these need splitting further or
+# merging):
+#   - `appliance` vs `technology`: appliance is for household electric
+#     devices (fridge, vacuum, lamp); technology is for computing/
+#     internet-era tech. No wild evidence of jitter between them yet.
+#   - `furniture` vs `appliance`: furniture is non-electric (chairs,
+#     mattresses). No wild evidence of jitter yet, but both are
+#     "personify a household object, send it to therapy" jokes and
+#     worth re-checking if a future relabel shows scatter.
+#   - `writing` vs `book`: writing is the act of writing (pencils, blank
+#     pages, authorship-in-progress); book is about finished/read works.
+#
+# --- v3 base (unchanged; see topic_vocabulary.txt for its own
+#     provenance comments, not repeated here) --------------------------
+
+# --- animals -----------------------------------------------------------
+cat
+dog
+bird
+fish
+horse
+farm animal
+insect
+animal
+
+# --- relationships & family ---------------------------------------------
+marriage
+dating
+divorce
+family
+parenting
+sibling
+friendship
+
+# --- professions ---------------------------------------------------------
+doctor
+dentist
+nurse
+lawyer
+teacher
+engineer
+accountant
+police officer
+firefighter
+chef
+waiter
+plumber
+electrician
+mechanic
+pilot
+farmer
+artist
+musician
+scientist
+politician
+soldier
+athlete
+journalist
+hairdresser
+cashier
+
+# --- food & drink ---------------------------------------------------------
+coffee
+tea
+alcohol
+beer
+wine
+cooking
+restaurant
+pizza
+vegetable
+breakfast
+dessert
+fast food
+
+# --- travel -----------------------------------------------------------
+travel
+driving
+car
+hotel
+
+# --- technology ---------------------------------------------------------
+technology
+computer
+internet
+smartphone
+social media
+programming
+artificial intelligence
+video game
+robot
+email
+
+# --- money & finance -------------------------------------------------------
+money
+banking
+tax
+shopping
+economy
+debt
+
+# --- education -----------------------------------------------------------
+school
+college
+homework
+exam
+
+# --- nature & weather -------------------------------------------------------
+weather
+season
+nature
+environment
+
+# --- home & daily life -----------------------------------------------------
+work
+chore
+neighbor
+sleep
+aging
+death
+time
+
+# --- entertainment & arts -----------------------------------------------------
+sport
+movie
+music
+television
+book
+art
+
+# --- society & ideas -----------------------------------------------------
+religion
+politics
+government
+law
+crime
+war
+history
+science
+space
+math
+language
+
+# --- misc -----------------------------------------------------------
+holiday
+birthday
+luck
+gambling
+
+# --- health & fitness (non-medical; medical jokes -> doctor) ---
+exercise
+
+# ======================================================================
+# --- v4 additions (EXP-008 addendum wild-data gap, all data-driven) ----
+# Ordered roughly by wild-occurrence count, highest first (largest
+# coverage payoff read first if this file is ever trimmed further).
+# Every entry below still has to earn its place even though the free
+# tier now exists: a canon entry is worth it when the SAME recurring
+# joke would otherwise be free-labeled with inconsistent wording across
+# repeats (the exact scatter M1/M2 found), not merely because a topic
+# occurred >=4 times in isolation.
+
+# comedy (wild topic_v2 "comedy" 116x, "humor" 24x, "joke" 18x,
+# "performance" 9x, "silence" 8x, "nothing" 6x all folded in): jokes
+# ABOUT joke-telling, comedians, punchlines, an audience, or the act of
+# performing/being funny itself -- the dominant wild-data gap by a wide
+# margin (models resort to meta-humor once enough real topics are
+# rejected). "humor"/"joke"/"performance" are the same concept under a
+# different v2 spelling, not a second concept; "silence"/"nothing" are
+# folded in because the sampled jokes were comedians doing a silent-bit
+# or "joke about nothing" routine (still about the act of performing),
+# not a genuinely separate topic. Minor disambiguation (audit, minors):
+# a comedian-as-a-generic-figure joke is `comedy`, not `artist` --
+# `artist` is reserved for visual/creative-arts professions (painters,
+# sculptors). `language` (an EXISTING v3 entry) is deliberately NOT
+# folded here even though some wild "language"-labeled jokes are
+# self-referential paradox humor -- LABEL_PROMPT_V4 routes those
+# case-by-case; `language` itself is kept for real word/grammar jokes.
+comedy
+
+# censorship (wild "censorship" 19x, "rule" 7x, "feedback" 8x folded
+# in): jokes or in-character narration about topics being banned,
+# restricted, or rejected -- the model breaking the joke-teller frame to
+# comment on (or riff on) the rejection mechanic itself ("you've banned
+# X, Y, Z... fine"). Kept SEPARATE from `comedy`: comedy covers jokes
+# about joke-telling in general (including outside this cascade's
+# specific setup); censorship covers the narrower, cascade-specific
+# behavior of reacting to being told no. "rule" and "feedback" are the
+# same behavior under a different v2 label (sampled jokes: "a rule
+# walks into a bar"; "I don't find your feedback funny" -- literally the
+# model echoing the rejector's own rejection-message wording back).
+censorship
+
+# clothing (wild "clothing" 17x, "shoe" 4x folded in): jokes about
+# wearable items (belts, shoes, laces, pants). "shoe" is footwear, folds
+# in as a subset rather than earning a separate entry (only 4 wild hits,
+# and the sampled shoe jokes are ordinary clothing-domain puns).
+clothing
+
+# stair (wild "stair" 13x): recurring "you can't trust stairs, they're
+# always up to something" joke family. No existing entry fits (not a
+# profession, not `building` -- see the exclusion note below; stairs
+# are their own recurring pun object).
+stair
+
+# farming (wild "farming" 11x, but see the header note above: the
+# scarecrow joke this label is mostly standing in for actually scatters
+# 4 ways across 36 verbatim occurrences, far worse than the raw label
+# count alone shows): agriculture / crops / scarecrows / rural setting
+# jokes NOT centered on a farmer character. Coexists with the EXISTING
+# `farmer` (profession) and `farm animal` (livestock) entries by design;
+# LABEL_PROMPT_V4 disambiguates all three against `farming` explicitly,
+# using the scarecrow joke as the worked example (audit M1).
+farming
+
+# writing (wild "writing" 10x): jokes about writing, pencils, authors,
+# blank pages -- a plain everyday joke domain not covered by any
+# existing entry (not `book`, which is about reading/authorship of
+# finished works, not the act of writing itself; watched pair, see
+# header).
+writing
+
+# food (wild "food" 10x, "cheese" 4x folded in): generic food/eating/
+# cooking jokes not about a specific already-listed food (pizza, coffee,
+# tea, alcohol, vegetable, dessert, fast food, egg -- see `egg` below).
+# Exists alongside `egg` the same way `animal` exists alongside `cat`/
+# `dog`: a genuine hypernym-shaped pair, mitigated by explicit
+# LABEL_PROMPT_V4 guidance, not by omission. "cheese" folds in here
+# rather than getting its own entry: below the bar for a dedicated
+# entry, and the sampled cheese jokes are ordinary food puns with no
+# distinct sub-cluster of their own.
+food
+
+# appliance (wild "appliance" 10x): household electric appliances
+# (refrigerator, vacuum, lamp) personified/put-in-therapy jokes. Watched
+# pair against `furniture` and `technology`, see header.
+appliance
+
+# furniture (wild "furniture" 9x): chairs, mattresses, and other
+# non-electric household furniture, personified the same way appliances
+# are. Watched pair against `appliance`, see header.
+furniture
+
+# skeleton (wild "skeleton" 8x, "bone" 8x folded in; NOT "ghost", see
+# header note): the "why don't skeletons fight, they don't have the
+# guts" Halloween-pun joke family. Deliberately NOT folded into the
+# existing `death` entry even though `death` was already on the v3 list
+# and available to the labeler at relabel time -- sampled jokes are
+# lighthearted anatomy/Halloween wordplay, not mortality humor, and the
+# wild data shows the v3 labeler declining to force them into `death`
+# (tonal mismatch, not a missing option). This was the audit's worst
+# repeated-item scatter finding (M2: 28 verbatim occurrences of this
+# exact joke split `death`/`bone`/`skeleton` under free v2, then 27/28
+# landed in v3's `other`) -- LABEL_PROMPT_V4 now states the skeleton/
+# death boundary explicitly and both families are repeated-item
+# invariance probes (see header and
+# benchmark/fixtures/label_invariance_probes_v4.jsonl).
+skeleton
+
+# mirror (wild "mirror" 8x, "appearance" 4x folded in): "mirrors don't
+# lie / reflect on the past / get promoted for great reflection" pun
+# family. "appearance"'s 4 sampled wild jokes were, without exception,
+# also about mirrors -- true v2 label jitter for one concept, not two.
+mirror
+
+# paranoia (wild "paranoia" 7x): the recurring "asks the librarian for
+# books about paranoia -- they're right behind you" joke. Independently
+# a real, common joke domain (not reverse-engineered from one specific
+# fixture item), just previously missing from the list.
+paranoia
+
+# wall (wild "wall" 7x): "what did one wall say to the other -- I'll
+# meet you at the corner" / "why did the wall go to therapy" pun family.
+wall
+
+# egg (wild "egg" 6x, plus several "food"-labeled wild jokes that were
+# the identical egg joke under a different v2 label): the single most
+# common specific recurring food-pun object in the wild data. See
+# `food`'s entry above for the coexistence rule.
+egg
+
+# elevator (wild "elevator" 6x): "elevator jokes work on many levels" /
+# "elevator got a compliment, it lifts people up" pun family.
+elevator
+
+# bicycle (wild "bicycle" 5x, "bike" 5x folded in): "why did the bicycle
+# fall over -- it was two-tired" joke. "bike" is the identical joke
+# under the identical-meaning shorter spelling, not a second concept --
+# folded in exactly like v1's programming/programmer scatter.
+bicycle
+
+# pirate (wild "pirate" 5x): classic pirate-joke family ("sitting on the
+# deck", "lost at C"). Independently a common, generic joke domain.
+pirate
+
+# hair (wild "hair" 4x): personal-hair/facial-hair pun jokes ("I used to
+# hate facial hair, but then it grew on me"). Distinct from `hairdresser`
+# (the existing profession entry, for jokes centered on a hairdresser's
+# job) the same way `farming` is distinct from `farmer`: this is about a
+# person's own hair, not anyone's occupation. LABEL_PROMPT_V4 states this
+# boundary explicitly (audit, minors).
+hair
+
+# --- v4 gap labels deliberately left to the FREE tier (documented, not
+#     silent omissions -- none of these need a canon entry now that the
+#     free tier exists and free-tier jitter is the safe, conservative
+#     direction) ---------------------------------------------------------
+# "building" (wild, 9x): sampled jokes were, on inspection, mislabeled
+# wall jokes ("wall go to therapy"), mislabeled elevator jokes
+# ("elevator got a compliment"), and comedian-exits-the-venue meta-humor
+# (already `comedy`) -- no distinct "building" joke genre was actually
+# observed once the existing wall/elevator/comedy entries are available;
+# adding a fourth overlapping entry here would just reopen the same
+# jitter this vocabulary exists to close.
+# "laundry" (4x) and "cleaning" (7x): sampled jokes (socks, soap,
+# brooms, paper towels) are chore-domain jokes; LABEL_PROMPT_V4 now
+# explicitly routes these to the EXISTING `chore` entry rather than
+# leaving them to the free tier, since "chore" already exists and
+# splitting laundry/cleaning/chore three ways would be pure jitter.
+# "unparseable" (13x): not a real topic -- this was v2's own
+# UNPARSEABLE sentinel leaking into the topic_v2 field for jokes v2's
+# OWN labeler already failed to parse; excluded from coverage on
+# principle (covering it would mean adding a vocabulary entry for
+# "instrument failure", which is a category error).
+# "ghost" (5x): see header note -- distinct from `skeleton`, left to the
+# free tier on purpose.
+# "death"/"work"/"travel"/"language" (11x/5x/6x/8x): already valid v3
+# entries before this file existed; the wild "other" mapping for these
+# was an instrument-accuracy miss (the model declining to use an
+# available entry). LABEL_PROMPT_V4 now carries real disambiguation
+# guidance for all four by name (audit B2 fixed the gap between this
+# claim and the actual prompt text; see
+# benchmark/tests/test_rejector_v4.py's TestPromptGuidanceBacked).
+
+# NOTE: no `other` entry. Two-tier design (see header) makes a catch-all
+# structurally impossible for this labeler -- see label_topic_v4 in
+# rejector.py.

@@ -27,23 +27,50 @@ import string
 import time
 from collections import Counter
 from pathlib import Path
-from typing import Dict, List, Optional
+from typing import Callable, Dict, List, Optional, Tuple
 
 from .label_space import LabelSpace
 from .metrics import adjusted_rand_index, normalize_label
 from .providers import make_claude_cli
 from .rejector import (LABEL_PROMPT_VERSION, LABEL_PROMPT_VERSION_V3,
-                       label_topic, label_topic_v3)
+                       LABEL_PROMPT_VERSION_V4, label_topic, label_topic_v3,
+                       label_topic_v4)
+
+
+def _v4_for_validation(joke: str, complete: Callable[[str], str]
+                       ) -> Tuple[str, Optional[str]]:
+    """label_topic_v4 already returns (label, tier) — a thin pass-
+    through so PROMPT_VERSIONS' "v4" entry names its own function the
+    same way v2/v3's entries do, and so this file has one place stating
+    that v4 is the one entry whose value is a genuine (label, tier)
+    pair rather than a bare string (main() unwraps on that basis).
+
+    IMPORTANT scope note: this fixture (rejector_validation.jsonl) was
+    hand-built with unambiguous, clearly-in-vocabulary gold topics —
+    running v4 against it only ever exercises the CANON path (every
+    item should resolve in-vocabulary). It says nothing about the free
+    tier's behavior (wording jitter on an out-of-vocabulary topic) or
+    the alias table's coverage, which is what field_coverage.py's
+    escape_rate report and validate_invariance_probes.py's repeated-
+    item probes are for. A clean v4 fixture run is necessary but not
+    sufficient evidence the two-tier redesign works in the wild.
+    """
+    return label_topic_v4(joke, complete)
+
 
 # prompt-version name -> (labeler function, version string recorded in
 # report.json). "v2" is first and is argparse's default, so an
 # unqualified `--model haiku --repeats 3 --out ...` invocation resolves
 # to the exact same labeler/version pair as before this dict existed —
 # default behavior is unchanged (EXP-008 build constraint: v3 is
-# additive, v2's live-experiment path must not move).
+# additive, v2's live-experiment path must not move). v4's entry is the
+# only one whose function returns a (label, tier) tuple instead of a
+# bare label string; main()'s repeat loop unwraps it by prompt-version
+# name, so v2/v3's call sites and behavior are completely unchanged.
 PROMPT_VERSIONS = {
     "v2": (label_topic, LABEL_PROMPT_VERSION),
     "v3": (label_topic_v3, LABEL_PROMPT_VERSION_V3),
+    "v4": (_v4_for_validation, LABEL_PROMPT_VERSION_V4),
 }
 
 FIXTURES = Path(__file__).parent / "fixtures" / "rejector_validation.jsonl"
@@ -166,7 +193,15 @@ def main() -> None:
                     help="labeler prompt to validate (default: v2, the "
                          "current live instrument). v3 runs the "
                          "identical 32-item fixture through the "
-                         "constrained-vocabulary labeler instead.")
+                         "constrained-vocabulary labeler instead. v4 "
+                         "runs it through the two-tier labeler — the "
+                         "fixture is hand-built to be unambiguously "
+                         "in-vocabulary, so a v4 run here only "
+                         "exercises the canon path (every raw log line "
+                         "gets an extra `tier` field, expected all "
+                         "'canon'); the free tier and alias table are "
+                         "validated separately by field_coverage.py and "
+                         "validate_invariance_probes.py, not here.")
     args = ap.parse_args()
     if args.repeats < 2:
         ap.error("--repeats must be >= 2: consistency needs repetition "
@@ -187,10 +222,19 @@ def main() -> None:
     for i in items:
         model_labels[i["id"]] = []
         for k in range(args.repeats):
-            lab = labeler(i["joke"], complete)
+            # v4's labeler returns (label, tier); v2/v3 return a bare
+            # label string — unwrap by prompt-version name so v2/v3's
+            # call site and recorded log shape are completely
+            # unchanged (no `tier` key at all for them).
+            if args.prompt_version == "v4":
+                lab, tier = labeler(i["joke"], complete)
+            else:
+                lab, tier = labeler(i["joke"], complete), None
             model_labels[i["id"]].append(lab)
-            raw_log.write(json.dumps(
-                {"id": i["id"], "repeat": k, "label": lab}) + "\n")
+            record = {"id": i["id"], "repeat": k, "label": lab}
+            if tier is not None:
+                record["tier"] = tier
+            raw_log.write(json.dumps(record) + "\n")
             raw_log.flush()
     raw_log.close()
 
