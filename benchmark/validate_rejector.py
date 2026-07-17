@@ -32,7 +32,19 @@ from typing import Dict, List, Optional
 from .label_space import LabelSpace
 from .metrics import adjusted_rand_index, normalize_label
 from .providers import make_claude_cli
-from .rejector import LABEL_PROMPT_VERSION, label_topic
+from .rejector import (LABEL_PROMPT_VERSION, LABEL_PROMPT_VERSION_V3,
+                       label_topic, label_topic_v3)
+
+# prompt-version name -> (labeler function, version string recorded in
+# report.json). "v2" is first and is argparse's default, so an
+# unqualified `--model haiku --repeats 3 --out ...` invocation resolves
+# to the exact same labeler/version pair as before this dict existed —
+# default behavior is unchanged (EXP-008 build constraint: v3 is
+# additive, v2's live-experiment path must not move).
+PROMPT_VERSIONS = {
+    "v2": (label_topic, LABEL_PROMPT_VERSION),
+    "v3": (label_topic_v3, LABEL_PROMPT_VERSION_V3),
+}
 
 FIXTURES = Path(__file__).parent / "fixtures" / "rejector_validation.jsonl"
 
@@ -149,6 +161,12 @@ def main() -> None:
     ap.add_argument("--model", default="haiku")
     ap.add_argument("--repeats", type=int, default=3)
     ap.add_argument("--out", required=True)
+    ap.add_argument("--prompt-version", choices=sorted(PROMPT_VERSIONS),
+                    default="v2",
+                    help="labeler prompt to validate (default: v2, the "
+                         "current live instrument). v3 runs the "
+                         "identical 32-item fixture through the "
+                         "constrained-vocabulary labeler instead.")
     args = ap.parse_args()
     if args.repeats < 2:
         ap.error("--repeats must be >= 2: consistency needs repetition "
@@ -158,6 +176,7 @@ def main() -> None:
     out.mkdir(parents=True, exist_ok=True)
     items = load_fixtures()
     complete = make_claude_cli(args.model)
+    labeler, prompt_version = PROMPT_VERSIONS[args.prompt_version]
 
     # Timestamped per invocation — re-runs must never interleave into one
     # indistinguishable file (audit B2).
@@ -168,7 +187,7 @@ def main() -> None:
     for i in items:
         model_labels[i["id"]] = []
         for k in range(args.repeats):
-            lab = label_topic(i["joke"], complete)
+            lab = labeler(i["joke"], complete)
             model_labels[i["id"]].append(lab)
             raw_log.write(json.dumps(
                 {"id": i["id"], "repeat": k, "label": lab}) + "\n")
@@ -181,7 +200,7 @@ def main() -> None:
     report = {
         "experiment": "rejector-validation",
         "run_stamp": run_stamp,
-        "label_prompt_version": LABEL_PROMPT_VERSION,
+        "label_prompt_version": prompt_version,
         "model": args.model,
         "repeats": args.repeats,
         "n_items": len(items),

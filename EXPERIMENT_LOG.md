@@ -257,6 +257,49 @@ deepseek-chat deprecates 2026-07-24 (launched inside the window).
 
 ---
 
+## EXP-008 — rejector-validation-v3 constrained vocabulary (2026-07-17, pre-registered BEFORE run)
+
+**Status:** running.
+
+**Hypothesis:** A closed 110-entry topic vocabulary (LABEL_PROMPT v3) removes
+free-vocabulary synonym jitter (cat/pet, health/medicine) that caused v2's
+reworded-invariance miss, without degrading ARI — by construction eliminating
+the specific hypernym/synonym pairs EXP-002 named as the failure mode.
+Vocabulary deliberately excludes `pet`/`health`/`medicine` (one canonical
+entry per concept — offering the pair is what produced the jitter).
+
+**Predicted deltas (registered):** raw ari_vs_gold 0.837 → ~0.90–0.93; raw
+reworded_invariance 0.800 → point estimate ~0.90 (bar ≥ 0.90 — the entire
+point; calibration: exp-008-constrained-vocab reworded_invariance_raw 0.90);
+repeat_consistency 0.760 → ~0.80–0.85.
+
+**Smoke caveat (2 calls, recorded before the run):** marriage-a (flamingo
+joke) returned `bird` under v3 — not `animal` (v2) or `marriage` (gold).
+Species granularity gives this straddling item MORE ways to scatter
+(bird/animal/marriage) than v2's consistent `animal`. If marriage-a/b don't
+converge on one entry, this group flips from v2 HIT to v3 MISS on
+invariance — the single biggest swing risk against the 0.90 bar. Concrete,
+observed, not hypothetical.
+
+**Setup:** same 32-item fixture, repeats=3, model haiku, RAW scoring, same
+metrics as EXP-001/002. 96 calls nominal (192 ceiling if every call
+retries; smoke needed 0/2). v2 path untouched and regression-locked by
+prompt hashes (186 tests green).
+
+**Disproof attempt:** direct comparison vs EXP-002's report.json on the
+identical fixture — if v3 doesn't clear 0.90 invariance while holding
+ARI ≥ 0.80, constrained vocabulary doesn't earn its prompt complexity and
+the granularity problem gets re-scoped, not iterated.
+
+**Known validity limits:** vocabulary granularity chosen by one author
+reasoning about categories, not calibrated on a held-out fixture.
+
+**Result:** _(pending)_
+
+**Verdict:** _(pending)_
+
+---
+
 ## Instrument decision (2026-07-17, pilot grade)
 
 **Haiku + LABEL_PROMPT v2, raw string scoring** is the instrument. Passed:

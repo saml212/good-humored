@@ -1,0 +1,220 @@
+# Constrained topic vocabulary — LABEL_PROMPT_V3 (EXP-008 roadmap item).
+#
+# Why this file exists: EXP-001/002/003b (EXPERIMENT_LOG.md) showed the
+# free-vocabulary labeler (LABEL_PROMPT v2) invents synonyms for the same
+# concept across repeats/rewordings — "cat" vs "pet", "health" vs
+# "medicine" — which is granularity JITTER, not a labeling error. A model
+# that must pick from a closed list cannot invent a new synonym; it can
+# only reuse or misuse an existing entry. v3 trades that jitter for a new,
+# different failure mode (forced misassignment on items whose true topic
+# genuinely straddles two entries) — see EXP-008 in EXPERIMENT_LOG.md.
+#
+# Provenance (three sources, per CLAUDE.md's research-agent verification
+# habit — document, don't just assert):
+#
+#   (a) Fixture golds. Every `group` and `gold_topic` value in
+#       benchmark/fixtures/rejector_validation.jsonl (cats, dogs, marriage,
+#       work, doctors, programmers, airplanes, coffee, gym/exercise,
+#       weather, school, banking, money, teachers) has a semantically
+#       correct home below. NOTE: validate_rejector.score() computes ARI
+#       and pair-match over the fixture's `group` field, not a literal
+#       string match against `gold_topic` — so "superset of the golds"
+#       means every gold CONCEPT is reachable, not that this file echoes
+#       the fixture's exact literal strings. Where the two diverge on
+#       purpose (e.g. "programmers"/"airplanes" as literal gold_topic
+#       strings vs. "programming"/"travel" as the entries below), it is
+#       because LABEL_PROMPT v2 already established "travel" as the
+#       correct generic answer for an airline joke (see LABEL_PROMPT's own
+#       few-shot in rejector.py) and because EXP-001's raw logs (below)
+#       show "programming" is what the label converges to in practice.
+#       Adding the fixture's literal spelling as a SECOND, competing entry
+#       (e.g. both "programming" and "programmer") would just reintroduce
+#       the jitter this file exists to remove.
+#
+#   (b) Raw label logs. Normalized labels actually emitted across the
+#       three real rejector-validation runs on this exact fixture, folded
+#       to one canonical form per concept rather than copied verbatim:
+#         experiment-runs/2026-07-16-rejector-validation/labels_raw.20260716T231429.jsonl       (haiku, v1)
+#         experiment-runs/2026-07-16-rejector-validation-v2/labels_raw.20260716T232758.jsonl     (haiku, v2)
+#         experiment-runs/2026-07-17-rejector-validation-v3-sonnet/labels_raw.20260716T234904.jsonl (sonnet, v2 prompt)
+#       Concepts these logs surfaced, each given exactly ONE entry below
+#       (not the raw scattered spellings): cat, dog, marriage, work,
+#       doctor, programming, travel, coffee, exercise, weather, banking,
+#       money, school. Deliberately dropped from the list rather than
+#       included alongside their synonym: "pet" (hypernym of cat/dog —
+#       EXP-002's documented false-merge risk and the exact cat/pet jitter
+#       this file is built to kill), "health"/"medicine" (EXP-002's other
+#       documented miss — "doctor" alone is the single answer for the
+#       fixture's doctor-visit jokes), "programmer" (v1 scattered
+#       programming/programmer 8:1; v2 converged fully to "programming"),
+#       "gym"/"fitness" (EXP-001's canonical scatter example; "exercise"
+#       is what v2 converges to and is what LABEL_PROMPT's own few-shot
+#       already teaches), "flamingo" (a surface object from one specific
+#       fixture joke, not a joke DOMAIN — including it would be reverse-
+#       engineering the vocabulary from the fixture, which the build
+#       instructions explicitly rule out), "cold"/"decaf"/"caffeine"
+#       (folded into weather/coffee).
+#
+#   (c) Standard joke domains, from general knowledge, NOT reverse-
+#       engineered from the fixture item-by-item: the bulk of the list
+#       below (professions, food & drink, technology, money, education,
+#       entertainment, society) exists because these are common,
+#       independently-motivated joke topics, not because any fixture item
+#       needs them. Animals are split at species granularity (cat, dog,
+#       bird, fish, horse...) rather than offered as a catch-all hypernym
+#       ALONGSIDE the species words, for the same anti-jitter reason as
+#       (b) above; "animal" is kept as ONE entry for non-pet/wildlife
+#       jokes (zoo, safari, "animals in general"), not as a synonym of
+#       "cat"/"dog" a labeler could alternate into.
+#
+# Format: one entry per line, already lowercase and normalize_label-
+# idempotent (benchmark/metrics.py) — verified in
+# benchmark/tests/test_rejector.py, not just asserted here. Blank lines
+# and lines starting with '#' are comments, skipped by
+# rejector.load_vocabulary(). Entries are grouped by category purely for
+# human readability; the loader does not use the grouping, and the v3
+# prompt presents entries in this file's order (see rejector.py's
+# LABEL_PROMPT_V3 docstring for the context-length tradeoff this implies).
+# `other` (final line) is the mandatory escape hatch: the whole point of a
+# closed vocabulary is that FORCING a bad match is worse than admitting no
+# entry fits.
+
+# --- animals -----------------------------------------------------------
+cat
+dog
+bird
+fish
+horse
+farm animal
+insect
+animal
+
+# --- relationships & family ---------------------------------------------
+marriage
+dating
+divorce
+family
+parenting
+sibling
+friendship
+
+# --- professions ---------------------------------------------------------
+doctor
+dentist
+nurse
+lawyer
+teacher
+engineer
+accountant
+police officer
+firefighter
+chef
+waiter
+plumber
+electrician
+mechanic
+pilot
+farmer
+artist
+musician
+scientist
+politician
+soldier
+athlete
+journalist
+hairdresser
+cashier
+
+# --- food & drink ---------------------------------------------------------
+coffee
+tea
+alcohol
+beer
+wine
+cooking
+restaurant
+pizza
+vegetable
+breakfast
+dessert
+fast food
+
+# --- travel -----------------------------------------------------------
+travel
+driving
+car
+hotel
+
+# --- technology ---------------------------------------------------------
+technology
+computer
+internet
+smartphone
+social media
+programming
+artificial intelligence
+video game
+robot
+email
+
+# --- money & finance -------------------------------------------------------
+money
+banking
+tax
+shopping
+economy
+debt
+
+# --- education -----------------------------------------------------------
+school
+college
+homework
+exam
+
+# --- nature & weather -------------------------------------------------------
+weather
+season
+nature
+environment
+
+# --- home & daily life -----------------------------------------------------
+work
+chore
+neighbor
+sleep
+aging
+death
+time
+
+# --- entertainment & arts -----------------------------------------------------
+sport
+movie
+music
+television
+book
+art
+
+# --- society & ideas -----------------------------------------------------
+religion
+politics
+government
+law
+crime
+war
+history
+science
+space
+math
+language
+
+# --- misc -----------------------------------------------------------
+holiday
+birthday
+luck
+gambling
+
+# --- health & fitness (non-medical; medical jokes -> doctor, see (b)) ---
+exercise
+
+# --- escape hatch (mandatory) -------------------------------------------
+other

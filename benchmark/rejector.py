@@ -9,7 +9,8 @@ Two jobs, deliberately separated:
      nothing (docs/BENCHMARK.md, "load-bearing risk").
 """
 
-from typing import Callable, List
+from pathlib import Path
+from typing import Callable, List, Optional
 
 from .metrics import normalize_label
 
@@ -66,6 +67,119 @@ def label_topic(joke: str, complete: Callable[[str], str]) -> str:
         # First line only — cheap models sometimes elaborate.
         label = normalize_label(raw.splitlines()[0])
         if label and len(label.split()) <= 4:
+            return label
+    return UNPARSEABLE
+
+
+# ======================================================================
+# v3 — constrained vocabulary (EXP-008; additive, does not touch the v2
+# constants/behavior above — a live experiment (EXP-004's cascade pilot)
+# still runs on v2).
+#
+# EXP-002's verdict named two specific, structural free-vocabulary
+# failures: granularity jitter (same joke labeled "cat" once, "pet"
+# another time — semantically fine, but it splits the ARI partition and
+# fails reworded invariance on a STRING-equality metric) and generalize-up
+# overshoot (a flamingo-impression marriage joke consistently labeled
+# "animal" — invariant, but clustered against the wrong gold group). Both
+# are symptoms of the labeler being free to invent whatever word it wants.
+# v3's fix: give it a closed list instead. It cannot invent "pet" as an
+# alternative to "cat" if "pet" is not one of the choices.
+LABEL_PROMPT_VERSION_V3 = "v3-constrained"
+
+VOCABULARY_PATH = Path(__file__).parent / "fixtures" / "topic_vocabulary.txt"
+
+
+def load_vocabulary(path: Path = VOCABULARY_PATH) -> List[str]:
+    """Load the constrained topic vocabulary: one entry per non-blank,
+    non-comment line (`#`-prefixed lines are provenance notes, see the
+    file header), in file order. Every entry is normalize_label-idempotent
+    by construction (benchmark/tests/test_rejector.py checks this against
+    the actual file, not just this docstring's claim)."""
+    entries = []
+    with open(path) as f:
+        for line in f:
+            line = line.strip()
+            if not line or line.startswith("#"):
+                continue
+            entries.append(line)
+    return entries
+
+
+_VOCABULARY = load_vocabulary()
+# Compact, comma-separated — deliberately not one-per-line or numbered:
+# a comma-joined list of ~110 short entries costs a few hundred tokens.
+# Measured (chars/4 heuristic, one fixture joke, no real tokenizer run):
+# LABEL_PROMPT_V3 all-in ~500 tokens vs. LABEL_PROMPT (v2) ~240 tokens —
+# roughly +260 tokens/call. At Haiku pricing that's fractions of a cent
+# even across the 96-call EXP-008 validation run; call this an order-of-
+# magnitude estimate, not a billed number. Trivial against Haiku's context
+# window either way. The real tradeoff is not context length; it
+# is that every additional entry is one more way for a straddling item
+# (see LABEL_PROMPT_V3's "names what the joke is actually ABOUT, not a
+# word it merely mentions along the way" rule below) to be forced onto
+# the wrong side of a real ambiguity. Bigger vocabulary != safer instrument;
+# see this file's provenance comment for why entries were deliberately
+# left OUT (pet, health/medicine, programmer, gym/fitness) rather than
+# added alongside their near-synonym.
+_VOCABULARY_TEXT = ", ".join(_VOCABULARY)
+
+LABEL_PROMPT_V3 = """You label joke topics for a research benchmark, choosing
+from a FIXED list. Do not invent a word that is not on the list, and do not
+alter an entry's wording.
+
+Topic list (pick exactly one, copied verbatim):
+%s
+
+The joke appears between <joke> tags below. Rules:
+- Answer with ONLY one entry from the list above, exactly as written
+  there, and nothing else.
+- Pick the entry that names what the joke is actually ABOUT, not a word
+  it merely mentions along the way.
+- Same joke in different words = same list entry.
+- If truly nothing on the list fits, answer "other".
+
+Examples:
+<joke>My grandmother knits a sweater shaped like each grandchild's least favorite vegetable. Family dinner is now a guessing contest.</joke>
+family
+
+<joke>The building's resident ghost filed a noise complaint against the OTHER resident ghost.</joke>
+other
+
+<joke>I asked the barista for a coffee that matches my personality. She handed me an empty cup.</joke>
+coffee
+
+<joke>{joke}</joke>
+""" % _VOCABULARY_TEXT
+
+
+def label_topic_v3(joke: str, complete: Callable[[str], str],
+                   vocabulary: Optional[List[str]] = None) -> str:
+    """Constrained-vocabulary labeling (LABEL_PROMPT_VERSION_V3).
+
+    Same two-strikes-then-UNPARSEABLE shape as label_topic (v2), but a
+    stricter validation layer: v2 accepts anything short enough to look
+    like a topic; v3 additionally requires the reply to normalize to an
+    entry actually ON the list. A reply that isn't in the vocabulary
+    (model ignored the instruction, or answered with a near-miss like a
+    plural/synonym) is retried once with the identical prompt; if the
+    retry also misses, the sentinel is returned rather than letting an
+    out-of-vocabulary string silently enter the metric pipeline (same
+    reasoning as v2's shape guard, audit WARN-3, just with a tighter
+    membership test instead of a word-count heuristic).
+
+    `vocabulary` defaults to the module-level list loaded from
+    topic_vocabulary.txt at import time; a caller may pass an explicit
+    list (e.g. in tests) so the validation layer can be exercised without
+    touching the fixtures file.
+    """
+    vocab = vocabulary if vocabulary is not None else _VOCABULARY
+    normalized_vocab = {normalize_label(v) for v in vocab}
+    for _ in range(2):
+        raw = complete(LABEL_PROMPT_V3.format(joke=joke))
+        # First line only — cheap models sometimes elaborate, same as v2.
+        label = normalize_label(raw.splitlines()[0])
+        if label in normalized_vocab:
             return label
     return UNPARSEABLE
 
