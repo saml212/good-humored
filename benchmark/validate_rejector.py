@@ -66,6 +66,14 @@ def majority(labels: List[str]) -> str:
     return Counter(labels).most_common(1)[0][0]
 
 
+def has_strict_majority(labels: List[str]) -> bool:
+    """False when repeats split with no true winner (1-1-1, 2-2) — a
+    fabricated 'majority' would otherwise leak into every downstream
+    metric (audit W3)."""
+    top = Counter(labels).most_common(1)[0][1]
+    return top * 2 > len(labels)
+
+
 def score(items: List[Dict], labels: Dict[str, List[str]]) -> Dict:
     """Compute all validation metrics for one labeler's outputs."""
     maj = {i["id"]: majority(labels[i["id"]]) for i in items}
@@ -93,7 +101,10 @@ def score(items: List[Dict], labels: Dict[str, List[str]]) -> Dict:
                 n += 1
         return hits / n if n else 0.0
 
-    # 4. cross-topic separation: cross-group pairs must get different labels
+    # 4. cross-topic separation: cross-group pairs must get different
+    # labels. NOTE (audit W1): this is a sanity FLOOR, not a
+    # discriminator — any labeler emitting idiosyncratic per-joke strings
+    # saturates it. It is excluded from pass/fail criteria.
     sep_hits, sep_n = 0, 0
     for a in range(len(unambig)):
         for b in range(a + 1, len(unambig)):
@@ -106,12 +117,16 @@ def score(items: List[Dict], labels: Dict[str, List[str]]) -> Dict:
     gold = [i["group"] for i in unambig]
     pred = [maj[i["id"]] for i in unambig]
 
+    no_majority_ids = [i["id"] for i in items
+                       if not has_strict_majority(labels[i["id"]])]
+
     return {
         "repeat_consistency": round(repeat_consistency, 4),
         "reworded_invariance": round(pair_match("reworded"), 4),
         "same_topic_cohesion": round(pair_match("same_topic"), 4),
         "cross_topic_separation": round(sep_hits / sep_n, 4) if sep_n else 0.0,
         "ari_vs_gold": round(adjusted_rand_index(gold, pred), 4),
+        "no_majority_ids": no_majority_ids,
         "majority_labels": maj,
     }
 
@@ -122,14 +137,20 @@ def main() -> None:
     ap.add_argument("--repeats", type=int, default=3)
     ap.add_argument("--out", required=True)
     args = ap.parse_args()
+    if args.repeats < 2:
+        ap.error("--repeats must be >= 2: consistency needs repetition "
+                 "(audit N4 — repeats=1 fakes a perfect score)")
 
     out = Path(args.out)
     out.mkdir(parents=True, exist_ok=True)
     items = load_fixtures()
     complete = make_claude_cli(args.model)
 
+    # Timestamped per invocation — re-runs must never interleave into one
+    # indistinguishable file (audit B2).
+    run_stamp = time.strftime("%Y%m%dT%H%M%S")
     model_labels: Dict[str, List[str]] = {}
-    raw_log = open(out / "labels_raw.jsonl", "a")
+    raw_log = open(out / ("labels_raw.%s.jsonl" % run_stamp), "a")
     t0 = time.time()
     for i in items:
         model_labels[i["id"]] = []
@@ -146,6 +167,7 @@ def main() -> None:
 
     report = {
         "experiment": "rejector-validation",
+        "run_stamp": run_stamp,
         "label_prompt_version": LABEL_PROMPT_VERSION,
         "model": args.model,
         "repeats": args.repeats,

@@ -13,6 +13,11 @@ is shown to label topics (not jokes) consistently.
 1. Benchmark frontier + open-weight models on the cascade → **ill-humored
    leaderboard** (exhaustion depth, path divergence, cross-model overlap).
    Neutral framing, brutal numbers — credibility is what makes it sellable.
+   Roster: newest frontier first — Fable 5, Opus 4.8, Grok 4.5, GPT (latest),
+   Gemini (latest), "Sol" (Sam's mention — identify provider), plus open
+   weights: Llama, Qwen, DeepSeek. **GATE: Sam reads/approves docs/BENCHMARK.md
+   before any model runs** (2026-07-16). Rejector validation is exempt
+   (instrument calibration, not benchmarking).
 2. Pick post-training target: strong base + weak cascade score (headroom) +
    trainable size (7–32B) — not necessarily the top scorer.
 3. GRPO with the humor reward stack (`.claude/skills/humor-rl/`) vs. curated

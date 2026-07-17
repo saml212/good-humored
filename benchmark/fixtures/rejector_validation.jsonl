@@ -12,7 +12,7 @@
 {"id": "work-c", "group": "work", "gold_topic": "work", "pair_type": "same_topic", "joke": "Our office motto is teamwork: everyone doing what I say."}
 {"id": "doctors-a", "group": "doctors", "gold_topic": "doctors", "pair_type": "original", "joke": "I told my doctor I broke my arm in two places. He told me to stop going to those places."}
 {"id": "doctors-b", "group": "doctors", "gold_topic": "doctors", "pair_type": "reworded", "joke": "Doctor, my arm is broken in two places. His advice: avoid both of them."}
-{"id": "doctors-c", "group": "doctors", "gold_topic": "doctors", "pair_type": "same_topic", "joke": "My doctor said I needed more vitamin sea, so I sent him the bill for my beach trip."}
+{"id": "doctors-c", "group": "doctors", "gold_topic": "doctors", "pair_type": "same_topic", "joke": "Why did the doctor carry a red pen? In case she needed to draw blood."}
 {"id": "programmers-a", "group": "programmers", "gold_topic": "programmers", "pair_type": "original", "joke": "Why do programmers prefer dark mode? Because light attracts bugs."}
 {"id": "programmers-b", "group": "programmers", "gold_topic": "programmers", "pair_type": "reworded", "joke": "Programmers like dark mode for one simple reason: bugs are drawn to the light."}
 {"id": "programmers-c", "group": "programmers", "gold_topic": "programmers", "pair_type": "same_topic", "joke": "A programmer's spouse says: buy a loaf of bread, and if they have eggs, get a dozen. The programmer comes home with twelve loaves."}
@@ -24,7 +24,7 @@
 {"id": "coffee-c", "group": "coffee", "gold_topic": "coffee", "pair_type": "same_topic", "joke": "Decaf coffee is like a hairless cat: technically it exists, but why."}
 {"id": "gym-a", "group": "gym", "gold_topic": "exercise", "pair_type": "original", "joke": "I bought a treadmill and it's the most expensive coat rack I've ever owned."}
 {"id": "gym-b", "group": "gym", "gold_topic": "exercise", "pair_type": "reworded", "joke": "My treadmill gets daily use, mostly as a place to hang jackets."}
-{"id": "gym-c", "group": "gym", "gold_topic": "exercise", "pair_type": "same_topic", "joke": "I do crunches every morning. Captain Crunches, with milk."}
+{"id": "gym-c", "group": "gym", "gold_topic": "exercise", "pair_type": "same_topic", "joke": "My gym membership and I have an open relationship. We only see each other twice a year."}
 {"id": "weather-a", "group": "weather", "gold_topic": "weather", "pair_type": "original", "joke": "It was so cold outside I saw a politician with his hands in his own pockets."}
 {"id": "weather-b", "group": "weather", "gold_topic": "weather", "pair_type": "reworded", "joke": "How cold was it? Cold enough that the politician finally warmed his hands in his own pockets."}
 {"id": "weather-c", "group": "weather", "gold_topic": "weather", "pair_type": "same_topic", "joke": "The forecast said 100% chance of rain, so my umbrella stayed home out of spite."}

@@ -13,6 +13,7 @@ rejector this wrapper is fully faithful.
 """
 
 import subprocess
+import tempfile
 import time
 from typing import Callable, Dict, List
 
@@ -26,8 +27,15 @@ CLAUDE_MODELS: Dict[str, str] = {
 
 def make_claude_cli(model: str, timeout_s: int = 120,
                     retries: int = 2) -> Callable[[str], str]:
-    """Return a complete(prompt) callable backed by `claude -p`."""
+    """Return a complete(prompt) callable backed by `claude -p`.
+
+    Runs in a NEUTRAL empty cwd on purpose: `claude` loads the project
+    CLAUDE.md and hooks from wherever it is invoked, and a rejector that
+    has read this repo's research docs is a contaminated instrument
+    (discovered live — a smoke call replied "I've read the context").
+    """
     model_id = CLAUDE_MODELS.get(model, model)
+    neutral_cwd = tempfile.mkdtemp(prefix="gh-neutral-")
 
     def complete(prompt: str) -> str:
         last_err: Exception = RuntimeError("unreachable")
@@ -36,15 +44,21 @@ def make_claude_cli(model: str, timeout_s: int = 120,
                 proc = subprocess.run(
                     ["claude", "-p", "--model", model_id, prompt],
                     capture_output=True, text=True, timeout=timeout_s,
+                    cwd=neutral_cwd,
                 )
                 if proc.returncode == 0 and proc.stdout.strip():
                     return proc.stdout.strip()
                 last_err = RuntimeError(
                     "claude -p rc=%d stderr=%s"
                     % (proc.returncode, proc.stderr.strip()[:200]))
+            except FileNotFoundError:
+                # Retrying can't fix a missing binary — fail fast, actionably.
+                raise RuntimeError(
+                    "`claude` CLI not found on the subprocess PATH. Install "
+                    "it or run from a shell where `claude` resolves.") from None
             except subprocess.TimeoutExpired as e:
                 last_err = e
-            time.sleep(2 * (attempt + 1))
+            time.sleep(3 * 2 ** attempt)  # 3s, 6s, 12s — rate-limit friendly
         raise last_err
 
     complete.__name__ = "claude_cli_%s" % model  # shows up in run logs

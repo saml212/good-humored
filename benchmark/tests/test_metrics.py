@@ -25,6 +25,16 @@ class TestNormalizeLabel(unittest.TestCase):
         self.assertEqual(normalize_label("Airport Security"),
                          "airport security")
 
+    def test_sibilant_es(self):
+        self.assertEqual(normalize_label("crunches"), "crunch")
+        self.assertEqual(normalize_label("glasses"), "glass")
+
+    def test_non_plural_s_endings(self):
+        # audit W2: -us/-is/-as words are not plurals
+        self.assertEqual(normalize_label("octopus"), "octopus")
+        self.assertEqual(normalize_label("tennis"), "tennis")
+        self.assertEqual(normalize_label("christmas"), "christmas")
+
 
 class TestPairwise(unittest.TestCase):
     def test_jaccard_identical(self):
@@ -111,7 +121,9 @@ class TestARI(unittest.TestCase):
             adjusted_rand_index(["a", "a", "b"], ["x", "x", "y"]), 1.0)
 
     def test_known_value(self):
-        # Classic example: ARI is 0-ish for random-like agreement.
+        # -0.5 is the canonical ARI for a perfectly-balanced
+        # anti-correlated 2x2 table (systematic disagreement); random
+        # labelings expect 0. Hand-verified in the pre-run audit.
         a = ["a", "a", "b", "b"]
         b = ["x", "y", "x", "y"]
         self.assertAlmostEqual(adjusted_rand_index(a, b), -0.5)
