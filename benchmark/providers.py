@@ -212,7 +212,10 @@ _OPENAI_COMPAT_REGISTRY: Dict[str, Dict[str, Optional[str]]] = {
         # burned on reasoning and content empty (cost EXP-004 all 4 kimi
         # runs — diagnosed via raw response: reasoning 1397 chars,
         # content 0). Needs headroom to finish thinking AND answer.
-        "max_tokens": 2048,
+        # 2048 STILL starved on deep-cascade prompts (fill lane r00 died
+        # turn 6, r01 turn 12) — 4096 is the last try before kimi is
+        # dropped with a documented failure.
+        "max_tokens": 4096,
     },
     "grok": {
         # xAI, OpenAI-compatible. grok-4.5 confirmed on this account via
@@ -222,6 +225,9 @@ _OPENAI_COMPAT_REGISTRY: Dict[str, Dict[str, Optional[str]]] = {
         "env_file": "xai.env", "key_var": "XAI_API_KEY",
         "base_url": "https://api.x.ai/v1", "base_url_var": None,
         "model": "grok-4.5",
+        # grok-4.5 routinely takes >120s on deep-cascade prompts (EXP-004
+        # r00/r01 were read timeouts, not API errors).
+        "timeout_s": 300,
     },
     "glm": {
         # glm-4.5-air is ALSO a reasoning model (same failure mode as kimi:
@@ -281,6 +287,11 @@ def make_openai_compat(provider_name: str, timeout_s: int = 120,
         raise ValueError(
             "unknown api provider %r (known: %s)"
             % (provider_name, ", ".join(sorted(_OPENAI_COMPAT_REGISTRY))))
+
+    # Per-provider timeout override, consumed like max_tokens below. grok
+    # read-timed out at the global 120s on cascade-depth prompts (EXP-004
+    # r00/r01) — a slow provider is not a broken provider.
+    timeout_s = spec.get("timeout_s", timeout_s)
 
     env_path = os.path.join(_FLEET_SECRETS_DIR, spec["env_file"])
     try:
