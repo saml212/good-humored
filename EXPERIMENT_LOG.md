@@ -159,6 +159,9 @@ cross-model overlap computed post-hoc over merged raw paths.
 - Within-model mean set Jaccard across runs (raw), averaged over models:
   ≈ 0.55 (models repeat themselves more than they match each other)
 - ≥ 4/10 models hit degradation (repeat/refusal) by turn 30
+  _(amendment: roster grew 10 → 12 after registration — kimi key arrived,
+  grok account arrived; threshold interpreted as ≥ 1/3 of roster, i.e. ≥ 4/12.
+  Both additions predate any data from those models.)_
 
 **Compute on paper:** 10 models × 4 runs × 30 turns × 2 calls ≈ 2,400 calls
 (~1,200 subscription-CLI + ~480 API at pennies + 2,400 haiku rejector...

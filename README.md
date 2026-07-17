@@ -162,8 +162,10 @@ that weighting *is* the anti-hacking mechanism. Implementation:
    baseline. Nothing downstream is meaningful without this.
 2. **Memorized-joke corpus** — scraped internet jokes behind the novelty
    penalty; without it the anti-collapse layer is inert.
-3. **Cascade pilot** — 2 models, depth 15, N=3 runs; shake out the protocol.
-4. **Full benchmark** — 6+ models × N=10 runs × depth 50; publish trajectories.
+3. **Cascade pilot** (running) — 12 models across 4 provider families,
+   depth 30, N=4, pre-registered predictions.
+4. **Full benchmark** — same roster, N=10 runs × depth 50, raw APIs with
+   temperature control; publish trajectories.
 5. **Reward-stack training run** vs. a well-curated SFT baseline (the honest bar
    set by HumorGen's negative result).
 6. **Reverse-transfer measurement** — MMLU/GPQA before/after humor training vs.

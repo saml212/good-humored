@@ -116,6 +116,44 @@ Track 2 depends on Track 1's rejector/labeling machinery being validated, and
 on the judge infrastructure. Build order unchanged: rejector validation →
 cascade → banter.
 
+### Track 2 implementation notes (`benchmark/banter.py`, 2026-07-17)
+
+- **The judge is an LLM.** Unlike the cascade's rejector — which only labels
+  a topic word, a narrow, low-stakes judgment — context-ablation scoring asks
+  a judge model for a 1-10 funniness/fit rating. That means Track 2 inherits
+  the LLM-judge reward-hacking risk that Track 1's topic-labeling design
+  mostly avoids (`.claude/skills/humor-rl/SKILL.md`).
+  **Mitigation:** the reported metric is never the raw judge score, it is the
+  *delta* between two calls to the same judge with the identical rubric
+  (`JUDGE_PROMPT`), differing only in which context block is shown. Any
+  judge tendency that is constant across contexts — a scale bias ("always
+  says 7"), a leniency bias, a length preference — cancels in the
+  subtraction. A judge-hackable *policy* therefore can't win by pushing the
+  absolute score up; it has to specifically make the true-context score
+  beat the swapped-context score.
+  **Residual risk, stated plainly:** this does NOT cancel a judge whose bias
+  is itself context-dependent — e.g. a judge that scores any reply
+  mentioning "traffic" higher when the context also mentions "traffic",
+  independent of whether the reply is actually responsive. A model that
+  learns to sprinkle context-echoing keywords into an otherwise
+  context-blind reply could inflate delta without truly being in-context.
+  This is exactly the kind of failure mode `.claude/skills/humor-rl/SKILL.md`
+  warns judge-alone rewards produce; a real Track 2 reward stack should not
+  use context-ablation delta as the sole signal, the same way Track 1
+  should not use judge score alone.
+
+- **Swapped-context sampling rule.** The swap partner for episode `i` is
+  episode `(i + 1) % n_episodes` (`swap_partner()`), wrapping the last
+  episode back to the first. Fixed and index-based, not random: a random
+  swap would make a pilot run non-reproducible from its own logs, which
+  cuts against this repo's standing requirement that every number trace
+  back to an exact script and dataset. The swap is taken **at the same
+  turn index** — episode A's reply at turn 3 is scored against episode B's
+  conversation truncated to its own turn 3 — so the swap changes *which
+  conversation* the reply is dropped into without changing *how much*
+  conversation has accumulated, keeping context length roughly matched
+  between the true and swapped conditions.
+
 ## 2. Entropy-collapse penalization
 
 Sam: entropy collapse should be penalized in the benchmark, not merely reported.
