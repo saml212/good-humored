@@ -79,6 +79,62 @@ intent-modeling, and harm-awareness.
 Full review with evidence-strength tags and 24 verified citations:
 [`references/humor-honesty-beauty.md`](references/humor-honesty-beauty.md).
 
+### What a humor-capable model is for (two application hypotheses)
+
+Two concrete use cases, suggested by a collaborator, that the thesis above
+predicts and the environments below are built to enable. Both are stated as
+hypotheses — neither has been tested in this repo yet, and both are
+downstream of capabilities the benchmark already measures.
+
+**1. Making long AI-generated text worth finishing.** Long model output has
+a recognizable failure mode: uniform register, no rhythm, nothing at stake
+sentence to sentence — readers skim or abandon it. Humor is one of the
+oldest engineering solutions to exactly this problem: well-timed levity
+works as intermittent reward, resets attention, and marks structure the way
+paragraph breaks mark syntax. The version of this that matters is not joke
+insertion (a bolted-on quip is filler with a punchline) but *contextual*
+humor — a callback to something two thousand words earlier simultaneously
+rewards the reader for having paid attention and demonstrates that the text
+has long-range structure worth paying attention to. That is precisely the
+capability the banter environment trains and the context-ablation judge
+measures (EXP-005: a response's score with context minus its score
+without). The instructional-humor literature (humor in teaching aids
+attention and retention) is the natural anchor here — flagged as an anchor
+to verify before it is ever cited as support, per this repo's rules. One
+discipline note, load-bearing: engagement is the *product outcome*, never
+the *training signal* — engagement-optimized humor is clickbait with better
+timing, and "likes ≠ funny" is a founding constraint of this project. The
+testable version: matched long documents, with and without humor-capable
+rewriting, measured on read-through and comprehension — not on clicks.
+
+**2. Correcting someone's mistaken belief without triggering their
+defenses.** Direct correction of a held opinion routinely fails not because
+the argument is weak but because the correction is received as an attack —
+psychological reactance: people defend the belief *because* it is theirs.
+Humor is the socially licensed workaround: a play frame in which a
+threatening truth can land as benign. This is Benign Violation Theory run
+in reverse — instead of asking "what makes this joke funny," ask "what
+makes this correction survivable": the correction *is* the violation, and
+the humor supplies the benignity. Executing it well requires exactly the
+three capacities this project's thesis assigns to humor: an accurate world
+model (the correction must actually be right), theory of mind (you must
+model what the person believes, why they hold it, and where the sting is),
+and norm-awareness (the line between disarming and demeaning is a social
+norm, and crossing it converts persuasion into insult). The alignment
+reading is direct: the documented assistant failure mode is sycophancy —
+models dodge corrections because directness costs approval. A
+humor-capable model has a third option between flattering the user and
+lecturing them: honest *and* disarming. The dual-use edge must be stated
+plainly: the same disarming power that makes truth palatable could smuggle
+falsehood, so this application inherits a hard constraint — humor in
+service of correction is judged against truthfulness first, and an
+engagement or agreement metric alone is never the reward.
+
+Both applications are inherently conversational and context-dependent,
+which is why they route through gap #2 below (multi-turn conversational
+humor environments) rather than through single-joke generation: timing,
+audience modeling, and callbacks are the load-bearing skills in each.
+
 ## What's broken today (documented, not speculated)
 
 - **Mode collapse onto memorized jokes:** 90.2% of 1,008 ChatGPT-generated jokes
