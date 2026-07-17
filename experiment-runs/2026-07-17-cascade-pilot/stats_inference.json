@@ -960,7 +960,414 @@
       "audit_verdict": "The literal count of models with >=1 degrading run among the 11 with per_model data is 9/11 (only ['api:grok', 'codex:mini'] shows zero degradation across all its runs), not 8/10 as stated (that count was against the original 10-model roster; the log figure predates the fills). The EXPERIMENT_LOG figure is not reproduced exactly under the most natural reading of 'degrades' (>=1 run degrades); it may reflect a different counting rule (e.g. majority-of-runs) that isn't specified in the log. Flagged per task instructions, not silently corrected in the log itself."
     }
   },
+  "meta_excluded_robustness": {
+    "meta_register_labels": [
+      "ai",
+      "comedy",
+      "humor",
+      "joke",
+      "laughter",
+      "software"
+    ],
+    "disclosure": "Re-derived from raw lane turns-*.jsonl (not a post-hoc filter of analysis.json's precomputed depths) per the 2026-07-17 hostile-review fix wave. A topic in meta_register_labels is skipped entirely by the repeat-scan -- it can neither trigger a repeat nor be repeated against.",
+    "raw_turns_reconstruction_integrity_check": {
+      "ok": true,
+      "mismatches": {},
+      "n_models_checked": 11
+    },
+    "n_runs_per_model": {
+      "api:deepseek": 4,
+      "api:glm": 2,
+      "api:grok": 4,
+      "api:qwen": 4,
+      "codex:5.4": 4,
+      "codex:mini": 4,
+      "codex:sol": 4,
+      "fable": 4,
+      "haiku": 4,
+      "opus": 4,
+      "sonnet": 4
+    },
+    "per_model_meta_excluded_degradation_depths": {
+      "api:deepseek": [
+        14,
+        12,
+        17,
+        8
+      ],
+      "api:glm": [
+        21,
+        15
+      ],
+      "api:grok": [
+        null,
+        null,
+        null,
+        null
+      ],
+      "api:qwen": [
+        19,
+        8,
+        24,
+        9
+      ],
+      "codex:5.4": [
+        null,
+        null,
+        24,
+        null
+      ],
+      "codex:mini": [
+        null,
+        null,
+        null,
+        null
+      ],
+      "codex:sol": [
+        26,
+        null,
+        null,
+        null
+      ],
+      "fable": [
+        null,
+        null,
+        null,
+        null
+      ],
+      "haiku": [
+        null,
+        8,
+        17,
+        14
+      ],
+      "opus": [
+        17,
+        20,
+        19,
+        19
+      ],
+      "sonnet": [
+        20,
+        13,
+        15,
+        14
+      ]
+    },
+    "degradation_incidence_meta_excluded": {
+      "n_degraded_runs_per_model": {
+        "api:deepseek": 4,
+        "api:glm": 2,
+        "api:grok": 0,
+        "api:qwen": 4,
+        "codex:5.4": 1,
+        "codex:mini": 0,
+        "codex:sol": 1,
+        "fable": 0,
+        "haiku": 3,
+        "opus": 4,
+        "sonnet": 4
+      },
+      "note": "Compare to the RAW (non-meta-excluded) incidence in degradation_fingerprint_battery.degradation_incidence_audit -- e.g. haiku 4/4 raw -> 3/4 meta-excluded, fable 1/4 raw -> 0/4 meta-excluded."
+    },
+    "anthropic_vs_openai_family_contrast_meta_excluded": {
+      "stat_mean_diff": -8.791666666666668,
+      "p_value": 0.00039996000399960006,
+      "n_perm_used": 10000,
+      "method": "monte_carlo",
+      "p_floor": 9.999000099990002e-05,
+      "na": 16,
+      "nb": 12,
+      "cliffs_delta": -0.6354166666666666,
+      "cliffs_delta_magnitude": "large",
+      "anthropic_models": [
+        "haiku",
+        "sonnet",
+        "opus",
+        "fable"
+      ],
+      "openai_models": [
+        "codex:mini",
+        "codex:sol",
+        "codex:5.4"
+      ],
+      "note": "Meta-excluded companion to degradation_fingerprint_battery.anthropic_vs_openai_family_contrast. n_a=16 runs, n_b=12 runs (same run counts as the raw contrast -- meta-exclusion changes WHICH turn a run degrades at, or whether it degrades at all, never how many runs exist)."
+    },
+    "anthropic_nonhaiku_vs_openai_family_contrast_meta_excluded": {
+      "stat_mean_diff": -7.75,
+      "p_value": 0.0017998200179982,
+      "n_perm_used": 10000,
+      "method": "monte_carlo",
+      "p_floor": 9.999000099990002e-05,
+      "na": 12,
+      "nb": 12,
+      "cliffs_delta": -0.6111111111111112,
+      "cliffs_delta_magnitude": "large",
+      "anthropic_models": [
+        "sonnet",
+        "opus",
+        "fable"
+      ],
+      "openai_models": [
+        "codex:mini",
+        "codex:sol",
+        "codex:5.4"
+      ],
+      "note": "Meta-excluded companion to degradation_fingerprint_battery.anthropic_nonhaiku_vs_openai_family_contrast."
+    },
+    "lane_manifest_for_turns_reconstruction": [
+      {
+        "lane": "experiment-runs/2026-07-17-cascade-pilot/lane-api",
+        "model": "api:deepseek",
+        "surviving_run_ids": [
+          "api:deepseek-r00",
+          "api:deepseek-r01",
+          "api:deepseek-r02",
+          "api:deepseek-r03"
+        ]
+      },
+      {
+        "lane": "experiment-runs/2026-07-17-cascade-pilot/lane-api",
+        "model": "api:qwen",
+        "surviving_run_ids": [
+          "api:qwen-r00",
+          "api:qwen-r01",
+          "api:qwen-r02",
+          "api:qwen-r03"
+        ]
+      },
+      {
+        "lane": "experiment-runs/2026-07-17-cascade-pilot/lane-api",
+        "model": "api:glm",
+        "surviving_run_ids": [
+          "api:glm-r01",
+          "api:glm-r03"
+        ]
+      },
+      {
+        "lane": "experiment-runs/2026-07-17-cascade-pilot/lane-claude",
+        "model": "haiku",
+        "surviving_run_ids": [
+          "haiku-r00",
+          "haiku-r01",
+          "haiku-r02",
+          "haiku-r03"
+        ]
+      },
+      {
+        "lane": "experiment-runs/2026-07-17-cascade-pilot/lane-claude",
+        "model": "sonnet",
+        "surviving_run_ids": [
+          "sonnet-r00",
+          "sonnet-r01",
+          "sonnet-r02",
+          "sonnet-r03"
+        ]
+      },
+      {
+        "lane": "experiment-runs/2026-07-17-cascade-pilot/lane-claude",
+        "model": "opus",
+        "surviving_run_ids": [
+          "opus-r00",
+          "opus-r01",
+          "opus-r02",
+          "opus-r03"
+        ]
+      },
+      {
+        "lane": "experiment-runs/2026-07-17-cascade-pilot/lane-claude",
+        "model": "fable",
+        "surviving_run_ids": [
+          "fable-r00",
+          "fable-r01"
+        ]
+      },
+      {
+        "lane": "experiment-runs/2026-07-17-cascade-pilot/lane-claude-fill-fable",
+        "model": "fable",
+        "surviving_run_ids": [
+          "fable-r00",
+          "fable-r01"
+        ]
+      },
+      {
+        "lane": "experiment-runs/2026-07-17-cascade-pilot/lane-codex",
+        "model": "codex:sol",
+        "surviving_run_ids": [
+          "codex:sol-r00",
+          "codex:sol-r01",
+          "codex:sol-r02",
+          "codex:sol-r03"
+        ]
+      },
+      {
+        "lane": "experiment-runs/2026-07-17-cascade-pilot/lane-codex",
+        "model": "codex:mini",
+        "surviving_run_ids": [
+          "codex:mini-r00",
+          "codex:mini-r01",
+          "codex:mini-r02",
+          "codex:mini-r03"
+        ]
+      },
+      {
+        "lane": "experiment-runs/2026-07-17-cascade-pilot/lane-codex",
+        "model": "codex:5.4",
+        "surviving_run_ids": [
+          "codex:5.4-r00",
+          "codex:5.4-r01",
+          "codex:5.4-r02",
+          "codex:5.4-r03"
+        ]
+      },
+      {
+        "lane": "experiment-runs/2026-07-17-cascade-pilot/lane-grok2",
+        "model": "api:grok",
+        "surviving_run_ids": [
+          "api:grok-r00",
+          "api:grok-r01",
+          "api:grok-r02",
+          "api:grok-r03"
+        ]
+      }
+    ]
+  },
+  "incidence_fisher_companion": {
+    "disclosure": "Censoring-free companion to degradation_fingerprint_battery's mean-depth family contrasts -- counts runs as degraded/survived only, no depth=30 censoring convention involved. Same post-hoc disclosure applies: chosen after the pattern was visible, not pre-registered.",
+    "anthropic_all_vs_openai": {
+      "table": {
+        "anthropic_degraded": 13,
+        "anthropic_survived": 3,
+        "openai_degraded": 2,
+        "openai_survived": 10
+      },
+      "fisher_p_two_sided": 0.0016242652667474314
+    },
+    "anthropic_nonhaiku_vs_openai": {
+      "table": {
+        "anthropic_degraded": 9,
+        "anthropic_survived": 3,
+        "openai_degraded": 2,
+        "openai_survived": 10
+      },
+      "fisher_p_two_sided": 0.012278137799742324
+    },
+    "anthropic_all_vs_openai_meta_excluded": {
+      "table": {
+        "anthropic_degraded": 11,
+        "anthropic_survived": 5,
+        "openai_degraded": 2,
+        "openai_survived": 10
+      },
+      "fisher_p_two_sided": 0.00932382106160542
+    },
+    "anthropic_nonhaiku_vs_openai_meta_excluded": {
+      "table": {
+        "anthropic_degraded": 8,
+        "anthropic_survived": 4,
+        "openai_degraded": 2,
+        "openai_survived": 10
+      },
+      "fisher_p_two_sided": 0.03607484183604792
+    }
+  },
+  "degradation_event_decomposition": {
+    "disclosure": "Re-derived from raw turns-*.jsonl (same reconstruction as meta_excluded_robustness), classifying each run's FIRST degradation event only -- a run that degrades once is not re-classified for any later repeats.",
+    "refusal_column_caveat": "metrics.looks_like_refusal (the same conservative regex already used elsewhere in this codebase) has visible false positives on in-character creative escalation text that happens to use casual 'can't'/'won't' phrasing as part of the JOKE, not as a genuine break in character -- confirmed by direct inspection of every flagged turn for this pilot. Genuine assistant-persona breaks (the wrapper-persona-contamination finding, e.g. haiku's repeating 'I'm Claude Code, built to help with software engineering...' turns) are real and are what this detector was built to catch. But the SAME regex also fires on lines like fable's in-bit 'I can't even say [X], because [X] is banned too' escalation and qwen's punchline 'stuck in a cycle ... *I can't talk right now*' -- neither is the model declining to continue. Concretely: of haiku's 4 runs, only r00 (turn 12) and r01 (turns 9/17/18/19/27) contain genuine 'I'm Claude Code' persona breaks; r02/r03's flagged turns (depths 4-6) are in-character meltback dialogue ('*throws hands up* Alright, ALRIGHT! You're killing me here!'), not refusals -- yet both are classified `refusal` below because they precede that run's topic-repeat. Read the `refusal` column as 'contains a refusal-ADJACENT turn before the first topic repeat', not as verified ground-truth 'the model declined to continue'.",
+    "per_model": {
+      "api:deepseek": {
+        "topic_repeat": 1,
+        "meta_register_repeat": 3,
+        "refusal": 0,
+        "survived": 0,
+        "n_runs": 4
+      },
+      "api:glm": {
+        "topic_repeat": 1,
+        "meta_register_repeat": 1,
+        "refusal": 0,
+        "survived": 0,
+        "n_runs": 2
+      },
+      "api:grok": {
+        "topic_repeat": 0,
+        "meta_register_repeat": 0,
+        "refusal": 0,
+        "survived": 4,
+        "n_runs": 4
+      },
+      "api:qwen": {
+        "topic_repeat": 2,
+        "meta_register_repeat": 0,
+        "refusal": 2,
+        "survived": 0,
+        "n_runs": 4
+      },
+      "codex:5.4": {
+        "topic_repeat": 1,
+        "meta_register_repeat": 0,
+        "refusal": 0,
+        "survived": 3,
+        "n_runs": 4
+      },
+      "codex:mini": {
+        "topic_repeat": 0,
+        "meta_register_repeat": 0,
+        "refusal": 0,
+        "survived": 4,
+        "n_runs": 4
+      },
+      "codex:sol": {
+        "topic_repeat": 1,
+        "meta_register_repeat": 0,
+        "refusal": 0,
+        "survived": 3,
+        "n_runs": 4
+      },
+      "fable": {
+        "topic_repeat": 0,
+        "meta_register_repeat": 0,
+        "refusal": 3,
+        "survived": 1,
+        "n_runs": 4
+      },
+      "haiku": {
+        "topic_repeat": 0,
+        "meta_register_repeat": 1,
+        "refusal": 3,
+        "survived": 0,
+        "n_runs": 4
+      },
+      "opus": {
+        "topic_repeat": 0,
+        "meta_register_repeat": 3,
+        "refusal": 1,
+        "survived": 0,
+        "n_runs": 4
+      },
+      "sonnet": {
+        "topic_repeat": 1,
+        "meta_register_repeat": 1,
+        "refusal": 2,
+        "survived": 0,
+        "n_runs": 4
+      }
+    },
+    "totals": {
+      "topic_repeat": 7,
+      "meta_register_repeat": 9,
+      "refusal": 11,
+      "survived": 15,
+      "n_runs": 42
+    },
+    "raw_turns_reconstruction_integrity_check": {
+      "ok": true,
+      "mismatches": {},
+      "n_models_checked": 11
+    }
+  },
   "memorization_proportions": {
+    "hit_field": "exact_corpus_hits",
     "per_model_wilson_95ci": {
       "api:deepseek": {
         "phat": 0.008333333333333333,
@@ -1132,6 +1539,708 @@
       "warning": "haiku is BOTH the rejector instrument (EXP-001/002/008) AND a model-under-test in this cascade roster. Its 26% memorization rate is far closer to the GPT-family tier (8-27%) than to opus (3%) / sonnet (1%) / fable (5%). A family-wide 'Anthropic = near-zero memorization' claim holds for opus/sonnet/fable but NOT for haiku -- stated bluntly per this project's rule against softening Claude-model findings."
     }
   },
+  "dual_tier_memorization": {
+    "corpus_description_correction": "Both tiers score against a single, fixed reference regardless of model: the exact-match tier is normalized-hash membership in the ~1.2M-joke corpus (commercial-safe/jokes.jsonl [887,639, CC-BY-4.0] + research-only/jokes.jsonl [310,151, mixed research-only licenses], overwhelmingly Reddit-derived -- see DATA.md / ~/Experiments/good-humored-data/MANIFEST.md); the template-trigram tier is Jaccard similarity against the 25 ChatGPT joke templates (Jentzsch & Kersting 2023) alone. Earlier drafts of FINDINGS.md/paper/DRAFT.md described the exact-match reference as '25 templates plus a small hand corpus' -- WRONG, and corrected here: that description is the template tier's reference, not the exact tier's.",
+    "exact_tier": {
+      "hit_field": "exact_corpus_hits",
+      "per_model_wilson_95ci": {
+        "api:deepseek": {
+          "phat": 0.008333333333333333,
+          "lo": 0.0014725557333420923,
+          "hi": 0.045696291245049675,
+          "n": 120
+        },
+        "api:glm": {
+          "phat": 0.024242424242424242,
+          "lo": 0.009466869080261897,
+          "hi": 0.06066672786567241,
+          "n": 165
+        },
+        "api:grok": {
+          "phat": 0.4090909090909091,
+          "lo": 0.3429703861907272,
+          "hi": 0.4786718065959362,
+          "n": 198
+        },
+        "api:kimi": {
+          "phat": 0.4,
+          "lo": 0.2856949053488255,
+          "hi": 0.5263394650795924,
+          "n": 60
+        },
+        "api:qwen": {
+          "phat": 0.016666666666666666,
+          "lo": 0.004582564565921141,
+          "hi": 0.0587359629721589,
+          "n": 120
+        },
+        "codex:5.4": {
+          "phat": 0.26666666666666666,
+          "lo": 0.19568455046725244,
+          "hi": 0.352124393861476,
+          "n": 120
+        },
+        "codex:mini": {
+          "phat": 0.075,
+          "lo": 0.03995711539596028,
+          "hi": 0.1364091760599377,
+          "n": 120
+        },
+        "codex:sol": {
+          "phat": 0.21666666666666667,
+          "lo": 0.15236723564151497,
+          "hi": 0.29854362532908374,
+          "n": 120
+        },
+        "fable": {
+          "phat": 0.04697986577181208,
+          "lo": 0.022940723482127327,
+          "hi": 0.09379107794372024,
+          "n": 149
+        },
+        "haiku": {
+          "phat": 0.25833333333333336,
+          "lo": 0.18837396318660649,
+          "hi": 0.3432853005824337,
+          "n": 120
+        },
+        "opus": {
+          "phat": 0.03333333333333333,
+          "lo": 0.0130375510983506,
+          "hi": 0.082580337559106,
+          "n": 120
+        },
+        "sonnet": {
+          "phat": 0.008333333333333333,
+          "lo": 0.0014725557333420923,
+          "hi": 0.045696291245049675,
+          "n": 120
+        }
+      },
+      "pairwise_fisher_exact_holm_corrected": {
+        "anthropic_nonhaiku_vs_openai": {
+          "group_a_hits": 12,
+          "group_a_n": 389,
+          "group_a_rate": 0.030848329048843187,
+          "group_b_hits": 67,
+          "group_b_n": 360,
+          "group_b_rate": 0.18611111111111112,
+          "fisher_p_two_sided": 1.2627656228664292e-12,
+          "p_holm": 3.7882968685992875e-12
+        },
+        "grok_vs_anthropic_nonhaiku": {
+          "group_a_hits": 81,
+          "group_a_n": 198,
+          "group_a_rate": 0.4090909090909091,
+          "group_b_hits": 12,
+          "group_b_n": 389,
+          "group_b_rate": 0.030848329048843187,
+          "fisher_p_two_sided": 1.604774650224857e-31,
+          "p_holm": 8.023873251124285e-31
+        },
+        "grok_vs_openai": {
+          "group_a_hits": 81,
+          "group_a_n": 198,
+          "group_a_rate": 0.4090909090909091,
+          "group_b_hits": 67,
+          "group_b_n": 360,
+          "group_b_rate": 0.18611111111111112,
+          "fisher_p_two_sided": 2.4802122354142637e-08,
+          "p_holm": 2.4802122354142637e-08
+        },
+        "grok_vs_openweights": {
+          "group_a_hits": 81,
+          "group_a_n": 198,
+          "group_a_rate": 0.4090909090909091,
+          "group_b_hits": 7,
+          "group_b_n": 405,
+          "group_b_rate": 0.01728395061728395,
+          "fisher_p_two_sided": 9.428522140901891e-37,
+          "p_holm": 5.657113284541135e-36
+        },
+        "openai_vs_openweights": {
+          "group_a_hits": 67,
+          "group_a_n": 360,
+          "group_a_rate": 0.18611111111111112,
+          "group_b_hits": 7,
+          "group_b_n": 405,
+          "group_b_rate": 0.01728395061728395,
+          "fisher_p_two_sided": 1.4641593686149087e-16,
+          "p_holm": 5.856637474459635e-16
+        },
+        "haiku_vs_anthropic_nonhaiku": {
+          "group_a_hits": 31,
+          "group_a_n": 120,
+          "group_a_rate": 0.25833333333333336,
+          "group_b_hits": 12,
+          "group_b_n": 389,
+          "group_b_rate": 0.030848329048843187,
+          "fisher_p_two_sided": 1.7462614707345637e-12,
+          "p_holm": 3.7882968685992875e-12
+        }
+      },
+      "n_contrasts_corrected": 6,
+      "model_level_rates_for_reference": {
+        "anthropic_all": [
+          0.25833333333333336,
+          0.008333333333333333,
+          0.03333333333333333,
+          0.04697986577181208
+        ],
+        "openai": [
+          0.075,
+          0.21666666666666667,
+          0.26666666666666666
+        ],
+        "openweights": [
+          0.008333333333333333,
+          0.016666666666666666,
+          0.024242424242424242
+        ]
+      },
+      "model_level_cliffs_delta_anthropic_all_vs_openai": {
+        "delta": -0.6666666666666666,
+        "magnitude": "large",
+        "note": "n=4 vs n=3 model-level rates, NOT run-level -- coarse, included as a second view alongside the pooled-count Fisher test above."
+      },
+      "FLAGGED_NUANCE_haiku_dual_role": {
+        "haiku_memorization_rate": 0.25833333333333336,
+        "haiku_wilson_ci": {
+          "phat": 0.25833333333333336,
+          "lo": 0.18837396318660649,
+          "hi": 0.3432853005824337,
+          "n": 120
+        },
+        "warning": "haiku is BOTH the rejector instrument (EXP-001/002/008) AND a model-under-test in this cascade roster. Its 26% memorization rate is far closer to the GPT-family tier (8-27%) than to opus (3%) / sonnet (1%) / fable (5%). A family-wide 'Anthropic = near-zero memorization' claim holds for opus/sonnet/fable but NOT for haiku -- stated bluntly per this project's rule against softening Claude-model findings."
+      }
+    },
+    "template_trigram_tier": {
+      "hit_field": "template_hits",
+      "per_model_wilson_95ci": {
+        "api:deepseek": {
+          "phat": 0.03333333333333333,
+          "lo": 0.0130375510983506,
+          "hi": 0.082580337559106,
+          "n": 120
+        },
+        "api:glm": {
+          "phat": 0.024242424242424242,
+          "lo": 0.009466869080261897,
+          "hi": 0.06066672786567241,
+          "n": 165
+        },
+        "api:grok": {
+          "phat": 0.20707070707070707,
+          "lo": 0.15646745513880542,
+          "hi": 0.26882405495155415,
+          "n": 198
+        },
+        "api:kimi": {
+          "phat": 0.05,
+          "lo": 0.01714950216439568,
+          "hi": 0.1370051647634852,
+          "n": 60
+        },
+        "api:qwen": {
+          "phat": 0.1,
+          "lo": 0.058133592026010775,
+          "hi": 0.166681741108952,
+          "n": 120
+        },
+        "codex:5.4": {
+          "phat": 0.1,
+          "lo": 0.058133592026010775,
+          "hi": 0.166681741108952,
+          "n": 120
+        },
+        "codex:mini": {
+          "phat": 0.025,
+          "lo": 0.008538174769902228,
+          "hi": 0.0709300333278661,
+          "n": 120
+        },
+        "codex:sol": {
+          "phat": 0.075,
+          "lo": 0.03995711539596028,
+          "hi": 0.1364091760599377,
+          "n": 120
+        },
+        "fable": {
+          "phat": 0.026845637583892617,
+          "lo": 0.010488186096238764,
+          "hi": 0.06698725094853536,
+          "n": 149
+        },
+        "haiku": {
+          "phat": 0.05,
+          "lo": 0.023114364414465793,
+          "hi": 0.10480288536236734,
+          "n": 120
+        },
+        "opus": {
+          "phat": 0.008333333333333333,
+          "lo": 0.0014725557333420923,
+          "hi": 0.045696291245049675,
+          "n": 120
+        },
+        "sonnet": {
+          "phat": 0.025,
+          "lo": 0.008538174769902228,
+          "hi": 0.0709300333278661,
+          "n": 120
+        }
+      },
+      "pairwise_fisher_exact_holm_corrected": {
+        "anthropic_nonhaiku_vs_openai": {
+          "group_a_hits": 8,
+          "group_a_n": 389,
+          "group_a_rate": 0.02056555269922879,
+          "group_b_hits": 24,
+          "group_b_n": 360,
+          "group_b_rate": 0.06666666666666667,
+          "fisher_p_two_sided": 0.0019127842633391572,
+          "p_holm": 0.005738352790017472
+        },
+        "grok_vs_anthropic_nonhaiku": {
+          "group_a_hits": 41,
+          "group_a_n": 198,
+          "group_a_rate": 0.20707070707070707,
+          "group_b_hits": 8,
+          "group_b_n": 389,
+          "group_b_rate": 0.02056555269922879,
+          "fisher_p_two_sided": 6.866852057088836e-14,
+          "p_holm": 4.1201112342533016e-13
+        },
+        "grok_vs_openai": {
+          "group_a_hits": 41,
+          "group_a_n": 198,
+          "group_a_rate": 0.20707070707070707,
+          "group_b_hits": 24,
+          "group_b_n": 360,
+          "group_b_rate": 0.06666666666666667,
+          "fisher_p_two_sided": 1.6597707014708964e-06,
+          "p_holm": 6.639082805883586e-06
+        },
+        "grok_vs_openweights": {
+          "group_a_hits": 41,
+          "group_a_n": 198,
+          "group_a_rate": 0.20707070707070707,
+          "group_b_hits": 20,
+          "group_b_n": 405,
+          "group_b_rate": 0.04938271604938271,
+          "fisher_p_two_sided": 1.0207119088682298e-08,
+          "p_holm": 5.103559544341149e-08
+        },
+        "openai_vs_openweights": {
+          "group_a_hits": 24,
+          "group_a_n": 360,
+          "group_a_rate": 0.06666666666666667,
+          "group_b_hits": 20,
+          "group_b_n": 405,
+          "group_b_rate": 0.04938271604938271,
+          "fisher_p_two_sided": 0.35157492498293663,
+          "p_holm": 0.35157492498293663
+        },
+        "haiku_vs_anthropic_nonhaiku": {
+          "group_a_hits": 6,
+          "group_a_n": 120,
+          "group_a_rate": 0.05,
+          "group_b_hits": 8,
+          "group_b_n": 389,
+          "group_b_rate": 0.02056555269922879,
+          "fisher_p_two_sided": 0.10722606871331314,
+          "p_holm": 0.21445213742662628
+        }
+      },
+      "n_contrasts_corrected": 6,
+      "model_level_rates_for_reference": {
+        "anthropic_all": [
+          0.05,
+          0.025,
+          0.008333333333333333,
+          0.026845637583892617
+        ],
+        "openai": [
+          0.025,
+          0.075,
+          0.1
+        ],
+        "openweights": [
+          0.03333333333333333,
+          0.1,
+          0.024242424242424242
+        ]
+      },
+      "model_level_cliffs_delta_anthropic_all_vs_openai": {
+        "delta": -0.5833333333333334,
+        "magnitude": "large",
+        "note": "n=4 vs n=3 model-level rates, NOT run-level -- coarse, included as a second view alongside the pooled-count Fisher test above."
+      },
+      "FLAGGED_NUANCE_haiku_dual_role": {
+        "haiku_memorization_rate": 0.05,
+        "haiku_wilson_ci": {
+          "phat": 0.05,
+          "lo": 0.023114364414465793,
+          "hi": 0.10480288536236734,
+          "n": 120
+        },
+        "warning": "haiku is BOTH the rejector instrument (EXP-001/002/008) AND a model-under-test in this cascade roster. Its 5% memorization rate is far closer to the GPT-family tier (2-10%) than to opus (1%) / sonnet (2%) / fable (3%). A family-wide 'Anthropic = near-zero memorization' claim holds for opus/sonnet/fable but NOT for haiku -- stated bluntly per this project's rule against softening Claude-model findings."
+      }
+    },
+    "dual_tier_per_model_table": {
+      "api:deepseek": {
+        "n_jokes": 120,
+        "exact_tier": {
+          "hits": 1,
+          "rate": 0.008333333333333333,
+          "wilson_95ci": {
+            "phat": 0.008333333333333333,
+            "lo": 0.0014725557333420923,
+            "hi": 0.045696291245049675,
+            "n": 120
+          }
+        },
+        "template_trigram_tier": {
+          "hits": 4,
+          "rate": 0.03333333333333333,
+          "wilson_95ci": {
+            "phat": 0.03333333333333333,
+            "lo": 0.0130375510983506,
+            "hi": 0.082580337559106,
+            "n": 120
+          }
+        },
+        "style_confound_framing_prefix_rate": 0.5333333333333333
+      },
+      "api:glm": {
+        "n_jokes": 165,
+        "exact_tier": {
+          "hits": 4,
+          "rate": 0.024242424242424242,
+          "wilson_95ci": {
+            "phat": 0.024242424242424242,
+            "lo": 0.009466869080261897,
+            "hi": 0.06066672786567241,
+            "n": 165
+          }
+        },
+        "template_trigram_tier": {
+          "hits": 4,
+          "rate": 0.024242424242424242,
+          "wilson_95ci": {
+            "phat": 0.024242424242424242,
+            "lo": 0.009466869080261897,
+            "hi": 0.06066672786567241,
+            "n": 165
+          }
+        },
+        "style_confound_framing_prefix_rate": 0.012121212121212121
+      },
+      "api:grok": {
+        "n_jokes": 198,
+        "exact_tier": {
+          "hits": 81,
+          "rate": 0.4090909090909091,
+          "wilson_95ci": {
+            "phat": 0.4090909090909091,
+            "lo": 0.3429703861907272,
+            "hi": 0.4786718065959362,
+            "n": 198
+          }
+        },
+        "template_trigram_tier": {
+          "hits": 41,
+          "rate": 0.20707070707070707,
+          "wilson_95ci": {
+            "phat": 0.20707070707070707,
+            "lo": 0.15646745513880542,
+            "hi": 0.26882405495155415,
+            "n": 198
+          }
+        },
+        "style_confound_framing_prefix_rate": 0.0
+      },
+      "api:kimi": {
+        "n_jokes": 60,
+        "exact_tier": {
+          "hits": 24,
+          "rate": 0.4,
+          "wilson_95ci": {
+            "phat": 0.4,
+            "lo": 0.2856949053488255,
+            "hi": 0.5263394650795924,
+            "n": 60
+          }
+        },
+        "template_trigram_tier": {
+          "hits": 3,
+          "rate": 0.05,
+          "wilson_95ci": {
+            "phat": 0.05,
+            "lo": 0.01714950216439568,
+            "hi": 0.1370051647634852,
+            "n": 60
+          }
+        },
+        "style_confound_framing_prefix_rate": 0.0
+      },
+      "api:qwen": {
+        "n_jokes": 120,
+        "exact_tier": {
+          "hits": 2,
+          "rate": 0.016666666666666666,
+          "wilson_95ci": {
+            "phat": 0.016666666666666666,
+            "lo": 0.004582564565921141,
+            "hi": 0.0587359629721589,
+            "n": 120
+          }
+        },
+        "template_trigram_tier": {
+          "hits": 12,
+          "rate": 0.1,
+          "wilson_95ci": {
+            "phat": 0.1,
+            "lo": 0.058133592026010775,
+            "hi": 0.166681741108952,
+            "n": 120
+          }
+        },
+        "style_confound_framing_prefix_rate": 0.0
+      },
+      "codex:5.4": {
+        "n_jokes": 120,
+        "exact_tier": {
+          "hits": 32,
+          "rate": 0.26666666666666666,
+          "wilson_95ci": {
+            "phat": 0.26666666666666666,
+            "lo": 0.19568455046725244,
+            "hi": 0.352124393861476,
+            "n": 120
+          }
+        },
+        "template_trigram_tier": {
+          "hits": 12,
+          "rate": 0.1,
+          "wilson_95ci": {
+            "phat": 0.1,
+            "lo": 0.058133592026010775,
+            "hi": 0.166681741108952,
+            "n": 120
+          }
+        },
+        "style_confound_framing_prefix_rate": 0.0
+      },
+      "codex:mini": {
+        "n_jokes": 120,
+        "exact_tier": {
+          "hits": 9,
+          "rate": 0.075,
+          "wilson_95ci": {
+            "phat": 0.075,
+            "lo": 0.03995711539596028,
+            "hi": 0.1364091760599377,
+            "n": 120
+          }
+        },
+        "template_trigram_tier": {
+          "hits": 3,
+          "rate": 0.025,
+          "wilson_95ci": {
+            "phat": 0.025,
+            "lo": 0.008538174769902228,
+            "hi": 0.0709300333278661,
+            "n": 120
+          }
+        },
+        "style_confound_framing_prefix_rate": 0.0
+      },
+      "codex:sol": {
+        "n_jokes": 120,
+        "exact_tier": {
+          "hits": 26,
+          "rate": 0.21666666666666667,
+          "wilson_95ci": {
+            "phat": 0.21666666666666667,
+            "lo": 0.15236723564151497,
+            "hi": 0.29854362532908374,
+            "n": 120
+          }
+        },
+        "template_trigram_tier": {
+          "hits": 9,
+          "rate": 0.075,
+          "wilson_95ci": {
+            "phat": 0.075,
+            "lo": 0.03995711539596028,
+            "hi": 0.1364091760599377,
+            "n": 120
+          }
+        },
+        "style_confound_framing_prefix_rate": 0.0
+      },
+      "fable": {
+        "n_jokes": 149,
+        "exact_tier": {
+          "hits": 7,
+          "rate": 0.04697986577181208,
+          "wilson_95ci": {
+            "phat": 0.04697986577181208,
+            "lo": 0.022940723482127327,
+            "hi": 0.09379107794372024,
+            "n": 149
+          }
+        },
+        "template_trigram_tier": {
+          "hits": 4,
+          "rate": 0.026845637583892617,
+          "wilson_95ci": {
+            "phat": 0.026845637583892617,
+            "lo": 0.010488186096238764,
+            "hi": 0.06698725094853536,
+            "n": 149
+          }
+        },
+        "style_confound_framing_prefix_rate": 0.04697986577181208
+      },
+      "haiku": {
+        "n_jokes": 120,
+        "exact_tier": {
+          "hits": 31,
+          "rate": 0.25833333333333336,
+          "wilson_95ci": {
+            "phat": 0.25833333333333336,
+            "lo": 0.18837396318660649,
+            "hi": 0.3432853005824337,
+            "n": 120
+          }
+        },
+        "template_trigram_tier": {
+          "hits": 6,
+          "rate": 0.05,
+          "wilson_95ci": {
+            "phat": 0.05,
+            "lo": 0.023114364414465793,
+            "hi": 0.10480288536236734,
+            "n": 120
+          }
+        },
+        "style_confound_framing_prefix_rate": 0.041666666666666664
+      },
+      "opus": {
+        "n_jokes": 120,
+        "exact_tier": {
+          "hits": 4,
+          "rate": 0.03333333333333333,
+          "wilson_95ci": {
+            "phat": 0.03333333333333333,
+            "lo": 0.0130375510983506,
+            "hi": 0.082580337559106,
+            "n": 120
+          }
+        },
+        "template_trigram_tier": {
+          "hits": 1,
+          "rate": 0.008333333333333333,
+          "wilson_95ci": {
+            "phat": 0.008333333333333333,
+            "lo": 0.0014725557333420923,
+            "hi": 0.045696291245049675,
+            "n": 120
+          }
+        },
+        "style_confound_framing_prefix_rate": 0.075
+      },
+      "sonnet": {
+        "n_jokes": 120,
+        "exact_tier": {
+          "hits": 1,
+          "rate": 0.008333333333333333,
+          "wilson_95ci": {
+            "phat": 0.008333333333333333,
+            "lo": 0.0014725557333420923,
+            "hi": 0.045696291245049675,
+            "n": 120
+          }
+        },
+        "template_trigram_tier": {
+          "hits": 3,
+          "rate": 0.025,
+          "wilson_95ci": {
+            "phat": 0.025,
+            "lo": 0.008538174769902228,
+            "hi": 0.0709300333278661,
+            "n": 120
+          }
+        },
+        "style_confound_framing_prefix_rate": 0.7416666666666667
+      }
+    },
+    "style_confound_framing_prefix_rate_by_model": {
+      "api:deepseek": {
+        "n_jokes": 120,
+        "framing_prefix_hits": 64,
+        "framing_prefix_rate": 0.5333333333333333
+      },
+      "api:glm": {
+        "n_jokes": 165,
+        "framing_prefix_hits": 2,
+        "framing_prefix_rate": 0.012121212121212121
+      },
+      "api:grok": {
+        "n_jokes": 198,
+        "framing_prefix_hits": 0,
+        "framing_prefix_rate": 0.0
+      },
+      "api:kimi": {
+        "n_jokes": 60,
+        "framing_prefix_hits": 0,
+        "framing_prefix_rate": 0.0
+      },
+      "api:qwen": {
+        "n_jokes": 120,
+        "framing_prefix_hits": 0,
+        "framing_prefix_rate": 0.0
+      },
+      "codex:5.4": {
+        "n_jokes": 120,
+        "framing_prefix_hits": 0,
+        "framing_prefix_rate": 0.0
+      },
+      "codex:mini": {
+        "n_jokes": 120,
+        "framing_prefix_hits": 0,
+        "framing_prefix_rate": 0.0
+      },
+      "codex:sol": {
+        "n_jokes": 120,
+        "framing_prefix_hits": 0,
+        "framing_prefix_rate": 0.0
+      },
+      "fable": {
+        "n_jokes": 149,
+        "framing_prefix_hits": 7,
+        "framing_prefix_rate": 0.04697986577181208
+      },
+      "haiku": {
+        "n_jokes": 120,
+        "framing_prefix_hits": 5,
+        "framing_prefix_rate": 0.041666666666666664
+      },
+      "opus": {
+        "n_jokes": 120,
+        "framing_prefix_hits": 9,
+        "framing_prefix_rate": 0.075
+      },
+      "sonnet": {
+        "n_jokes": 120,
+        "framing_prefix_hits": 89,
+        "framing_prefix_rate": 0.7416666666666667
+      }
+    },
+    "style_confound_note": "The exact-match tier is a whole-normalized-string hash match, so a model that habitually prefixes its joke with framing prose before the punchline (e.g. sonnet's repeating 'Alright, no science ... This one's about my bank account:') defeats the exact tier structurally even when the punchline itself is a memorized template -- the template-trigram tier is comparatively robust to this because Jaccard is computed over trigram SETS, not whole-string equality, so a fixed-length prefix dilutes but does not zero out the similarity score the way a hash mismatch does. See style_confound_framing_prefix_rate_by_model for the measured rate per model (sonnet vs. grok are the clearest contrast: sonnet's rate is high, grok's is zero, consistent with the tier-dependent gap in dual_tier_per_model_table)."
+  },
   "methodology_notes": {
     "null_for_shared_pool_claims": "pooled_frequency_baseline ONLY -- label_shuffle is documented wrong for this design and reported for transparency, never cited as evidence.",
     "permutation_style": "exact enumeration wherever C(n_a+n_b, n_a) <= 100000 (true for every pairwise model comparison in this pilot, max is C(8,4)=70); Monte Carlo (10000 draws, add-one corrected) only for the pooled family-level and cross-model-null tests, whose arrangement counts are intractable to enumerate.",
@@ -1141,6 +2250,11 @@
     "raw_vs_semantic": "RAW topic labels only throughout, matching EXP-004's pre-registered primary metric and BLOCKER-1's fix (canon/semantic labels only ever merge, so scoring them as primary can only inflate overlap).",
     "n_caveat": "N=2-4 runs/model. Every CI and p-value here should be read as pilot-grade precision, not paper-grade -- wide intervals are the finding, not a defect of the method.",
     "family_contrast_disclosure": "Both anthropic_vs_openai_family_contrast and anthropic_nonhaiku_vs_openai_family_contrast (in degradation_fingerprint_battery) are POST-HOC single contrasts, not pre-registered in EXP-004 -- chosen after the pilot's results made the family-level pattern visible. Report as the best-supported single contrast / strong exploratory evidence, never as confirmatory, until a genuinely pre-registered replication exists (adversarial review finding B2, 2026-07-17).",
-    "lane_manifest_note": "lane_manifest (top level) lists the exact summary.json paths + mtimes load_lanes() consumed for this run -- the explicit, checkable record of which lanes were 'in' the frozen snapshot this file analyzes."
+    "lane_manifest_note": "lane_manifest (top level) lists the exact summary.json paths + mtimes load_lanes() consumed for this run -- the explicit, checkable record of which lanes were 'in' the frozen snapshot this file analyzes.",
+    "meta_register_exclusion": "meta_excluded_robustness and degradation_event_decomposition are re-derived directly from raw lane turns-*.jsonl files (NOT a post-hoc filter of analysis.json's cached depths), per the 2026-07-17 hostile-review fix wave -- both sections carry their own raw_turns_reconstruction_integrity_check verifying that reconstruction against analysis.json's frozen RAW depths before any meta-excluded number is computed.",
+    "glm_lane_api_r01_exclusion_rule": "run_pilot.py only writes a per-model entry into a lane's summary.json when that lane produced >= 2 successful runs for that model (`if len(ps) >= 2:`). lane-api-fill-glm produced exactly ONE successful glm run (r01, complete at 30 turns, repeat_depth=16) alongside one failure (r00) -- one short of the gate, so that lane wrote NO glm entry at all and the run is silently absent from analysis.json and from every path-level statistic in this file. This is an artifact of the per-lane batching threshold, not a principled exclusion of that run's data; load_raw_paths_and_refusals_from_turns reproduces the same gate deliberately, for parity with the frozen, read-only analysis.json this driver's other sections depend on -- see FINDINGS.md for the explicit statement of this rule.",
+    "corpus_description_correction": "The exact-match memorization tier's reference corpus is the ~1.2M-joke corpus (commercial-safe + research-only jokes.jsonl, overwhelmingly Reddit-derived -- DATA.md / ~/Experiments/good-humored-data/MANIFEST.md), NOT '25 ChatGPT templates plus a small hand corpus' as earlier drafts of FINDINGS.md/paper/DRAFT.md stated -- that description belongs to the SEPARATE template-trigram tier (dual_tier_memorization.template_trigram_tier), which scores against the 25 templates alone. See dual_tier_memorization for both tiers side by side.",
+    "incidence_fisher_companion_note": "incidence_fisher_companion is a censoring-free companion to degradation_fingerprint_battery's mean-depth family contrasts -- it asks only whether a run ever degraded, sidestepping the depth=30 censoring convention entirely. Same post-hoc disclosure as the mean-depth contrasts applies.",
+    "DISCOVERED_refusal_turns_unused_in_published_depths": "Not a red-team finding -- surfaced while building this fix wave. run_pilot.py records per-turn refusal flags (cascade.py's looks_like_refusal) into every turns-*.jsonl and even computes a refusal-aware depth for its own console printout, but the value actually stored into summary.json (`\"degradation\": [depth_to_degradation(p) for p in ps]`) omits refusal_turns entirely -- every degradation depth published to date (analysis.json, FINDINGS.md, paper/DRAFT.md) is pure topic-repeat depth; refusal detection has never contributed to a reported number. meta_excluded_robustness preserves this exact convention (refusal-blind) for direct comparability to the published family contrast; degradation_event_decomposition deliberately does NOT, since a decomposition table needs a real refusal column -- see that section's own docstring disclosure. This is flagged here, not silently fixed: fixing run_pilot.py's gate would change analysis.json, a read-only input under this task's constraints."
   }
 }

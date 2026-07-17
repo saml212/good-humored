@@ -41,6 +41,50 @@ purpose-built additions stats.py does not provide:
      records the exact summary.json paths (+ mtimes) load_lanes() consumed,
      so the frozen-snapshot claim ("this analysis predates the fill lanes")
      is a stated fact in the output, not an assertion in prose.
+  5. load_raw_paths_and_refusals_from_turns / verify_turns_reconstruction /
+     depth_to_degradation_meta_excluded — added for the 2026-07-17 midday
+     hostile-review fix wave (EXPERIMENT_LOG.md "EXP-004 red-team
+     corrections"). The review found meta-register labels (`comedy`,
+     `joke`, `humor`, `ai`, `software`, `laughter` — models joking about
+     joke-telling under rejection pressure) mediate most Anthropic
+     degradation events, and asked for a robustness row that recomputes
+     the family contrasts with those labels treated as never-matching for
+     repeat detection, RE-DERIVED FROM RAW LANE JSONLs (turns-*.jsonl),
+     not by post-hoc filtering analysis.json's already-computed depths.
+     `load_raw_paths_and_refusals_from_turns` rebuilds per-run topic paths
+     and refusal-turn lists directly from every lane's turns-*.jsonl,
+     mirroring run_pilot.py's own per-lane ">=2 successful runs" inclusion
+     gate exactly (reading each lane's summary.json only for which run_ids
+     it recorded as failures, never for path CONTENTS) so the roster this
+     driver's meta-excluded and decomposition sections analyze is the same
+     N as analysis.json's, reconstructed independently.
+     `verify_turns_reconstruction` cross-checks that reconstruction's RAW
+     (non-meta-excluded) depths against analysis.json before any
+     meta-excluded number is trusted — same trust-but-verify discipline as
+     `verify_reconstruction` above, one level deeper (raw turns instead of
+     summary.json's cached path lists).
+  6. section_incidence_fisher_companion — a censoring-free companion to
+     section_degradation_battery's mean-depth contrasts: a run either
+     degraded or it didn't, no depth=30 censoring convention involved.
+     Fisher exact on the 2x2 (family x degraded/survived) table, for both
+     the raw roster and the meta-excluded roster.
+  7. section_dual_tier_memorization / framing_prefix_rate_by_model — folds
+     in novelty.json's template-trigram tier (already computed by
+     benchmark/joke_novelty.py, previously unreported alongside the
+     exact-match tier) and an independently-computed style-confound check:
+     the exact-match tier is a whole-string hash match, so a model that
+     habitually prefixes its jokes with framing prose ("Alright, ...")
+     defeats it structurally, not substantively. framing_prefix_rate_by_model
+     scores every model's raw joke text against a simple leading-phrase
+     regex, straight from turns-*.jsonl (same universe joke_novelty.py's
+     n_jokes counts over -- every turn, including failed/excluded runs'
+     partial output, exactly matching how novelty.json's own n_jokes were
+     already counted).
+  8. section_degradation_event_decomposition — classifies each run's FIRST
+     degradation event (if any) as topic-repeat (a genuine non-meta topic
+     recurrence), meta-register-repeat (the repeated label is one of the
+     six meta-register labels above), or refusal, per model, from the same
+     raw-turns reconstruction used in (5).
 
 IMPORTANT — disclosure about the Anthropic-vs-OpenAI family contrast in
 section_degradation_battery: it is a POST-HOC single contrast. It was not
@@ -91,11 +135,12 @@ import itertools
 import json
 import math
 import random
+import re
 from pathlib import Path
-from typing import Dict, List, Sequence, Tuple
+from typing import Dict, List, Optional, Sequence, Tuple
 
 from .analyze_pilot import load_lanes
-from .metrics import cross_model_overlap, path_divergence
+from .metrics import cross_model_overlap, depth_to_degradation, normalize_label, path_divergence
 from .stats import (_EXACT_LIMIT, bootstrap_ci, cliffs_delta,
                      cliffs_delta_magnitude, cross_model_null, mean,
                      pairwise_cliffs_delta)
@@ -111,6 +156,21 @@ OPENAI_MODELS = ["codex:mini", "codex:sol", "codex:5.4"]
 ANTHROPIC_MODELS_ALL = ["haiku", "sonnet", "opus", "fable"]
 ANTHROPIC_MODELS_NONHAIKU = ["sonnet", "opus", "fable"]
 OPENWEIGHT_MODELS = ["api:deepseek", "api:qwen", "api:glm"]
+
+# Meta-register labels (adversarial review finding, 2026-07-17 midday
+# hostile-review pass, EXPERIMENT_LOG.md "EXP-004 red-team corrections"):
+# models joking about joke-telling / comedy / being an AI under rejection
+# pressure, rather than repeating a genuine topic. 11/13 Anthropic
+# degradation events turned out to be repeats of one of these six labels
+# (verified independently below -- opus's 13,11,13,13 is `comedy` x4).
+# Passed through normalize_label so the set matches exactly what
+# rejector.label_topic's v2 output looks like after normalization (these
+# six are already normalize_label-idempotent -- no punctuation, no
+# plurals -- but routing through it keeps this constant honest against
+# normalize_label's actual behavior rather than an assumption about it).
+META_REGISTER_LABELS_RAW = ["comedy", "joke", "humor", "ai", "software",
+                            "laughter"]
+META_REGISTER_LABELS = {normalize_label(x) for x in META_REGISTER_LABELS_RAW}
 
 
 # ------------------------------------------------------- generic helpers
@@ -243,6 +303,216 @@ def censored_depths(degradation: List[Dict], censor: int = CENSOR_DEPTH
     to `censor`. See module docstring's censoring caveat."""
     return [d["depth"] if d["depth"] is not None else censor
             for d in degradation]
+
+
+# ------------------------------------ meta-register-exclusion robustness
+
+
+def depth_to_degradation_meta_excluded(
+    path: Sequence[str], meta_labels: Sequence[str] = None,
+    refusal_turns: Optional[Sequence[int]] = None,
+) -> Dict[str, Optional[int]]:
+    """Same contract as metrics.depth_to_degradation, but any topic in
+    `meta_labels` (default META_REGISTER_LABELS) is treated as
+    NEVER-MATCHING for repeat detection: it is skipped by the scan
+    entirely, both as a candidate repeat and as something later turns
+    could be judged a repeat OF. This is the literal reading of the
+    adversarial review's instruction ("treating meta-register labels as
+    never-matching for repeat detection") -- a meta-labeled turn is
+    invisible to the repeat-detection state machine, not merely exempted
+    from being counted as A repeat once matched.
+
+    Refusal detection is untouched -- meta-exclusion only concerns the
+    topic-repeat channel of degradation.
+    """
+    if meta_labels is None:
+        meta_labels = META_REGISTER_LABELS
+    seen = set()
+    repeat_depth = None
+    for i, t in enumerate(path):
+        if t in meta_labels:
+            continue
+        if t in seen:
+            repeat_depth = i
+            break
+        seen.add(t)
+    refusal_depth = min(refusal_turns) if refusal_turns else None
+    candidates = [d for d in (repeat_depth, refusal_depth) if d is not None]
+    return {
+        "repeat_depth": repeat_depth,
+        "refusal_depth": refusal_depth,
+        "depth": min(candidates) if candidates else None,
+    }
+
+
+def load_raw_paths_and_refusals_from_turns(
+    pilot_dir: Path
+) -> Tuple[Dict[str, List[List[str]]], Dict[str, List[List[int]]],
+           List[Dict[str, object]]]:
+    """Independent re-derivation of per-run topic paths AND refusal-turn
+    lists directly from every lane's turns-<model>-r<NN>.jsonl files --
+    bypassing summary.json's cached "paths" field entirely. This is the
+    "re-derive from raw lane JSONLs" reconstruction the fix wave's
+    meta-excluded robustness row and degradation-event decomposition are
+    required to use (EXPERIMENT_LOG.md, "EXP-004 red-team corrections",
+    item 1a), rather than a post-hoc filter over analysis.json's already-
+    computed depths.
+
+    Mirrors run_pilot.py's own per-lane inclusion rule EXACTLY: a model is
+    only written into a lane's summary.json["per_model"] when that lane
+    produced >= 2 successful runs for it (`if len(ps) >= 2:` in
+    run_pilot.py). This function reads each lane's summary.json ONLY for
+    (a) which run_ids that lane recorded as failures and (b) which
+    models/run-counts it attempted -- NEVER for path contents, which come
+    solely from turns-*.jsonl -- and applies the identical >=2 gate, so
+    the roster analyzed here has the same per-model N as analysis.json,
+    reconstructed independently rather than trusted from it.
+
+    A run_id absent from a lane's failures list, for a model that cleared
+    the >=2 gate in that lane, is treated as a successful completed run,
+    and its turns file MUST exist -- if it doesn't, that is a data
+    integrity problem worth crashing on, not silently skipping.
+
+    NOTE ON A KNOWN, DELIBERATELY-NOT-FIXED-HERE ARTIFACT: this >=2 gate
+    means a lane with exactly ONE successful run for a model -- even a
+    fully complete, valid cascade -- contributes ZERO runs to this
+    reconstruction (matching analysis.json, which also has zero from that
+    lane). `lane-api-fill-glm`'s `turns-api:glm-r01.jsonl` is exactly this
+    case: 30 turns, complete, degrades at repeat_depth=16, but that lane's
+    OTHER glm run (r00) failed, so the lane has only 1 survivor and writes
+    no per_model entry at all -- see FINDINGS.md's explicit statement of
+    this exclusion rule. This function reproduces that exclusion (for
+    parity with the frozen analysis.json this driver's other sections
+    depend on) rather than silently including the orphaned run, which
+    would change glm's N without the ability to update analysis.json
+    (read-only input, per task constraints).
+    """
+    paths: Dict[str, List[List[str]]] = {}
+    refusals: Dict[str, List[List[int]]] = {}
+    per_lane_manifest: List[Dict[str, object]] = []
+    for summary_file in sorted(pilot_dir.glob("*/summary.json")):
+        lane_dir = summary_file.parent
+        with open(summary_file) as f:
+            s = json.load(f)
+        failed_run_ids = {fl["run_id"] for fl in s.get("failures", [])}
+        for model in s.get("models", []):
+            n_runs_attempted = s.get("runs", 0)
+            run_ids = [
+                "%s-r%02d" % (model, n) for n in range(n_runs_attempted)
+                if ("%s-r%02d" % (model, n)) not in failed_run_ids
+            ]
+            if len(run_ids) < 2:
+                continue  # matches run_pilot.py's own per-model gate
+            for run_id in run_ids:
+                turns_file = lane_dir / ("turns-%s.jsonl" % run_id)
+                if not turns_file.exists():
+                    raise SystemExit(
+                        "integrity error: %s's summary.json implies run "
+                        "%r succeeded, but %s does not exist"
+                        % (lane_dir, run_id, turns_file))
+                topics: List[str] = []
+                refusal_turns: List[int] = []
+                with open(turns_file) as tf:
+                    for line in tf:
+                        rec = json.loads(line)
+                        topics.append(rec["topic"])
+                        if rec.get("refusal"):
+                            refusal_turns.append(rec["turn"])
+                paths.setdefault(model, []).append(topics)
+                refusals.setdefault(model, []).append(refusal_turns)
+            per_lane_manifest.append({
+                "lane": str(lane_dir), "model": model,
+                "surviving_run_ids": run_ids,
+            })
+    return paths, refusals, per_lane_manifest
+
+
+def verify_turns_reconstruction(paths_from_turns: Dict[str, List[Sequence[str]]],
+                                 analysis: Dict) -> Dict[str, object]:
+    """Trust-but-verify: the raw-turns reconstruction above must reproduce
+    the same per-model RUN COUNT and the same (order-independent) RAW,
+    non-meta-excluded degradation-depth multiset that analysis.json
+    already encodes. Order across runs is not load-bearing anywhere in
+    this driver (every statistic here is an unordered function of a
+    model's run list), so depths are compared as sorted multisets, not
+    positionally. If this check fails, every meta-excluded / decomposition
+    number downstream of it is untrustworthy and must not be reported."""
+    mismatches: Dict[str, str] = {}
+    for m, ps in paths_from_turns.items():
+        frozen = analysis["per_model"].get(m)
+        if frozen is None:
+            mismatches[m] = "model present in turns reconstruction but " \
+                            "absent from analysis.json"
+            continue
+        if len(ps) != frozen["n_runs"]:
+            mismatches[m] = "n_runs %d (turns) vs %d (analysis.json)" % (
+                len(ps), frozen["n_runs"])
+            continue
+        # None ("survived the cascade") sorts before any int depth via the
+        # (is_none, value) key -- None has no natural ordering against int
+        # in Python 3, and both sequences use the same key so the
+        # comparison is still well-defined and order-independent.
+        _sort_key = lambda d: (d is not None, d if d is not None else 0)
+        recomputed = sorted((depth_to_degradation(p)["depth"] for p in ps),
+                            key=_sort_key)
+        frozen_depths = sorted(
+            (d["depth"] for d in frozen["degradation"]), key=_sort_key)
+        if recomputed != frozen_depths:
+            mismatches[m] = "depths %r (turns) vs %r (analysis.json)" % (
+                recomputed, frozen_depths)
+    missing_models = set(analysis["per_model"]) - set(paths_from_turns)
+    if missing_models:
+        mismatches["_missing_from_turns_reconstruction"] = sorted(missing_models)
+    return {
+        "ok": not mismatches,
+        "mismatches": mismatches,
+        "n_models_checked": len(paths_from_turns),
+    }
+
+
+_FRAMING_PREFIX_RE = re.compile(
+    r"^\s*(alright|sure|okay|ok|here.?s|how about this|got one|try this|"
+    r"no problem|fine)\b", re.IGNORECASE)
+
+
+def framing_prefix_rate_by_model(pilot_dir: Path) -> Dict[str, Dict[str, object]]:
+    """Style-confound check for the memorization exact-match tier
+    (adversarial review, EXPERIMENT_LOG.md item 3): the exact-match tier
+    is a whole-normalized-string hash match, so a model that habitually
+    prefixes its joke with framing prose ("Alright, no science ... This
+    one's about my bank account:") defeats it structurally regardless of
+    whether the punchline itself is memorized. Scores every model's raw
+    joke text (straight from turns-*.jsonl, same universe
+    benchmark/joke_novelty.py's n_jokes counts over: every turn in every
+    turns file, including failed/excluded runs' partial output -- this is
+    a surface-text style property, not a path-level one, so the roster
+    here is intentionally the full novelty.json universe, not the
+    path-level-only roster the meta-excluded sections use) against a
+    simple leading-phrase regex.
+
+    The regex is deliberately narrow (a handful of literal English
+    conversational openers) rather than a general "is this meta-
+    commentary" classifier -- it is calibrated by inspection against
+    this pilot's actual transcripts (sonnet's repeating "Alright, ..."
+    preamble; grok's zero-preamble "Why did/don't ..." pattern), not
+    tuned to hit a target number.
+    """
+    jokes_by_model: Dict[str, List[str]] = {}
+    for turns_file in sorted(pilot_dir.rglob("turns-*.jsonl")):
+        model = turns_file.stem.replace("turns-", "").rsplit("-r", 1)[0]
+        with open(turns_file) as f:
+            for line in f:
+                rec = json.loads(line)
+                jokes_by_model.setdefault(model, []).append(rec["joke"])
+    out: Dict[str, Dict[str, object]] = {}
+    for m, jokes in sorted(jokes_by_model.items()):
+        hits = sum(1 for j in jokes if _FRAMING_PREFIX_RE.match(j))
+        out[m] = {
+            "n_jokes": len(jokes),
+            "framing_prefix_hits": hits,
+            "framing_prefix_rate": hits / len(jokes) if jokes else 0.0,
+        }
+    return out
 
 
 def permutation_test_mean_diff(a: Sequence[float], b: Sequence[float],
@@ -660,21 +930,353 @@ def section_degradation_battery(analysis: Dict, seed: int = 0
     }
 
 
-def section_memorization(novelty: Dict, seed: int = 0) -> Dict[str, object]:
-    per_model_ci = {m: wilson_ci(v["exact_corpus_hits"], v["n_jokes"])
+def section_meta_excluded_robustness(pilot_dir: Path, analysis: Dict,
+                                      seed: int = 0) -> Dict[str, object]:
+    """Meta-register-exclusion robustness row (adversarial review,
+    EXPERIMENT_LOG.md "EXP-004 red-team corrections" item 2): recomputes
+    the Anthropic-vs-OpenAI family contrast AND its no-haiku variant with
+    the six meta-register labels (META_REGISTER_LABELS) treated as
+    never-matching for repeat detection, re-derived from raw lane JSONLs
+    per the task brief -- NOT by filtering analysis.json's precomputed
+    depths. The reconstruction is verified against analysis.json's frozen
+    RAW depths first (data_integrity_check below); only if that passes
+    are the meta-excluded numbers below trustworthy.
+
+    DELIBERATELY REFUSAL-BLIND, matching analysis.json's OWN convention --
+    a subtlety this fix wave surfaced (not a red-team finding; caught while
+    building this section): run_pilot.py's per-turn refusal flags (from
+    cascade.py's looks_like_refusal) are recorded in every turns-*.jsonl
+    and even fed into a refusal-aware depth_to_degradation call for that
+    run's console printout, but the value actually WRITTEN into
+    summary.json (hence analysis.json, hence every published depth in
+    FINDINGS.md/paper/DRAFT.md) is `depth_to_degradation(p)` called with
+    NO refusal_turns argument at all (run_pilot.py, the
+    `"degradation": [depth_to_degradation(p) for p in ps]` line) -- so
+    every published degradation depth to date is pure topic-repeat depth;
+    refusal detection has never actually contributed to a reported number.
+    This section preserves that exact convention (refusal_turns is loaded
+    by load_raw_paths_and_refusals_from_turns and returned for OTHER
+    sections' use, but intentionally not passed to
+    depth_to_degradation[_meta_excluded] here) so its meta-excluded
+    numbers differ from the published ones ONLY in the one respect asked
+    for -- meta-label handling -- not also in whether refusals count.
+    section_degradation_event_decomposition, by contrast, is a genuinely
+    new analysis and DOES use refusal_turns, with its own explicit
+    disclosure of this same discrepancy.
+    """
+    paths_from_turns, refusals_from_turns, lane_manifest = \
+        load_raw_paths_and_refusals_from_turns(pilot_dir)
+    integrity = verify_turns_reconstruction(paths_from_turns, analysis)
+    if not integrity["ok"]:
+        raise SystemExit(
+            "raw-turns reconstruction does NOT reproduce analysis.json's "
+            "RAW degradation depths -- refusing to report meta-excluded "
+            "numbers over a mismatched dataset. Diffs: %r" % integrity)
+
+    models = sorted(paths_from_turns)
+
+    def _censored(model_list, meta_exclude: bool) -> List[int]:
+        out = []
+        for m in model_list:
+            if m not in paths_from_turns:
+                continue
+            for p in paths_from_turns[m]:
+                if meta_exclude:
+                    d = depth_to_degradation_meta_excluded(p, META_REGISTER_LABELS)
+                else:
+                    d = depth_to_degradation(p)
+                depth = d["depth"]
+                out.append(depth if depth is not None else CENSOR_DEPTH)
+        return out
+
+    per_model_meta_excluded_depths = {
+        m: [depth_to_degradation_meta_excluded(p, META_REGISTER_LABELS)["depth"]
+            for p in paths_from_turns[m]]
+        for m in models
+    }
+    n_degraded_meta_excluded = {
+        m: sum(1 for d in depths if d is not None)
+        for m, depths in per_model_meta_excluded_depths.items()
+    }
+    n_runs = {m: len(paths_from_turns[m]) for m in models}
+
+    anth_meta = _censored(ANTHROPIC_MODELS_ALL, meta_exclude=True)
+    anth_nonhaiku_meta = _censored(ANTHROPIC_MODELS_NONHAIKU, meta_exclude=True)
+    openai_meta = _censored(OPENAI_MODELS, meta_exclude=True)
+
+    family_test_meta = permutation_test_mean_diff(anth_meta, openai_meta, seed=seed)
+    family_delta_meta = cliffs_delta(anth_meta, openai_meta)
+    family_test_nonhaiku_meta = permutation_test_mean_diff(
+        anth_nonhaiku_meta, openai_meta, seed=seed)
+    family_delta_nonhaiku_meta = cliffs_delta(anth_nonhaiku_meta, openai_meta)
+
+    return {
+        "meta_register_labels": sorted(META_REGISTER_LABELS),
+        "disclosure": "Re-derived from raw lane turns-*.jsonl (not a "
+            "post-hoc filter of analysis.json's precomputed depths) per "
+            "the 2026-07-17 hostile-review fix wave. A topic in "
+            "meta_register_labels is skipped entirely by the repeat-scan "
+            "-- it can neither trigger a repeat nor be repeated against.",
+        "raw_turns_reconstruction_integrity_check": integrity,
+        "n_runs_per_model": n_runs,
+        "per_model_meta_excluded_degradation_depths": per_model_meta_excluded_depths,
+        "degradation_incidence_meta_excluded": {
+            "n_degraded_runs_per_model": n_degraded_meta_excluded,
+            "note": "Compare to the RAW (non-meta-excluded) incidence in "
+                "degradation_fingerprint_battery.degradation_incidence_audit "
+                "-- e.g. haiku 4/4 raw -> %d/%d meta-excluded, fable %d/%d "
+                "raw -> %d/%d meta-excluded." % (
+                    n_degraded_meta_excluded.get("haiku", 0), n_runs.get("haiku", 0),
+                    sum(1 for d in analysis["per_model"]["fable"]["degradation"]
+                        if d["depth"] is not None),
+                    analysis["per_model"]["fable"]["n_runs"],
+                    n_degraded_meta_excluded.get("fable", 0), n_runs.get("fable", 0)),
+        },
+        "anthropic_vs_openai_family_contrast_meta_excluded": {
+            **family_test_meta,
+            "cliffs_delta": family_delta_meta,
+            "cliffs_delta_magnitude": cliffs_delta_magnitude(family_delta_meta),
+            "anthropic_models": ANTHROPIC_MODELS_ALL,
+            "openai_models": OPENAI_MODELS,
+            "note": "Meta-excluded companion to "
+                "degradation_fingerprint_battery.anthropic_vs_openai_family_contrast. "
+                "n_a=%d runs, n_b=%d runs (same run counts as the raw "
+                "contrast -- meta-exclusion changes WHICH turn a run "
+                "degrades at, or whether it degrades at all, never how "
+                "many runs exist)." % (len(anth_meta), len(openai_meta)),
+        },
+        "anthropic_nonhaiku_vs_openai_family_contrast_meta_excluded": {
+            **family_test_nonhaiku_meta,
+            "cliffs_delta": family_delta_nonhaiku_meta,
+            "cliffs_delta_magnitude": cliffs_delta_magnitude(family_delta_nonhaiku_meta),
+            "anthropic_models": ANTHROPIC_MODELS_NONHAIKU,
+            "openai_models": OPENAI_MODELS,
+            "note": "Meta-excluded companion to "
+                "degradation_fingerprint_battery.anthropic_nonhaiku_vs_openai_family_contrast.",
+        },
+        "lane_manifest_for_turns_reconstruction": lane_manifest,
+    }
+
+
+def section_incidence_fisher_companion(analysis: Dict,
+                                        meta_excluded: Dict) -> Dict[str, object]:
+    """Run-level incidence Fisher test (adversarial review item 1b): a
+    CENSORING-FREE companion to section_degradation_battery's mean-depth
+    contrasts. depth=30-censoring is a real modeling choice (module
+    docstring); this test sidesteps it entirely by asking only "did the
+    run ever degrade, yes or no" -- a 2x2 Fisher exact on
+    (family x degraded/survived), computed for both the raw roster and
+    the meta-excluded roster so the two robustness axes (haiku's dual
+    role, meta-register mediation) can each be read against an incidence
+    statistic, not only a mean-difference one.
+    """
+    def _incidence(model_list: List[str]) -> Tuple[int, int]:
+        degraded = sum(
+            1 for m in model_list if m in analysis["per_model"]
+            for d in analysis["per_model"][m]["degradation"]
+            if d["depth"] is not None)
+        total = sum(
+            analysis["per_model"][m]["n_runs"]
+            for m in model_list if m in analysis["per_model"])
+        return degraded, total - degraded
+
+    anth_all_deg, anth_all_surv = _incidence(ANTHROPIC_MODELS_ALL)
+    anth_nh_deg, anth_nh_surv = _incidence(ANTHROPIC_MODELS_NONHAIKU)
+    openai_deg, openai_surv = _incidence(OPENAI_MODELS)
+
+    p_raw_all = fisher_exact_two_sided(anth_all_deg, anth_all_surv,
+                                        openai_deg, openai_surv)
+    p_raw_nh = fisher_exact_two_sided(anth_nh_deg, anth_nh_surv,
+                                       openai_deg, openai_surv)
+
+    meta_n_deg = meta_excluded["degradation_incidence_meta_excluded"][
+        "n_degraded_runs_per_model"]
+    meta_n_runs = meta_excluded["n_runs_per_model"]
+
+    def _meta_incidence(model_list: List[str]) -> Tuple[int, int]:
+        degraded = sum(meta_n_deg.get(m, 0) for m in model_list)
+        total = sum(meta_n_runs.get(m, 0) for m in model_list)
+        return degraded, total - degraded
+
+    anth_all_deg_m, anth_all_surv_m = _meta_incidence(ANTHROPIC_MODELS_ALL)
+    anth_nh_deg_m, anth_nh_surv_m = _meta_incidence(ANTHROPIC_MODELS_NONHAIKU)
+    openai_deg_m, openai_surv_m = _meta_incidence(OPENAI_MODELS)
+
+    p_meta_all = fisher_exact_two_sided(anth_all_deg_m, anth_all_surv_m,
+                                         openai_deg_m, openai_surv_m)
+    p_meta_nh = fisher_exact_two_sided(anth_nh_deg_m, anth_nh_surv_m,
+                                        openai_deg_m, openai_surv_m)
+
+    return {
+        "disclosure": "Censoring-free companion to "
+            "degradation_fingerprint_battery's mean-depth family "
+            "contrasts -- counts runs as degraded/survived only, no "
+            "depth=30 censoring convention involved. Same post-hoc "
+            "disclosure applies: chosen after the pattern was visible, "
+            "not pre-registered.",
+        "anthropic_all_vs_openai": {
+            "table": {"anthropic_degraded": anth_all_deg,
+                      "anthropic_survived": anth_all_surv,
+                      "openai_degraded": openai_deg,
+                      "openai_survived": openai_surv},
+            "fisher_p_two_sided": p_raw_all,
+        },
+        "anthropic_nonhaiku_vs_openai": {
+            "table": {"anthropic_degraded": anth_nh_deg,
+                      "anthropic_survived": anth_nh_surv,
+                      "openai_degraded": openai_deg,
+                      "openai_survived": openai_surv},
+            "fisher_p_two_sided": p_raw_nh,
+        },
+        "anthropic_all_vs_openai_meta_excluded": {
+            "table": {"anthropic_degraded": anth_all_deg_m,
+                      "anthropic_survived": anth_all_surv_m,
+                      "openai_degraded": openai_deg_m,
+                      "openai_survived": openai_surv_m},
+            "fisher_p_two_sided": p_meta_all,
+        },
+        "anthropic_nonhaiku_vs_openai_meta_excluded": {
+            "table": {"anthropic_degraded": anth_nh_deg_m,
+                      "anthropic_survived": anth_nh_surv_m,
+                      "openai_degraded": openai_deg_m,
+                      "openai_survived": openai_surv_m},
+            "fisher_p_two_sided": p_meta_nh,
+        },
+    }
+
+
+def section_degradation_event_decomposition(
+    pilot_dir: Path, analysis: Dict
+) -> Dict[str, object]:
+    """Degradation-event decomposition (adversarial review item 1d):
+    classifies every run's FIRST degradation event (if any) as exactly
+    one of topic_repeat / meta_register_repeat / refusal / survived, per
+    model, re-derived from the same raw-turns reconstruction as the
+    meta-excluded section (so this and section_meta_excluded_robustness
+    are guaranteed to agree on what counts as a meta-register repeat).
+
+    Classification rule per run, using the ORIGINAL (non-meta-excluded)
+    depth_to_degradation: if a refusal occurred at or before the first
+    repeat (or there was no repeat), the event is `refusal`; otherwise
+    the run's first repeated topic is looked up directly and classified
+    meta_register_repeat / topic_repeat by META_REGISTER_LABELS
+    membership. A run with depth=None survived the full cascade.
+
+    DISCLOSED METHODOLOGICAL DIVERGENCE FROM analysis.json: unlike
+    section_meta_excluded_robustness (which deliberately stays
+    refusal-blind for direct comparability to the published family
+    contrast), THIS section passes refusal_turns into depth_to_degradation
+    on purpose -- a decomposition table with a `refusal` column that can
+    never be nonzero would misrepresent what is actually in the
+    transcripts (CLI-wrapper persona refusals are real and visible, e.g.
+    haiku's "I'm Claude Code..." turns). Consequence, stated plainly: for
+    a handful of runs this table's classified event occurs at an earlier
+    turn than that same run's published depth in analysis.json / FINDINGS
+    Table 3, because analysis.json's stored depths never consider
+    refusal_turns at all (run_pilot.py computes a refusal-aware depth only
+    for its console printout, then discards it -- the
+    `"degradation": [depth_to_degradation(p) for p in ps]` line that
+    actually populates summary.json omits the argument entirely; a latent
+    gap this fix wave surfaced, not a red-team finding). This table's
+    per-model `n_runs` still matches analysis.json (same roster,
+    same integrity check); only the EVENT CLASSIFICATION for a subset of
+    runs is refusal-aware where analysis.json's own depth number is not.
+    """
+    paths_from_turns, refusals_from_turns, _manifest = \
+        load_raw_paths_and_refusals_from_turns(pilot_dir)
+    integrity = verify_turns_reconstruction(paths_from_turns, analysis)
+    if not integrity["ok"]:
+        raise SystemExit(
+            "raw-turns reconstruction mismatch in degradation-event "
+            "decomposition: %r" % integrity)
+
+    per_model: Dict[str, Dict[str, int]] = {}
+    for m in sorted(paths_from_turns):
+        counts = {"topic_repeat": 0, "meta_register_repeat": 0,
+                  "refusal": 0, "survived": 0}
+        for p, rt in zip(paths_from_turns[m], refusals_from_turns[m]):
+            d = depth_to_degradation(p, rt)
+            if d["depth"] is None:
+                counts["survived"] += 1
+            elif d["refusal_depth"] is not None and (
+                    d["repeat_depth"] is None
+                    or d["refusal_depth"] <= d["repeat_depth"]):
+                counts["refusal"] += 1
+            else:
+                topic = p[d["repeat_depth"]]
+                if topic in META_REGISTER_LABELS:
+                    counts["meta_register_repeat"] += 1
+                else:
+                    counts["topic_repeat"] += 1
+        counts["n_runs"] = len(paths_from_turns[m])
+        per_model[m] = counts
+
+    totals = {"topic_repeat": 0, "meta_register_repeat": 0, "refusal": 0,
+              "survived": 0, "n_runs": 0}
+    for counts in per_model.values():
+        for k in totals:
+            totals[k] += counts[k]
+
+    return {
+        "disclosure": "Re-derived from raw turns-*.jsonl (same "
+            "reconstruction as meta_excluded_robustness), classifying "
+            "each run's FIRST degradation event only -- a run that "
+            "degrades once is not re-classified for any later repeats.",
+        "refusal_column_caveat": "metrics.looks_like_refusal (the same "
+            "conservative regex already used elsewhere in this codebase) "
+            "has visible false positives on in-character creative "
+            "escalation text that happens to use casual 'can't'/'won't' "
+            "phrasing as part of the JOKE, not as a genuine break in "
+            "character -- confirmed by direct inspection of every "
+            "flagged turn for this pilot. Genuine assistant-persona "
+            "breaks (the wrapper-persona-contamination finding, e.g. "
+            "haiku's repeating 'I'm Claude Code, built to help with "
+            "software engineering...' turns) are real and are what this "
+            "detector was built to catch. But the SAME regex also fires "
+            "on lines like fable's in-bit 'I can't even say [X], because "
+            "[X] is banned too' escalation and qwen's punchline 'stuck in "
+            "a cycle ... *I can't talk right now*' -- neither is the "
+            "model declining to continue. Concretely: of haiku's 4 runs, "
+            "only r00 (turn 12) and r01 (turns 9/17/18/19/27) contain "
+            "genuine 'I'm Claude Code' persona breaks; r02/r03's flagged "
+            "turns (depths 4-6) are in-character meltback dialogue "
+            "('*throws hands up* Alright, ALRIGHT! You're killing me "
+            "here!'), not refusals -- yet both are classified `refusal` "
+            "below because they precede that run's topic-repeat. Read "
+            "the `refusal` column as 'contains a refusal-ADJACENT turn "
+            "before the first topic repeat', not as verified ground-truth "
+            "'the model declined to continue'.",
+        "per_model": per_model,
+        "totals": totals,
+        "raw_turns_reconstruction_integrity_check": integrity,
+    }
+
+
+def _memorization_tier(novelty: Dict, hit_field: str) -> Dict[str, object]:
+    """One tier's worth of memorization-proportion inference (Wilson CIs,
+    the six pre-specified Fisher contrasts, Holm correction, model-level
+    Cliff's delta) -- generalized over `hit_field` so the identical
+    machinery scores BOTH the exact-match tier (`exact_corpus_hits`) and
+    the template-trigram tier (`template_hits`), per the adversarial
+    review's dual-tier-memorization-table requirement (EXPERIMENT_LOG.md
+    "EXP-004 red-team corrections" item 1c/3). Previously this logic
+    existed only inlined for the exact tier; the template tier was
+    already computed by benchmark/joke_novelty.py into novelty.json but
+    never surfaced in this driver's output."""
+    per_model_ci = {m: wilson_ci(v[hit_field], v["n_jokes"])
                     for m, v in novelty.items()}
 
     def agg(models: List[str]) -> Tuple[int, int]:
-        hits = sum(novelty[m]["exact_corpus_hits"] for m in models if m in novelty)
+        hits = sum(novelty[m][hit_field] for m in models if m in novelty)
         n = sum(novelty[m]["n_jokes"] for m in models if m in novelty)
         return hits, n
 
     anth_nonhaiku_hits, anth_nonhaiku_n = agg(ANTHROPIC_MODELS_NONHAIKU)
     openai_hits, openai_n = agg(OPENAI_MODELS)
     openweight_hits, openweight_n = agg(OPENWEIGHT_MODELS)
-    grok_hits = novelty["api:grok"]["exact_corpus_hits"]
+    grok_hits = novelty["api:grok"][hit_field]
     grok_n = novelty["api:grok"]["n_jokes"]
-    haiku_hits = novelty["haiku"]["exact_corpus_hits"]
+    haiku_hits = novelty["haiku"][hit_field]
     haiku_n = novelty["haiku"]["n_jokes"]
 
     contrasts = {
@@ -710,17 +1312,18 @@ def section_memorization(novelty: Dict, seed: int = 0) -> Dict[str, object]:
         fisher[label]["p_holm"] = holm_by_key[label]["p_holm"]
 
     model_level_rates = {
-        "anthropic_all": [novelty[m]["exact_corpus_hits"] / novelty[m]["n_jokes"]
+        "anthropic_all": [novelty[m][hit_field] / novelty[m]["n_jokes"]
                           for m in ANTHROPIC_MODELS_ALL if m in novelty],
-        "openai": [novelty[m]["exact_corpus_hits"] / novelty[m]["n_jokes"]
+        "openai": [novelty[m][hit_field] / novelty[m]["n_jokes"]
                   for m in OPENAI_MODELS if m in novelty],
-        "openweights": [novelty[m]["exact_corpus_hits"] / novelty[m]["n_jokes"]
+        "openweights": [novelty[m][hit_field] / novelty[m]["n_jokes"]
                         for m in OPENWEIGHT_MODELS if m in novelty],
     }
     model_level_cliffs_delta_anthropic_vs_openai = cliffs_delta(
         model_level_rates["anthropic_all"], model_level_rates["openai"])
 
     return {
+        "hit_field": hit_field,
         "per_model_wilson_95ci": per_model_ci,
         "pairwise_fisher_exact_holm_corrected": fisher,
         "n_contrasts_corrected": len(labeled_p),
@@ -750,15 +1353,99 @@ def section_memorization(novelty: Dict, seed: int = 0) -> Dict[str, object]:
                 "for haiku -- stated bluntly per this project's rule "
                 "against softening Claude-model findings." % (
                     100 * haiku_hits / haiku_n,
-                    100 * min(novelty[m]["exact_corpus_hits"] / novelty[m]["n_jokes"]
+                    100 * min(novelty[m][hit_field] / novelty[m]["n_jokes"]
                               for m in OPENAI_MODELS if m in novelty),
-                    100 * max(novelty[m]["exact_corpus_hits"] / novelty[m]["n_jokes"]
+                    100 * max(novelty[m][hit_field] / novelty[m]["n_jokes"]
                               for m in OPENAI_MODELS if m in novelty),
-                    100 * novelty["opus"]["exact_corpus_hits"] / novelty["opus"]["n_jokes"],
-                    100 * novelty["sonnet"]["exact_corpus_hits"] / novelty["sonnet"]["n_jokes"],
-                    100 * novelty["fable"]["exact_corpus_hits"] / novelty["fable"]["n_jokes"],
+                    100 * novelty["opus"][hit_field] / novelty["opus"]["n_jokes"],
+                    100 * novelty["sonnet"][hit_field] / novelty["sonnet"]["n_jokes"],
+                    100 * novelty["fable"][hit_field] / novelty["fable"]["n_jokes"],
                 ),
         },
+    }
+
+
+def section_memorization(novelty: Dict, seed: int = 0) -> Dict[str, object]:
+    """Exact-match tier only -- kept as its own top-level section (same
+    return shape as before the dual-tier fix wave) since FINDINGS.md's
+    existing prose cites this section's field paths directly. The
+    template-trigram tier and the combined dual-tier table live in
+    section_dual_tier_memorization below."""
+    return _memorization_tier(novelty, "exact_corpus_hits")
+
+
+def section_dual_tier_memorization(novelty: Dict, pilot_dir: Path,
+                                    exact_tier: Dict) -> Dict[str, object]:
+    """Dual-tier memorization table (adversarial review item 1c/2): folds
+    in the template-trigram tier benchmark/joke_novelty.py already
+    computes into novelty.json (`template_hits`) but this driver never
+    reported, plus the style-confound check (item 3): the exact-match
+    tier is a whole-normalized-string hash match, so a model's habit of
+    prefixing jokes with framing prose changes what that tier measures
+    without changing whether the PUNCHLINE is memorized. Both tiers score
+    against the SAME reference corpora joke_novelty.py always used --
+    exact-match against the ~1.2M-joke corpus (commercial-safe +
+    research-only jokes.jsonl files), template-trigram against the 25
+    ChatGPT templates (Jentzsch & Kersting 2023) only -- which is the
+    factual correction FINDINGS.md/paper/DRAFT.md also need: the
+    exact-match reference was previously misdescribed as "25 templates
+    plus a small hand corpus."
+    """
+    template_tier = _memorization_tier(novelty, "template_hits")
+    framing = framing_prefix_rate_by_model(pilot_dir)
+
+    dual_tier_table = {}
+    for m in sorted(novelty):
+        v = novelty[m]
+        dual_tier_table[m] = {
+            "n_jokes": v["n_jokes"],
+            "exact_tier": {
+                "hits": v["exact_corpus_hits"],
+                "rate": v["exact_corpus_hits"] / v["n_jokes"] if v["n_jokes"] else None,
+                "wilson_95ci": exact_tier["per_model_wilson_95ci"][m],
+            },
+            "template_trigram_tier": {
+                "hits": v["template_hits"],
+                "rate": v["template_hits"] / v["n_jokes"] if v["n_jokes"] else None,
+                "wilson_95ci": template_tier["per_model_wilson_95ci"][m],
+            },
+            "style_confound_framing_prefix_rate": framing.get(m, {}).get(
+                "framing_prefix_rate"),
+        }
+
+    return {
+        "corpus_description_correction": "Both tiers score against a "
+            "single, fixed reference regardless of model: the exact-match "
+            "tier is normalized-hash membership in the ~1.2M-joke corpus "
+            "(commercial-safe/jokes.jsonl [887,639, CC-BY-4.0] + "
+            "research-only/jokes.jsonl [310,151, mixed research-only "
+            "licenses], overwhelmingly Reddit-derived -- see DATA.md / "
+            "~/Experiments/good-humored-data/MANIFEST.md); the "
+            "template-trigram tier is Jaccard similarity against the 25 "
+            "ChatGPT joke templates (Jentzsch & Kersting 2023) alone. "
+            "Earlier drafts of FINDINGS.md/paper/DRAFT.md described the "
+            "exact-match reference as '25 templates plus a small hand "
+            "corpus' -- WRONG, and corrected here: that description is "
+            "the template tier's reference, not the exact tier's.",
+        "exact_tier": exact_tier,
+        "template_trigram_tier": template_tier,
+        "dual_tier_per_model_table": dual_tier_table,
+        "style_confound_framing_prefix_rate_by_model": framing,
+        "style_confound_note": "The exact-match tier is a whole-"
+            "normalized-string hash match, so a model that habitually "
+            "prefixes its joke with framing prose before the punchline "
+            "(e.g. sonnet's repeating 'Alright, no science ... This "
+            "one's about my bank account:') defeats the exact tier "
+            "structurally even when the punchline itself is a memorized "
+            "template -- the template-trigram tier is comparatively "
+            "robust to this because Jaccard is computed over trigram SETS, "
+            "not whole-string equality, so a fixed-length prefix dilutes "
+            "but does not zero out the similarity score the way a hash "
+            "mismatch does. See style_confound_framing_prefix_rate_by_model "
+            "for the measured rate per model (sonnet vs. grok are the "
+            "clearest contrast: sonnet's rate is high, grok's is zero, "
+            "consistent with the tier-dependent gap in "
+            "dual_tier_per_model_table).",
     }
 
 
@@ -799,6 +1486,11 @@ def main() -> None:
             "numbers -- refusing to run inference over a mismatched "
             "dataset. Diffs: %r" % integrity)
 
+    degradation_battery = section_degradation_battery(analysis, seed=args.seed)
+    meta_excluded = section_meta_excluded_robustness(
+        pilot_dir, analysis, seed=args.seed)
+    exact_tier_memorization = section_memorization(novelty, seed=args.seed)
+
     out = {
         "source_pilot_dir": str(pilot_dir),
         "source_analysis_json": str(pilot_dir / "analysis.json"),
@@ -810,10 +1502,15 @@ def main() -> None:
             paths, analysis, seed=args.seed),
         "headline_within_model_divergence": section_headline_within_model(
             analysis, seed=args.seed),
-        "degradation_fingerprint_battery": section_degradation_battery(
-            analysis, seed=args.seed),
-        "memorization_proportions": section_memorization(
-            novelty, seed=args.seed),
+        "degradation_fingerprint_battery": degradation_battery,
+        "meta_excluded_robustness": meta_excluded,
+        "incidence_fisher_companion": section_incidence_fisher_companion(
+            analysis, meta_excluded),
+        "degradation_event_decomposition": section_degradation_event_decomposition(
+            pilot_dir, analysis),
+        "memorization_proportions": exact_tier_memorization,
+        "dual_tier_memorization": section_dual_tier_memorization(
+            novelty, pilot_dir, exact_tier_memorization),
         "methodology_notes": {
             "null_for_shared_pool_claims": "pooled_frequency_baseline "
                 "ONLY -- label_shuffle is documented wrong for this design "
@@ -860,6 +1557,67 @@ def main() -> None:
                 "exact summary.json paths + mtimes load_lanes() consumed "
                 "for this run -- the explicit, checkable record of which "
                 "lanes were 'in' the frozen snapshot this file analyzes.",
+            "meta_register_exclusion": "meta_excluded_robustness and "
+                "degradation_event_decomposition are re-derived directly "
+                "from raw lane turns-*.jsonl files (NOT a post-hoc filter "
+                "of analysis.json's cached depths), per the 2026-07-17 "
+                "hostile-review fix wave -- both sections carry their own "
+                "raw_turns_reconstruction_integrity_check verifying that "
+                "reconstruction against analysis.json's frozen RAW depths "
+                "before any meta-excluded number is computed.",
+            "glm_lane_api_r01_exclusion_rule": "run_pilot.py only writes a "
+                "per-model entry into a lane's summary.json when that lane "
+                "produced >= 2 successful runs for that model (`if "
+                "len(ps) >= 2:`). lane-api-fill-glm produced exactly ONE "
+                "successful glm run (r01, complete at 30 turns, "
+                "repeat_depth=16) alongside one failure (r00) -- one short "
+                "of the gate, so that lane wrote NO glm entry at all and "
+                "the run is silently absent from analysis.json and from "
+                "every path-level statistic in this file. This is an "
+                "artifact of the per-lane batching threshold, not a "
+                "principled exclusion of that run's data; "
+                "load_raw_paths_and_refusals_from_turns reproduces the same "
+                "gate deliberately, for parity with the frozen, read-only "
+                "analysis.json this driver's other sections depend on -- "
+                "see FINDINGS.md for the explicit statement of this rule.",
+            "corpus_description_correction": "The exact-match memorization "
+                "tier's reference corpus is the ~1.2M-joke corpus "
+                "(commercial-safe + research-only jokes.jsonl, "
+                "overwhelmingly Reddit-derived -- DATA.md / "
+                "~/Experiments/good-humored-data/MANIFEST.md), NOT '25 "
+                "ChatGPT templates plus a small hand corpus' as earlier "
+                "drafts of FINDINGS.md/paper/DRAFT.md stated -- that "
+                "description belongs to the SEPARATE template-trigram "
+                "tier (dual_tier_memorization.template_trigram_tier), "
+                "which scores against the 25 templates alone. See "
+                "dual_tier_memorization for both tiers side by side.",
+            "incidence_fisher_companion_note": "incidence_fisher_companion "
+                "is a censoring-free companion to "
+                "degradation_fingerprint_battery's mean-depth family "
+                "contrasts -- it asks only whether a run ever degraded, "
+                "sidestepping the depth=30 censoring convention entirely. "
+                "Same post-hoc disclosure as the mean-depth contrasts "
+                "applies.",
+            "DISCOVERED_refusal_turns_unused_in_published_depths": "Not a "
+                "red-team finding -- surfaced while building this fix wave. "
+                "run_pilot.py records per-turn refusal flags (cascade.py's "
+                "looks_like_refusal) into every turns-*.jsonl and even "
+                "computes a refusal-aware depth for its own console "
+                "printout, but the value actually stored into "
+                "summary.json (`\"degradation\": [depth_to_degradation(p) "
+                "for p in ps]`) omits refusal_turns entirely -- every "
+                "degradation depth published to date (analysis.json, "
+                "FINDINGS.md, paper/DRAFT.md) is pure topic-repeat depth; "
+                "refusal detection has never contributed to a reported "
+                "number. meta_excluded_robustness preserves this exact "
+                "convention (refusal-blind) for direct comparability to "
+                "the published family contrast; "
+                "degradation_event_decomposition deliberately does NOT, "
+                "since a decomposition table needs a real refusal column "
+                "-- see that section's own docstring disclosure. This is "
+                "flagged here, not silently fixed: fixing run_pilot.py's "
+                "gate would change analysis.json, a read-only input under "
+                "this task's constraints.",
         },
     }
 

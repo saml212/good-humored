@@ -811,3 +811,71 @@ finding are both closed under v4. Measured overlap under v4 remains an
 UPPER bound at pilot regimes, now with more margin. Scope caveat: these
 are fixture/canon-path rates; the field-tier noise profile awaits the
 EXP-010 field run.
+
+---
+
+## EXP-004 red-team corrections (2026-07-17 midday, hostile-review pass)
+
+A fable-grade hostile review of the full claim chain (verified by
+reproducing the published contrasts from raw lanes before attacking)
+found, in severity order:
+1. **Wrapper-persona contamination is visible in our own transcripts:**
+   lane-claude/turns-haiku-r01 spends 25/30 turns in CLI-assistant
+   persona ("I'm Claude Code..."); turn-0 topics leak the wrapper
+   (fable opens with programming jokes 5/5; codex with computer jokes;
+   no API-lane model does either). The log's earlier sentence "the
+   claude-vs-codex contrast survives the wrapper confound" OVERCLAIMS
+   and is retracted: encoding is uniform (verified: transcript_prompt
+   applies to every lane) and temperature can't explain a 13-turn gap
+   (depth moves ≤6 turns non-monotonically across temp lanes), but the
+   vendor-authored persona channel cannot be excluded. Family claims are
+   scoped to model+wrapper deployment stacks pending the same-model
+   both-lanes ablation (registered as the decisive next experiment).
+2. **Meta-register labels mediate most "constraint collapse" events:**
+   11/13 Anthropic degradation events are repeats of comedy/joke/humor/
+   ai labels (opus's 13,11,13,13 is `comedy` ×4) — v2's comedy label is
+   a low-intensity catch-all of the class that killed v3. Recomputed
+   meta-excluded: family contrast −8.79 turns (p=0.0006), no-haiku
+   −7.75 (p=0.0016) — SURVIVES, because sonnet/opus also repeat everyday
+   topics (appliance, organization) that OpenAI models don't.
+   Incidence changes: haiku 3/4, fable 0/4 (fable's one degradation was
+   comedy-mediated — the family-outlier story gets cleaner).
+3. **Memorization exact-match tier is style-confounded:** sonnet
+   prefixes 74% of jokes with framing prose (defeats full-string
+   match), grok prefixes 0% — the 40.9%-vs-0.8% gap partly measures
+   delivery format. Template-trigram tier (already in novelty.json,
+   unreported): grok 20.7% (still the outlier vs ≤10% all others),
+   qwen 1.7%→10.0% (= codex:5.4) — the open-weights≈zero tiering is
+   tier-dependent. Paper/FINDINGS also MISDESCRIBE the exact-match
+   reference (it is the 1.2M Reddit-derived corpus, not "25 templates +
+   small hand corpus").
+4. paper §5.2/§6 "native multi-turn state" for API lanes is FALSE
+   (uniform transcript-in-prompt everywhere — which strengthens the
+   comparison and must be stated correctly).
+5. glm has a complete excluded run (lane-api r01, repeat@16) with no
+   stated exclusion rule; 49 complete cascade runs sit unanalyzed in the
+   temp-fakeability lanes (deepseek 18/18, glm 18/18, qwen 13/13
+   degrading — uncited replication of the open-weights fingerprint).
+Fix wave (zero API calls) launching: meta-decomposition as a standing
+robustness row, dual-tier memorization table, factual corrections,
+incidence Fisher companion test, temp-lane replication fold-in.
+Hostile-reviewer verdict on the drafted paper: weak reject as framed;
+"two robust contrasts + validated instrument chain + registered
+replication design" is the honest, stronger paper. The ONE
+score-moving experiment: same-model both-lanes (~$5).
+
+**Red-team fix wave landed (2026-07-17 afternoon, independent
+recomputation):** every headline red-team number reproduced exactly
+(meta-excluded contrasts −8.79/−7.75; incidence haiku 3/4, fable 0/4;
+grok template-tier 20.7%; sonnet framing-prefix 74.2% vs grok 0%;
+temp-lane replication 18/18, 18/18, 13/13). Two Monte Carlo p-values
+differ in the 4th decimal (0.0004 vs 0.0006; 0.0018 vs 0.0016 — seed
+noise, recomputed values used). One citation correction: the excluded
+complete glm run lives in lane-api-fill-glm r01, not lane-api. NEW
+discovery from the wave: run_pilot has never stored refusal-aware
+degradation depth — every published depth is pure topic-repeat (refusal
+detection never contributed); the new decomposition table's refusal
+regex also has documented false positives (in-character melodrama).
+Both disclosed in stats_inference.json + FINDINGS + DRAFT rather than
+smoothed. Driver gained meta-excluded/incidence-Fisher/dual-tier/
+decomposition sections; integrity checks pass; 312 tests green.

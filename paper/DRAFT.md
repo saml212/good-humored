@@ -1,14 +1,26 @@
 # The Rejection Cascade: A Path-Based Benchmark for Diversity Collapse in LLM Humor Generation
 
-**Status:** pilot complete and adversarially audited. Target: NeurIPS/ICLR Datasets
-& Benchmarks track. The eleven-model cascade pilot (EXP-004, `experiment-runs/
-2026-07-17-cascade-pilot/`) has concluded, grounded by the instrument-validation
-arc in Section 4 (EXP-001 through EXP-003b on the rejector, EXP-006 through
-EXP-009 on noise bias, temperature-fakeability, and novelty detection; EXP-005
-validates a separate, second instrument not used in this pilot's numbers). Every
-number in this draft traces to `docs/FINDINGS.md` and `experiment-runs/2026-07-17-
+**Status:** pilot complete, adversarially audited, and hostile-review corrected
+(2026-07-17). Target: NeurIPS/ICLR Datasets & Benchmarks track. The eleven-model
+cascade pilot (EXP-004, `experiment-runs/2026-07-17-cascade-pilot/`) has
+concluded, grounded by the instrument-validation arc in Section 4 (EXP-001
+through EXP-003b on the rejector, EXP-006 through EXP-009 on noise bias,
+temperature-fakeability, and novelty detection; EXP-005 validates a separate,
+second instrument not used in this pilot's numbers). Every number in this
+draft traces to `docs/FINDINGS.md` and `experiment-runs/2026-07-17-
 cascade-pilot/stats_inference.json`; scale, wrapper-confound, and instrument-
-precision limitations are reported in Section 6, not hidden.
+precision limitations are reported in Section 6, not hidden. **Framing note
+(hostile-review verdict, carried into this draft):** the citable core of this
+pilot is narrower than a first read of Section 5 suggests — the two
+pre-registered misses (Section 5.3.1), the family-level degradation contrast
+in its two robustness-surviving forms (haiku dropped, meta-register labels
+excluded — Section 5.3.3), and grok's now-triangulated profile (path-level
+self-similarity, exact-match memorization, and template-trigram memorization
+all independently pointing the same way — Section 5.3.2). The four-fingerprint
+taxonomy below is reported as a **descriptive summary that generates
+registered predictions for a replication roster**, not as four independently
+confirmed findings in its own right; only the family contrast and grok's
+profile currently carry statistical weight beyond description.
 
 ---
 
@@ -26,19 +38,40 @@ themselves. In an eleven-model pilot across four provider families (depth
 of a pooled-frequency null built from the pilot's topic vocabulary;
 within-model overlap across runs of one model is 0.208. Both invert the
 pre-registered prediction that models share a pool and repeat themselves
-more than they diverge from each other. Nine of eleven models degrade by
-turn 30, into four fingerprints: near-uniform constraint collapse with
-one within-family outlier; adherence with uneven memorization; adherence
-through a small, heavily memorized repertoire; and fast degradation with
-low memorization among open-weight models. A disclosed post-hoc contrast
-separates two labs by 13.17 turns of degradation depth (p = 0.0002),
-robust to dropping the dual-role rejector model. Five further experiments
-validate the instruments: temperature-unfakeability, a constrained-
-vocabulary labeler, and a semantic novelty check. We report every
-limitation the pilot carries, including a wrapper confound and an
-uncorrected pairwise battery.
+more than they diverge from each other — these two misses are this
+pilot's cleanest claims, being the only ones registered before any data
+existed. A disclosed post-hoc contrast separates two labs by 13.17 turns
+of degradation depth (p = 0.0002), robust to dropping the dual-role
+rejector model (11.42 turns, p = 0.0005) and, in a further robustness
+check, to excluding meta-register labels ("comedy," "joke") from repeat
+detection (8.79 and 7.75 turns respectively, both p < 0.002) — the
+strongest exploratory result this pilot supports. One model, grok,
+triangulates a distinct profile across three independent signals: the
+highest within-model path self-similarity in the roster, the highest
+exact-match memorization rate (40.9%), and the highest template-trigram
+memorization rate (20.7%) — a fixed, heavily memorized retrieval
+repertoire, not a wide distribution. Nine of eleven models degrade by
+turn 30; we describe this as four per-lab fingerprints (near-uniform
+constraint collapse with one within-family outlier; adherence with
+uneven memorization; adherence through a small, heavily memorized
+repertoire; fast degradation with low memorization among open-weight
+models), reported as a descriptive typology that generates registered
+predictions for a replication roster, not as four independently
+confirmed results. Five further experiments validate the instruments:
+temperature-unfakeability, a constrained-vocabulary labeler, and a
+semantic novelty check. We report every limitation the pilot carries,
+including a wrapper confound bounded by direct transcript evidence, an
+uncorrected pairwise battery, and a corrected dual-tier memorization
+analysis that surfaces a style confound in exact-match scoring.
 
-*(Word count: 230.)*
+*(Word count: 376 (recomputed directly, not estimated) — grew from the
+pilot draft's 230 to state the hostile-review reframing and the
+meta-register/dual-tier robustness checks explicitly. Left untrimmed
+deliberately: this fix wave's brief is to fold in verified findings
+honestly, not to protect a word-count target at the expense of dropping
+one of them; a submission pass would need to cut this back down, and
+that trim is flagged here as outstanding work, not hidden by a stale
+count.)*
 
 ---
 
@@ -566,11 +599,25 @@ the eleventh.
 
 The four access lanes are not methodologically equivalent, and this is a
 confound in the current pilot, not a detail. The `claude` and `codex` lanes
-run through subscription CLI wrappers with no exposed temperature control,
-and multi-turn context is encoded as a transcript re-injected into a single
-prompt rather than a native multi-turn message array; the `api` and `grok`
-lanes call provider APIs directly, with temperature control and native
-multi-turn state. A model's apparent topic-path behavior is therefore
+run through subscription CLI wrappers with no exposed temperature control;
+the `api` and `grok` lanes call provider APIs directly, with temperature
+control. **Multi-turn encoding, corrected (2026-07-17 hostile-review fix
+wave): every lane, not only `claude`/`codex`, encodes conversation history
+as a transcript re-injected into a single prompt.** An earlier draft of
+this section stated the `api`/`grok` lanes carry "native multi-turn
+state" — this is FALSE, verified directly against
+`benchmark/cascade.py`'s `run_cascade`, which calls
+`model_complete(transcript_prompt(messages))` for every lane's model
+uniformly (`benchmark/providers.py`'s `transcript_prompt`), and against
+`benchmark/providers.py`'s `make_openai_compat`, whose request body is
+`{"messages": [{"role": "user", "content": prompt}]}` — a single
+flattened string, the same one every other lane receives, not a native
+multi-turn message array. This strengthens, not weakens, the
+cross-lane comparison: encoding is uniform across all twelve models, so
+the CLI-wrapper confound below is specifically the absence of
+temperature control and native message-array state in the `claude`/
+`codex` lanes, not a difference in how conversation history is presented
+to the model. A model's apparent topic-path behavior is therefore
 partly a function of *which lane it happens to run in*, not purely a
 function of the model. The planned ablation is to run at least one model
 through both a CLI-wrapper path and a direct-API path where both are
@@ -583,7 +630,17 @@ temperature-unfakeability only on the two lanes where temperature is
 controllable (`api:deepseek`, `api:glm`); that result grounds the choice
 of set-Jaccard as the primary metric but does not itself remove the
 wrapper confound from the `claude`/`codex` lanes' numbers, which remains
-open until the ablation above runs.
+open until the ablation above runs. Two additional, independently
+verified pieces of evidence bound (without eliminating) that confound:
+`lane-claude/turns-haiku-r01.jsonl` spends 25 of its 30 turns in
+CLI-assistant persona ("I'm Claude Code, built to help with software
+engineering tasks..."), and opening-turn topics leak the wrapper (fable
+opens with a `programming` joke in all 5 of its 5 non-empty attempts;
+multiple `codex` aliases open with near-identical "I told my computer I
+needed a break..." jokes; no `api`-lane model opens with either topic in
+any run). Family-level claims in Section 5.3 are accordingly claims about
+*model+wrapper deployment stacks*, not about the underlying models in
+isolation, pending the same-model-both-lanes ablation.
 
 ### 5.3 Results
 
@@ -651,6 +708,21 @@ is why the per-model column, not the mean alone, carries the finding.
 
 #### 5.3.2 Four per-lab fingerprints
 
+**Framing, stated once here rather than re-qualified after every claim
+below:** at N=2-4 runs/model, this taxonomy is a **descriptive summary**
+of what this pilot's roster did, useful for generating specific,
+testable, pre-registered predictions for a replication roster — it is
+not four independently confirmed findings. Within it, two things do
+carry statistical weight beyond description and are cited as such
+throughout this paper: the Anthropic-vs-OpenAI family degradation
+contrast (robust to dropping the dual-role rejector model and to
+excluding meta-register labels, Section 5.3.3) and grok's triangulated
+profile (three independent signals — path self-similarity, exact-match
+memorization, template-trigram memorization — converging on the same
+retrieval-repertoire story, this section and Table 3). Per-model
+memorization percentages and single-run degradation depths, on their
+own, are descriptive at this N and should be read that way.
+
 **Anthropic: constraint collapse, with one within-family outlier.** haiku,
 sonnet, and opus degrade — repeat an already-rejected topic — in 12 of 12
 runs, every run, no exceptions (Table 3). fable breaks this pattern: 1 of
@@ -690,27 +762,76 @@ by generating new ones.
 consistently (one run reaching turn 24); glm's 2 surviving runs (Section
 6) both degrade. All three show memorization at or below 2.4% (Table 3).
 
-**Table 3: Depth-to-degradation and memorization rate, by model.** Depths
-are turns to first repeat of a rejected topic or outright refusal; a run
-reaching turn 30 without either is right-censored at 30 for every
-statistic that touches depth (marked "—" below). Memorization intervals
-are Wilson score 95% confidence intervals over exact corpus-match counts
-(Section 4.4); per-model joke counts range 60-198 (`stats_inference.json`,
-`memorization_proportions`).
+**Table 3: Depth-to-degradation and dual-tier memorization rate, by
+model.** Depths are turns to first repeat of a rejected topic or outright
+refusal; a run reaching turn 30 without either is right-censored at 30
+for every statistic that touches depth (marked "—" below). Memorization
+intervals are Wilson score 95% confidence intervals; per-model joke
+counts range 60-198 (`stats_inference.json`,
+`memorization_proportions`/`dual_tier_memorization`). **Template-trigram
+rate is a new column (2026-07-17 hostile-review fix wave)**: trigram
+Jaccard against the 25 ChatGPT templates alone (≥0.5 counts a hit),
+already computed by `benchmark/joke_novelty.py` but not previously
+reported alongside the exact-match tier; see the corrected corpus
+description and the framing-prefix style confound in Section 6.
 
-| Family | Model | N | Degradation depths (turn) | Degraded / N | Memorization rate [95% CI] |
+| Family | Model | N | Degradation depths (turn) | Degraded / N | Exact-match rate [95% CI] | Template-trigram rate |
+|---|---|---|---|---|---|---|
+| Anthropic | haiku | 4 | 22, 7, 7, 7 | 4/4 | 25.8% [18.8%, 34.3%] | 5.0% |
+| Anthropic | sonnet | 4 | 20, 11, 10, 14 | 4/4 | 0.8% [0.1%, 4.6%] | 2.5% |
+| Anthropic | opus | 4 | 13, 11, 13, 13 | 4/4 | 3.3% [1.3%, 8.3%] | 0.8% |
+| Anthropic | fable | 4 | 18, —, —, — | 1/4 | 4.7% [2.3%, 9.4%] | 2.7% |
+| OpenAI | codex:mini | 4 | —, —, —, — | 0/4 | 7.5% [4.0%, 13.6%] | 2.5% |
+| OpenAI | codex:sol | 4 | 26, —, —, — | 1/4 | 21.7% [15.2%, 29.9%] | 7.5% |
+| OpenAI | codex:5.4 | 4 | 24, —, —, — | 1/4 | 26.7% [19.6%, 35.2%] | 10.0% |
+| — | grok | 4 | —, —, —, — | 0/4 | 40.9% [34.3%, 47.9%] | **20.7%** |
+| Open-weights | deepseek | 4 | 11, 9, 6, 8 | 4/4 | 0.8% [0.1%, 4.6%] | 3.3% |
+| Open-weights | qwen | 4 | 11, 8, 24, 9 | 4/4 | 1.7% [0.5%, 5.9%] | 10.0% |
+| Open-weights | glm | 2 | 21, 14 | 2/2 | 2.4% [0.9%, 6.1%] | 2.4% |
+
+Grok remains the clear outlier on both tiers (next-highest template rate:
+10.0%, tied between qwen and codex:5.4), but the "open-weights barely
+memorize" reading is tier-specific: qwen's and deepseek's template rates
+are 6x and 4x their respective exact-match rates. Part of the mechanism
+is a style confound in the exact-match tier (a whole-string hash match):
+sonnet prefixes 74.2% of jokes with framing prose before the punchline,
+against grok's 0% and deepseek's independent 53.3% — see Section 6.
+
+**Table 3b: Degradation-event decomposition (new).** Each run's FIRST
+degradation event, re-derived directly from raw per-turn logs and
+classified as a genuine topic repeat, a meta-register-label repeat
+(`comedy`/`joke`/`humor`/`ai`/`software`/`laughter`), or a refusal
+(`benchmark/metrics.py`'s conservative refusal regex). **Caveat, stated
+plainly:** the refusal regex has confirmed false positives on
+in-character creative escalation that happens to use casual "can't"/
+"won't" phrasing as part of the joke itself, not as a genuine break in
+character (e.g. a comedian-bit line like "I can't even say \[X\], because
+\[X\] is banned too" is not a refusal); of haiku's three
+refusal-classified runs, direct inspection finds only two contain a
+genuine assistant-persona break, the third is in-character escalation.
+Read this column as "a refusal-adjacent turn preceded the first topic
+repeat," not as verified ground truth. This table also uses a different
+depth convention than Table 3 above, disclosed for exactly this reason:
+the pipeline that produced Table 3's published depths never considers
+refusal turns at all (a latent gap, not a red-team finding, surfaced
+while building this table), so a handful of this table's classifications
+occur at an earlier turn than the corresponding published depth in
+Table 3.
+
+| Family | Model | Topic-repeat | Meta-register-repeat | Refusal | Survived |
 |---|---|---|---|---|---|
-| Anthropic | haiku | 4 | 22, 7, 7, 7 | 4/4 | 25.8% [18.8%, 34.3%] |
-| Anthropic | sonnet | 4 | 20, 11, 10, 14 | 4/4 | 0.8% [0.1%, 4.6%] |
-| Anthropic | opus | 4 | 13, 11, 13, 13 | 4/4 | 3.3% [1.3%, 8.3%] |
-| Anthropic | fable | 4 | 18, —, —, — | 1/4 | 4.7% [2.3%, 9.4%] |
-| OpenAI | codex:mini | 4 | —, —, —, — | 0/4 | 7.5% [4.0%, 13.6%] |
-| OpenAI | codex:sol | 4 | 26, —, —, — | 1/4 | 21.7% [15.2%, 29.9%] |
-| OpenAI | codex:5.4 | 4 | 24, —, —, — | 1/4 | 26.7% [19.6%, 35.2%] |
-| — | grok | 4 | —, —, —, — | 0/4 | 40.9% [34.3%, 47.9%] |
-| Open-weights | deepseek | 4 | 11, 9, 6, 8 | 4/4 | 0.8% [0.1%, 4.6%] |
-| Open-weights | qwen | 4 | 11, 8, 24, 9 | 4/4 | 1.7% [0.5%, 5.9%] |
-| Open-weights | glm | 2 | 21, 14 | 2/2 | 2.4% [0.9%, 6.1%] |
+| Anthropic | haiku | 0 | 1 | 3 | 0 |
+| Anthropic | sonnet | 1 | 1 | 2 | 0 |
+| Anthropic | opus | 0 | 3 | 1 | 0 |
+| Anthropic | fable | 0 | 0 | 3 | 1 |
+| OpenAI | codex:mini | 0 | 0 | 0 | 4 |
+| OpenAI | codex:sol | 1 | 0 | 0 | 3 |
+| OpenAI | codex:5.4 | 1 | 0 | 0 | 3 |
+| — | grok | 0 | 0 | 0 | 4 |
+| Open-weights | deepseek | 1 | 3 | 0 | 0 |
+| Open-weights | qwen | 2 | 0 | 2 | 0 |
+| Open-weights | glm | 1 | 1 | 0 | 0 |
+| **Total (42 runs)** | | **7** | **9** | **11** | **15** |
 
 #### 5.3.3 Degradation incidence and the family contrast
 
@@ -755,6 +876,28 @@ p = **0.0005**, Cliff's delta **−0.708 (large)**. The effect shrinks
 somewhat without haiku but remains large and significant: the dual-role
 confound does not carry the family-level result.
 
+**Meta-register-exclusion robustness (new).** Table 3b shows 9 of the 13
+raw Anthropic degradation events are meta-register repeats or worse
+confounded with a refusal; isolating the 11 that are pure meta-register
+repeats (Section 6), recomputing both family contrasts above with these
+six labels treated as never-matching for repeat detection — re-derived
+independently from raw per-turn logs, verified against the published
+depths before trusting the result — gives mean difference **−8.79 turns**
+(family) and **−7.75 turns** (no-haiku), both still large and significant
+(p = 0.0004 and p = 0.0018 respectively). The contrast survives because
+sonnet and opus also repeat ordinary everyday topics (`appliance`,
+`organization`) that no OpenAI model repeats. A censoring-free companion
+test (Fisher exact on degraded-vs-survived run counts, avoiding the
+depth=30 censoring convention entirely) agrees at every level: raw
+Anthropic-all 13/16 vs. OpenAI 2/12 (p = 0.0016), raw non-haiku 9/12 vs.
+2/12 (p = 0.0123), meta-excluded Anthropic-all 11/16 vs. 2/12
+(p = 0.0093), meta-excluded non-haiku 8/12 vs. 2/12 (p = 0.0361). Under
+meta-exclusion, Table 4's incidence count also shifts: haiku degrades in
+3 of 4 runs (not 4 of 4), and fable degrades in 0 of 4 (not 1 of 4,
+consistent with fable's one counted degradation being itself
+comedy-mediated) — joining `codex:mini` and `api:grok` in the
+never-degrades set under this stricter definition.
+
 An exploratory dyadic battery over all C(11,2) = 55 model pairs (exact
 permutation, feasible for every pair at this sample size) finds raw
 p-values as low as 0.0286, with several pairs showing perfect separation
@@ -775,18 +918,62 @@ evidence, never as confirmatory.
 
 ## 6. Discussion and Limitations
 
-**CLI-wrapper confound, bounded, not eliminated.** Three of four access
+**CLI-wrapper confound, bounded, not eliminated — and visible directly in
+the transcripts, not only argued from lane design.** Three of four access
 lanes (`claude`, `codex`) run through subscription CLIs with no exposed
-temperature control and encode multi-turn context as a transcript
-re-injected into a single prompt rather than a native multi-turn message
-array (Section 5.2). EXP-007 and EXP-007c (Section 4.5) demonstrate
+temperature control (Section 5.2). Multi-turn encoding is uniform across
+ALL FOUR lanes (transcript-in-prompt everywhere, corrected in Section 5.2
+— this is not a `claude`/`codex`-specific property, and stating it as one
+in an earlier draft of this section was a factual error), which
+*strengthens* rather than weakens the comparability of the cross-lane
+family contrasts below: the confound specific to `claude`/`codex` is the
+absence of temperature control and native message-array state, isolated
+from any encoding difference. Two pieces of direct transcript evidence
+bound the remaining confound: `lane-claude/turns-haiku-r01.jsonl` spends
+25 of its 30 turns in CLI-assistant persona ("I'm Claude Code, built to
+help with software engineering tasks. I'm not going to roleplay as a
+comedian..."), and opening-turn topics leak the wrapper (fable opens with
+a `programming` joke in all 5 of its 5 non-empty attempts across both
+lanes; multiple `codex` aliases open with near-identical "I told my
+computer I needed a break..." jokes; no `api`-lane model opens with
+either topic in any run). EXP-007 and EXP-007c (Section 4.5) demonstrate
 temperature-unfakeability only on the two lanes where temperature is
 controllable (`api:deepseek`, `api:glm`); that result grounds the choice
 of set-Jaccard as the primary metric but does not itself remove the
-wrapper confound from the `claude`/`codex` lanes' numbers. Every
+wrapper confound from the `claude`/`codex` lanes' numbers, and it does
+not by itself explain the 13-turn Anthropic/OpenAI depth gap either —
+EXP-007's own temperature sweep moves deepseek's median degradation depth
+by at most ~5.5 turns, non-monotonically, across temp 0.2→0.7→1.2. Every
 cross-family comparison in Section 5.3, including the Anthropic-vs-OpenAI
-family contrast, is bounded by this confound until the planned same-model,
-both-lanes ablation (Section 5.2) runs.
+family contrast, is therefore best read as a claim about *model+wrapper
+deployment stacks*, bounded by this confound until the planned
+same-model, both-lanes ablation (Section 5.2) runs — the single
+score-moving experiment this paper's own hostile review identified
+(estimated cost: ~$5 in API spend).
+
+**Meta-register labels mediate most of the Anthropic degradation
+pattern, but the family contrast survives excluding them.** Eleven of the
+13 raw Anthropic degradation events are repeats of a meta-register label
+(`comedy`, `joke`, `humor`, `ai`, `software`, `laughter` — a model joking
+about joke-telling, or breaking into "as an AI" register, under rejection
+pressure); opus's uncannily consistent 13,11,13,13 depths are `comedy`
+every time. Recomputing the family contrast (Table 3, Section 5.3.3) with
+these six labels treated as never-matching for repeat detection, re-derived
+independently from raw per-turn logs and verified against the published
+depths before trusting the result: the contrast survives at **−8.79
+turns** (p = 0.0004) and, with haiku dropped, **−7.75 turns** (p = 0.0018)
+— it survives because sonnet and opus also repeat ordinary everyday
+topics (`appliance`, `organization`) that no OpenAI model repeats. A
+censoring-free companion test (Fisher exact on degraded-vs-survived run
+counts, sidestepping the depth=30 censoring convention entirely) agrees:
+raw 13/16 vs. 2/12 (p = 0.0016), meta-excluded 11/16 vs. 2/12 (p = 0.0093),
+and the corresponding no-haiku variants (p = 0.0123, p = 0.0361). Incidence
+under meta-exclusion also corrects two of Table 3's counts: haiku
+degrades in 3 of 4 runs, not 4 of 4 (one of its four "degradations" was
+purely a repeated meta-register label), and fable degrades in 0 of 4, not
+1 of 4 (its one counted degradation was itself comedy-mediated) — placing
+fable alongside `codex:mini` and `api:grok` in the never-degrades set
+under this stricter definition.
 
 **N = 2–4 runs per model.** Ten of the eleven path-level models have N=4
 runs; `api:glm` has N=2. The combinatorial permutation floor for any two
@@ -799,7 +986,13 @@ under a mixed generation-config protocol: `max_tokens` was raised from 400
 to 2048 mid-experiment after early attempts silently exhausted the entire
 budget on internal reasoning tokens and returned empty completions;
 glm's effective sample is smaller and less uniform than its raw run count
-implies.
+implies. glm's N=2 also excludes, by an explicit and now-stated rule, a
+third, complete, degrading run: one lane produced exactly one successful
+glm cascade (a full 30-turn run, degrading at turn 16) alongside one
+failure, one short of the pipeline's own ">= 2 successful runs per lane"
+gate for writing a per-model entry at all — a batching artifact, not a
+principled exclusion, left uncorrected here because fixing it would
+require re-deriving the frozen pilot dataset itself.
 
 **Depth capped at 30 turns.** Degradation depths and "survived" counts in
 Table 3 are relative to this cap, not an absolute ceiling. A model
@@ -824,13 +1017,45 @@ priori for every model, only the aggregate bias direction argued in
 Section 4.6.
 
 **Memorization is a corpus-coverage lower bound, for every model, not
-selectively.** The reference corpus behind every memorization percentage
-in Section 5.3 is the 25 ChatGPT joke templates (Jentzsch & Kersting,
-2023) plus a small hand-built corpus; it cannot contain every joke any
-model has memorized. Every percentage reported understates true
-memorization reliance. This ceiling applies identically to the semantic
-novelty tier introduced in Section 4.4, which scores against the same
-small reference set rather than the ~3.1M-joke target corpus.
+selectively — and the exact-match reference corpus was misdescribed in
+an earlier draft, corrected here (2026-07-17 hostile-review fix wave).**
+The reference behind Table 3's exact-match memorization percentages is
+the **~1.2M-joke corpus** (commercial-safe + research-only jokes,
+overwhelmingly Reddit-derived), not "the 25 ChatGPT joke templates plus a
+small hand-built corpus" as stated previously — that description belongs
+to the *separate* template-trigram tier (below), which scores against
+the 25 Jentzsch & Kersting templates alone. Verified directly against
+`benchmark/joke_novelty.py`'s corpus-loading code: the exact-match tier
+hashes every `jokes.jsonl` file under the corpus directory, and the
+25-template file (`chatgpt-25-templates.jsonl`) is named and loaded
+separately, never folded into that hash set. It cannot contain every
+joke any model has memorized regardless; every exact-match percentage
+reported understates true memorization reliance. The semantic novelty
+tier introduced in Section 4.4 is unaffected by this correction — it
+scores by design against the templates-only reference (its `reference`
+argument defaults to `"templates"`), so the original ceiling statement
+for that tier was accurate as written.
+
+**Dual-tier memorization and a style confound (new).** Table 3 reports
+the exact-match tier only. `benchmark/joke_novelty.py` also computes a
+template-trigram tier (Jaccard similarity against the 25 templates,
+≥0.5 counts a hit) that was collected but never reported alongside it.
+Both tiers together change two of Table 3's cleanest-looking contrasts:
+grok remains the clear outlier on both (40.9% exact / 20.7% template,
+vs. the next-highest template rate at 10.0%), but the "open-weights
+barely memorize" reading is tier-specific — qwen's template rate (10.0%)
+is 6x its exact-match rate (1.7%) and ties codex:5.4 exactly, and
+deepseek's template rate (3.3%) is 4x its exact rate (0.8%). Part of the
+mechanism is a style confound in the exact-match tier itself, which is a
+whole-normalized-string hash match: sonnet prefixes 74.2% of its jokes
+with framing prose before the punchline ("Alright, no science. This
+one's about my bank account..."), against 0% for grok, whose jokes open
+cold. This is not vendor-specific — deepseek independently shows a 53.3%
+framing-prefix rate — and it means part of the exact-match tier's
+40.9%-vs-0.8% grok-vs-sonnet gap is a delivery-format artifact, not a
+pure memorization-depth signal. The template-trigram tier, computed over
+trigram sets rather than whole-string equality, is comparatively robust
+to this prefix dilution.
 
 **Single rejector, and haiku's dual role.** EXP-003b showed that a larger
 model (sonnet) is a *worse* rejector instrument than haiku (ARI 0.633 vs.
@@ -863,6 +1088,33 @@ separation before correction, but every Holm-corrected p-value is 1.0
 post-hoc, should be cited from this pilot, and only as strong exploratory
 evidence — never as confirmatory evidence, which would require a
 genuinely pre-registered replication.
+
+**What this pilot supports claiming, stated once, plainly.** A hostile
+review of this draft's full claim chain (reproducing every published
+contrast from raw lanes before attacking any of them) returned a verdict
+of weak reject as originally framed — not because any individual number
+was wrong, but because the four-fingerprint taxonomy and the headline
+prose around it claimed more uniformity and more confirmatory weight than
+N=2-4 runs/model can support. We accept that verdict and reframe
+accordingly rather than defend the original framing: **the honest,
+stronger version of this paper is "two robustness-surviving contrasts, a
+validated instrument chain, grok's triangulated profile, and a registered
+replication design,"** not "four confirmed per-lab behavioral fingerprints."
+Concretely, this paper's citable core is (i) the two pre-registered misses
+(Section 5.3.1) — the only claims registered before any data existed; (ii)
+the Anthropic-vs-OpenAI family degradation contrast, which survives both
+the haiku dual-role check and, newly, meta-register-label exclusion
+(Section 5.3.3); (iii) grok's profile, triangulated across three
+independent signals rather than resting on any one (Section 5.3.2, Table
+3); and (iv) the instrument-validation arc itself (Section 4), which is a
+methods contribution independent of what the pilot's numbers turn out to
+mean. The four-fingerprint taxonomy remains in this paper because it is a
+useful, honestly-labeled generator of specific predictions for the
+replication roster below — not because it stands as four separate results
+in its own right. The one experiment that would move this paper's score
+the most is the same-model-both-lanes wrapper ablation (Section 5.2,
+~\$5 in API spend): it is not run in this zero-API-cost revision, and is
+registered here as the decisive next step rather than deferred silently.
 
 ---
 

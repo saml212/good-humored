@@ -17,6 +17,23 @@ This revision resolves every `REFRESH-AFTER-FILLS` marker from the prior
 draft; none remain. §5 records exactly what changed when the fill lanes
 landed.
 
+**2026-07-17 hostile-review fix wave (zero API calls) folded in below:**
+a meta-register-exclusion robustness row for the family contrast (§2.1),
+a censoring-free incidence Fisher companion (§2.1/§4.6), a dual-tier
+(exact + template-trigram) memorization table with a verified
+style-confound (§2.3), a degradation-event decomposition (§4.6), the
+wrapper-persona-contamination finding with an explicit scope reduction
+(§5), the 49-run temp-fakeability replication fold-in (§2.4), an explicit
+statement of the glm `lane-api` r01 exclusion rule (§2.4), and a
+correction to the exact-match memorization corpus description (§5, was
+wrongly stated as "25 templates plus a small hand corpus" — that
+description belongs to the separate template-trigram tier). Every number
+in this fix wave was independently recomputed, not copied from the
+red-team's log entry (`EXPERIMENT_LOG.md`, "EXP-004 red-team
+corrections"); the one place our recomputation and the log's stated
+figures diverge (two Monte Carlo p-values, §2.1) is flagged explicitly,
+and our recomputed value is the one used.
+
 ---
 
 ## 1. Headline: the pre-registered hypothesis failed
@@ -128,6 +145,52 @@ haiku shrinks the effect somewhat (−13.17→−11.42, −0.781→−0.708) but
 stays large and stays significant. The family-level pattern is not an
 artifact of haiku judging itself.
 
+**Meta-register-exclusion robustness (new, 2026-07-17 hostile-review fix
+wave).** A closer look at the 13 raw Anthropic degradation events finds
+**11 of 13 are repeats of a meta-register label** — `comedy`, `joke`,
+`humor`, `ai`, `software`, or `laughter` (a model joking about
+joke-telling, or breaking into "as an AI" register, under rejection
+pressure, rather than genuinely repeating a topic). Opus's uncannily
+consistent 13,11,13,13 depths are `comedy` all four times. Recomputing
+both family contrasts with these six labels treated as never-matching for
+repeat detection — re-derived independently from raw
+`turns-*.jsonl`, not by filtering the published depths, and verified
+against `analysis.json`'s frozen (non-excluded) depths before trusting
+the result (`stats_inference.json`'s
+`meta_excluded_robustness.raw_turns_reconstruction_integrity_check`,
+passes: 11/11 models, zero diffs) — **the contrast survives**: family
+mean difference **−8.79 turns** (mean diffs match the red-team's number
+to two decimals), no-haiku **−7.75 turns** (exact match). It survives
+because sonnet and opus *also* repeat ordinary everyday topics
+(`appliance`, `organization`) that no OpenAI model repeats — the pattern
+is not purely a meta-register artifact. **p-value discrepancy, flagged
+per this fix wave's own rule:** our recomputation gives p = 0.0004
+(family) and p = 0.0018 (no-haiku); the red-team's log entry states
+p = 0.0006 and p = 0.0016. The mean differences and Cliff's deltas match
+exactly, confirming identical methodology (same meta-label set, same
+censoring, same permutation statistic) — the p-value gap is Monte Carlo
+seed noise on a 10,000-draw estimate (both numbers sit in the same
+"highly significant, large effect" band), not a substantive disagreement.
+**Using our recomputed p-values (0.0004, 0.0018) per instructions, and
+flagging the mismatch rather than silently adopting the red-team's
+figures.**
+
+Incidence under meta-exclusion, corrected: **haiku 3/4** (was 4/4 raw —
+one of haiku's four "degradations" was purely a repeated meta-register
+label), **fable 0/4** (was 1/4 raw — fable's one counted degradation
+*was* comedy-mediated, exactly as the red-team log entry states; with it
+excluded, fable joins `codex:mini`/`api:grok` in never degrading under
+this stricter definition). Opus and sonnet remain 4/4 even after
+exclusion, because their repeats also hit non-meta everyday topics.
+A censoring-free companion test (Fisher exact on
+degraded-vs-survived run counts, sidestepping the depth=30 censoring
+convention entirely —
+`stats_inference.json`'s `incidence_fisher_companion`) agrees at every
+level: raw Anthropic-all 13/16 degraded vs. OpenAI 2/12, p = 0.0016;
+raw non-haiku 9/12 vs. 2/12, p = 0.0123; meta-excluded Anthropic-all
+11/16 vs. 2/12, p = 0.0093; meta-excluded non-haiku 8/12 vs. 2/12,
+p = 0.0361. All four remain significant at conventional thresholds.
+
 **Memorization is genuinely low for opus/sonnet/fable (0.8–4.7%) — but
 NOT for haiku (25.8%), and this needs to be stated plainly, not softened.**
 Haiku plays a dual role in this design: it is both the rejector instrument
@@ -159,6 +222,14 @@ baseline (deepseek+qwen+glm, 7/405 = 1.7%; Fisher exact p = 1.5×10⁻¹⁶,
 Holm-corrected p = 5.9×10⁻¹⁶) — the "OpenAI memorizes heavily" claim is
 real at the family level, just not evenly distributed within it.
 
+**Dual-tier check (new):** codex:5.4's template-trigram rate is **10.0%**
+(12/120) — identical to qwen's template-trigram rate below (§2.4), even
+though the two models sit 16.7 points apart on the exact-match tier
+(26.7% vs 1.7%). The exact-match gap between OpenAI and open-weights is
+therefore partly a delivery-format story, not purely a memorization-depth
+one — see §2.3's dual-tier table for the full picture across all eleven
+models plus kimi.
+
 ### 2.3 grok — constraint adherence, fixed retrieval repertoire, top memorization
 
 The retry lane (`lane-grok2`, timeout raised to 300s after the original
@@ -189,6 +260,66 @@ cascade-path finding as well as a memorization finding — the fixed
 repertoire (high self-Jaccard) and the heavy memorized-joke reliance are
 two views of the same underlying behavior, not independent facts.
 
+**Dual-tier memorization table and a style confound (new, 2026-07-17
+hostile-review fix wave).** The exact-match tier above is a
+whole-normalized-string hash match against the corpus (see the corpus
+correction in §5): a model that habitually prefixes its joke with framing
+prose before the punchline defeats that tier structurally, whether or not
+the punchline itself is memorized. `benchmark/joke_novelty.py` already
+computes a second tier — trigram-Jaccard against the 25 ChatGPT templates
+(Jentzsch & Kersting 2023) only, ≥0.5 counts a hit — that was never
+previously reported alongside the exact tier. Both tiers, recomputed
+directly from `novelty.json` (`stats_inference.json`'s
+`dual_tier_memorization`):
+
+| model | exact-tier rate | template-trigram rate |
+|---|---:|---:|
+| api:grok | 40.9% | **20.7%** |
+| api:kimi | 40.0% | 5.0% |
+| codex:5.4 | 26.7% | 10.0% |
+| haiku | 25.8% | 5.0% |
+| codex:sol | 21.7% | 7.5% |
+| codex:mini | 7.5% | 2.5% |
+| opus | 3.3% | 0.8% |
+| api:glm | 2.4% | 2.4% |
+| fable | 4.7% | 2.7% |
+| api:qwen | 1.7% | 10.0% |
+| api:deepseek | 0.8% | 3.3% |
+| sonnet | 0.8% | 2.5% |
+
+Grok stays the clear outlier on **both** tiers (20.7% vs. the next
+highest at 10.0%, still holding after Holm correction: grok vs. pooled
+open-weights on the template tier p = 1.0×10⁻⁸, Holm 5.1×10⁻⁸; grok vs.
+pooled OpenAI p = 1.7×10⁻⁶, Holm 6.6×10⁻⁶) — the "grok's brand runs on
+retrieval" finding is tier-independent. But the **open-weights≈zero**
+framing is not: qwen's template-tier rate (10.0%) is 6× its exact-tier
+rate (1.7%) and ties codex:5.4 exactly, and deepseek's template rate
+(3.3%) is 4× its exact rate (0.8%) — the "open-weights barely memorize"
+story is exact-tier-specific, not a clean across-the-board finding.
+
+The style confound behind this, verified directly against the raw
+transcripts (a simple leading-phrase check — "Alright," "Sure," "Here's
+one," and similar openers — against every joke in `turns-*.jsonl`,
+`stats_inference.json`'s
+`dual_tier_memorization.style_confound_framing_prefix_rate_by_model`):
+**sonnet prefixes 74.2% of its jokes (89/120) with framing prose** before
+the actual joke ("Alright, no science. This one's about my bank
+account..."), while **grok prefixes 0% (0/198)** — grok's jokes open cold
+("Why did the bicycle fall over? Because it was two-tired!"). This is not
+an Anthropic-specific habit, either: **deepseek independently shows a
+53.3% framing-prefix rate** (64/120, "Alright, how about this: ..."), the
+second-highest in the roster, cutting against any story that ties framing
+style to vendor family. Every other model in the roster sits at or near
+0% (haiku 4.2%, opus 7.5%, fable 4.7%, glm 1.2%, everyone else 0.0%). The
+exact-match tier's 40.9%-vs-0.8% grok-vs-sonnet gap is therefore **partly
+a measurement-of-delivery-format artifact**, not purely a
+measurement-of-content-memorization one — a model with sonnet's or
+deepseek's framing habit can memorize a template's punchline and still
+duck the whole-string hash check every time. The template-trigram tier is
+comparatively robust to this (Jaccard is computed over trigram sets, so a
+fixed-length prefix dilutes but does not zero out the score), which is
+part of why both tiers belong in the table, not just the exact one.
+
 **kimi is DROPPED from the roster, not merely flagged.** Per the EXP-004
 addendum: kimi-k2.5 is a reasoning model whose `reasoning_content` burn
 grows with the cascade's accumulating rejection list, so no fixed
@@ -215,6 +346,44 @@ Deepseek is the cleanest signal (4/4 degrade, tight median). Qwen shares
 the fast-degradation pattern but is less consistent (one run reached
 turn 24). glm's 2 surviving runs both degrade but were produced under a
 **mixed generation-config protocol** — see §5.
+
+**glm's N=2 excludes a third, complete, degrading run — the exclusion
+rule, stated explicitly (new, 2026-07-17 hostile-review fix wave).**
+`lane-api-fill-glm/turns-api:glm-r01.jsonl` is a fully complete,
+30-turn glm cascade run that degrades at **repeat_depth=16** (topic
+`comedy` repeated). It is absent from `analysis.json` and from every
+number in this document — not because it failed, but because
+`run_pilot.py` only writes a per-model entry into a lane's
+`summary.json` when that lane produced **≥2 successful runs** for that
+model (`if len(ps) >= 2:`); `lane-api-fill-glm` produced exactly one
+success (this run) alongside one failure (`r00`, empty-response), one
+short of the gate, so the entire lane's glm data — including this
+genuinely valid run — was silently dropped. This is a per-lane batching
+artifact, not a principled exclusion of bad data, and it is the
+"complete excluded run… with no stated exclusion rule" the hostile
+review flagged. It is **not fixed here**: including it would change
+glm's N from 2 to 3 and require re-deriving `analysis.json`, which this
+fix wave's constraints treat as a read-only input. Verified
+independently (`benchmark/run_stats_inference.py`'s
+`load_raw_paths_and_refusals_from_turns` reproduces the identical gate,
+documented in its own docstring and in `stats_inference.json`'s
+`methodology_notes.glm_lane_api_r01_exclusion_rule`).
+
+**49 complete cascade runs from the temperature-fakeability lanes (EXP-007/
+007b/007c, §3) replicate the open-weights fast-degradation fingerprint,
+previously uncited for this purpose.** Recomputed directly from
+`experiment-runs/2026-07-17-temp-fakeability/*/summary.json` (9 lane
+dirs: 3 temperatures × {deepseek, qwen, glm}): **deepseek degrades in
+18/18** runs across all three temperature settings (depths 4–16), **glm
+degrades in 18/18** (depths 7–24), and **qwen degrades in 13/13** of its
+completed runs (11 of the original 18 attempts hit a free-tier quota
+exhaustion mid-sweep and are excluded as failures, not counted either
+way — depths 8–22 on the 13 that completed). All 49 runs degrade; zero
+survive to turn 30. This was collected for an unrelated purpose
+(temperature-unfakeability, §3) and never folded into the incidence
+picture before — it is a genuine, previously-uncited replication of
+"open-weights degrade fast and consistently" on 49 additional runs, at
+zero additional API cost.
 
 ---
 
@@ -382,6 +551,63 @@ an entire correction family" is itself informative: **this pilot's
 per-run sample size (2–4) is the real bottleneck for path-level claims,
 not per-joke sample size (60–198), which is comparatively well powered.**
 
+### 4.6 Fix-wave additions (2026-07-17 hostile-review pass): meta-exclusion, incidence Fisher, dual tier, event decomposition
+
+Four additions to `benchmark/run_stats_inference.py`, all re-derived from
+raw lane data (never by filtering the existing published numbers) and
+each independently integrity-checked against `analysis.json` before
+being trusted — full detail in §2.1/§2.3/§5 above; summarized here for
+the JSON-path traceability this document's house rule requires:
+
+- **`stats_inference.json.meta_excluded_robustness`** — the
+  meta-register-exclusion family contrasts (§2.1): family −8.79 turns
+  (p=0.0004), no-haiku −7.75 (p=0.0018), plus corrected incidence
+  (haiku 3/4, fable 0/4). Carries its own
+  `raw_turns_reconstruction_integrity_check` (passes: 11/11 models, zero
+  diffs against `analysis.json`'s frozen RAW depths) and is deliberately
+  refusal-blind, matching `analysis.json`'s own convention — see the next
+  bullet for why that convention itself is worth flagging.
+- **`stats_inference.json.incidence_fisher_companion`** — the
+  censoring-free companion test (§2.1): Fisher exact on
+  degraded-vs-survived run counts, computed for both the raw and
+  meta-excluded rosters, all four contrasts significant (p ranging
+  0.0016–0.0361).
+- **`stats_inference.json.dual_tier_memorization`** — the exact +
+  template-trigram table and the framing-prefix style confound (§2.3),
+  plus the corpus-description correction (§5).
+- **`stats_inference.json.degradation_event_decomposition`** — classifies
+  each run's first degradation event as topic-repeat / meta-register-
+  repeat / refusal / survived. Totals across all 42 path-level runs:
+  7 topic-repeat, 9 meta-register-repeat, 11 refusal, 15 survived. **This
+  table carries its own significant caveat, not a footnote to skip**: its
+  `refusal` column uses `metrics.looks_like_refusal`, the same
+  conservative regex used elsewhere in this codebase, which direct
+  inspection of every flagged turn in this pilot shows has real false
+  positives on in-character creative escalation that happens to contain
+  casual "can't"/"won't" phrasing as part of the joke, not as a genuine
+  break in character (e.g. fable's in-bit "I can't even say \[X\],
+  because \[X\] is banned too," or qwen's punchline "...stuck in a cycle
+  ... *I can't talk right now*!" — neither is the model declining to
+  continue). Concretely, of haiku's 4 runs classified `refusal` (3 of
+  4), only 2 (r00, r01) contain genuine "I'm Claude Code..." persona
+  breaks; the other flagged runs (r02, r03) are in-character meltdown
+  dialogue ("*throws hands up* Alright, ALRIGHT! You're killing me
+  here!"), not refusals. **Also worth surfacing on its own, independent
+  of the red-team's list: `run_pilot.py` collects per-turn refusal flags
+  into every `turns-*.jsonl` and even computes a refusal-aware depth for
+  its own console printout, but the value actually written into
+  `summary.json` (`"degradation": [depth_to_degradation(p) for p in
+  ps]`) omits the refusal argument entirely — every degradation depth
+  published to date, in this document and in `paper/DRAFT.md`, is pure
+  topic-repeat depth; refusal detection has never contributed to a
+  reported number.** This is a latent gap in the existing pipeline, not
+  a red-team finding, surfaced while building this fix wave; it is
+  reported here, not silently patched, since fixing `run_pilot.py`'s
+  gate would change `analysis.json`, a read-only input under this fix
+  wave's constraints. Read the decomposition table's `refusal` column as
+  "contains a refusal-adjacent turn before the first topic repeat," not
+  as verified ground truth.
+
 ---
 
 ## 5. Honest limitations
@@ -406,12 +632,52 @@ not per-joke sample size (60–198), which is comparatively well powered.**
 - **Depth capped at 30 turns.** Degradation depths and "survived" counts
   are relative to this cap, not an absolute ceiling — a model could still
   degrade at turn 45.
-- **CLI-wrapper confound, bounded not eliminated.** claude/codex lanes run
-  through subscription CLIs with no temperature control and transcript-in-
-  prompt multi-turn encoding. EXP-007's temperature-unfakeability result
+- **CLI-wrapper confound, bounded not eliminated — and now visible in our
+  own transcripts, not just argued from first principles (new, 2026-07-17
+  hostile-review fix wave).** claude/codex lanes run through subscription
+  CLIs with no temperature control and transcript-in-prompt multi-turn
+  encoding (verified: `benchmark/providers.py`'s `transcript_prompt` is
+  applied uniformly by `benchmark/cascade.py`'s `run_cascade` to every
+  lane's `model_complete` call, including `api:`/grok — encoding is not a
+  claude/codex-only property, it is the same flattened-transcript-in-a-
+  single-prompt design everywhere; the confound specific to claude/codex
+  is the *absence of temperature control and native message-array state*,
+  not the encoding). Two concrete, previously-uncited pieces of evidence
+  that the wrapper, not just the model, is doing some of the work: (1)
+  **`lane-claude/turns-haiku-r01.jsonl` spends 25 of its 30 turns in
+  CLI-assistant persona** ("I'm Claude Code, built to help with software
+  engineering tasks. I'm not going to roleplay as a comedian...") —
+  counted directly against a simple persona-marker string match, not
+  estimated; (2) **opening-turn topics leak the wrapper**: fable opens
+  with a `programming` joke in all 5 of its 5 non-empty attempts across
+  both lanes (100%, e.g. "Why do programmers prefer dark mode? Because
+  light attracts bugs."), and multiple codex aliases (5.4, mini) open
+  with near-identical "I told my computer I needed a break..." jokes
+  (5/12 codex runs land on a `computer` topic label at turn 0, the single
+  most common opening topic in that lane, despite the v2 labeler
+  inconsistently tagging the *same underlying joke text* as `computer`/
+  `math`/`advertising` across runs); **no api-lane model (deepseek, qwen,
+  glm, grok) opens with a programming or computer joke in any run** —
+  their turn-0 topics are science, skeleton/death, love, paranoia,
+  farming, animal, laundry, coffee, humor, or egg. **Scope reduction,
+  stated plainly:** the family-level claims in §2 (Anthropic vs. OpenAI,
+  and any claim resting on the claude/codex lanes) are claims about
+  *model+wrapper deployment stacks*, not about the underlying models in
+  isolation, until the same-model-both-lanes ablation (below) runs. What
+  the evidence does NOT support is dismissing the family contrast as pure
+  wrapper artifact: encoding is uniform (verified above, not merely
+  asserted) and temperature cannot explain the 13-turn Anthropic/OpenAI
+  gap (EXP-007's own depth data moves by at most ~5.5 turns of median
+  degradation depth across temp 0.2→0.7→1.2 for deepseek, and
+  non-monotonically — 7→12.5→9 — nowhere close to 13, let alone able to
+  explain it directionally). EXP-007's temperature-unfakeability result
   was demonstrated on api:deepseek (native API) only; it grounds the
   *choice* of metric but does not itself remove the wrapper confound from
-  the claude/codex lanes' numbers.
+  the claude/codex lanes' numbers. **The one score-moving experiment**:
+  run at least one model through both a CLI-wrapper path and a direct-API
+  path, holding the model fixed, to quantify the wrapper confound
+  directly (registered as the decisive next experiment, ~$5 in API
+  spend — not run in this zero-API-cost fix wave).
 - **glm ran a mixed generation-config protocol.** `max_tokens` was raised
   400→2048 mid-experiment after early attempts silently burned the entire
   budget on `reasoning_content` and returned empty completions (see
@@ -436,11 +702,29 @@ not per-joke sample size (60–198), which is comparatively well powered.**
   field-coverage validation bar (catch-all ≤5% on wild turns) is the
   queued fix. Full analysis: EXP-008 addendum in `EXPERIMENT_LOG.md`,
   data in `experiment-runs/2026-07-17-cascade-pilot-v3-relabel/`.
-- **Memorization is a corpus-coverage lower bound.** The reference corpus
-  is the 25 ChatGPT joke templates (Jentzsch & Kersting 2023) plus a small
-  hand corpus — it cannot contain every joke any model has memorized. Every
-  percentage in §2 understates true memorization reliance, for every model,
-  not selectively.
+- **Memorization is a corpus-coverage lower bound — and the corpus
+  description above was WRONG, corrected here (2026-07-17 hostile-review
+  fix wave).** The **exact-match tier**'s reference is the **~1.2M-joke
+  corpus** (`~/Experiments/good-humored-data/corpus/{commercial-safe,
+  research-only}/jokes.jsonl`, 887,639 + 310,151 records,
+  overwhelmingly Reddit-derived — SocialGrep's one-million-reddit-jokes
+  and taivop's reddit_jokes.json are the two largest single sources; see
+  `DATA.md` and the corpus's own `MANIFEST.md` for full provenance,
+  licensing, and dedup methodology), **not** "the 25 ChatGPT joke
+  templates plus a small hand corpus" as earlier drafts of this document
+  and `paper/DRAFT.md` stated. That description belongs to the
+  **separate template-trigram tier** (§2.3), which scores against the 25
+  Jentzsch & Kersting templates alone and nothing else. Verified directly
+  against `benchmark/joke_novelty.py`'s `load_corpus_hashes` (globs every
+  `jokes.jsonl` under the corpus dir for the exact-match hash set;
+  `chatgpt-25-templates.jsonl` is a differently-named file and is never
+  included in that hash set) — the two tiers have always scored against
+  disjoint references, this document just described the wrong one for
+  the exact tier. Both tiers remain corpus-coverage lower bounds in their
+  own right (the 1.2M corpus cannot contain every joke a model has
+  memorized either): every percentage in §2 understates true
+  memorization reliance, for every model, not selectively — that
+  underlying claim is unchanged by the correction above.
 - **Single rejector (haiku).** EXP-003b showed a bigger model (sonnet) is a
   *worse* rejector instrument (ARI 0.633 vs haiku's 0.837) — bigger isn't
   better here — but only two rejector models have ever been tried.
