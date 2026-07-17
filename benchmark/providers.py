@@ -217,6 +217,25 @@ _OPENAI_COMPAT_REGISTRY: Dict[str, Dict[str, Optional[str]]] = {
         # dropped with a documented failure.
         "max_tokens": 4096,
     },
+    "kimi-k3": {
+        # kimi-k3 with thinking DISABLED — the reasoning-budget control
+        # the EXP-004 kimi-drop addendum called for. Probed 2026-07-17:
+        # k3 was 429-overloaded all pilot night; reachable now, but with
+        # thinking on it burns 595 reasoning tokens on a one-line joke
+        # prompt (19:1 reasoning:content, 21.7s). With
+        # {"thinking": {"type": "disabled"}}: reasoning_tokens=0,
+        # 1.7-3.0s, and content survives a 25-topic ban list at the
+        # STANDARD 400-token budget — so this lane runs the exact same
+        # protocol as every other roster model (no per-provider
+        # max_tokens override, unlike dropped kimi-k2.5 above).
+        "env_file": "kimi.env", "key_var": "KIMI_API_KEY",
+        "base_url": "https://api.moonshot.ai/v1", "base_url_var": None,
+        "model": "kimi-k3",
+        "extra_body": {"thinking": {"type": "disabled"}},
+        # The endpoint rejects every temperature except 0.6 — see the
+        # pinned_temperature note in make_openai_compat.
+        "pinned_temperature": 0.6,
+    },
     "grok": {
         # xAI, OpenAI-compatible. grok-4.5 confirmed on this account via
         # GET /v1/models (also present: 4.3, 4.20 variants). Grok's
@@ -326,7 +345,23 @@ def make_openai_compat(provider_name: str, timeout_s: int = 120,
                   "messages": [{"role": "user", "content": prompt}]}
         if temperature is not None:
             payload["temperature"] = temperature
+        # A provider-pinned temperature beats both the default and any
+        # caller override: kimi-k3's endpoint 400s on every value except
+        # 0.6 ("only 0.6 is allowed for this model"). Consequence, worth
+        # stating where analyses will find it: a pinned-temperature lane
+        # has NO temperature control, so it carries the same
+        # cannot-run-EXP-007-style-ablations caveat as the CLI lanes.
+        if "pinned_temperature" in spec:
+            payload["temperature"] = spec["pinned_temperature"]
         payload["max_tokens"] = spec.get("max_tokens", 400)
+        # Provider-specific request fields (e.g. kimi-k3's thinking
+        # toggle). Applied last, but never allowed to silently override
+        # the protocol-critical fields above.
+        extra = spec.get("extra_body")
+        if extra:
+            for k in ("model", "messages", "temperature", "max_tokens"):
+                assert k not in extra, "extra_body must not override %s" % k
+            payload.update(extra)
         body = json.dumps(payload).encode("utf-8")
         last_err: Exception = RuntimeError("unreachable")
         for attempt in range(retries + 1):

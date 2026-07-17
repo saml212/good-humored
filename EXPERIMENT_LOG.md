@@ -976,3 +976,37 @@ Correction: detection transfers but the negative-class baseline shifts (short wi
 [LEARN] adversarial-audit: Text-normalization assumptions are attack surface — test the JOIN characters, not just the content.
 Mistake: the windowed no-miss "guarantee" was proven only for whitespace joins, and all its regression tests used space-joins; punctuation-deletion in norm() and then the Mn/Me Unicode gap each gave full silent evasion in successive rounds.
 Correction: any guarantee resting on tokenization must enumerate the boundary-character space (whitespace, punctuation, Cf/Mn/Me/Cc, digits, none) and carry a regression test per class, including explicit evasion-control assertions for the non-fixed cases.
+
+---
+
+## EXP-004 addendum 3 — kimi-k3 lane (2026-07-17 evening, pre-registered BEFORE launch)
+
+**Why now:** kimi-k2.5 was dropped (addendum 1) because reasoning burn
+scales with the rejection list — the addendum's own fix was "streaming
+with reasoning-budget control, not a bigger constant." That control
+exists: probing found Moonshot's `thinking: {"type": "disabled"}` takes
+kimi-k3 from 595 reasoning tokens / 21.7s on a one-line joke prompt to
+**0 reasoning tokens / 1.7–3.0s**, and content survives a 25-topic ban
+list at the STANDARD 400-token budget — so k3 runs the exact protocol
+every other model ran (no special token budget, unlike k2.5's escalating
+failures). Manipulation gate passed before build (the EXP-007b lesson).
+
+**Protocol notes (confounds stated up front):** (1) the endpoint hard
+-pins temperature 0.6 (400s on any other value) — this lane has NO
+temperature control and carries the same ablation caveat as the CLI
+lanes; (2) thinking-disabled is the tested configuration — results are
+claims about no-think k3, not about k3-with-reasoning; (3) probe jokes
+were verbatim classics (eyebrows; overbooked librarian) — informal
+signal, not data.
+
+**Design:** api:kimi-k3, N=4, depth 30, rejector haiku — identical to
+the pilot roster lanes. Merges into the pilot analysis on completion.
+
+**Predictions (registered blind):** exact-tier memorization ≈ **0.20**
+(kimi-k3-lane; the k2.5 scrap flag was 0.40 [28.6–52.6] but scraps
+oversample early turns where classics cluster; depth forces novelty);
+median degradation depth ≈ **12** (kimi-k3-lane-depth; template-recall
+profile suggests OpenAI-style adherence is unlikely, open-weights-style
+mid-cascade collapse is the base rate).
+
+Result: _(pending)_
