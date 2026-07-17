@@ -419,15 +419,23 @@ not per-joke sample size (60–198), which is comparatively well powered.**
   corrected setting, but the failures folded into `analysis.json`'s
   `failures` list came from the earlier, broken configuration — glm's
   effective sample is smaller and less uniform than its "n_runs: 2" implies.
-- **Pilot labeled with the v2 free-vocabulary labeler**, not v3
-  (EXP-008's paper-grade constrained-vocabulary instrument, validated
-  *after* the pilot ran). v2's known failure mode (synonym/hypernym
-  jitter, e.g. cat/pet) has a **conservative** bias direction for collapse
-  claims (splits topics → makes models look more diverse, not less), which
-  is why proceeding at pilot grade was defensible — but it means every
-  jaccard number in this document could shift, direction unknown a priori
-  in magnitude, once the queued v3 post-hoc relabel of the pilot's stored
-  jokes (zero new API calls) lands.
+- **Pilot labeled with the v2 free-vocabulary labeler.** v2's known
+  failure mode (synonym/hypernym jitter, e.g. cat/pet) has a
+  **conservative** bias direction for collapse claims (splits topics →
+  makes models look more diverse, not less), which is why proceeding at
+  pilot grade was defensible. The planned v3 post-hoc relabel HAS now
+  run — and it invalidated v3, not the pilot: the 110-entry constrained
+  vocabulary maps **42.6% of wild turns to its catch-all** (`other`) —
+  v2's most common wild label, `comedy` (models joke about joking under
+  rejection pressure), has no v3 entry at all — so v3's relabeled
+  "numbers" (jaccard 0.181, near-instant degradations) are pure
+  catch-all artifact and supersede nothing. EXP-008's fixture scores
+  were real but coverage-blind by construction (the fixture only
+  contains in-vocabulary topics). v2 remains the authoritative
+  instrument for every number in this document; a v4 vocabulary with a
+  field-coverage validation bar (catch-all ≤5% on wild turns) is the
+  queued fix. Full analysis: EXP-008 addendum in `EXPERIMENT_LOG.md`,
+  data in `experiment-runs/2026-07-17-cascade-pilot-v3-relabel/`.
 - **Memorization is a corpus-coverage lower bound.** The reference corpus
   is the 25 ChatGPT joke templates (Jentzsch & Kersting 2023) plus a small
   hand corpus — it cannot contain every joke any model has memorized. Every
@@ -475,11 +483,12 @@ not per-joke sample size (60–198), which is comparatively well powered.**
 
 ## 6. What's next
 
-1. **v3 relabel** — re-score the pilot's already-collected jokes under
-   EXP-008's constrained-vocabulary labeler (zero new API calls); report
-   §1/§4 under both instruments. (Lane activity visible under
-   `experiment-runs/2026-07-17-cascade-pilot-v3-relabel/` at time of
-   writing, but no completed analysis to cite yet — not claimed here.)
+1. **v3 relabel — DONE, and it invalidated v3, not the pilot** (§5):
+   42.6% catch-all collapse on wild turns; v2 stays authoritative. Next
+   iteration: **v4 vocabulary** expanded from the wild v2 label
+   distribution, validated against BOTH the fixture bars and a new
+   field-coverage bar (catch-all ≤5% on wild pilot turns). The relabel
+   cache makes a v4 re-run cheap.
 2. **EXP-007b/c — DONE.** qwen (EXP-007b) is disqualified: its endpoint
    silently ignores the temperature parameter. glm (EXP-007c) replicated
    the differentiator claim on a second honored-endpoint model: distinct_2

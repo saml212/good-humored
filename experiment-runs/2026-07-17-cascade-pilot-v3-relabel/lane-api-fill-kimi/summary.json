@@ -1,0 +1,120 @@
+{
+  "models": [
+    "api:kimi"
+  ],
+  "runs_per_model": {
+    "api:kimi": 3
+  },
+  "labeler": "v3",
+  "label_prompt_version": "v3-constrained",
+  "relabel_provider": "claude:haiku",
+  "source_lane": "experiment-runs/2026-07-17-cascade-pilot/lane-api-fill-kimi",
+  "label_space_degraded": false,
+  "failures": [],
+  "per_model": {
+    "api:kimi": {
+      "divergence": {
+        "set_jaccard": 0.1984126984126984,
+        "prefix_depth": 1.0,
+        "norm_edit_distance": 0.8055555555555557,
+        "n_pairs": 3.0
+      },
+      "degradation": [
+        {
+          "repeat_depth": null,
+          "refusal_depth": null,
+          "depth": null
+        },
+        {
+          "repeat_depth": null,
+          "refusal_depth": null,
+          "depth": null
+        },
+        {
+          "repeat_depth": null,
+          "refusal_depth": null,
+          "depth": null
+        }
+      ],
+      "divergence_semantic": {
+        "set_jaccard": 0.1984126984126984,
+        "prefix_depth": 1.0,
+        "norm_edit_distance": 0.8055555555555557,
+        "n_pairs": 3.0
+      },
+      "degradation_semantic": [
+        {
+          "repeat_depth": null,
+          "refusal_depth": null,
+          "depth": null
+        },
+        {
+          "repeat_depth": null,
+          "refusal_depth": null,
+          "depth": null
+        },
+        {
+          "repeat_depth": null,
+          "refusal_depth": null,
+          "depth": null
+        }
+      ],
+      "paths": [
+        [
+          "marriage",
+          "scientist",
+          "work",
+          "banking",
+          "driving",
+          "other"
+        ],
+        [
+          "marriage",
+          "family",
+          "book",
+          "driving",
+          "sport",
+          "language",
+          "money",
+          "work",
+          "doctor",
+          "math",
+          "other",
+          "fish"
+        ],
+        [
+          "marriage",
+          "book"
+        ]
+      ],
+      "paths_semantic": [
+        [
+          "marriage",
+          "scientist",
+          "work",
+          "banking",
+          "driving",
+          "other"
+        ],
+        [
+          "marriage",
+          "family",
+          "book",
+          "driving",
+          "sport",
+          "language",
+          "money",
+          "work",
+          "doctor",
+          "math",
+          "other",
+          "fish"
+        ],
+        [
+          "marriage",
+          "book"
+        ]
+      ]
+    }
+  }
+}

@@ -1,0 +1,1169 @@
+{
+  "n_models": 12,
+  "failures": [],
+  "cross_model": {
+    "mean_cross_jaccard": 0.18125720359127823,
+    "mean_cross_prefix_depth": 0.11546252532072923,
+    "api:deepseek|api:glm": 0.19111706648471352,
+    "api:deepseek|api:grok": 0.15451619482862794,
+    "api:deepseek|api:kimi": 0.19013223172911076,
+    "api:deepseek|api:qwen": 0.17731192633475915,
+    "api:deepseek|codex:5.4": 0.14307669976434279,
+    "api:deepseek|codex:mini": 0.1412282854299346,
+    "api:deepseek|codex:sol": 0.17139907646701127,
+    "api:deepseek|fable": 0.14875351982960677,
+    "api:deepseek|haiku": 0.16280313697105156,
+    "api:deepseek|opus": 0.24917010073260074,
+    "api:deepseek|sonnet": 0.13628392921748256,
+    "api:glm|api:grok": 0.17832327879219612,
+    "api:glm|api:kimi": 0.1193821412964539,
+    "api:glm|api:qwen": 0.1772359952870873,
+    "api:glm|codex:5.4": 0.19037912979182262,
+    "api:glm|codex:mini": 0.17767362537211986,
+    "api:glm|codex:sol": 0.17455268731536847,
+    "api:glm|fable": 0.16314898356694393,
+    "api:glm|haiku": 0.17638807599301665,
+    "api:glm|opus": 0.1777880794853133,
+    "api:glm|sonnet": 0.13545157837456254,
+    "api:grok|api:kimi": 0.15002485599357507,
+    "api:grok|api:qwen": 0.13787050582717653,
+    "api:grok|codex:5.4": 0.30286409797258973,
+    "api:grok|codex:mini": 0.3179739711626565,
+    "api:grok|codex:sol": 0.38393611100924785,
+    "api:grok|fable": 0.29642996392585097,
+    "api:grok|haiku": 0.142878661873063,
+    "api:grok|opus": 0.17016893516933246,
+    "api:grok|sonnet": 0.1590456895489691,
+    "api:kimi|api:qwen": 0.13289570548499122,
+    "api:kimi|codex:5.4": 0.15873305909111365,
+    "api:kimi|codex:mini": 0.1281851432102706,
+    "api:kimi|codex:sol": 0.17663551480362533,
+    "api:kimi|fable": 0.14216103308328423,
+    "api:kimi|haiku": 0.11525352086608168,
+    "api:kimi|opus": 0.1509670399567016,
+    "api:kimi|sonnet": 0.1289089044965254,
+    "api:qwen|codex:5.4": 0.14450338175269245,
+    "api:qwen|codex:mini": 0.15166032919322392,
+    "api:qwen|codex:sol": 0.15135597607609957,
+    "api:qwen|fable": 0.158871792458749,
+    "api:qwen|haiku": 0.1300524829146826,
+    "api:qwen|opus": 0.14833562818760188,
+    "api:qwen|sonnet": 0.15905740641329622,
+    "codex:5.4|codex:mini": 0.30952424102799514,
+    "codex:5.4|codex:sol": 0.3427998414940881,
+    "codex:5.4|fable": 0.272839561658766,
+    "codex:5.4|haiku": 0.14912979371237084,
+    "codex:5.4|opus": 0.15549009397163446,
+    "codex:5.4|sonnet": 0.17816704932434368,
+    "codex:mini|codex:sol": 0.3340755007259456,
+    "codex:mini|fable": 0.2860173604744656,
+    "codex:mini|haiku": 0.12769388493419118,
+    "codex:mini|opus": 0.1580297243863495,
+    "codex:mini|sonnet": 0.16349418657614054,
+    "codex:sol|fable": 0.2960290879659623,
+    "codex:sol|haiku": 0.13037582009670184,
+    "codex:sol|opus": 0.2081764020379088,
+    "codex:sol|sonnet": 0.17538287273801872,
+    "fable|haiku": 0.15982429510520219,
+    "fable|opus": 0.15162632104532525,
+    "fable|sonnet": 0.19057918255880987,
+    "haiku|opus": 0.16048129220290264,
+    "haiku|sonnet": 0.12383072240367132,
+    "opus|sonnet": 0.14273511214234472
+  },
+  "cross_model_semantic": {
+    "mean_cross_jaccard": 0.2078887354470747,
+    "mean_cross_prefix_depth": 0.13909520594193112,
+    "api:deepseek|api:glm": 0.22717120698931847,
+    "api:deepseek|api:grok": 0.17481822201747016,
+    "api:deepseek|api:kimi": 0.21896353238265,
+    "api:deepseek|api:qwen": 0.2570409737858461,
+    "api:deepseek|codex:5.4": 0.165402893730983,
+    "api:deepseek|codex:mini": 0.15661213182952313,
+    "api:deepseek|codex:sol": 0.19023044889892715,
+    "api:deepseek|fable": 0.17493605307735743,
+    "api:deepseek|haiku": 0.1877506684491978,
+    "api:deepseek|opus": 0.27821476768845194,
+    "api:deepseek|sonnet": 0.18363174582698574,
+    "api:glm|api:grok": 0.19481623994891986,
+    "api:glm|api:kimi": 0.15299808925008426,
+    "api:glm|api:qwen": 0.24998906877293103,
+    "api:glm|codex:5.4": 0.19521584718489557,
+    "api:glm|codex:mini": 0.18576824711788478,
+    "api:glm|codex:sol": 0.18881795971626056,
+    "api:glm|fable": 0.20325069938113421,
+    "api:glm|haiku": 0.20352328989342716,
+    "api:glm|opus": 0.206012896420421,
+    "api:glm|sonnet": 0.18504308967850389,
+    "api:grok|api:kimi": 0.16727390670480355,
+    "api:grok|api:qwen": 0.19218557409094342,
+    "api:grok|codex:5.4": 0.31473364378908064,
+    "api:grok|codex:mini": 0.3339920906715988,
+    "api:grok|codex:sol": 0.39412815062326434,
+    "api:grok|fable": 0.32322969214254105,
+    "api:grok|haiku": 0.15312961954998008,
+    "api:grok|opus": 0.1748444371876809,
+    "api:grok|sonnet": 0.19469352012160177,
+    "api:kimi|api:qwen": 0.1581989508570066,
+    "api:kimi|codex:5.4": 0.17579021124895883,
+    "api:kimi|codex:mini": 0.1368181727439126,
+    "api:kimi|codex:sol": 0.1899500844070148,
+    "api:kimi|fable": 0.1733825617761929,
+    "api:kimi|haiku": 0.14414653431582744,
+    "api:kimi|opus": 0.17280152480279157,
+    "api:kimi|sonnet": 0.14734135368764942,
+    "api:qwen|codex:5.4": 0.18377185420531394,
+    "api:qwen|codex:mini": 0.18664640803513802,
+    "api:qwen|codex:sol": 0.19732077225998848,
+    "api:qwen|fable": 0.20011329832554092,
+    "api:qwen|haiku": 0.21335250442496959,
+    "api:qwen|opus": 0.20794115127555024,
+    "api:qwen|sonnet": 0.17178555180199914,
+    "codex:5.4|codex:mini": 0.32298029080550117,
+    "codex:5.4|codex:sol": 0.3604310714758616,
+    "codex:5.4|fable": 0.32234134590410896,
+    "codex:5.4|haiku": 0.16578915543732478,
+    "codex:5.4|opus": 0.1679040936465185,
+    "codex:5.4|sonnet": 0.22398660777202267,
+    "codex:mini|codex:sol": 0.34971167880650633,
+    "codex:mini|fable": 0.31211174764344957,
+    "codex:mini|haiku": 0.1416837943519915,
+    "codex:mini|opus": 0.16959904201939435,
+    "codex:mini|sonnet": 0.19912660084894734,
+    "codex:sol|fable": 0.3267921982232327,
+    "codex:sol|haiku": 0.13571284810327588,
+    "codex:sol|opus": 0.2138201106843348,
+    "codex:sol|sonnet": 0.21228776212612419,
+    "fable|haiku": 0.17939355000453397,
+    "fable|opus": 0.16857172215867863,
+    "fable|sonnet": 0.23499429845100755,
+    "haiku|opus": 0.17079822391249738,
+    "haiku|sonnet": 0.16408195650368326,
+    "opus|sonnet": 0.17704513062942417
+  },
+  "per_model": {
+    "api:deepseek": {
+      "n_runs": 4,
+      "divergence": {
+        "set_jaccard": 0.24167519571931337,
+        "prefix_depth": 0.0,
+        "norm_edit_distance": 0.4888888888888889,
+        "n_pairs": 6.0
+      },
+      "degradation": [
+        {
+          "repeat_depth": 7,
+          "refusal_depth": null,
+          "depth": 7
+        },
+        {
+          "repeat_depth": 5,
+          "refusal_depth": null,
+          "depth": 5
+        },
+        {
+          "repeat_depth": 4,
+          "refusal_depth": null,
+          "depth": 4
+        },
+        {
+          "repeat_depth": 4,
+          "refusal_depth": null,
+          "depth": 4
+        }
+      ],
+      "cluster_switch_semantic": [
+        {
+          "mean_cluster_size": 3.0,
+          "n_switches": 9.0,
+          "n_categories": 8.0
+        },
+        {
+          "mean_cluster_size": 2.142857142857143,
+          "n_switches": 13.0,
+          "n_categories": 8.0
+        },
+        {
+          "mean_cluster_size": 1.875,
+          "n_switches": 15.0,
+          "n_categories": 9.0
+        },
+        {
+          "mean_cluster_size": 1.3043478260869565,
+          "n_switches": 22.0,
+          "n_categories": 9.0
+        }
+      ],
+      "opening_topics": [
+        "scientist",
+        "dating",
+        "other",
+        "science"
+      ]
+    },
+    "api:glm": {
+      "n_runs": 6,
+      "divergence": {
+        "set_jaccard": 0.1874717103215555,
+        "prefix_depth": 0.06666666666666667,
+        "norm_edit_distance": 0.691168091168091,
+        "n_pairs": 15.0
+      },
+      "degradation": [
+        {
+          "repeat_depth": 4,
+          "refusal_depth": null,
+          "depth": 4
+        },
+        {
+          "repeat_depth": 7,
+          "refusal_depth": null,
+          "depth": 7
+        },
+        {
+          "repeat_depth": 1,
+          "refusal_depth": null,
+          "depth": 1
+        },
+        {
+          "repeat_depth": 2,
+          "refusal_depth": null,
+          "depth": 2
+        },
+        {
+          "repeat_depth": 7,
+          "refusal_depth": null,
+          "depth": 7
+        },
+        {
+          "repeat_depth": 8,
+          "refusal_depth": null,
+          "depth": 8
+        }
+      ],
+      "cluster_switch_semantic": [
+        {
+          "mean_cluster_size": 1.4,
+          "n_switches": 9.0,
+          "n_categories": 7.0
+        },
+        {
+          "mean_cluster_size": 1.25,
+          "n_switches": 23.0,
+          "n_categories": 14.0
+        },
+        {
+          "mean_cluster_size": 1.125,
+          "n_switches": 15.0,
+          "n_categories": 9.0
+        },
+        {
+          "mean_cluster_size": 1.5789473684210527,
+          "n_switches": 18.0,
+          "n_categories": 10.0
+        },
+        {
+          "mean_cluster_size": 1.368421052631579,
+          "n_switches": 18.0,
+          "n_categories": 11.0
+        },
+        {
+          "mean_cluster_size": 1.3043478260869565,
+          "n_switches": 22.0,
+          "n_categories": 14.0
+        }
+      ],
+      "opening_topics": [
+        "dentist",
+        "science",
+        "other",
+        "farm animal",
+        "time",
+        "other"
+      ]
+    },
+    "api:grok": {
+      "n_runs": 7,
+      "divergence": {
+        "set_jaccard": 0.43993210275911965,
+        "prefix_depth": 0.5714285714285714,
+        "norm_edit_distance": 0.8034885749171465,
+        "n_pairs": 21.0
+      },
+      "degradation": [
+        {
+          "repeat_depth": 5,
+          "refusal_depth": null,
+          "depth": 5
+        },
+        {
+          "repeat_depth": 1,
+          "refusal_depth": null,
+          "depth": 1
+        },
+        {
+          "repeat_depth": 1,
+          "refusal_depth": null,
+          "depth": 1
+        },
+        {
+          "repeat_depth": 3,
+          "refusal_depth": null,
+          "depth": 3
+        },
+        {
+          "repeat_depth": 2,
+          "refusal_depth": null,
+          "depth": 2
+        },
+        {
+          "repeat_depth": 1,
+          "refusal_depth": null,
+          "depth": 1
+        },
+        {
+          "repeat_depth": 3,
+          "refusal_depth": null,
+          "depth": 3
+        }
+      ],
+      "cluster_switch_semantic": [
+        {
+          "mean_cluster_size": 1.0769230769230769,
+          "n_switches": 25.0,
+          "n_categories": 23.0
+        },
+        {
+          "mean_cluster_size": 1.0833333333333333,
+          "n_switches": 23.0,
+          "n_categories": 22.0
+        },
+        {
+          "mean_cluster_size": 1.1428571428571428,
+          "n_switches": 20.0,
+          "n_categories": 16.0
+        },
+        {
+          "mean_cluster_size": 1.0714285714285714,
+          "n_switches": 27.0,
+          "n_categories": 22.0
+        },
+        {
+          "mean_cluster_size": 1.0714285714285714,
+          "n_switches": 27.0,
+          "n_categories": 22.0
+        },
+        {
+          "mean_cluster_size": 1.2,
+          "n_switches": 24.0,
+          "n_categories": 21.0
+        },
+        {
+          "mean_cluster_size": 1.0714285714285714,
+          "n_switches": 27.0,
+          "n_categories": 21.0
+        }
+      ],
+      "opening_topics": [
+        "science",
+        "other",
+        "other",
+        "other",
+        "science",
+        "other",
+        "farmer"
+      ]
+    },
+    "api:kimi": {
+      "n_runs": 7,
+      "divergence": {
+        "set_jaccard": 0.21496177418335755,
+        "prefix_depth": 0.6190476190476191,
+        "norm_edit_distance": 0.8288359788359789,
+        "n_pairs": 21.0
+      },
+      "degradation": [
+        {
+          "repeat_depth": null,
+          "refusal_depth": null,
+          "depth": null
+        },
+        {
+          "repeat_depth": null,
+          "refusal_depth": null,
+          "depth": null
+        },
+        {
+          "repeat_depth": null,
+          "refusal_depth": null,
+          "depth": null
+        },
+        {
+          "repeat_depth": null,
+          "refusal_depth": null,
+          "depth": null
+        },
+        {
+          "repeat_depth": null,
+          "refusal_depth": null,
+          "depth": null
+        },
+        {
+          "repeat_depth": 3,
+          "refusal_depth": null,
+          "depth": 3
+        },
+        {
+          "repeat_depth": 15,
+          "refusal_depth": null,
+          "depth": 15
+        }
+      ],
+      "cluster_switch_semantic": [
+        {
+          "mean_cluster_size": 1.0,
+          "n_switches": 0.0,
+          "n_categories": 1.0
+        },
+        {
+          "mean_cluster_size": 1.0,
+          "n_switches": 0.0,
+          "n_categories": 1.0
+        },
+        {
+          "mean_cluster_size": 1.0,
+          "n_switches": 5.0,
+          "n_categories": 6.0
+        },
+        {
+          "mean_cluster_size": 1.0,
+          "n_switches": 11.0,
+          "n_categories": 12.0
+        },
+        {
+          "mean_cluster_size": 1.0,
+          "n_switches": 1.0,
+          "n_categories": 2.0
+        },
+        {
+          "mean_cluster_size": 1.1764705882352942,
+          "n_switches": 16.0,
+          "n_categories": 17.0
+        },
+        {
+          "mean_cluster_size": 1.0,
+          "n_switches": 17.0,
+          "n_categories": 15.0
+        }
+      ],
+      "opening_topics": [
+        "other",
+        "other",
+        "marriage",
+        "marriage",
+        "marriage",
+        "marriage",
+        "marriage"
+      ]
+    },
+    "api:qwen": {
+      "n_runs": 4,
+      "divergence": {
+        "set_jaccard": 0.24878977231918406,
+        "prefix_depth": 2.6666666666666665,
+        "norm_edit_distance": 0.45555555555555555,
+        "n_pairs": 6.0
+      },
+      "degradation": [
+        {
+          "repeat_depth": 3,
+          "refusal_depth": null,
+          "depth": 3
+        },
+        {
+          "repeat_depth": 2,
+          "refusal_depth": null,
+          "depth": 2
+        },
+        {
+          "repeat_depth": 2,
+          "refusal_depth": null,
+          "depth": 2
+        },
+        {
+          "repeat_depth": 3,
+          "refusal_depth": null,
+          "depth": 3
+        }
+      ],
+      "cluster_switch_semantic": [
+        {
+          "mean_cluster_size": 2.727272727272727,
+          "n_switches": 10.0,
+          "n_categories": 6.0
+        },
+        {
+          "mean_cluster_size": 3.0,
+          "n_switches": 9.0,
+          "n_categories": 6.0
+        },
+        {
+          "mean_cluster_size": 1.4285714285714286,
+          "n_switches": 20.0,
+          "n_categories": 13.0
+        },
+        {
+          "mean_cluster_size": 1.3043478260869565,
+          "n_switches": 22.0,
+          "n_categories": 11.0
+        }
+      ],
+      "opening_topics": [
+        "other",
+        "other",
+        "other",
+        "other"
+      ]
+    },
+    "codex:5.4": {
+      "n_runs": 4,
+      "divergence": {
+        "set_jaccard": 0.32342451301016373,
+        "prefix_depth": 0.6666666666666666,
+        "norm_edit_distance": 0.7277777777777779,
+        "n_pairs": 6.0
+      },
+      "degradation": [
+        {
+          "repeat_depth": 4,
+          "refusal_depth": null,
+          "depth": 4
+        },
+        {
+          "repeat_depth": 5,
+          "refusal_depth": null,
+          "depth": 5
+        },
+        {
+          "repeat_depth": 4,
+          "refusal_depth": null,
+          "depth": 4
+        },
+        {
+          "repeat_depth": 2,
+          "refusal_depth": null,
+          "depth": 2
+        }
+      ],
+      "cluster_switch_semantic": [
+        {
+          "mean_cluster_size": 1.0714285714285714,
+          "n_switches": 27.0,
+          "n_categories": 19.0
+        },
+        {
+          "mean_cluster_size": 1.1538461538461537,
+          "n_switches": 25.0,
+          "n_categories": 16.0
+        },
+        {
+          "mean_cluster_size": 1.3636363636363635,
+          "n_switches": 21.0,
+          "n_categories": 14.0
+        },
+        {
+          "mean_cluster_size": 1.1538461538461537,
+          "n_switches": 25.0,
+          "n_categories": 20.0
+        }
+      ],
+      "opening_topics": [
+        "computer",
+        "dog",
+        "computer",
+        "computer"
+      ]
+    },
+    "codex:mini": {
+      "n_runs": 4,
+      "divergence": {
+        "set_jaccard": 0.27530864197530863,
+        "prefix_depth": 0.5,
+        "norm_edit_distance": 0.8277777777777778,
+        "n_pairs": 6.0
+      },
+      "degradation": [
+        {
+          "repeat_depth": 3,
+          "refusal_depth": null,
+          "depth": 3
+        },
+        {
+          "repeat_depth": 8,
+          "refusal_depth": null,
+          "depth": 8
+        },
+        {
+          "repeat_depth": 8,
+          "refusal_depth": null,
+          "depth": 8
+        },
+        {
+          "repeat_depth": 7,
+          "refusal_depth": null,
+          "depth": 7
+        }
+      ],
+      "cluster_switch_semantic": [
+        {
+          "mean_cluster_size": 1.1111111111111112,
+          "n_switches": 26.0,
+          "n_categories": 17.0
+        },
+        {
+          "mean_cluster_size": 1.0,
+          "n_switches": 29.0,
+          "n_categories": 22.0
+        },
+        {
+          "mean_cluster_size": 1.2,
+          "n_switches": 24.0,
+          "n_categories": 17.0
+        },
+        {
+          "mean_cluster_size": 1.3043478260869565,
+          "n_switches": 22.0,
+          "n_categories": 17.0
+        }
+      ],
+      "opening_topics": [
+        "computer",
+        "other",
+        "computer",
+        "computer"
+      ]
+    },
+    "codex:sol": {
+      "n_runs": 4,
+      "divergence": {
+        "set_jaccard": 0.41855447022113684,
+        "prefix_depth": 0.6666666666666666,
+        "norm_edit_distance": 0.7944444444444444,
+        "n_pairs": 6.0
+      },
+      "degradation": [
+        {
+          "repeat_depth": 4,
+          "refusal_depth": null,
+          "depth": 4
+        },
+        {
+          "repeat_depth": 4,
+          "refusal_depth": null,
+          "depth": 4
+        },
+        {
+          "repeat_depth": 3,
+          "refusal_depth": null,
+          "depth": 3
+        },
+        {
+          "repeat_depth": 9,
+          "refusal_depth": null,
+          "depth": 9
+        }
+      ],
+      "cluster_switch_semantic": [
+        {
+          "mean_cluster_size": 1.2,
+          "n_switches": 24.0,
+          "n_categories": 18.0
+        },
+        {
+          "mean_cluster_size": 1.1111111111111112,
+          "n_switches": 26.0,
+          "n_categories": 18.0
+        },
+        {
+          "mean_cluster_size": 1.0714285714285714,
+          "n_switches": 27.0,
+          "n_categories": 20.0
+        },
+        {
+          "mean_cluster_size": 1.0344827586206897,
+          "n_switches": 28.0,
+          "n_categories": 18.0
+        }
+      ],
+      "opening_topics": [
+        "travel",
+        "travel",
+        "travel",
+        "other"
+      ]
+    },
+    "fable": {
+      "n_runs": 5,
+      "divergence": {
+        "set_jaccard": 0.4217794411707455,
+        "prefix_depth": 1.2,
+        "norm_edit_distance": 0.7333333333333334,
+        "n_pairs": 10.0
+      },
+      "degradation": [
+        {
+          "repeat_depth": 9,
+          "refusal_depth": null,
+          "depth": 9
+        },
+        {
+          "repeat_depth": 7,
+          "refusal_depth": null,
+          "depth": 7
+        },
+        {
+          "repeat_depth": 6,
+          "refusal_depth": null,
+          "depth": 6
+        },
+        {
+          "repeat_depth": 2,
+          "refusal_depth": null,
+          "depth": 2
+        },
+        {
+          "repeat_depth": 2,
+          "refusal_depth": null,
+          "depth": 2
+        }
+      ],
+      "cluster_switch_semantic": [
+        {
+          "mean_cluster_size": 1.3636363636363635,
+          "n_switches": 21.0,
+          "n_categories": 17.0
+        },
+        {
+          "mean_cluster_size": 1.1111111111111112,
+          "n_switches": 26.0,
+          "n_categories": 21.0
+        },
+        {
+          "mean_cluster_size": 1.16,
+          "n_switches": 24.0,
+          "n_categories": 16.0
+        },
+        {
+          "mean_cluster_size": 1.1538461538461537,
+          "n_switches": 25.0,
+          "n_categories": 17.0
+        },
+        {
+          "mean_cluster_size": 1.2,
+          "n_switches": 24.0,
+          "n_categories": 19.0
+        }
+      ],
+      "opening_topics": [
+        "programming",
+        "programming",
+        "programming",
+        "programming",
+        "programming"
+      ]
+    },
+    "haiku": {
+      "n_runs": 4,
+      "divergence": {
+        "set_jaccard": 0.1616161616161616,
+        "prefix_depth": 0.16666666666666666,
+        "norm_edit_distance": 0.7333333333333334,
+        "n_pairs": 6.0
+      },
+      "degradation": [
+        {
+          "repeat_depth": 2,
+          "refusal_depth": null,
+          "depth": 2
+        },
+        {
+          "repeat_depth": 6,
+          "refusal_depth": null,
+          "depth": 6
+        },
+        {
+          "repeat_depth": 5,
+          "refusal_depth": null,
+          "depth": 5
+        },
+        {
+          "repeat_depth": 5,
+          "refusal_depth": null,
+          "depth": 5
+        }
+      ],
+      "cluster_switch_semantic": [
+        {
+          "mean_cluster_size": 1.25,
+          "n_switches": 23.0,
+          "n_categories": 16.0
+        },
+        {
+          "mean_cluster_size": 1.5,
+          "n_switches": 19.0,
+          "n_categories": 7.0
+        },
+        {
+          "mean_cluster_size": 1.875,
+          "n_switches": 15.0,
+          "n_categories": 8.0
+        },
+        {
+          "mean_cluster_size": 1.875,
+          "n_switches": 15.0,
+          "n_categories": 9.0
+        }
+      ],
+      "opening_topics": [
+        "programming",
+        "science",
+        "science",
+        "travel"
+      ]
+    },
+    "opus": {
+      "n_runs": 4,
+      "divergence": {
+        "set_jaccard": 0.203493265993266,
+        "prefix_depth": 0.16666666666666666,
+        "norm_edit_distance": 0.6277777777777778,
+        "n_pairs": 6.0
+      },
+      "degradation": [
+        {
+          "repeat_depth": 8,
+          "refusal_depth": null,
+          "depth": 8
+        },
+        {
+          "repeat_depth": 7,
+          "refusal_depth": null,
+          "depth": 7
+        },
+        {
+          "repeat_depth": 4,
+          "refusal_depth": null,
+          "depth": 4
+        },
+        {
+          "repeat_depth": 8,
+          "refusal_depth": null,
+          "depth": 8
+        }
+      ],
+      "cluster_switch_semantic": [
+        {
+          "mean_cluster_size": 1.5,
+          "n_switches": 19.0,
+          "n_categories": 9.0
+        },
+        {
+          "mean_cluster_size": 2.0,
+          "n_switches": 14.0,
+          "n_categories": 11.0
+        },
+        {
+          "mean_cluster_size": 2.142857142857143,
+          "n_switches": 13.0,
+          "n_categories": 8.0
+        },
+        {
+          "mean_cluster_size": 1.3043478260869565,
+          "n_switches": 22.0,
+          "n_categories": 15.0
+        }
+      ],
+      "opening_topics": [
+        "marriage",
+        "marriage",
+        "other",
+        "computer"
+      ]
+    },
+    "sonnet": {
+      "n_runs": 4,
+      "divergence": {
+        "set_jaccard": 0.12763696876600103,
+        "prefix_depth": 0.6666666666666666,
+        "norm_edit_distance": 0.7333333333333334,
+        "n_pairs": 6.0
+      },
+      "degradation": [
+        {
+          "repeat_depth": 15,
+          "refusal_depth": null,
+          "depth": 15
+        },
+        {
+          "repeat_depth": 6,
+          "refusal_depth": null,
+          "depth": 6
+        },
+        {
+          "repeat_depth": 10,
+          "refusal_depth": null,
+          "depth": 10
+        },
+        {
+          "repeat_depth": 10,
+          "refusal_depth": null,
+          "depth": 10
+        }
+      ],
+      "cluster_switch_semantic": [
+        {
+          "mean_cluster_size": 1.1111111111111112,
+          "n_switches": 26.0,
+          "n_categories": 22.0
+        },
+        {
+          "mean_cluster_size": 1.2,
+          "n_switches": 24.0,
+          "n_categories": 10.0
+        },
+        {
+          "mean_cluster_size": 2.0,
+          "n_switches": 14.0,
+          "n_categories": 11.0
+        },
+        {
+          "mean_cluster_size": 1.3636363636363635,
+          "n_switches": 21.0,
+          "n_categories": 14.0
+        }
+      ],
+      "opening_topics": [
+        "scientist",
+        "scientist",
+        "programming",
+        "scientist"
+      ]
+    }
+  },
+  "shared_topic_census_semantic": [
+    {
+      "topic": "work",
+      "n_models": 12
+    },
+    {
+      "topic": "science",
+      "n_models": 12
+    },
+    {
+      "topic": "art",
+      "n_models": 12
+    },
+    {
+      "topic": "other",
+      "n_models": 12
+    },
+    {
+      "topic": "language",
+      "n_models": 11
+    },
+    {
+      "topic": "time",
+      "n_models": 10
+    },
+    {
+      "topic": "book",
+      "n_models": 10
+    },
+    {
+      "topic": "driving",
+      "n_models": 10
+    },
+    {
+      "topic": "weather",
+      "n_models": 10
+    },
+    {
+      "topic": "marriage",
+      "n_models": 9
+    },
+    {
+      "topic": "doctor",
+      "n_models": 9
+    },
+    {
+      "topic": "animal",
+      "n_models": 9
+    },
+    {
+      "topic": "banking",
+      "n_models": 9
+    },
+    {
+      "topic": "music",
+      "n_models": 9
+    },
+    {
+      "topic": "math",
+      "n_models": 9
+    },
+    {
+      "topic": "dating",
+      "n_models": 8
+    },
+    {
+      "topic": "nature",
+      "n_models": 8
+    },
+    {
+      "topic": "sport",
+      "n_models": 8
+    },
+    {
+      "topic": "travel",
+      "n_models": 8
+    },
+    {
+      "topic": "musician",
+      "n_models": 7
+    },
+    {
+      "topic": "coffee",
+      "n_models": 7
+    },
+    {
+      "topic": "vegetable",
+      "n_models": 7
+    },
+    {
+      "topic": "exercise",
+      "n_models": 7
+    },
+    {
+      "topic": "technology",
+      "n_models": 6
+    },
+    {
+      "topic": "alcohol",
+      "n_models": 6
+    },
+    {
+      "topic": "space",
+      "n_models": 6
+    },
+    {
+      "topic": "programming",
+      "n_models": 6
+    },
+    {
+      "topic": "farmer",
+      "n_models": 6
+    },
+    {
+      "topic": "money",
+      "n_models": 6
+    },
+    {
+      "topic": "cooking",
+      "n_models": 6
+    },
+    {
+      "topic": "sleep",
+      "n_models": 6
+    },
+    {
+      "topic": "bird",
+      "n_models": 5
+    },
+    {
+      "topic": "fish",
+      "n_models": 5
+    },
+    {
+      "topic": "school",
+      "n_models": 5
+    },
+    {
+      "topic": "dentist",
+      "n_models": 5
+    },
+    {
+      "topic": "chore",
+      "n_models": 5
+    },
+    {
+      "topic": "unparseable",
+      "n_models": 5
+    },
+    {
+      "topic": "computer",
+      "n_models": 5
+    },
+    {
+      "topic": "insect",
+      "n_models": 4
+    },
+    {
+      "topic": "smartphone",
+      "n_models": 4
+    }
+  ],
+  "opening_topic_census_raw": [
+    {
+      "topic": "other",
+      "n_runs": 16
+    },
+    {
+      "topic": "marriage",
+      "n_runs": 7
+    },
+    {
+      "topic": "computer",
+      "n_runs": 7
+    },
+    {
+      "topic": "programming",
+      "n_runs": 7
+    },
+    {
+      "topic": "science",
+      "n_runs": 6
+    },
+    {
+      "topic": "scientist",
+      "n_runs": 4
+    },
+    {
+      "topic": "travel",
+      "n_runs": 4
+    },
+    {
+      "topic": "dating",
+      "n_runs": 1
+    },
+    {
+      "topic": "dentist",
+      "n_runs": 1
+    },
+    {
+      "topic": "farm animal",
+      "n_runs": 1
+    },
+    {
+      "topic": "time",
+      "n_runs": 1
+    },
+    {
+      "topic": "farmer",
+      "n_runs": 1
+    },
+    {
+      "topic": "dog",
+      "n_runs": 1
+    }
+  ]
+}

@@ -1,0 +1,2497 @@
+{
+  "labeler": "v3",
+  "overall": {
+    "n_turns": 1532,
+    "n_agree": 338,
+    "agreement_rate": 0.2206266318537859
+  },
+  "per_model": {
+    "api:deepseek": {
+      "n_turns": 120,
+      "n_agree": 9,
+      "agreement_rate": 0.075
+    },
+    "api:glm": {
+      "n_turns": 165,
+      "n_agree": 25,
+      "agreement_rate": 0.15151515151515152
+    },
+    "api:kimi": {
+      "n_turns": 60,
+      "n_agree": 14,
+      "agreement_rate": 0.23333333333333334
+    },
+    "api:qwen": {
+      "n_turns": 120,
+      "n_agree": 10,
+      "agreement_rate": 0.08333333333333333
+    },
+    "fable": {
+      "n_turns": 149,
+      "n_agree": 43,
+      "agreement_rate": 0.28859060402684567
+    },
+    "haiku": {
+      "n_turns": 120,
+      "n_agree": 37,
+      "agreement_rate": 0.30833333333333335
+    },
+    "opus": {
+      "n_turns": 120,
+      "n_agree": 14,
+      "agreement_rate": 0.11666666666666667
+    },
+    "sonnet": {
+      "n_turns": 120,
+      "n_agree": 21,
+      "agreement_rate": 0.175
+    },
+    "codex:5.4": {
+      "n_turns": 120,
+      "n_agree": 21,
+      "agreement_rate": 0.175
+    },
+    "codex:mini": {
+      "n_turns": 120,
+      "n_agree": 34,
+      "agreement_rate": 0.2833333333333333
+    },
+    "codex:sol": {
+      "n_turns": 120,
+      "n_agree": 33,
+      "agreement_rate": 0.275
+    },
+    "api:grok": {
+      "n_turns": 198,
+      "n_agree": 77,
+      "agreement_rate": 0.3888888888888889
+    }
+  },
+  "confusion_pairs": [
+    {
+      "topic_v2": "comedy",
+      "topic_v3": "other",
+      "count": 116
+    },
+    {
+      "topic_v2": "humor",
+      "topic_v3": "other",
+      "count": 24
+    },
+    {
+      "topic_v2": "censorship",
+      "topic_v3": "other",
+      "count": 19
+    },
+    {
+      "topic_v2": "joke",
+      "topic_v3": "other",
+      "count": 18
+    },
+    {
+      "topic_v2": "comedy",
+      "topic_v3": "art",
+      "count": 18
+    },
+    {
+      "topic_v2": "clothing",
+      "topic_v3": "other",
+      "count": 17
+    },
+    {
+      "topic_v2": "food",
+      "topic_v3": "vegetable",
+      "count": 14
+    },
+    {
+      "topic_v2": "unparseable",
+      "topic_v3": "other",
+      "count": 13
+    },
+    {
+      "topic_v2": "stair",
+      "topic_v3": "other",
+      "count": 13
+    },
+    {
+      "topic_v2": "golf",
+      "topic_v3": "sport",
+      "count": 13
+    },
+    {
+      "topic_v2": "science",
+      "topic_v3": "scientist",
+      "count": 12
+    },
+    {
+      "topic_v2": "farming",
+      "topic_v3": "other",
+      "count": 11
+    },
+    {
+      "topic_v2": "death",
+      "topic_v3": "other",
+      "count": 11
+    },
+    {
+      "topic_v2": "food",
+      "topic_v3": "other",
+      "count": 10
+    },
+    {
+      "topic_v2": "appliance",
+      "topic_v3": "other",
+      "count": 10
+    },
+    {
+      "topic_v2": "writing",
+      "topic_v3": "other",
+      "count": 10
+    },
+    {
+      "topic_v2": "makeup",
+      "topic_v3": "marriage",
+      "count": 9
+    },
+    {
+      "topic_v2": "performance",
+      "topic_v3": "other",
+      "count": 9
+    },
+    {
+      "topic_v2": "building",
+      "topic_v3": "other",
+      "count": 9
+    },
+    {
+      "topic_v2": "furniture",
+      "topic_v3": "other",
+      "count": 9
+    },
+    {
+      "topic_v2": "farming",
+      "topic_v3": "work",
+      "count": 9
+    },
+    {
+      "topic_v2": "money",
+      "topic_v3": "banking",
+      "count": 9
+    },
+    {
+      "topic_v2": "hair",
+      "topic_v3": "hairdresser",
+      "count": 9
+    },
+    {
+      "topic_v2": "feedback",
+      "topic_v3": "other",
+      "count": 8
+    },
+    {
+      "topic_v2": "silence",
+      "topic_v3": "other",
+      "count": 8
+    },
+    {
+      "topic_v2": "language",
+      "topic_v3": "other",
+      "count": 8
+    },
+    {
+      "topic_v2": "skeleton",
+      "topic_v3": "other",
+      "count": 8
+    },
+    {
+      "topic_v2": "mirror",
+      "topic_v3": "other",
+      "count": 8
+    },
+    {
+      "topic_v2": "farming",
+      "topic_v3": "farmer",
+      "count": 8
+    },
+    {
+      "topic_v2": "music",
+      "topic_v3": "musician",
+      "count": 8
+    },
+    {
+      "topic_v2": "phone",
+      "topic_v3": "smartphone",
+      "count": 8
+    },
+    {
+      "topic_v2": "bone",
+      "topic_v3": "other",
+      "count": 8
+    },
+    {
+      "topic_v2": "game",
+      "topic_v3": "sport",
+      "count": 8
+    },
+    {
+      "topic_v2": "paranoia",
+      "topic_v3": "other",
+      "count": 7
+    },
+    {
+      "topic_v2": "rule",
+      "topic_v3": "other",
+      "count": 7
+    },
+    {
+      "topic_v2": "cleaning",
+      "topic_v3": "other",
+      "count": 7
+    },
+    {
+      "topic_v2": "wall",
+      "topic_v3": "other",
+      "count": 7
+    },
+    {
+      "topic_v2": "travel",
+      "topic_v3": "other",
+      "count": 6
+    },
+    {
+      "topic_v2": "nothing",
+      "topic_v3": "other",
+      "count": 6
+    },
+    {
+      "topic_v2": "cleaning",
+      "topic_v3": "chore",
+      "count": 6
+    },
+    {
+      "topic_v2": "time",
+      "topic_v3": "dating",
+      "count": 6
+    },
+    {
+      "topic_v2": "egg",
+      "topic_v3": "other",
+      "count": 6
+    },
+    {
+      "topic_v2": "elevator",
+      "topic_v3": "other",
+      "count": 6
+    },
+    {
+      "topic_v2": "animal",
+      "topic_v3": "bird",
+      "count": 5
+    },
+    {
+      "topic_v2": "work",
+      "topic_v3": "other",
+      "count": 5
+    },
+    {
+      "topic_v2": "bike",
+      "topic_v3": "other",
+      "count": 5
+    },
+    {
+      "topic_v2": "comedy",
+      "topic_v3": "artist",
+      "count": 5
+    },
+    {
+      "topic_v2": "traffic",
+      "topic_v3": "driving",
+      "count": 5
+    },
+    {
+      "topic_v2": "physics",
+      "topic_v3": "science",
+      "count": 5
+    },
+    {
+      "topic_v2": "pirate",
+      "topic_v3": "other",
+      "count": 5
+    },
+    {
+      "topic_v2": "space",
+      "topic_v3": "dating",
+      "count": 5
+    },
+    {
+      "topic_v2": "medicine",
+      "topic_v3": "doctor",
+      "count": 5
+    },
+    {
+      "topic_v2": "chemistry",
+      "topic_v3": "science",
+      "count": 5
+    },
+    {
+      "topic_v2": "alphabet",
+      "topic_v3": "language",
+      "count": 5
+    },
+    {
+      "topic_v2": "ocean",
+      "topic_v3": "nature",
+      "count": 5
+    },
+    {
+      "topic_v2": "water",
+      "topic_v3": "nature",
+      "count": 5
+    },
+    {
+      "topic_v2": "ghost",
+      "topic_v3": "other",
+      "count": 5
+    },
+    {
+      "topic_v2": "bicycle",
+      "topic_v3": "other",
+      "count": 5
+    },
+    {
+      "topic_v2": "laundry",
+      "topic_v3": "other",
+      "count": 4
+    },
+    {
+      "topic_v2": "comedy",
+      "topic_v3": "work",
+      "count": 4
+    },
+    {
+      "topic_v2": "laundry",
+      "topic_v3": "chore",
+      "count": 4
+    },
+    {
+      "topic_v2": "cheese",
+      "topic_v3": "other",
+      "count": 4
+    },
+    {
+      "topic_v2": "shoe",
+      "topic_v3": "other",
+      "count": 4
+    },
+    {
+      "topic_v2": "appliance",
+      "topic_v3": "technology",
+      "count": 4
+    },
+    {
+      "topic_v2": "appearance",
+      "topic_v3": "other",
+      "count": 4
+    },
+    {
+      "topic_v2": "hair",
+      "topic_v3": "other",
+      "count": 4
+    },
+    {
+      "topic_v2": "tree",
+      "topic_v3": "dentist",
+      "count": 4
+    },
+    {
+      "topic_v2": "people",
+      "topic_v3": "other",
+      "count": 3
+    },
+    {
+      "topic_v2": "relationship",
+      "topic_v3": "other",
+      "count": 3
+    },
+    {
+      "topic_v2": "accident",
+      "topic_v3": "other",
+      "count": 3
+    },
+    {
+      "topic_v2": "love",
+      "topic_v3": "dating",
+      "count": 3
+    },
+    {
+      "topic_v2": "performance",
+      "topic_v3": "artist",
+      "count": 3
+    },
+    {
+      "topic_v2": "fruit",
+      "topic_v3": "other",
+      "count": 3
+    },
+    {
+      "topic_v2": "therapy",
+      "topic_v3": "doctor",
+      "count": 3
+    },
+    {
+      "topic_v2": "weather",
+      "topic_v3": "other",
+      "count": 3
+    },
+    {
+      "topic_v2": "color",
+      "topic_v3": "other",
+      "count": 3
+    },
+    {
+      "topic_v2": "light",
+      "topic_v3": "other",
+      "count": 3
+    },
+    {
+      "topic_v2": "weather",
+      "topic_v3": "dating",
+      "count": 3
+    },
+    {
+      "topic_v2": "philosophy",
+      "topic_v3": "other",
+      "count": 3
+    },
+    {
+      "topic_v2": "shadow",
+      "topic_v3": "other",
+      "count": 3
+    },
+    {
+      "topic_v2": "reading",
+      "topic_v3": "book",
+      "count": 3
+    },
+    {
+      "topic_v2": "furniture",
+      "topic_v3": "work",
+      "count": 3
+    },
+    {
+      "topic_v2": "office",
+      "topic_v3": "other",
+      "count": 3
+    },
+    {
+      "topic_v2": "rejection",
+      "topic_v3": "other",
+      "count": 3
+    },
+    {
+      "topic_v2": "baking",
+      "topic_v3": "money",
+      "count": 3
+    },
+    {
+      "topic_v2": "photography",
+      "topic_v3": "artist",
+      "count": 3
+    },
+    {
+      "topic_v2": "door",
+      "topic_v3": "other",
+      "count": 3
+    },
+    {
+      "topic_v2": "procrastination",
+      "topic_v3": "other",
+      "count": 3
+    },
+    {
+      "topic_v2": "pasta",
+      "topic_v3": "other",
+      "count": 3
+    },
+    {
+      "topic_v2": "ai",
+      "topic_v3": "other",
+      "count": 3
+    },
+    {
+      "topic_v2": "construction",
+      "topic_v3": "work",
+      "count": 3
+    },
+    {
+      "topic_v2": "communication",
+      "topic_v3": "other",
+      "count": 3
+    },
+    {
+      "topic_v2": "teeth",
+      "topic_v3": "dentist",
+      "count": 3
+    },
+    {
+      "topic_v2": "dance",
+      "topic_v3": "music",
+      "count": 3
+    },
+    {
+      "topic_v2": "bike",
+      "topic_v3": "driving",
+      "count": 3
+    },
+    {
+      "topic_v2": "craft",
+      "topic_v3": "art",
+      "count": 3
+    },
+    {
+      "topic_v2": "indecision",
+      "topic_v3": "other",
+      "count": 3
+    },
+    {
+      "topic_v2": "tool",
+      "topic_v3": "other",
+      "count": 3
+    },
+    {
+      "topic_v2": "relationship",
+      "topic_v3": "dating",
+      "count": 3
+    },
+    {
+      "topic_v2": "clothing",
+      "topic_v3": "crime",
+      "count": 3
+    },
+    {
+      "topic_v2": "animal",
+      "topic_v3": "cat",
+      "count": 3
+    },
+    {
+      "topic_v2": "sport",
+      "topic_v3": "other",
+      "count": 2
+    },
+    {
+      "topic_v2": "stick",
+      "topic_v3": "other",
+      "count": 2
+    },
+    {
+      "topic_v2": "repetition",
+      "topic_v3": "other",
+      "count": 2
+    },
+    {
+      "topic_v2": "bar",
+      "topic_v3": "other",
+      "count": 2
+    },
+    {
+      "topic_v2": "relationship",
+      "topic_v3": "marriage",
+      "count": 2
+    },
+    {
+      "topic_v2": "toy",
+      "topic_v3": "other",
+      "count": 2
+    },
+    {
+      "topic_v2": "job",
+      "topic_v3": "work",
+      "count": 2
+    },
+    {
+      "topic_v2": "food",
+      "topic_v3": "pizza",
+      "count": 2
+    },
+    {
+      "topic_v2": "animal",
+      "topic_v3": "farm animal",
+      "count": 2
+    },
+    {
+      "topic_v2": "emotion",
+      "topic_v3": "other",
+      "count": 2
+    },
+    {
+      "topic_v2": "ai",
+      "topic_v3": "artificial intelligence",
+      "count": 2
+    },
+    {
+      "topic_v2": "transportation",
+      "topic_v3": "other",
+      "count": 2
+    },
+    {
+      "topic_v2": "ideas",
+      "topic_v3": "other",
+      "count": 2
+    },
+    {
+      "topic_v2": "body",
+      "topic_v3": "other",
+      "count": 2
+    },
+    {
+      "topic_v2": "movy",
+      "topic_v3": "movie",
+      "count": 2
+    },
+    {
+      "topic_v2": "texting",
+      "topic_v3": "technology",
+      "count": 2
+    },
+    {
+      "topic_v2": "dinosaur",
+      "topic_v3": "animal",
+      "count": 2
+    },
+    {
+      "topic_v2": "ladder",
+      "topic_v3": "family",
+      "count": 2
+    },
+    {
+      "topic_v2": "sun",
+      "topic_v3": "time",
+      "count": 2
+    },
+    {
+      "topic_v2": "watch",
+      "topic_v3": "time",
+      "count": 2
+    },
+    {
+      "topic_v2": "mushroom",
+      "topic_v3": "other",
+      "count": 2
+    },
+    {
+      "topic_v2": "finance",
+      "topic_v3": "banking",
+      "count": 2
+    },
+    {
+      "topic_v2": "ocean",
+      "topic_v3": "animal",
+      "count": 2
+    },
+    {
+      "topic_v2": "time travel",
+      "topic_v3": "time",
+      "count": 2
+    },
+    {
+      "topic_v2": "sock",
+      "topic_v3": "other",
+      "count": 2
+    },
+    {
+      "topic_v2": "glue",
+      "topic_v3": "other",
+      "count": 2
+    },
+    {
+      "topic_v2": "geography",
+      "topic_v3": "other",
+      "count": 2
+    },
+    {
+      "topic_v2": "exercise",
+      "topic_v3": "other",
+      "count": 2
+    },
+    {
+      "topic_v2": "law",
+      "topic_v3": "lawyer",
+      "count": 2
+    },
+    {
+      "topic_v2": "unparseable",
+      "topic_v3": "artificial intelligence",
+      "count": 2
+    },
+    {
+      "topic_v2": "assistant",
+      "topic_v3": "other",
+      "count": 2
+    },
+    {
+      "topic_v2": "comedy",
+      "topic_v3": "doctor",
+      "count": 2
+    },
+    {
+      "topic_v2": "theater",
+      "topic_v3": "art",
+      "count": 2
+    },
+    {
+      "topic_v2": "performance",
+      "topic_v3": "unparseable",
+      "count": 2
+    },
+    {
+      "topic_v2": "theater",
+      "topic_v3": "other",
+      "count": 2
+    },
+    {
+      "topic_v2": "comedy",
+      "topic_v3": "marriage",
+      "count": 2
+    },
+    {
+      "topic_v2": "connection",
+      "topic_v3": "other",
+      "count": 2
+    },
+    {
+      "topic_v2": "comedy",
+      "topic_v3": "language",
+      "count": 2
+    },
+    {
+      "topic_v2": "mistake",
+      "topic_v3": "other",
+      "count": 2
+    },
+    {
+      "topic_v2": "honesty",
+      "topic_v3": "other",
+      "count": 2
+    },
+    {
+      "topic_v2": "word",
+      "topic_v3": "other",
+      "count": 2
+    },
+    {
+      "topic_v2": "argument",
+      "topic_v3": "other",
+      "count": 2
+    },
+    {
+      "topic_v2": "plant",
+      "topic_v3": "nature",
+      "count": 2
+    },
+    {
+      "topic_v2": "animal",
+      "topic_v3": "other",
+      "count": 2
+    },
+    {
+      "topic_v2": "pet",
+      "topic_v3": "dog",
+      "count": 2
+    },
+    {
+      "topic_v2": "library",
+      "topic_v3": "book",
+      "count": 2
+    },
+    {
+      "topic_v2": "organization",
+      "topic_v3": "chore",
+      "count": 2
+    },
+    {
+      "topic_v2": "mime",
+      "topic_v3": "other",
+      "count": 2
+    },
+    {
+      "topic_v2": "bear",
+      "topic_v3": "animal",
+      "count": 2
+    },
+    {
+      "topic_v2": "art",
+      "topic_v3": "crime",
+      "count": 2
+    },
+    {
+      "topic_v2": "addiction",
+      "topic_v3": "other",
+      "count": 2
+    },
+    {
+      "topic_v2": "photography",
+      "topic_v3": "other",
+      "count": 2
+    },
+    {
+      "topic_v2": "procrastination",
+      "topic_v3": "work",
+      "count": 2
+    },
+    {
+      "topic_v2": "school",
+      "topic_v3": "teacher",
+      "count": 2
+    },
+    {
+      "topic_v2": "crime",
+      "topic_v3": "other",
+      "count": 2
+    },
+    {
+      "topic_v2": "plumbing",
+      "topic_v3": "plumber",
+      "count": 2
+    },
+    {
+      "topic_v2": "mail",
+      "topic_v3": "other",
+      "count": 2
+    },
+    {
+      "topic_v2": "invisibility",
+      "topic_v3": "work",
+      "count": 2
+    },
+    {
+      "topic_v2": "art",
+      "topic_v3": "other",
+      "count": 2
+    },
+    {
+      "topic_v2": "picture",
+      "topic_v3": "art",
+      "count": 2
+    },
+    {
+      "topic_v2": "football",
+      "topic_v3": "sport",
+      "count": 2
+    },
+    {
+      "topic_v2": "gravity",
+      "topic_v3": "book",
+      "count": 1
+    },
+    {
+      "topic_v2": "food",
+      "topic_v3": "fast food",
+      "count": 1
+    },
+    {
+      "topic_v2": "attitude",
+      "topic_v3": "other",
+      "count": 1
+    },
+    {
+      "topic_v2": "complaint",
+      "topic_v3": "other",
+      "count": 1
+    },
+    {
+      "topic_v2": "hardship",
+      "topic_v3": "other",
+      "count": 1
+    },
+    {
+      "topic_v2": "bar",
+      "topic_v3": "restaurant",
+      "count": 1
+    },
+    {
+      "topic_v2": "physics",
+      "topic_v3": "language",
+      "count": 1
+    },
+    {
+      "topic_v2": "personality",
+      "topic_v3": "other",
+      "count": 1
+    },
+    {
+      "topic_v2": "nostalgia",
+      "topic_v3": "technology",
+      "count": 1
+    },
+    {
+      "topic_v2": "performance",
+      "topic_v3": "musician",
+      "count": 1
+    },
+    {
+      "topic_v2": "map",
+      "topic_v3": "art",
+      "count": 1
+    },
+    {
+      "topic_v2": "service",
+      "topic_v3": "other",
+      "count": 1
+    },
+    {
+      "topic_v2": "bar",
+      "topic_v3": "alcohol",
+      "count": 1
+    },
+    {
+      "topic_v2": "travel",
+      "topic_v3": "science",
+      "count": 1
+    },
+    {
+      "topic_v2": "object",
+      "topic_v3": "alcohol",
+      "count": 1
+    },
+    {
+      "topic_v2": "performance",
+      "topic_v3": "work",
+      "count": 1
+    },
+    {
+      "topic_v2": "joke",
+      "topic_v3": "book",
+      "count": 1
+    },
+    {
+      "topic_v2": "rule",
+      "topic_v3": "language",
+      "count": 1
+    },
+    {
+      "topic_v2": "self",
+      "topic_v3": "other",
+      "count": 1
+    },
+    {
+      "topic_v2": "entertainment",
+      "topic_v3": "other",
+      "count": 1
+    },
+    {
+      "topic_v2": "repetition",
+      "topic_v3": "divorce",
+      "count": 1
+    },
+    {
+      "topic_v2": "dream",
+      "topic_v3": "doctor",
+      "count": 1
+    },
+    {
+      "topic_v2": "light",
+      "topic_v3": "science",
+      "count": 1
+    },
+    {
+      "topic_v2": "food",
+      "topic_v3": "beer",
+      "count": 1
+    },
+    {
+      "topic_v2": "blanket",
+      "topic_v3": "language",
+      "count": 1
+    },
+    {
+      "topic_v2": "library",
+      "topic_v3": "other",
+      "count": 1
+    },
+    {
+      "topic_v2": "car",
+      "topic_v3": "alcohol",
+      "count": 1
+    },
+    {
+      "topic_v2": "clown",
+      "topic_v3": "other",
+      "count": 1
+    },
+    {
+      "topic_v2": "string",
+      "topic_v3": "language",
+      "count": 1
+    },
+    {
+      "topic_v2": "alcohol",
+      "topic_v3": "other",
+      "count": 1
+    },
+    {
+      "topic_v2": "list",
+      "topic_v3": "other",
+      "count": 1
+    },
+    {
+      "topic_v2": "life",
+      "topic_v3": "other",
+      "count": 1
+    },
+    {
+      "topic_v2": "humor",
+      "topic_v3": "doctor",
+      "count": 1
+    },
+    {
+      "topic_v2": "surveillance",
+      "topic_v3": "other",
+      "count": 1
+    },
+    {
+      "topic_v2": "food",
+      "topic_v3": "dentist",
+      "count": 1
+    },
+    {
+      "topic_v2": "anxiety",
+      "topic_v3": "other",
+      "count": 1
+    },
+    {
+      "topic_v2": "wall",
+      "topic_v3": "art",
+      "count": 1
+    },
+    {
+      "topic_v2": "performance",
+      "topic_v3": "banking",
+      "count": 1
+    },
+    {
+      "topic_v2": "paradox",
+      "topic_v3": "other",
+      "count": 1
+    },
+    {
+      "topic_v2": "clothing",
+      "topic_v3": "restaurant",
+      "count": 1
+    },
+    {
+      "topic_v2": "drinking",
+      "topic_v3": "alcohol",
+      "count": 1
+    },
+    {
+      "topic_v2": "time",
+      "topic_v3": "other",
+      "count": 1
+    },
+    {
+      "topic_v2": "air",
+      "topic_v3": "other",
+      "count": 1
+    },
+    {
+      "topic_v2": "parenting",
+      "topic_v3": "other",
+      "count": 1
+    },
+    {
+      "topic_v2": "writing",
+      "topic_v3": "language",
+      "count": 1
+    },
+    {
+      "topic_v2": "sound",
+      "topic_v3": "technology",
+      "count": 1
+    },
+    {
+      "topic_v2": "exercise",
+      "topic_v3": "dating",
+      "count": 1
+    },
+    {
+      "topic_v2": "technology",
+      "topic_v3": "smartphone",
+      "count": 1
+    },
+    {
+      "topic_v2": "furniture",
+      "topic_v3": "divorce",
+      "count": 1
+    },
+    {
+      "topic_v2": "relationship",
+      "topic_v3": "divorce",
+      "count": 1
+    },
+    {
+      "topic_v2": "taboo",
+      "topic_v3": "other",
+      "count": 1
+    },
+    {
+      "topic_v2": "banned",
+      "topic_v3": "language",
+      "count": 1
+    },
+    {
+      "topic_v2": "internet",
+      "topic_v3": "programming",
+      "count": 1
+    },
+    {
+      "topic_v2": "computer",
+      "topic_v3": "robot",
+      "count": 1
+    },
+    {
+      "topic_v2": "computer",
+      "topic_v3": "other",
+      "count": 1
+    },
+    {
+      "topic_v2": "censorship",
+      "topic_v3": "language",
+      "count": 1
+    },
+    {
+      "topic_v2": "technology",
+      "topic_v3": "other",
+      "count": 1
+    },
+    {
+      "topic_v2": "phone",
+      "topic_v3": "other",
+      "count": 1
+    },
+    {
+      "topic_v2": "makeup",
+      "topic_v3": "other",
+      "count": 1
+    },
+    {
+      "topic_v2": "vehicle",
+      "topic_v3": "other",
+      "count": 1
+    },
+    {
+      "topic_v2": "irony",
+      "topic_v3": "other",
+      "count": 1
+    },
+    {
+      "topic_v2": "work",
+      "topic_v3": "coffee",
+      "count": 1
+    },
+    {
+      "topic_v2": "existence",
+      "topic_v3": "other",
+      "count": 1
+    },
+    {
+      "topic_v2": "secret",
+      "topic_v3": "other",
+      "count": 1
+    },
+    {
+      "topic_v2": "punctuation",
+      "topic_v3": "language",
+      "count": 1
+    },
+    {
+      "topic_v2": "party",
+      "topic_v3": "other",
+      "count": 1
+    },
+    {
+      "topic_v2": "hobby",
+      "topic_v3": "other",
+      "count": 1
+    },
+    {
+      "topic_v2": "sarcasm",
+      "topic_v3": "work",
+      "count": 1
+    },
+    {
+      "topic_v2": "excuse",
+      "topic_v3": "friendship",
+      "count": 1
+    },
+    {
+      "topic_v2": "talking",
+      "topic_v3": "other",
+      "count": 1
+    },
+    {
+      "topic_v2": "persistence",
+      "topic_v3": "other",
+      "count": 1
+    },
+    {
+      "topic_v2": "effort",
+      "topic_v3": "other",
+      "count": 1
+    },
+    {
+      "topic_v2": "organization",
+      "topic_v3": "other",
+      "count": 1
+    },
+    {
+      "topic_v2": "bicycle",
+      "topic_v3": "exercise",
+      "count": 1
+    },
+    {
+      "topic_v2": "work",
+      "topic_v3": "weather",
+      "count": 1
+    },
+    {
+      "topic_v2": "weather",
+      "topic_v3": "gambling",
+      "count": 1
+    },
+    {
+      "topic_v2": "traffic",
+      "topic_v3": "technology",
+      "count": 1
+    },
+    {
+      "topic_v2": "sock",
+      "topic_v3": "politician",
+      "count": 1
+    },
+    {
+      "topic_v2": "pain",
+      "topic_v3": "other",
+      "count": 1
+    },
+    {
+      "topic_v2": "math",
+      "topic_v3": "programming",
+      "count": 1
+    },
+    {
+      "topic_v2": "excuse",
+      "topic_v3": "other",
+      "count": 1
+    },
+    {
+      "topic_v2": "question",
+      "topic_v3": "other",
+      "count": 1
+    },
+    {
+      "topic_v2": "work",
+      "topic_v3": "artist",
+      "count": 1
+    },
+    {
+      "topic_v2": "farming",
+      "topic_v3": "farm animal",
+      "count": 1
+    },
+    {
+      "topic_v2": "comedy",
+      "topic_v3": "death",
+      "count": 1
+    },
+    {
+      "topic_v2": "conversation",
+      "topic_v3": "alcohol",
+      "count": 1
+    },
+    {
+      "topic_v2": "humor",
+      "topic_v3": "time",
+      "count": 1
+    },
+    {
+      "topic_v2": "appliance",
+      "topic_v3": "divorce",
+      "count": 1
+    },
+    {
+      "topic_v2": "cooking",
+      "topic_v3": "dating",
+      "count": 1
+    },
+    {
+      "topic_v2": "geology",
+      "topic_v3": "work",
+      "count": 1
+    },
+    {
+      "topic_v2": "eye",
+      "topic_v3": "doctor",
+      "count": 1
+    },
+    {
+      "topic_v2": "writing",
+      "topic_v3": "work",
+      "count": 1
+    },
+    {
+      "topic_v2": "shoe",
+      "topic_v3": "doctor",
+      "count": 1
+    },
+    {
+      "topic_v2": "exhaustion",
+      "topic_v3": "other",
+      "count": 1
+    },
+    {
+      "topic_v2": "food",
+      "topic_v3": "school",
+      "count": 1
+    },
+    {
+      "topic_v2": "travel",
+      "topic_v3": "doctor",
+      "count": 1
+    },
+    {
+      "topic_v2": "tissue",
+      "topic_v3": "other",
+      "count": 1
+    },
+    {
+      "topic_v2": "psychology",
+      "topic_v3": "other",
+      "count": 1
+    },
+    {
+      "topic_v2": "work",
+      "topic_v3": "programming",
+      "count": 1
+    },
+    {
+      "topic_v2": "logic",
+      "topic_v3": "other",
+      "count": 1
+    },
+    {
+      "topic_v2": "difficulty",
+      "topic_v3": "doctor",
+      "count": 1
+    },
+    {
+      "topic_v2": "allergy",
+      "topic_v3": "season",
+      "count": 1
+    },
+    {
+      "topic_v2": "vehicle",
+      "topic_v3": "driving",
+      "count": 1
+    },
+    {
+      "topic_v2": "physics",
+      "topic_v3": "book",
+      "count": 1
+    },
+    {
+      "topic_v2": "letter",
+      "topic_v3": "language",
+      "count": 1
+    },
+    {
+      "topic_v2": "vampire",
+      "topic_v3": "other",
+      "count": 1
+    },
+    {
+      "topic_v2": "fishing",
+      "topic_v3": "fish",
+      "count": 1
+    },
+    {
+      "topic_v2": "writing",
+      "topic_v3": "school",
+      "count": 1
+    },
+    {
+      "topic_v2": "carpentry",
+      "topic_v3": "work",
+      "count": 1
+    },
+    {
+      "topic_v2": "sewing",
+      "topic_v3": "other",
+      "count": 1
+    },
+    {
+      "topic_v2": "shoe",
+      "topic_v3": "work",
+      "count": 1
+    },
+    {
+      "topic_v2": "gardening",
+      "topic_v3": "time",
+      "count": 1
+    },
+    {
+      "topic_v2": "farm",
+      "topic_v3": "farmer",
+      "count": 1
+    },
+    {
+      "topic_v2": "chess",
+      "topic_v3": "other",
+      "count": 1
+    },
+    {
+      "topic_v2": "comedy",
+      "topic_v3": "exercise",
+      "count": 1
+    },
+    {
+      "topic_v2": "perfection",
+      "topic_v3": "other",
+      "count": 1
+    },
+    {
+      "topic_v2": "bone",
+      "topic_v3": "death",
+      "count": 1
+    },
+    {
+      "topic_v2": "rock",
+      "topic_v3": "history",
+      "count": 1
+    },
+    {
+      "topic_v2": "supernatural",
+      "topic_v3": "other",
+      "count": 1
+    },
+    {
+      "topic_v2": "transportation",
+      "topic_v3": "car",
+      "count": 1
+    },
+    {
+      "topic_v2": "balloon",
+      "topic_v3": "music",
+      "count": 1
+    },
+    {
+      "topic_v2": "decision",
+      "topic_v3": "other",
+      "count": 1
+    },
+    {
+      "topic_v2": "stick",
+      "topic_v3": "nature",
+      "count": 1
+    },
+    {
+      "topic_v2": "dinosaur",
+      "topic_v3": "car",
+      "count": 1
+    },
+    {
+      "topic_v2": "moon",
+      "topic_v3": "space",
+      "count": 1
+    },
+    {
+      "topic_v2": "assistant",
+      "topic_v3": "programming",
+      "count": 1
+    },
+    {
+      "topic_v2": "speech",
+      "topic_v3": "other",
+      "count": 1
+    },
+    {
+      "topic_v2": "work",
+      "topic_v3": "banking",
+      "count": 1
+    },
+    {
+      "topic_v2": "nature",
+      "topic_v3": "dating",
+      "count": 1
+    },
+    {
+      "topic_v2": "software",
+      "topic_v3": "artificial intelligence",
+      "count": 1
+    },
+    {
+      "topic_v2": "sport",
+      "topic_v3": "dating",
+      "count": 1
+    },
+    {
+      "topic_v2": "security",
+      "topic_v3": "artificial intelligence",
+      "count": 1
+    },
+    {
+      "topic_v2": "appearance",
+      "topic_v3": "marriage",
+      "count": 1
+    },
+    {
+      "topic_v2": "antenna",
+      "topic_v3": "other",
+      "count": 1
+    },
+    {
+      "topic_v2": "animal",
+      "topic_v3": "cashier",
+      "count": 1
+    },
+    {
+      "topic_v2": "death",
+      "topic_v3": "unparseable",
+      "count": 1
+    },
+    {
+      "topic_v2": "humor",
+      "topic_v3": "art",
+      "count": 1
+    },
+    {
+      "topic_v2": "password",
+      "topic_v3": "email",
+      "count": 1
+    },
+    {
+      "topic_v2": "laughter",
+      "topic_v3": "other",
+      "count": 1
+    },
+    {
+      "topic_v2": "theater",
+      "topic_v3": "death",
+      "count": 1
+    },
+    {
+      "topic_v2": "astronomy",
+      "topic_v3": "space",
+      "count": 1
+    },
+    {
+      "topic_v2": "baking",
+      "topic_v3": "cooking",
+      "count": 1
+    },
+    {
+      "topic_v2": "rock",
+      "topic_v3": "other",
+      "count": 1
+    },
+    {
+      "topic_v2": "sand",
+      "topic_v3": "other",
+      "count": 1
+    },
+    {
+      "topic_v2": "performance",
+      "topic_v3": "friendship",
+      "count": 1
+    },
+    {
+      "topic_v2": "performance",
+      "topic_v3": "art",
+      "count": 1
+    },
+    {
+      "topic_v2": "comedy",
+      "topic_v3": "friendship",
+      "count": 1
+    },
+    {
+      "topic_v2": "death",
+      "topic_v3": "beer",
+      "count": 1
+    },
+    {
+      "topic_v2": "climate",
+      "topic_v3": "environment",
+      "count": 1
+    },
+    {
+      "topic_v2": "collision",
+      "topic_v3": "other",
+      "count": 1
+    },
+    {
+      "topic_v2": "drinking",
+      "topic_v3": "beer",
+      "count": 1
+    },
+    {
+      "topic_v2": "shopping",
+      "topic_v3": "waiter",
+      "count": 1
+    },
+    {
+      "topic_v2": "trapped",
+      "topic_v3": "other",
+      "count": 1
+    },
+    {
+      "topic_v2": "technology",
+      "topic_v3": "computer",
+      "count": 1
+    },
+    {
+      "topic_v2": "negativity",
+      "topic_v3": "other",
+      "count": 1
+    },
+    {
+      "topic_v2": "trap",
+      "topic_v3": "other",
+      "count": 1
+    },
+    {
+      "topic_v2": "automation",
+      "topic_v3": "other",
+      "count": 1
+    },
+    {
+      "topic_v2": "comedy",
+      "topic_v3": "artificial intelligence",
+      "count": 1
+    },
+    {
+      "topic_v2": "label",
+      "topic_v3": "art",
+      "count": 1
+    },
+    {
+      "topic_v2": "relationship",
+      "topic_v3": "language",
+      "count": 1
+    },
+    {
+      "topic_v2": "phone",
+      "topic_v3": "aging",
+      "count": 1
+    },
+    {
+      "topic_v2": "fruit",
+      "topic_v3": "vegetable",
+      "count": 1
+    },
+    {
+      "topic_v2": "baking",
+      "topic_v3": "neighbor",
+      "count": 1
+    },
+    {
+      "topic_v2": "feet",
+      "topic_v3": "doctor",
+      "count": 1
+    },
+    {
+      "topic_v2": "lock",
+      "topic_v3": "other",
+      "count": 1
+    },
+    {
+      "topic_v2": "beekeeping",
+      "topic_v3": "insect",
+      "count": 1
+    },
+    {
+      "topic_v2": "meditation",
+      "topic_v3": "other",
+      "count": 1
+    },
+    {
+      "topic_v2": "bean",
+      "topic_v3": "family",
+      "count": 1
+    },
+    {
+      "topic_v2": "home",
+      "topic_v3": "marriage",
+      "count": 1
+    },
+    {
+      "topic_v2": "rain",
+      "topic_v3": "weather",
+      "count": 1
+    },
+    {
+      "topic_v2": "acting",
+      "topic_v3": "movie",
+      "count": 1
+    },
+    {
+      "topic_v2": "argument",
+      "topic_v3": "art",
+      "count": 1
+    },
+    {
+      "topic_v2": "sound",
+      "topic_v3": "language",
+      "count": 1
+    },
+    {
+      "topic_v2": "movy",
+      "topic_v3": "other",
+      "count": 1
+    },
+    {
+      "topic_v2": "direction",
+      "topic_v3": "other",
+      "count": 1
+    },
+    {
+      "topic_v2": "goal",
+      "topic_v3": "holiday",
+      "count": 1
+    },
+    {
+      "topic_v2": "children",
+      "topic_v3": "parenting",
+      "count": 1
+    },
+    {
+      "topic_v2": "mirror",
+      "topic_v3": "aging",
+      "count": 1
+    },
+    {
+      "topic_v2": "chat",
+      "topic_v3": "social media",
+      "count": 1
+    },
+    {
+      "topic_v2": "appliance",
+      "topic_v3": "marriage",
+      "count": 1
+    },
+    {
+      "topic_v2": "conversation",
+      "topic_v3": "other",
+      "count": 1
+    },
+    {
+      "topic_v2": "parking",
+      "topic_v3": "driving",
+      "count": 1
+    },
+    {
+      "topic_v2": "number",
+      "topic_v3": "math",
+      "count": 1
+    },
+    {
+      "topic_v2": "restriction",
+      "topic_v3": "other",
+      "count": 1
+    },
+    {
+      "topic_v2": "magic",
+      "topic_v3": "driving",
+      "count": 1
+    },
+    {
+      "topic_v2": "magnet",
+      "topic_v3": "shopping",
+      "count": 1
+    },
+    {
+      "topic_v2": "communication",
+      "topic_v3": "language",
+      "count": 1
+    },
+    {
+      "topic_v2": "comedy",
+      "topic_v3": "politics",
+      "count": 1
+    },
+    {
+      "topic_v2": "comedy",
+      "topic_v3": "tax",
+      "count": 1
+    },
+    {
+      "topic_v2": "censorship",
+      "topic_v3": "politics",
+      "count": 1
+    },
+    {
+      "topic_v2": "paint",
+      "topic_v3": "art",
+      "count": 1
+    },
+    {
+      "topic_v2": "furniture",
+      "topic_v3": "politics",
+      "count": 1
+    },
+    {
+      "topic_v2": "censorship",
+      "topic_v3": "art",
+      "count": 1
+    },
+    {
+      "topic_v2": "tool",
+      "topic_v3": "politics",
+      "count": 1
+    },
+    {
+      "topic_v2": "baking",
+      "topic_v3": "chef",
+      "count": 1
+    },
+    {
+      "topic_v2": "drinking",
+      "topic_v3": "other",
+      "count": 1
+    },
+    {
+      "topic_v2": "statistics",
+      "topic_v3": "math",
+      "count": 1
+    },
+    {
+      "topic_v2": "defeat",
+      "topic_v3": "other",
+      "count": 1
+    },
+    {
+      "topic_v2": "shopping",
+      "topic_v3": "other",
+      "count": 1
+    },
+    {
+      "topic_v2": "phone",
+      "topic_v3": "doctor",
+      "count": 1
+    },
+    {
+      "topic_v2": "schedule",
+      "topic_v3": "time",
+      "count": 1
+    },
+    {
+      "topic_v2": "plant",
+      "topic_v3": "neighbor",
+      "count": 1
+    },
+    {
+      "topic_v2": "magic",
+      "topic_v3": "other",
+      "count": 1
+    },
+    {
+      "topic_v2": "adventure",
+      "topic_v3": "sport",
+      "count": 1
+    },
+    {
+      "topic_v2": "furniture",
+      "topic_v3": "shopping",
+      "count": 1
+    },
+    {
+      "topic_v2": "joke",
+      "topic_v3": "unparseable",
+      "count": 1
+    },
+    {
+      "topic_v2": "recall",
+      "topic_v3": "other",
+      "count": 1
+    },
+    {
+      "topic_v2": "office",
+      "topic_v3": "technology",
+      "count": 1
+    },
+    {
+      "topic_v2": "counting",
+      "topic_v3": "other",
+      "count": 1
+    },
+    {
+      "topic_v2": "bike",
+      "topic_v3": "car",
+      "count": 1
+    },
+    {
+      "topic_v2": "cheese",
+      "topic_v3": "fast food",
+      "count": 1
+    },
+    {
+      "topic_v2": "camping",
+      "topic_v3": "nature",
+      "count": 1
+    },
+    {
+      "topic_v2": "toy",
+      "topic_v3": "sport",
+      "count": 1
+    },
+    {
+      "topic_v2": "dish",
+      "topic_v3": "other",
+      "count": 1
+    },
+    {
+      "topic_v2": "stationery",
+      "topic_v3": "other",
+      "count": 1
+    },
+    {
+      "topic_v2": "candle",
+      "topic_v3": "other",
+      "count": 1
+    },
+    {
+      "topic_v2": "travel",
+      "topic_v3": "book",
+      "count": 1
+    },
+    {
+      "topic_v2": "noodle",
+      "topic_v3": "cooking",
+      "count": 1
+    },
+    {
+      "topic_v2": "egg",
+      "topic_v3": "breakfast",
+      "count": 1
+    },
+    {
+      "topic_v2": "animal",
+      "topic_v3": "fish",
+      "count": 1
+    },
+    {
+      "topic_v2": "beard",
+      "topic_v3": "other",
+      "count": 1
+    },
+    {
+      "topic_v2": "appliance",
+      "topic_v3": "work",
+      "count": 1
+    },
+    {
+      "topic_v2": "geometry",
+      "topic_v3": "other",
+      "count": 1
+    },
+    {
+      "topic_v2": "patience",
+      "topic_v3": "unparseable",
+      "count": 1
+    },
+    {
+      "topic_v2": "math",
+      "topic_v3": "dog",
+      "count": 1
+    },
+    {
+      "topic_v2": "keyboard",
+      "topic_v3": "work",
+      "count": 1
+    },
+    {
+      "topic_v2": "food",
+      "topic_v3": "cooking",
+      "count": 1
+    },
+    {
+      "topic_v2": "calendar",
+      "topic_v3": "work",
+      "count": 1
+    },
+    {
+      "topic_v2": "sleep",
+      "topic_v3": "time",
+      "count": 1
+    },
+    {
+      "topic_v2": "window",
+      "topic_v3": "other",
+      "count": 1
+    },
+    {
+      "topic_v2": "surgery",
+      "topic_v3": "other",
+      "count": 1
+    },
+    {
+      "topic_v2": "water",
+      "topic_v3": "work",
+      "count": 1
+    },
+    {
+      "topic_v2": "advertising",
+      "topic_v3": "computer",
+      "count": 1
+    },
+    {
+      "topic_v2": "farm",
+      "topic_v3": "work",
+      "count": 1
+    },
+    {
+      "topic_v2": "bicycle",
+      "topic_v3": "driving",
+      "count": 1
+    },
+    {
+      "topic_v2": "food",
+      "topic_v3": "language",
+      "count": 1
+    },
+    {
+      "topic_v2": "clothing",
+      "topic_v3": "language",
+      "count": 1
+    },
+    {
+      "topic_v2": "key",
+      "topic_v3": "other",
+      "count": 1
+    },
+    {
+      "topic_v2": "map",
+      "topic_v3": "other",
+      "count": 1
+    },
+    {
+      "topic_v2": "writing",
+      "topic_v3": "money",
+      "count": 1
+    },
+    {
+      "topic_v2": "bedding",
+      "topic_v3": "other",
+      "count": 1
+    },
+    {
+      "topic_v2": "geology",
+      "topic_v3": "divorce",
+      "count": 1
+    },
+    {
+      "topic_v2": "home",
+      "topic_v3": "other",
+      "count": 1
+    },
+    {
+      "topic_v2": "yoga",
+      "topic_v3": "exercise",
+      "count": 1
+    },
+    {
+      "topic_v2": "space",
+      "topic_v3": "school",
+      "count": 1
+    },
+    {
+      "topic_v2": "writing",
+      "topic_v3": "dating",
+      "count": 1
+    },
+    {
+      "topic_v2": "weather",
+      "topic_v3": "work",
+      "count": 1
+    },
+    {
+      "topic_v2": "clothing",
+      "topic_v3": "work",
+      "count": 1
+    },
+    {
+      "topic_v2": "nature",
+      "topic_v3": "other",
+      "count": 1
+    },
+    {
+      "topic_v2": "office",
+      "topic_v3": "work",
+      "count": 1
+    },
+    {
+      "topic_v2": "painting",
+      "topic_v3": "artist",
+      "count": 1
+    },
+    {
+      "topic_v2": "stair",
+      "topic_v3": "dating",
+      "count": 1
+    },
+    {
+      "topic_v2": "appliance",
+      "topic_v3": "musician",
+      "count": 1
+    },
+    {
+      "topic_v2": "baking",
+      "topic_v3": "cat",
+      "count": 1
+    },
+    {
+      "topic_v2": "mirror",
+      "topic_v3": "work",
+      "count": 1
+    },
+    {
+      "topic_v2": "fortune",
+      "topic_v3": "luck",
+      "count": 1
+    },
+    {
+      "topic_v2": "sight",
+      "topic_v3": "other",
+      "count": 1
+    },
+    {
+      "topic_v2": "gravity",
+      "topic_v3": "science",
+      "count": 1
+    },
+    {
+      "topic_v2": "toy",
+      "topic_v3": "dating",
+      "count": 1
+    },
+    {
+      "topic_v2": "road",
+      "topic_v3": "language",
+      "count": 1
+    },
+    {
+      "topic_v2": "pet",
+      "topic_v3": "animal",
+      "count": 1
+    },
+    {
+      "topic_v2": "plant",
+      "topic_v3": "shopping",
+      "count": 1
+    },
+    {
+      "topic_v2": "fashion",
+      "topic_v3": "space",
+      "count": 1
+    },
+    {
+      "topic_v2": "kitchen",
+      "topic_v3": "other",
+      "count": 1
+    },
+    {
+      "topic_v2": "dinosaur",
+      "topic_v3": "other",
+      "count": 1
+    },
+    {
+      "topic_v2": "zoo",
+      "topic_v3": "animal",
+      "count": 1
+    },
+    {
+      "topic_v2": "echo",
+      "topic_v3": "unparseable",
+      "count": 1
+    },
+    {
+      "topic_v2": "math",
+      "topic_v3": "travel",
+      "count": 1
+    },
+    {
+      "topic_v2": "baking",
+      "topic_v3": "other",
+      "count": 1
+    },
+    {
+      "topic_v2": "music",
+      "topic_v3": "vegetable",
+      "count": 1
+    },
+    {
+      "topic_v2": "plant",
+      "topic_v3": "other",
+      "count": 1
+    },
+    {
+      "topic_v2": "clothing",
+      "topic_v3": "shopping",
+      "count": 1
+    },
+    {
+      "topic_v2": "bakery",
+      "topic_v3": "cooking",
+      "count": 1
+    },
+    {
+      "topic_v2": "umbrella",
+      "topic_v3": "other",
+      "count": 1
+    },
+    {
+      "topic_v2": "space",
+      "topic_v3": "other",
+      "count": 1
+    },
+    {
+      "topic_v2": "chemistry",
+      "topic_v3": "other",
+      "count": 1
+    },
+    {
+      "topic_v2": "money",
+      "topic_v3": "cooking",
+      "count": 1
+    },
+    {
+      "topic_v2": "competition",
+      "topic_v3": "language",
+      "count": 1
+    },
+    {
+      "topic_v2": "punctuation",
+      "topic_v3": "programming",
+      "count": 1
+    },
+    {
+      "topic_v2": "card",
+      "topic_v3": "other",
+      "count": 1
+    },
+    {
+      "topic_v2": "calendar",
+      "topic_v3": "time",
+      "count": 1
+    },
+    {
+      "topic_v2": "health",
+      "topic_v3": "doctor",
+      "count": 1
+    },
+    {
+      "topic_v2": "juice",
+      "topic_v3": "work",
+      "count": 1
+    },
+    {
+      "topic_v2": "picture",
+      "topic_v3": "other",
+      "count": 1
+    },
+    {
+      "topic_v2": "fog",
+      "topic_v3": "other",
+      "count": 1
+    },
+    {
+      "topic_v2": "running",
+      "topic_v3": "sport",
+      "count": 1
+    },
+    {
+      "topic_v2": "party",
+      "topic_v3": "economy",
+      "count": 1
+    },
+    {
+      "topic_v2": "theft",
+      "topic_v3": "money",
+      "count": 1
+    },
+    {
+      "topic_v2": "radio",
+      "topic_v3": "marriage",
+      "count": 1
+    },
+    {
+      "topic_v2": "farm",
+      "topic_v3": "other",
+      "count": 1
+    },
+    {
+      "topic_v2": "appliance",
+      "topic_v3": "exam",
+      "count": 1
+    },
+    {
+      "topic_v2": "photography",
+      "topic_v3": "work",
+      "count": 1
+    },
+    {
+      "topic_v2": "balloon",
+      "topic_v3": "economy",
+      "count": 1
+    },
+    {
+      "topic_v2": "memory",
+      "topic_v3": "other",
+      "count": 1
+    },
+    {
+      "topic_v2": "toy",
+      "topic_v3": "shopping",
+      "count": 1
+    },
+    {
+      "topic_v2": "cleaning",
+      "topic_v3": "work",
+      "count": 1
+    },
+    {
+      "topic_v2": "bill",
+      "topic_v3": "debt",
+      "count": 1
+    },
+    {
+      "topic_v2": "indecision",
+      "topic_v3": "friendship",
+      "count": 1
+    },
+    {
+      "topic_v2": "word",
+      "topic_v3": "language",
+      "count": 1
+    },
+    {
+      "topic_v2": "candle",
+      "topic_v3": "work",
+      "count": 1
+    },
+    {
+      "topic_v2": "procrastination",
+      "topic_v3": "time",
+      "count": 1
+    },
+    {
+      "topic_v2": "balloon",
+      "topic_v3": "other",
+      "count": 1
+    },
+    {
+      "topic_v2": "chicken",
+      "topic_v3": "bird",
+      "count": 1
+    },
+    {
+      "topic_v2": "supernatural",
+      "topic_v3": "weather",
+      "count": 1
+    },
+    {
+      "topic_v2": "house",
+      "topic_v3": "language",
+      "count": 1
+    },
+    {
+      "topic_v2": "sailing",
+      "topic_v3": "travel",
+      "count": 1
+    },
+    {
+      "topic_v2": "water",
+      "topic_v3": "other",
+      "count": 1
+    },
+    {
+      "topic_v2": "insect",
+      "topic_v3": "internet",
+      "count": 1
+    },
+    {
+      "topic_v2": "cleaning",
+      "topic_v3": "sleep",
+      "count": 1
+    },
+    {
+      "topic_v2": "acting",
+      "topic_v3": "art",
+      "count": 1
+    },
+    {
+      "topic_v2": "food",
+      "topic_v3": "dessert",
+      "count": 1
+    },
+    {
+      "topic_v2": "house",
+      "topic_v3": "other",
+      "count": 1
+    },
+    {
+      "topic_v2": "money",
+      "topic_v3": "work",
+      "count": 1
+    },
+    {
+      "topic_v2": "bee",
+      "topic_v3": "insect",
+      "count": 1
+    },
+    {
+      "topic_v2": "animal",
+      "topic_v3": "insect",
+      "count": 1
+    },
+    {
+      "topic_v2": "elevator",
+      "topic_v3": "doctor",
+      "count": 1
+    },
+    {
+      "topic_v2": "well",
+      "topic_v3": "language",
+      "count": 1
+    },
+    {
+      "topic_v2": "music",
+      "topic_v3": "other",
+      "count": 1
+    },
+    {
+      "topic_v2": "cycling",
+      "topic_v3": "other",
+      "count": 1
+    },
+    {
+      "topic_v2": "photography",
+      "topic_v3": "crime",
+      "count": 1
+    },
+    {
+      "topic_v2": "traffic",
+      "topic_v3": "other",
+      "count": 1
+    },
+    {
+      "topic_v2": "body",
+      "topic_v3": "language",
+      "count": 1
+    },
+    {
+      "topic_v2": "tennis",
+      "topic_v3": "sport",
+      "count": 1
+    }
+  ]
+}

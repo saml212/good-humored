@@ -1,0 +1,15 @@
+{
+  "models": [
+    "api:glm"
+  ],
+  "runs_per_model": {
+    "api:glm": 1
+  },
+  "labeler": "v3",
+  "label_prompt_version": "v3-constrained",
+  "relabel_provider": "claude:haiku",
+  "source_lane": "experiment-runs/2026-07-17-cascade-pilot/lane-api-fill-glm2",
+  "label_space_degraded": false,
+  "failures": [],
+  "per_model": {}
+}

@@ -1,0 +1,186 @@
+{
+  "models": [
+    "fable"
+  ],
+  "runs_per_model": {
+    "fable": 2
+  },
+  "labeler": "v3",
+  "label_prompt_version": "v3-constrained",
+  "relabel_provider": "claude:haiku",
+  "source_lane": "experiment-runs/2026-07-17-cascade-pilot/lane-claude-fill-fable",
+  "label_space_degraded": false,
+  "failures": [],
+  "per_model": {
+    "fable": {
+      "divergence": {
+        "set_jaccard": 0.52,
+        "prefix_depth": 3.0,
+        "norm_edit_distance": 0.7333333333333333,
+        "n_pairs": 1.0
+      },
+      "degradation": [
+        {
+          "repeat_depth": 2,
+          "refusal_depth": null,
+          "depth": 2
+        },
+        {
+          "repeat_depth": 2,
+          "refusal_depth": null,
+          "depth": 2
+        }
+      ],
+      "divergence_semantic": {
+        "set_jaccard": 0.5,
+        "prefix_depth": 3.0,
+        "norm_edit_distance": 0.7333333333333333,
+        "n_pairs": 1.0
+      },
+      "degradation_semantic": [
+        {
+          "repeat_depth": 2,
+          "refusal_depth": null,
+          "depth": 2
+        },
+        {
+          "repeat_depth": 2,
+          "refusal_depth": null,
+          "depth": 2
+        }
+      ],
+      "paths": [
+        [
+          "programming",
+          "other",
+          "other",
+          "nature",
+          "car",
+          "fast food",
+          "dating",
+          "animal",
+          "sport",
+          "math",
+          "other",
+          "music",
+          "work",
+          "scientist",
+          "art",
+          "other",
+          "nature",
+          "time",
+          "other",
+          "sport",
+          "travel",
+          "other",
+          "other",
+          "dog",
+          "other",
+          "hairdresser",
+          "smartphone",
+          "other",
+          "other",
+          "other"
+        ],
+        [
+          "programming",
+          "other",
+          "other",
+          "coffee",
+          "animal",
+          "dating",
+          "other",
+          "music",
+          "time",
+          "other",
+          "other",
+          "other",
+          "book",
+          "cooking",
+          "other",
+          "math",
+          "weather",
+          "other",
+          "art",
+          "hairdresser",
+          "banking",
+          "sleep",
+          "sport",
+          "scientist",
+          "other",
+          "other",
+          "other",
+          "crime",
+          "dog",
+          "smartphone"
+        ]
+      ],
+      "paths_semantic": [
+        [
+          "programming",
+          "other",
+          "other",
+          "nature",
+          "car",
+          "fast food",
+          "dating",
+          "dog",
+          "sport",
+          "math",
+          "other",
+          "music",
+          "work",
+          "scientist",
+          "art",
+          "other",
+          "nature",
+          "time",
+          "other",
+          "sport",
+          "travel",
+          "other",
+          "other",
+          "dog",
+          "other",
+          "hairdresser",
+          "smartphone",
+          "other",
+          "other",
+          "other"
+        ],
+        [
+          "programming",
+          "other",
+          "other",
+          "coffee",
+          "dog",
+          "dating",
+          "other",
+          "music",
+          "time",
+          "other",
+          "other",
+          "other",
+          "book",
+          "cooking",
+          "other",
+          "math",
+          "weather",
+          "other",
+          "art",
+          "hairdresser",
+          "banking",
+          "sleep",
+          "sport",
+          "scientist",
+          "other",
+          "other",
+          "other",
+          "crime",
+          "dog",
+          "smartphone"
+        ]
+      ]
+    }
+  }
+}

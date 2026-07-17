@@ -1,0 +1,142 @@
+{
+  "models": [
+    "api:kimi"
+  ],
+  "runs_per_model": {
+    "api:kimi": 2
+  },
+  "labeler": "v3",
+  "label_prompt_version": "v3-constrained",
+  "relabel_provider": "claude:haiku",
+  "source_lane": "experiment-runs/2026-07-17-cascade-pilot/lane-api-fill-kimi2",
+  "label_space_degraded": false,
+  "failures": [],
+  "per_model": {
+    "api:kimi": {
+      "divergence": {
+        "set_jaccard": 0.5238095238095238,
+        "prefix_depth": 1.0,
+        "norm_edit_distance": 0.75,
+        "n_pairs": 1.0
+      },
+      "degradation": [
+        {
+          "repeat_depth": 3,
+          "refusal_depth": null,
+          "depth": 3
+        },
+        {
+          "repeat_depth": 15,
+          "refusal_depth": null,
+          "depth": 15
+        }
+      ],
+      "divergence_semantic": {
+        "set_jaccard": 0.5238095238095238,
+        "prefix_depth": 1.0,
+        "norm_edit_distance": 0.75,
+        "n_pairs": 1.0
+      },
+      "degradation_semantic": [
+        {
+          "repeat_depth": 3,
+          "refusal_depth": null,
+          "depth": 3
+        },
+        {
+          "repeat_depth": 15,
+          "refusal_depth": null,
+          "depth": 15
+        }
+      ],
+      "paths": [
+        [
+          "marriage",
+          "family",
+          "time",
+          "time",
+          "book",
+          "weather",
+          "money",
+          "farmer",
+          "doctor",
+          "sport",
+          "school",
+          "science",
+          "math",
+          "work",
+          "driving",
+          "music",
+          "artist",
+          "other",
+          "other",
+          "other"
+        ],
+        [
+          "marriage",
+          "book",
+          "travel",
+          "other",
+          "science",
+          "farmer",
+          "money",
+          "sport",
+          "doctor",
+          "banking",
+          "language",
+          "artist",
+          "time",
+          "work",
+          "musician",
+          "other",
+          "work",
+          "time"
+        ]
+      ],
+      "paths_semantic": [
+        [
+          "marriage",
+          "family",
+          "time",
+          "time",
+          "book",
+          "weather",
+          "money",
+          "farmer",
+          "doctor",
+          "sport",
+          "school",
+          "science",
+          "math",
+          "work",
+          "driving",
+          "music",
+          "artist",
+          "other",
+          "other",
+          "other"
+        ],
+        [
+          "marriage",
+          "book",
+          "travel",
+          "other",
+          "science",
+          "farmer",
+          "money",
+          "sport",
+          "doctor",
+          "banking",
+          "language",
+          "artist",
+          "time",
+          "work",
+          "musician",
+          "other",
+          "work",
+          "time"
+        ]
+      ]
+    }
+  }
+}

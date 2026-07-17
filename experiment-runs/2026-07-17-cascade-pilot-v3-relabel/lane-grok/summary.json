@@ -1,0 +1,236 @@
+{
+  "models": [
+    "api:grok"
+  ],
+  "runs_per_model": {
+    "api:grok": 3
+  },
+  "labeler": "v3",
+  "label_prompt_version": "v3-constrained",
+  "relabel_provider": "claude:haiku",
+  "source_lane": "experiment-runs/2026-07-17-cascade-pilot/lane-grok",
+  "label_space_degraded": false,
+  "failures": [],
+  "per_model": {
+    "api:grok": {
+      "divergence": {
+        "set_jaccard": 0.4177334016043694,
+        "prefix_depth": 1.0,
+        "norm_edit_distance": 0.8021978021978023,
+        "n_pairs": 3.0
+      },
+      "degradation": [
+        {
+          "repeat_depth": 5,
+          "refusal_depth": null,
+          "depth": 5
+        },
+        {
+          "repeat_depth": 1,
+          "refusal_depth": null,
+          "depth": 1
+        },
+        {
+          "repeat_depth": 1,
+          "refusal_depth": null,
+          "depth": 1
+        }
+      ],
+      "divergence_semantic": {
+        "set_jaccard": 0.45300677021107133,
+        "prefix_depth": 1.0,
+        "norm_edit_distance": 0.8021978021978023,
+        "n_pairs": 3.0
+      },
+      "degradation_semantic": [
+        {
+          "repeat_depth": 5,
+          "refusal_depth": null,
+          "depth": 5
+        },
+        {
+          "repeat_depth": 1,
+          "refusal_depth": null,
+          "depth": 1
+        },
+        {
+          "repeat_depth": 1,
+          "refusal_depth": null,
+          "depth": 1
+        }
+      ],
+      "paths": [
+        [
+          "science",
+          "other",
+          "coffee",
+          "farmer",
+          "sport",
+          "other",
+          "other",
+          "time",
+          "vegetable",
+          "money",
+          "bird",
+          "art",
+          "dentist",
+          "computer",
+          "school",
+          "weather",
+          "fish",
+          "language",
+          "book",
+          "bird",
+          "cat",
+          "math",
+          "music",
+          "travel",
+          "doctor",
+          "smartphone",
+          "other",
+          "other"
+        ],
+        [
+          "other",
+          "other",
+          "vegetable",
+          "science",
+          "farmer",
+          "time",
+          "teacher",
+          "sport",
+          "sleep",
+          "other",
+          "other",
+          "banking",
+          "bird",
+          "math",
+          "music",
+          "internet",
+          "book",
+          "computer",
+          "other",
+          "smartphone",
+          "fish",
+          "doctor",
+          "animal",
+          "chore",
+          "dating",
+          "driving"
+        ],
+        [
+          "other",
+          "other",
+          "vegetable",
+          "sport",
+          "math",
+          "scientist",
+          "other",
+          "time",
+          "sleep",
+          "other",
+          "other",
+          "money",
+          "computer",
+          "musician",
+          "other",
+          "other",
+          "cat",
+          "sleep",
+          "school",
+          "sport",
+          "smartphone",
+          "doctor",
+          "dating",
+          "art"
+        ]
+      ],
+      "paths_semantic": [
+        [
+          "science",
+          "other",
+          "coffee",
+          "farmer",
+          "sport",
+          "other",
+          "other",
+          "time",
+          "vegetable",
+          "money",
+          "bird",
+          "art",
+          "dentist",
+          "computer",
+          "school",
+          "weather",
+          "fish",
+          "language",
+          "book",
+          "bird",
+          "cat",
+          "math",
+          "music",
+          "travel",
+          "doctor",
+          "smartphone",
+          "other",
+          "other"
+        ],
+        [
+          "other",
+          "other",
+          "vegetable",
+          "science",
+          "farmer",
+          "time",
+          "teacher",
+          "sport",
+          "sleep",
+          "other",
+          "other",
+          "banking",
+          "bird",
+          "math",
+          "music",
+          "internet",
+          "book",
+          "computer",
+          "other",
+          "smartphone",
+          "fish",
+          "doctor",
+          "animal",
+          "chore",
+          "dating",
+          "driving"
+        ],
+        [
+          "other",
+          "other",
+          "vegetable",
+          "sport",
+          "math",
+          "science",
+          "other",
+          "time",
+          "sleep",
+          "other",
+          "other",
+          "money",
+          "computer",
+          "musician",
+          "other",
+          "other",
+          "cat",
+          "sleep",
+          "school",
+          "sport",
+          "smartphone",
+          "doctor",
+          "dating",
+          "art"
+        ]
+      ]
+    }
+  }
+}

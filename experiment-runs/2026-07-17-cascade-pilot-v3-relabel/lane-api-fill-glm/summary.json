@@ -1,0 +1,178 @@
+{
+  "models": [
+    "api:glm"
+  ],
+  "runs_per_model": {
+    "api:glm": 2
+  },
+  "labeler": "v3",
+  "label_prompt_version": "v3-constrained",
+  "relabel_provider": "claude:haiku",
+  "source_lane": "experiment-runs/2026-07-17-cascade-pilot/lane-api-fill-glm",
+  "label_space_degraded": false,
+  "failures": [],
+  "per_model": {
+    "api:glm": {
+      "divergence": {
+        "set_jaccard": 0.23809523809523808,
+        "prefix_depth": 0.0,
+        "norm_edit_distance": 0.6,
+        "n_pairs": 1.0
+      },
+      "degradation": [
+        {
+          "repeat_depth": 7,
+          "refusal_depth": null,
+          "depth": 7
+        },
+        {
+          "repeat_depth": 8,
+          "refusal_depth": null,
+          "depth": 8
+        }
+      ],
+      "divergence_semantic": {
+        "set_jaccard": 0.25,
+        "prefix_depth": 0.0,
+        "norm_edit_distance": 0.6,
+        "n_pairs": 1.0
+      },
+      "degradation_semantic": [
+        {
+          "repeat_depth": 7,
+          "refusal_depth": null,
+          "depth": 7
+        },
+        {
+          "repeat_depth": 8,
+          "refusal_depth": null,
+          "depth": 8
+        }
+      ],
+      "paths": [
+        [
+          "time",
+          "space",
+          "divorce",
+          "weather",
+          "other",
+          "dating",
+          "science",
+          "other",
+          "chore",
+          "work",
+          "other",
+          "doctor",
+          "other",
+          "technology",
+          "other",
+          "work",
+          "other",
+          "other",
+          "doctor",
+          "other",
+          "other",
+          "other",
+          "other",
+          "other",
+          "other",
+          "other"
+        ],
+        [
+          "other",
+          "school",
+          "internet",
+          "music",
+          "artist",
+          "insect",
+          "time",
+          "science",
+          "other",
+          "other",
+          "doctor",
+          "other",
+          "other",
+          "space",
+          "art",
+          "tax",
+          "art",
+          "other",
+          "other",
+          "programming",
+          "other",
+          "other",
+          "vegetable",
+          "doctor",
+          "other",
+          "other",
+          "other",
+          "season",
+          "other",
+          "other"
+        ]
+      ],
+      "paths_semantic": [
+        [
+          "time",
+          "space",
+          "divorce",
+          "weather",
+          "other",
+          "dating",
+          "science",
+          "other",
+          "chore",
+          "work",
+          "other",
+          "doctor",
+          "other",
+          "technology",
+          "other",
+          "work",
+          "other",
+          "other",
+          "doctor",
+          "other",
+          "other",
+          "other",
+          "other",
+          "other",
+          "other",
+          "other"
+        ],
+        [
+          "other",
+          "school",
+          "internet",
+          "music",
+          "art",
+          "insect",
+          "time",
+          "science",
+          "other",
+          "other",
+          "doctor",
+          "other",
+          "other",
+          "space",
+          "art",
+          "tax",
+          "art",
+          "other",
+          "other",
+          "programming",
+          "other",
+          "other",
+          "vegetable",
+          "doctor",
+          "other",
+          "other",
+          "other",
+          "season",
+          "other",
+          "other"
+        ]
+      ]
+    }
+  }
+}

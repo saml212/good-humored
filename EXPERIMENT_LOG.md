@@ -683,3 +683,46 @@ fingerprints" — written when grok had no path data and its recall
 pattern was folded in with OpenAI's. With grok's complete cascade
 profile (addendum 2), the accurate count is **four** per-lab
 fingerprints; FINDINGS.md and paper/DRAFT.md now say four.
+
+---
+
+## EXP-008 addendum — v3 FAILS in the field: wild-data coverage collapse (2026-07-17)
+
+**What the v3 relabel of the full pilot found (1,532 turns, 1,327 unique
+jokes, experiment-runs/2026-07-17-cascade-pilot-v3-relabel/):** the
+constrained 110-entry vocabulary maps **42.6% of wild turns to the
+catch-all `other`** (653/1532). v2's single most common wild label —
+`comedy`, 10.1% of all turns; models joke about joking constantly under
+rejection pressure — has no v3 vocabulary entry (116/155 → `other`),
+and neither do `clothing`, `censorship`, `death`, `writing`, `stair`,
+and a long tail of everyday topics. v2↔v3 exact agreement: 0.221.
+
+**Consequence 1 — the v3-relabel "analysis" is an instrument artifact,
+not a finding:** with 4 in 10 turns sharing one label, repeats are
+manufactured everywhere (cross-model jaccard inflates 0.113 → 0.181;
+grok "degrades" by turn ~5 after 4 genuinely clean runs; qwen "opens
+with `other`" 4/4). None of these numbers supersede anything.
+
+**Consequence 2 — EXP-008's verdict is corrected, loudly:** v3 is
+paper-grade ON THE FIXTURE (invariance 1.000, ARI 0.924 — real, but the
+fixture only contains in-vocabulary topics, so coverage was untested by
+construction). In the field it is INVALID as-is. Fixture validation ≠
+field validation. The pilot's v2-labeled numbers (FINDINGS.md) remain
+authoritative — v2's known failure mode (synonym splitting) biases
+AGAINST collapse claims, which is the safe direction.
+
+**Consequence 3 — EXP-006b is BLOCKED as designed** (its rate extraction
+assumed v3 as the cleaner reference; a 42.6% catch-all makes the rate
+triple meaningless). Calibration exp-006b-v3-rates stays open, blocked
+on v4.
+
+**Next instrument iteration (v4, queued):** expand the vocabulary from
+the wild v2 label distribution (add comedy/meta-humor and the observed
+tail), keep one-canonical-per-concept, then re-validate BOTH ways:
+fixture bars (invariance ≥0.90, ARI ≥0.80) AND a new field-coverage bar
+(catch-all + unparseable ≤5% on wild pilot turns) — the bar this failure
+teaches. Relabel is cached; a v4 relabel re-runs cheap.
+
+[LEARN] instrument-validation: A constrained-vocabulary instrument needs a FIELD-COVERAGE bar, not just fixture bars.
+Mistake: EXP-008 declared v3 paper-grade off perfect fixture scores; the fixture only contained in-vocabulary topics, so the 110-entry vocabulary's wild-data coverage was never tested — in the field 42.6% of turns fell into the catch-all and the instrument manufactured degradations.
+Correction: Every labeler validation must include a wild-data coverage check (catch-all + unparseable rate ≤5% on real pilot output) alongside fixture invariance/ARI, and no instrument replaces a validated predecessor until it passes both.
