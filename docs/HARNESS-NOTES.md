@@ -80,7 +80,37 @@ available ignored the advice. Gates work. Nudges are decoration.
 
 ---
 
-## 4. Commercial posture
+## 4. Running ledger — what still needs fixing (updated 2026-07-16 night)
+
+Found while doing real research work with the harness, as a user-agent would.
+Status: OPEN unless noted.
+
+### rockie-claude harness
+
+| # | Finding | Status |
+|---|---|---|
+| L1 | `pre-train-gate` false-blocks read-only commands: extracts the LAST `.py` token in a compound command (grabbed a `find -name "journal.py"` pattern), and `[[:graph:]]` keeps quote chars → malformed path → hard error blocks the command | Fix PR in flight (agent) |
+| L2 | `/clean` new-.md blocker fires on the exact files the harness's own template mandates (STATE.md, EXPERIMENT_LOG.md, README.md) — a new user's first real commit is blocked by the harness's own requirements | Fix PR in flight (agent, canonical) |
+| L3 | `pre-commit-gate` blocks the ENTIRE compound command, so `git add X && git commit` dies with the add never having run — and the error doesn't say so. Cost me two phantom-debugging rounds. Error text should state "no part of the command ran" | OPEN |
+| L4 | Audit-then-commit must be two separate Bash calls (PreToolUse evaluates before the in-command audit can write the sentinel). Fine as design, but nothing documents it; every new agent will trip it once | OPEN (docs) |
+| L5 | `audit.py --scope staged` on an EMPTY staged set happily writes a sentinel (trivial zero-blocker pass). Harmless today (hash won't match once files stage) but a confusing state; should warn "nothing staged" | OPEN |
+| L6 | `install.sh` rsynced ALL of project-harness/skills into every project — 10 catalog-duplicated domain skills bloating every session | FIXED — PR #33 (manifest) |
+| L7 | Budget gate failed OPEN on a crashing budget.py | FIXED — PR #20 |
+| L8 | Nested `claude -p` inherits project CLAUDE.md from cwd — any harness feature that shells out to a model as an *instrument* must use a neutral cwd. The harness itself does not document or guard this | OPEN (doc/guard) |
+| L9 | STATE.md / EXPERIMENT_LOG.md are mandated by the template but not scaffolded by the installer — every new project recreates them from prose | OPEN |
+| L10 | `[LEARN]` blocks: no feedback on whether the hook actually captured one (fire-and-forget from the agent's side) | OPEN (UX) |
+
+### rockie CLI
+
+| # | Finding | Status |
+|---|---|---|
+| C1 | `skill pull` takes `catalog_id`, not `name`; they differ for 39/297 entries. Pull-by-name 404s with no hint | OPEN |
+| C2 | `catalog --search` is client-side substring: `--search verl` returns geopandas ("o**verl**ay") | OPEN |
+| C3 | `sota-delta` exists in the harness but was never pushed to the catalog (`tenant_visible_count: 296`) | OPEN |
+| C4 | No `rockie skill push` dry-run; pushing writes to the live tenant overlay with no preview — agents were forbidden from using it this session for that reason | OPEN |
+| C5 | Trailer policy conflict: rockie-claude CONTRIBUTING.md + platform-context commit-msg hook forbid `Co-Authored-By: Claude`, while Claude Code's defaults add it — every agent hits this once per repo | OPEN (reconcile) |
+
+## 5. Commercial posture
 
 - `good-humored` is public with **no license** — all rights reserved, which is the
   maximum commercial protection. The danger runs the other way: an OSS license is
