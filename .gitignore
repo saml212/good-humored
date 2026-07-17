@@ -93,3 +93,4 @@ CLAUDE.md
 # references/*.md and references/papers.bib instead.
 references/pdfs/
 docs/private/
+__pycache__/
