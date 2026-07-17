@@ -879,3 +879,40 @@ regex also has documented false positives (in-character melodrama).
 Both disclosed in stats_inference.json + FINDINGS + DRAFT rather than
 smoothed. Driver gained meta-excluded/incidence-Fisher/dual-tier/
 decomposition sections; integrity checks pass; 312 tests green.
+
+---
+
+## EXP-010 — Result (2026-07-17)
+
+**All three registered validations ran; 3 of 4 bars pass, one marginal
+miss, one new dual-role finding.**
+- **Fixture (canon path):** invariance 0.900 (bar 0.90 — at-bar, pred
+  0.95), ARI 0.860 (bar 0.80), still beats keyword baseline everywhere.
+  Note v4 scores BELOW v3's fixture numbers (1.000/0.924) — the measured
+  price of the two-tier prompt; the field is where v4 wins.
+- **Invariance probes: 18/18** (pred 0.94) — scarecrow→farming,
+  skeleton→skeleton, bicycle→bicycle (via bike alias), all 6/6, all
+  canon tier. The three evidenced trap families are closed.
+- **Field run (1,532 wild turns): escape_rate 0.1723 vs registered
+  prediction 0.17** — a near-exact calibration hit (structural floor
+  0.154). canon 0.803; two-tier behaves as designed: comedy absorbs 282
+  turns via canon+aliases, ghost stays free (9), 153 distinct free
+  labels (splits-not-merges confirmed). Codex-family jokes escape most
+  (mini 33%, sol 27%, 5.4 24% — computer/programming-flavored topics
+  underrepresented in the vocabulary; noted for a v5 pass, not blocking).
+- **Unparseable bar MISSED, and the miss is a finding:** overall 2.48%
+  vs bar ≤2.0% — but per-model decomposition shows it is ENTIRELY haiku:
+  haiku-as-subject 29.2% unparseable under v4, every other model 0–1.7%.
+  The rejector's own jokes break its sibling instrument's parse at 17×
+  the roster rate — a fourth manifestation of the dual-role anomaly
+  (after its degradation depths, its memorization tier, and its judge
+  role). Requires inspection of the failing turns before v4 promotion;
+  until then v2 REMAINS the authoritative pilot instrument and v4 is
+  field-validated-with-caveat.
+
+**Verdict:** the two-tier redesign survives contact with the field —
+escape and canon behave as predicted to within half a point — but
+promotion to authoritative instrument is BLOCKED on the haiku
+unparseable anomaly, not on coverage. Calibrations: all three closed
+(0.90/0.95 ✓sign, 1.00/0.94 ✓, 0.1723/0.17 ✓ near-exact). Data:
+experiment-runs/2026-07-17-v4-validation/.

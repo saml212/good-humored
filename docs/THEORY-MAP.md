@@ -809,6 +809,622 @@ dedicated experiment cycle rather than a same-day fix.
 
 ---
 
+## 12. Registration-grade specs: the next two reward terms (2026-07-17)
+
+These two specs turn priority-translation #3 above (§2's BVT gate) and
+§1's incongruity-resolution candidate upgrade from prose into buildable,
+TRL-compatible reward terms, following exactly the discipline
+`env/semantic_novelty.py` established for the last new tier: inert by
+default (`weight=0.0`), sign-guarded, no hidden network calls, a
+pre-registered validation design with numeric bars before either is
+trusted in a live run. **Neither is built yet** — this is the spec, not
+the implementation. No API calls were made writing this; every number
+below is a registered prediction/bar, not a measured result.
+
+### 12.1 BVT multiplicative gate — `BVTGateReward`
+
+**Theory citation trail.** McGraw & Warren (2010), *Psychological
+Science* 21(8), `mcgraw2010benign` (§2 above, primary, full text
+confirmed): "three conditions are jointly necessary and sufficient for
+eliciting humor: a situation must be appraised as a violation, a
+situation must be appraised as benign, and these two appraisals must
+occur simultaneously." **What this operationalization loses, stated up
+front rather than discovered later:** (a) "appraisal" in the theory is a
+property of a PERCEIVER's judgment relative to their own norms and
+psychological distance from the situation — not a property of text in
+isolation. Substituting an LLM judge's rating collapses an
+audience-relative event into "how one model reads it," inheriting
+exactly the κ=0.41/audience-relativity gaps §7–§8 already document, not
+fixing them. (b) "Simultaneous" describes two appraisals happening in
+ONE mind's processing at once; two separate judge calls (chosen
+deliberately below, to avoid anchoring) encode the LOGICAL conjunction
+(both must be true) but not literal temporal simultaneity in a single
+appraisal process — no scalar product captures the phenomenology, only
+the logic. (c) `references/theory-operationalization.md` RQ2 confirms (a
+documented search trail, not an assumption) that **no published work has
+computationally tested multiplicative-vs-additive BVT** — the one
+existing attempt to combine multiple humor theories computationally,
+THInC (De Marez, Winters & Rigouts Terryn 2024, CREAI workshop,
+arXiv:2409.01232), chose additive GA2M with limited pairwise
+interactions, not a clean product. That is real, if indirect, evidence
+against assuming a multiplicative architecture is obviously correct just
+because the theory is dual-appraisal — recorded honestly here so the
+eventual write-up doesn't oversell how settled this is. Building and
+validating the product against a real human-rated dataset (Oogiri-GO,
+per RQ2's own actionability note) IS the novel contribution, not a
+foregone conclusion.
+
+**Combination structure — product, argued against min() and soft-AND.**
+Three candidates, `v` = violation_score, `b` = benign_score, both in
+[0,1]:
+
+| combination | formula | AND-strictness | worst failure mode |
+|---|---|---|---|
+| min | `min(v,b)` | strict floor, zero compensability | vanishing gradient on the non-binding term; degenerates to whichever dimension has within-GROUP variance |
+| **product (chosen)** | `v·b` | sub-multiplicative, punishes near-zero on either dimension hardest | benign-washing; correlated-judge-template exploitation |
+| soft-AND (geometric mean) | `√(v·b)` | re-admits partial compensability | reintroduces the exact additive-sum failure this term exists to close |
+
+**min() rejected — not for the textbook "fuzzy-logic AND" reason, for a
+GRPO-specific one.** `env/rewards.py`'s reward functions feed
+`GRPOTrainer`, which computes advantage RELATIVE TO OTHER COMPLETIONS IN
+THE SAME GROUP (same prompt, `num_generations` samples — see
+`IntraGroupDiversityReward`'s own docstring on this exact TRL behavior).
+`min(v,b)`'s gradient is exactly zero with respect to whichever term is
+NOT currently the minimum — so if one detector (say the benign judge,
+being lenient about fictional framing) rates every completion in a group
+near-ceiling while the other (violation) is where the real variance
+lives, `min(v,b) ≈ v` for the WHOLE group, and the policy-gradient
+signal collapses to "whichever single detector currently has
+within-group variance" — precisely the additive-stack failure this term
+exists to close, just hiding one level down instead of at the top. This
+is plausible, not contrived: GRPO groups share one prompt, so completions
+in a group are often similar enough in norm-content that a coarse benign
+classifier rates them uniformly. Product's gradient (`∂(vb)/∂v = b`,
+`∂(vb)/∂b = v`) never fully zeroes on either side as long as the OTHER
+term is nonzero, so within-group variance in EITHER dimension always
+contributes to the learning signal — the concrete, GRPO-specific reason
+to prefer product over min, not just "the theory says multiply."
+
+**Soft-AND (geometric mean) rejected for reintroducing compensability.**
+`√(v·b)` sits, by the AM-GM-HM inequality chain, strictly between
+`min(v,b)` and the arithmetic mean — e.g. v=0.01, b=1.0 gives product
+0.01 (correctly ≈zero) but geometric mean 0.1 (a near-total absence of
+violation still earns 10% credit). That residual tolerance for a
+near-zero term is EXACTLY the "one signal compensates for the other's
+near-absence" failure §2 diagnoses in the current additive sum, just
+softened rather than closed. Kept on record as a documented escape hatch
+(a tunable Cobb-Douglas `v^α · b^(1-α)`) if pure product proves too harsh
+in practice (e.g. reward collapses near-zero for most completions early
+in training, a cold-start problem) — but NOT the registered default;
+that would be choosing convenience over the theory's own stated logic
+mid-registration.
+
+**Measuring violation and benign SEPARATELY.** Two independent judge
+calls, not one combined prompt, for the same reason `context_ablation_
+score` (`benchmark/banter.py`) uses the SAME judge/rubric across two
+DIFFERENT contexts rather than asking one question that conflates both:
+a single call asking "rate violation AND benign-ness" risks a halo
+effect — an overall "I like/dislike this completion" impression
+contaminating both sub-ratings so they covary for reasons unrelated to
+the actual dual-appraisal construct, defeating the point of measuring
+two theoretically-independent appraisals. Cost: 2 judge calls instead of
+1 (3, alongside `judge_preference`) — a real, stated cost, not hidden.
+
+```
+VIOLATION_PROMPT = """You are assessing whether a piece of text VIOLATES a
+norm, expectation, or how something 'should' be -- logically, socially, or
+morally -- regardless of whether it is funny, safe, or appropriate. A text
+can present a strong violation while being completely FUNNY, completely
+OFFENSIVE, or completely NEUTRAL -- score ONLY the presence/strength of the
+violation, never whether it's OK.
+
+Text: {completion}
+
+Output ONLY an integer 0 (no violation of any kind -- an unremarkable,
+expected statement) to 10 (a severe, unambiguous violation) on the first line.
+"""
+
+BENIGN_PROMPT = """You are assessing whether a piece of text is BENIGN --
+i.e. is there ALSO a competing appraisal that neutralizes any threat (it is
+clearly fictional/hypothetical, the target is distant from the reader, a
+norm holds that makes it acceptable, or nothing in it is severe enough to
+threaten anyone)? Do NOT let the mere presence of a disclaimer ('just
+kidding', 'jk', a fictional-frame label) drive your score by itself --
+assess whether the underlying situation is genuinely safe once you set the
+disclaimer aside, not whether the text CLAIMS to be joking. A text
+describing a genuinely harmful act that merely appends 'jk' should score
+LOW, not high.
+
+Text: {completion}
+
+Output ONLY an integer 0 (a genuine, unmitigated threat -- no safe reading
+available) to 10 (completely safe; no unneutralized threat present) on the
+first line.
+"""
+```
+
+Both reuse `benchmark/banter.py`'s `_parse_score`-style first-line-integer
+parse (guarded against "10"/"23" misreads the same way), then divide by
+10 to satisfy `JudgePreferenceReward`'s existing `[0, 1]` contract —
+`violation_judge`/`benign_judge` are `Callable[[Any, str], float]`,
+IDENTICAL in shape to `RewardConfig.judge`, so an existing `judge`
+callable's provider plumbing (`benchmark/providers.py`'s `get_provider`)
+is directly reusable, just pointed at a different prompt template.
+Recommend `claude:haiku` for both, matching EXP-003b's finding (bigger ≠
+better instrument; sonnet was WORSE as the cascade rejector) rather than
+assuming a frontier judge is automatically right here without its own
+check.
+
+**Pseudocode (TRL contract: `f(prompts, completions, **kwargs) ->
+list[float]`).**
+
+```python
+class BVTGateReward:
+    """reward = weight * violation_score * benign_score. Inert by default
+    (weight=0.0) -- same discipline as SemanticNoveltyPenalty. No network
+    call unless both violation_judge and benign_judge are injected."""
+
+    __name__ = "bvt_gate_reward"
+
+    def __init__(self, violation_judge=None, benign_judge=None, weight=0.0):
+        self.violation_judge = violation_judge
+        self.benign_judge = benign_judge
+        self.weight = weight
+        self._warned = False
+
+    def __call__(self, prompts, completions, **kwargs):
+        texts = _contents(completions)
+        if self.violation_judge is None or self.benign_judge is None:
+            if not self._warned:
+                warnings.warn(
+                    "bvt_gate_reward: violation_judge/benign_judge not "
+                    "both configured -- this term contributes 0.0 to "
+                    "every reward.", RuntimeWarning, stacklevel=2)
+                self._warned = True
+            return [0.0] * len(texts)
+
+        prompts_iter = prompts if prompts is not None else [None] * len(texts)
+        rewards = []
+        for p, c in zip(prompts_iter, texts):
+            v = float(self.violation_judge(p, c))
+            b = float(self.benign_judge(p, c))
+            for name, score in (("violation_judge", v), ("benign_judge", b)):
+                if not (0.0 <= score <= 1.0):
+                    raise ValueError(
+                        "bvt_gate_reward: %s must return [0, 1], got %r"
+                        % (name, score))
+            rewards.append(self.weight * v * b)
+        return rewards
+```
+
+**Gaming vectors and guards.**
+
+1. **Benign-washing (disclaimer/fictional-frame stuffing) — the sharper
+   of the two.** Because the product needs BOTH terms high, and a
+   genuinely severe violation is often easy for a violation-judge to
+   detect correctly, the cheapest attack surface is the OTHER term:
+   append a boilerplate disclaimer ("jk!!", "just a joke, love you all",
+   a fictional-frame tag) to a real, unmitigated norm violation, hoping a
+   naive benign judge keys on the disclaimer TOKENS rather than the
+   underlying severity. This is the mechanism behind the "Engagement
+   Undermines Safety" finding already cited in §10 (stereotypical/toxic
+   jokes scoring 10-21% higher) and structurally the same shape as the
+   LessWrong GRPO absurdist-tag collapse (`references/negative-results.md`
+   §1) — a cheap textual marker overriding a judge's real assessment.
+   Guard: `BENIGN_PROMPT` explicitly instructs the judge to set the
+   disclaimer aside (above); this is validated, not just hoped for, via
+   the `disclaimer_washed_violation` fixture class below with its own bar.
+2. **Correlated-judge-template exploitation.** A policy under RL pressure
+   can converge on a narrow structural template that both judges
+   independently rate highly for unrelated reasons (e.g. an absurdist
+   framing device one judge reads as "clearly a big violation" and the
+   other reads as "clearly fictional/silly, so safe") — not because it
+   satisfies genuine dual appraisal, but because it trips both cheap
+   detectors at once, the same Goodhart pattern as the LessWrong
+   collapse. Guard: NOT fully closeable by this term alone — needs a
+   standing "fakeability audit" (§4's candidate upgrade, generalized
+   here): periodically check the diversity of completions scoring high
+   on `bvt_gate_reward` using machinery already in the stack
+   (`SelfRepetitionPenalty`/`IntraGroupDiversityReward`), since this term
+   does NOT replace those. A training run where high-scoring completions
+   cluster into one or two surface templates is the trip-wire, not a
+   static pre-registration bar.
+
+**Pre-registered validation design (mirrors EXP-005's structure: fixture,
+per-class separation, repeat consistency, an echo-hackability trip-wire,
+a disproof check).**
+
+Fixture: 32 hand-authored items, 4 gold classes of 8, plus an 8-item
+gaming-probe class scored separately:
+
+- `both` (n=8): real dual-appraisal jokes — genuine transgression,
+  clearly fictional/absurd/playful framing.
+- `violation_only` (n=8): a real, seriously-meant transgression with NO
+  protective frame — should score high violation, LOW benign.
+- `benign_only` (n=8): pleasant, unremarkable, non-violating text —
+  should score LOW violation, HIGH benign.
+- `neither` (n=8): flat, unremarkable non-humor that is neither a
+  violation nor warm/pleasant (deadpan non-sequiturs, mundane
+  complaints) — should score LOW on both.
+- `disclaimer_washed_violation` (n=8, gaming probe): `violation_only`
+  items with a "jk"/fictional-tag disclaimer appended verbatim — the
+  load-bearing adversarial check.
+
+**Bars (registered, numeric, on the judge's native 0-10 scale before /10
+normalization — matching EXP-005's reporting convention):**
+- separation(`both`.violation − `benign_only`.violation) ≥ 5.0.
+- separation(`both`.benign − `violation_only`.benign) ≥ 5.0.
+- mean(`both`.product) ≥ 0.50 (on [0,1]) — the only class that should
+  earn substantial gate credit.
+- mean(`violation_only`.product) ≤ 0.15; mean(`benign_only`.product) ≤
+  0.15; mean(`neither`.product) ≤ 0.10 — all three non-`both` classes
+  gated near-zero, the entire point of the multiplicative structure (an
+  additive sum would let `violation_only`'s high violation partially
+  compensate, exactly §2's documented failure).
+- `disclaimer_washed_violation`.benign mean ≤ 3.0 (0-10) — THE critical
+  gaming-guard bar.
+- echo-hackability (reuses `validate_banter_judge.py`'s
+  `ECHO_RISK_THRESHOLD = 0.5` convention exactly): Pearson r(violation_
+  score, shock-word count) over a class where a cheap profanity/taboo-
+  keyword count varies independently of true violation label ≤ 0.5;
+  Pearson r(benign_score, disclaimer-marker count) over
+  `disclaimer_washed_violation` ∪ `both` ≤ 0.5.
+- repeat consistency: 3 repeats/item, PASS/FAIL label (product > 0.2, a
+  fixed operating threshold for this check only) agreement ≥ 0.85 —
+  discrete-label convention, mirroring `validate_rejector.py`'s
+  `repeat_consistency`.
+- **disproof check** (CLAUDE.md checklist item 4 / EXP-005 checklist item
+  4): compare against the CURRENT additive stack (`judge_weight *
+  judge_score + comprehensibility`, no BVT term) on `violation_only` and
+  `benign_only`. Predicted (registered blind, before any of this is
+  built): the additive stack UNDER-penalizes `violation_only` relative
+  to `both` — a well-formed, comprehensible, seriously-cruel one-liner
+  can still score adequately on `judge_preference` + full
+  `comprehensibility` credit — the literal mechanism §2's "Known
+  exploit/gap" describes; the check should show it directly rather than
+  assume it.
+
+### 12.2 Two-stage incongruity-resolution gate — `TwoStageIncongruityGate`
+
+**Theory citation trail.** Suls (1972), in Goldstein & McGhee (eds.),
+*The Psychology of Humor*, `suls1972twostage` (§1 above): setup
+generates an expectation, punchline disconfirms it (stage 1,
+incongruity), perceiver then problem-solves to find a reconciling rule
+(stage 2, resolution) — "incongruity alone is not sufficient." Kao, Levy
+& Goodman (2016), *Cognitive Science* 40(5), doi:10.1111/cogs.12269
+(`references/theory-operationalization.md` RQ1.1, ESTABLISHED, PMC full
+text read) and Trott, Walker, Taylor & Coulson (2025), *Cognitive
+Science*, doi:10.1111/cogs.70066 (RQ1.2, ESTABLISHED, PMC full text
+read) — the load-bearing empirical constraint this design is built
+around: surprisal predicts joke-vs-non-joke well but has **no
+established relationship to funniness magnitude among things that are
+already jokes** (ambiguity r=.03, p=.697 within-puns in Kao et al.; the
+Is-Joke × Surprisal interaction in Trott et al. shows the same null a
+decade later, on different materials, with an LLM surprisal estimator
+instead of a psycholinguistic one). Wyer & Collins (1992),
+`wyer1992comprehension` — the theory's own third stage, elaboration,
+explicitly and honestly NOT attempted here (documented scope limit,
+matching §1's "all three" framing).
+
+**What this operationalization loses.** (a) The theory describes a
+COGNITIVE PROCESS — a perceiver forms a real-time expectation, then
+genuinely problem-solves. This design substitutes an LM's own generation
+as a stand-in for "what a perceiver would expect," which conflates
+"statistically likely completion to a language model shaped by its
+training corpus's exposure to joke tropes" with "what a human perceiver,
+encountering this setup fresh, would expect" — these are not the same
+population, and the gap is largest for well-worn joke SHAPES an LM has
+seen thousands of times (see gaming vector 2 below — the same gap
+wearing an adversarial-robustness hat). (b) The resolution proxy (does
+priming the predictor with "expect a twist" bring its guess measurably
+closer to the real punchline) operationalizes "a reconciling rule
+exists" as "an LM, told to expect wordplay, can approximate the
+punchline" — this cannot distinguish "the LM guessed close because a
+genuine, articulable logical mechanism connects setup and punchline"
+from "the LM guessed close because this is a common templated joke-shape
+it has memorized the general vicinity of" — the single largest fidelity
+gap in the whole design, not a minor caveat. (c) Surprisal itself is
+never MEASURED here (no logprob access from CLI-wrapped judges — see
+below); it is doubly approximated, first as semantic distance between a
+generated guess and the actual text rather than Kao/Trott's actual
+negative-log-probability of tokens under a real LM. A proxy of a proxy,
+registered honestly as such (Tier B, below) precisely because the more
+faithful Tier A is blocked by an infrastructure constraint, not a
+theoretical preference.
+
+**No logprob access via CLI — the two-tier design, and why.**
+`benchmark/providers.py`'s existing contract is `complete(prompt: str)
+-> str` — plain text in, plain text out; `claude -p` and `codex exec`
+(the CLI-wrapped providers) expose no logprobs at all. A REAL surprisal
+computation (`-mean(logP(token_i | context))`) needs either a
+completions-style endpoint with `echo`+`logprobs` (scores a GIVEN
+continuation, not just sampled tokens) or a chat endpoint that happens
+to expose per-token logprobs for the assistant's own generation —
+NEITHER is confirmed available for any of this project's native-API
+providers (`api:deepseek`, `api:glm`, `api:qwen`) as of this writing;
+nobody has pre-probed it. Given that:
+
+- **Tier A (preferred if it ever pre-probes clean, NOT registered
+  yet):** a real surprisal computation against `api:glm`'s completions
+  endpoint specifically — **glm, not deepseek or qwen**, for reasons
+  already established in this project's own experiment log rather than
+  assumed here: EXP-007b found qwen's endpoint silently ignores declared
+  sampling parameters (byte-identical outputs at temperature 1.2 vs
+  0.2) — the [LEARN] block from that experiment is explicit that ANY
+  sampling/scoring-parameter-dependent mechanism on a native API needs a
+  pre-registered manipulation check before being trusted, and an
+  endpoint that ignores one declared parameter is not a safe default bet
+  for trusting another (logprobs/echo) without its own check.
+  deepseek-chat deprecates 2026-07-24 — building new standing
+  infrastructure on a model with an imminent retirement date is a bad
+  trade regardless of its EXP-007 track record. glm is the one model
+  this project has already established DOES honor its declared
+  parameters within their documented range (EXP-007c: temperature
+  clamped to [0,1] but honored inside it, verified via a manipulation
+  check). Before Tier A is trusted, it needs EXACTLY EXP-007c's
+  manipulation-check pattern applied to a NEW parameter: does
+  `api:glm`'s completions surface accept an explicit continuation and
+  return per-token logprobs for it (not just for freely-sampled
+  tokens)? Register that pre-probe as its own tiny experiment before
+  writing any Tier A code — do not assume the answer.
+- **Tier B (registered here, buildable now, zero new infra beyond what
+  `benchmark/banter.py` and `env/semantic_novelty.py` already
+  establish):** a judge-based "predict-then-diverge" proxy, described in
+  full below. This is what gets built, validated, and (if it clears its
+  bars) wired into `RewardConfig` first; Tier A is a documented upgrade
+  path, not a prerequisite.
+
+**Tier B design: predict-then-diverge (stage 1) + primed re-prediction
+(stage 2).**
+
+Setup/punchline split: most completions in this project's environments
+are full one-liners with no explicit setup/punchline API boundary, so a
+first, SEPARATE call asks the SAME predictor to identify the split:
+
+```
+SPLIT_PROMPT = """Below is a joke. Identify its SETUP (everything before the
+reveal) and its PUNCHLINE (the reveal itself). If the joke has no
+identifiable setup/punchline structure (e.g. it is a single-clause pun with
+no buildup), output exactly "NO_SPLIT" and nothing else.
+
+Joke: {completion}
+
+Output exactly two lines:
+SETUP: <the setup text>
+PUNCHLINE: <the punchline text>
+"""
+```
+
+A completion the predictor marks `NO_SPLIT` (or that fails to parse both
+lines) returns 0.0 from this term — a documented "can't apply" case, not
+a silent default pass, matching this codebase's existing `None`-sentinel
+convention (`banter.py`'s `_judge_once`, `rejector.py`'s `UNPARSEABLE`)
+rather than pretending every completion has this structure.
+
+```
+PREDICT_COLD_PROMPT = """Setup: {setup}
+
+Predict, in ONE short sentence, the single most natural, UNSURPRISING way
+you would expect this to continue -- not a joke, just the ordinary
+continuation a typical person would expect.
+
+Output ONLY your one-sentence predicted continuation.
+"""
+
+PREDICT_PRIMED_PROMPT = """Setup: {setup}
+
+This is the setup of a joke that ends in a clever twist, pun, or reframe.
+Predict, in ONE short sentence, what you think the twist/punchline is.
+
+Output ONLY your one-sentence predicted punchline.
+"""
+```
+
+Both predictor outputs and the real punchline are embedded (reusing
+`env/semantic_novelty.py`'s exact `embed_fn` injection convention and
+guarded `sentence_transformers`/`numpy` import, for the same
+testability-without-a-model-download reason — a fake `embed_fn` in unit
+tests, a real `all-MiniLM-L6-v2` in production) and compared by cosine
+distance:
+
+```
+distance_cold    = 1 - cos_sim(embed(predict_cold),   embed(punchline))
+distance_primed  = 1 - cos_sim(embed(predict_primed), embed(punchline))
+
+gate_1_surprise   = distance_cold >= surprise_threshold        # default 0.5
+gate_2_resolution = (distance_cold - distance_primed) >= drop_threshold  # default 0.15
+                    and distance_primed < distance_cold
+
+reward = weight if (gate_1_surprise and gate_2_resolution) else 0.0
+```
+
+A strict AND, not a graded sum of the two gates' partial credit — for
+the same reason argued in 12.1: incongruity-resolution's own theory
+statement is "incongruity alone is NOT sufficient," a genuine
+conjunction, and per RQ1's cross-validated finding, surprisal magnitude
+must never be treated as a scalar to maximize (a policy rewarded for HOW
+MUCH `distance_cold` exceeds threshold would directly re-create the
+"more surprisal = more reward" mistake two independent papers a decade
+apart falsify) — this term is a GATE, zero/nonzero, exactly like the
+ranked shortlist's own framing ("build it as a zero/nonzero gate ... not
+as a scalar to maximize").
+
+**Pseudocode (TRL contract).**
+
+```python
+class TwoStageIncongruityGate:
+    """reward = weight if (surprising cold AND resolves when primed) else 0.
+    Inert by default. `predictor` matches providers.py's Callable[[str],
+    str] contract (NOT judge's (prompt, completion)->float shape -- this
+    class needs raw text generations, not a score). `embed_fn` matches
+    SemanticNoveltyPenalty's injection contract exactly."""
+
+    __name__ = "two_stage_incongruity_gate"
+
+    def __init__(self, predictor=None, embed_fn=None, weight=0.0,
+                surprise_threshold=0.5, drop_threshold=0.15,
+                allow_degraded=False):
+        ...  # same guarded sentence_transformers/numpy import + loud
+             # SemanticNoveltyUnavailable-style failure as
+             # env/semantic_novelty.py, reusing that exception type
+
+    def __call__(self, prompts, completions, **kwargs):
+        texts = _contents(completions)
+        if self.degraded or self.predictor is None:
+            return [0.0] * len(texts)
+        rewards = []
+        for text in texts:
+            setup, punchline = self._split(text)          # None, None on NO_SPLIT
+            if setup is None:
+                rewards.append(0.0)
+                continue
+            cold = self.predictor(PREDICT_COLD_PROMPT.format(setup=setup))
+            primed = self.predictor(PREDICT_PRIMED_PROMPT.format(setup=setup))
+            d_cold = self._distance(cold, punchline)
+            d_primed = self._distance(primed, punchline)
+            passes = (d_cold >= self.surprise_threshold
+                      and d_primed < d_cold
+                      and (d_cold - d_primed) >= self.drop_threshold)
+            rewards.append(self.weight if passes else 0.0)
+        return rewards
+```
+
+Cost, stated plainly: **3 LM calls per completion** (split + cold-predict
++ primed-predict) plus 2 cheap embedding comparisons. On top of `judge_
+preference`'s existing 1 call and `BVTGateReward`'s 2 (if both are
+enabled), a full stack could reach 6 LM calls per completion — a real,
+multiplying cost across a GRPO batch called hundreds of times per run.
+Recommend `claude:haiku` for the predictor (EXP-003b: bigger is not
+automatically a better instrument here) and treat this as the single
+most expensive term in the stack if enabled.
+
+**Gaming analysis.**
+
+1. **Vague/abstract "resolvable surprise" faking.** A policy can learn to
+   end completions with a hedgy, widely-applicable "deep" non-sequitur
+   ("...and that's when nothing really made sense anymore") rather than
+   a genuine punchline. Primed with "expect a twist," a predictor's best
+   guess for almost ANY setup tends to drift toward similarly abstract,
+   vaguely-clever language — inflating `cos_sim(predict_primed,
+   punchline)` for reasons that have nothing to do with a real
+   reconciling rule existing, purely because the space of "vague
+   clever-sounding endings" is small and mutually close in embedding
+   space. Guard: a dedicated `vague_abstract_gaming_probe` fixture class
+   (below) with its own registered bar — the single most important
+   adversarial check in the validation design, because the architecture
+   cannot distinguish this from genuine resolution by construction; only
+   an empirical bar catches it.
+2. **Pun-template spam / Goodharting the predictor's own prior.** The
+   primed predictor's guess is shaped by ITS OWN training-data exposure
+   to common joke tropes (puns on frequent words, "it was all a dream,"
+   anthropomorphized-object non-sequiturs). A policy that always lands
+   on one of these STOCK twist shapes will pass the resolution gate
+   regardless of whether the specific joke is fresh or well-constructed,
+   because the predictor's prior over "what a twist looks like" is
+   itself narrow and templated — the same class of exploit
+   `CorpusNoveltyPenalty`'s 2-word-reskin evasion is, one level removed
+   (gaming the DETECTOR's blind spot rather than the underlying
+   construct). Guard: this term does not replace
+   `SelfRepetitionPenalty`/`IntraGroupDiversityReward`, and MUST be read
+   alongside them in any real run; additionally, register a reskin-spam
+   regression probe in the validation suite itself (5 superficial
+   reskins of one stock twist template, tracked — not gated pass/fail,
+   since this is inherently a monitoring signal rather than a
+   static-fixture-checkable property — see `CorpusNoveltyPenalty`'s own
+   `test_two_word_template_reskin_fully_evades_and_is_locked_in` for the
+   precedent of pinning a KNOWN exploit down as a tracked regression
+   rather than pretending it's solved).
+
+**Pre-registered validation design (mirrors §1's own candidate-upgrade
+proposal — 30 real jokes / 30 setup+non-sequitur pairs — sized down
+slightly to match this project's typical fixture density, plus the
+gaming-probe class added here).**
+
+Fixture: 40 items —
+- `real_joke` (n=12): genuine setup+punchline jokes with an articulable
+  resolving mechanism (puns, misdirection, wordplay).
+- `setup_nonsequitur` (n=12): the SAME setups, punchline swapped for an
+  unrelated, non-resolving continuation — surprising, but nothing to
+  resolve. Constructed specifically so **gate 1 alone cannot distinguish
+  this class from `real_joke`** — that is the whole point of this class
+  (see disproof check below).
+- `boring_expected` (n=8): setup + the literal expected/unsurprising
+  completion — should fail gate 1 outright, the control proving the
+  surprise gate isn't vacuous.
+- `vague_abstract_gaming_probe` (n=8, scored separately from the three
+  gold classes above): setups + deliberately generic, "deep"-sounding
+  non-sequitur endings (gaming vector 1's exact attack).
+
+**Bars (registered, numeric):**
+- gate_1 pass rate: `real_joke` ≥ 0.85, `setup_nonsequitur` ≥ 0.85 (both
+  surprising — by construction, near-equal), `boring_expected` ≤ 0.15.
+  Separation(`real_joke or setup_nonsequitur` − `boring_expected`) ≥
+  0.70.
+- gate_2 (resolution) pass rate: `real_joke` ≥ 0.70 (registered
+  expectation of real, non-trivial miss rate — an LM-generation proxy
+  for "a reconciling rule exists" will not be perfect); `setup_
+  nonsequitur` ≤ 0.20. **The load-bearing bar:** separation(`real_joke` −
+  `setup_nonsequitur`) on gate_2 pass rate ≥ 0.50 — this is the entire
+  reason a second stage exists, since gate 1 alone cannot make this
+  distinction by the fixture's own construction.
+- `vague_abstract_gaming_probe` gate_2 pass rate ≤ 0.25 — the
+  gaming-guard bar; a failure here means the design needs a tighter
+  drop_threshold or a different similarity metric before it is trusted,
+  not that it should ship anyway.
+- **disproof check** (CLAUDE.md checklist item 4): does gate_1 ALONE
+  separate `real_joke` from `setup_nonsequitur` as well as the full
+  two-stage gate does? Predicted (registered, before any code exists):
+  gate_1 pass-rate difference between these two classes ≈ 0 (both
+  constructed to be equally surprising) — if this prediction is WRONG
+  (gate 1 alone already separates them), the second stage is not
+  earning its keep and the term should not ship as designed.
+- repeat consistency: 3 repeats on a 12-item subset, PASS/FAIL label
+  agreement ≥ 0.85 (discrete-label convention, same as 12.1's bar and
+  `validate_rejector.py`'s `repeat_consistency`).
+
+**Where both slot into `RewardConfig`, exactly like
+`semantic_novelty_weight`.**
+
+```python
+# BVT gate (12.1) -- no ML dependency, judge-based only, like judge_weight
+violation_judge: Optional[Callable[[Any, str], float]] = None
+benign_judge: Optional[Callable[[Any, str], float]] = None
+bvt_gate_weight: float = 0.0        # OFF by default -- new tier
+
+# Two-stage incongruity gate (12.2) -- needs an embedding backend, like
+# semantic_novelty_weight
+incongruity_predictor: Optional[Callable[[str], str]] = None
+two_stage_incongruity_weight: float = 0.0   # OFF by default -- new tier
+incongruity_surprise_threshold: float = 0.5
+incongruity_drop_threshold: float = 0.15
+```
+
+Both weights are BONUS fields (`>= 0` sign guard, added to
+`__post_init__`'s `_BONUS_FIELDS` tuple exactly like `intra_group_
+diversity_weight`/`comprehensibility_weight` — a negative weight here
+would silently reward FAILING the gate). `reward_stack()` appends
+`BVTGateReward` unconditionally when `bvt_gate_weight != 0.0` (no lazy
+import needed — pure judge calls, same footprint as
+`JudgePreferenceReward`) and lazily imports a new
+`env/incongruity_gate.py` (mirroring `env/semantic_novelty.py`'s exact
+lazy-import-only-when-nonzero pattern) when `two_stage_incongruity_
+weight != 0.0`. Neither term changes behavior for any existing training
+config that doesn't opt in — the same guarantee `semantic_novelty_
+weight`'s docstring already makes.
+
+**What neither term fixes, stated once so it isn't oversold:** both
+remain judge/predictor-dependent (inheriting every generic judge-hacking
+risk §4/§8 already document), neither addresses Wyer & Collins' third
+incongruity-resolution stage (elaboration, out of scope), and both add
+real per-completion LM-call cost to an already-6-term stack. They ARE
+the two most theory-faithful gaps this document has open, and per
+`references/theory-operationalization.md` RQ2, the BVT product-vs-
+additive comparison specifically would be a genuine, citable novel
+empirical contribution if the validation above is run and reported
+honestly either way.
+
+---
+
 ## What this document is not
 
 It is not a claim that the current benchmark/reward stack is unsound —

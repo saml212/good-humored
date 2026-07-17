@@ -1,27 +1,54 @@
 # Reverse-transfer pre-registration: train on humor, measure general capability
 
 Status: **design, not built. No training runs from this document.** Owner: Sam
-Larson. Written 2026-07-17. Format follows `EXPERIMENT_LOG.md` house style —
-numbers before narrative. This is gap #1 from `CLAUDE.md` → Research
-Direction: *"nobody has tested whether training on humor transfers back to
-general reasoning/taste."* HumorBench established only the forward direction
-(STEM-reasoning training → humor comprehension); the reverse direction is,
-per `.claude/skills/humor-rl/SKILL.md` §"Measuring transfer," **untested by
+Larson. Written 2026-07-17; **revised 2026-07-17 (later pass)** against the
+refreshed `docs/FINDINGS.md` (11-model cascade, dual-tier memorization,
+meta-exclusion robustness), the shipped reward-stack state in `env/rewards.py`
++ `env/semantic_novelty.py` (windowed n-gram novelty now default-on and
+closed for padding/dilution; semantic whole-text tier validated at 0.38 but
+OFF by default; windowed semantic BLOCKED pending EXP-011), and
+`env/banter_env.py` (Track 2 episode environment, new this cycle). Format
+follows `EXPERIMENT_LOG.md` house style — numbers before narrative. This is
+gap #1 from `CLAUDE.md` → Research Direction: *"nobody has tested whether
+training on humor transfers back to general reasoning/taste."* HumorBench
+established only the forward direction (STEM-reasoning training → humor
+comprehension); the reverse direction is, per
+`.claude/skills/humor-rl/SKILL.md` §"Measuring transfer," **untested by
 anyone**. That novelty claim is the literature review already on file
 (`references/negative-results.md`, `references/psychology.md`,
 `docs/BENCHMARK.md` §6) — checklist item 8 (verify novelty) is satisfied by
 citation, not re-litigated here.
+
+**What changed in this revision, up front (so a second reader doesn't have to
+diff the file):** (1) §2 replaces the open `[PILOT-RESULT]` placeholder with
+a full FINDINGS-grounded headroom ranking across deepseek/qwen/glm, and adds
+a load-bearing finding this pass surfaced — **none of the three API-profiled
+models in FINDINGS are the same checkpoint as any trainable 7–32B open-weight
+dense model** — plus the deepseek registry deprecation
+(2026-07-24 → `deepseek-v4-flash`) and a secondary Phase-0 candidate
+(DeepSeek-R1-Distill-Qwen-14B) with its own caveats. (2) §4 adds a new §4.2.1
+specifying the episode format as conversational banter via `BanterEnv`
+(previously undefined — the doc only specified the single-turn stack), with
+an explicit reward composition, a build gap flagged for pre-launch
+engineering, and the in-group swap-pairing scheme the env's docstring left as
+a caller responsibility. (3) §5.3/§5.4 sharpen the cascade manipulation-check
+into a formal pass/fail gate (citing EXP-007b's lesson precisely) and lock
+down windowed-vs-whole-text mode per novelty tier at eval time. (4) §7 adds
+an API-call/judge-cost budget line the GPU-hours table didn't capture. (5) a
+new §8, **Threats to validity**, consolidates contamination, judge-gaming,
+seed variance, the compute-matched-control confound, and the wrapper/access-
+path lesson applied to the eval battery itself.
 
 ## Pre-Experiment Checklist coverage (CLAUDE.md, all 8 items)
 
 | # | Item | Where |
 |---|---|---|
 | 1 | State the hypothesis in one sentence | §1 |
-| 2 | Predict the metric delta, register with `calibration.py add` | §1, §7 |
+| 2 | Predict the metric delta, register with `calibration.py add` | §1, §7.2 |
 | 3 | Compute FLOPs/memory/params on paper | §2 |
 | 4 | Try to disprove in 5 minutes | §1.3 |
 | 5 | Check the literature first | done — this doc is built on `negative-results.md`, `psychology.md`, `humor-rl/SKILL.md`, `BENCHMARK.md` |
-| 6 | Design the comparison before the experiment | §5 (compute-matched control), §3 (SFT bar) |
+| 6 | Design the comparison before the experiment | §5.2 (compute-matched control), §4.1 (SFT bar), §8.4 (confound precision) |
 | 7 | Define success criteria | §6 |
 | 8 | Verify the claim is novel | done — `CLAUDE.md` Research Direction + `SKILL.md` §"Measuring transfer" both state this is untested |
 
@@ -157,34 +184,162 @@ Justification:
   buys more GRPO steps and more eval repeats at 8B than at 14B for the same
   spend, and the predicted effect is small enough that steps/repeats matter
   more than raw model size here.
-- **License:** Qwen3 dense checkpoints are released Apache-2.0 (verify the
-  exact license file on the specific checkpoint before treating this as
-  settled — not independently re-confirmed this session), which is the
-  license profile the commercial path (§3) needs; Llama-3.x's custom
-  Community License carries its own attribution/MAU-threshold terms that
-  complicate the commercial-artifact story unnecessarily when Qwen3 is
-  available at the same size with a cleaner license.
+- **License:** Qwen3 dense checkpoints (8B/14B/32B, plus 4B/1.7B/0.6B)
+  confirmed Apache-2.0 this revision (current HF/Qwen listings; re-verify
+  the exact license file on the specific checkpoint at download time as a
+  final check, not a fresh investigation), which is the license profile the
+  commercial path (§3) needs; Llama-3.x's custom Community License carries
+  its own attribution/MAU-threshold terms that complicate the
+  commercial-artifact story unnecessarily when Qwen3 is available at the
+  same size with a cleaner license.
 
-**[PILOT-RESULT] — which model family looks most collapsed:** EXP-004 (the
-cascade pilot, `EXPERIMENT_LOG.md`) tested 11 models but **none of Qwen3 or
-Llama-3.x** — its roster was frontier + API models (claude/codex/api
-families), not these candidates. **This is a gap this plan does not close:**
-before committing GPU budget to either arm, run the validated cascade
-instrument (haiku + LABEL_PROMPT v2, per the EXP-002 decision) as a Phase 0
-baseline on Qwen3-8B, Qwen3-14B, and Llama-3.1-8B specifically, N=4-8 runs
-each, ~30 turns, API/local-serving only (no training GPU needed for this
-step). Slot to fill in before Phase 1 launches:
-`[PILOT-RESULT: model family X shows the lowest depth-to-degradation /
-highest cross-model path overlap, i.e. most collapsed, hence most headroom
-for the GRPO arm to move]`. If the pilot shows Qwen3-8B is already
-near-ceiling (little collapse, little headroom), fall back to Qwen3-14B on
-2×A100-80/H100-80 before spending on 8B GRPO.
+### 2.4 FINDINGS refresh: what the 11-model cascade actually says about headroom, and why it doesn't just transfer
+
+EXP-004 (the cascade pilot) tested 11 models but **none of Qwen3, Llama-3.x,
+or any other directly-trainable 7–32B open-weight dense checkpoint** — its
+open-weights lane was three *hosted API* models: `api:deepseek`
+(`deepseek-chat`), `api:qwen` (`qwen-plus-2025-07-28`), `api:glm`
+(`glm-4.5-air`). `docs/FINDINGS.md` §2.4/§2.3/§4.6 (refreshed 2026-07-17,
+dual-tier memorization + meta-exclusion fix wave) gives their profiles in
+full:
+
+| model (API-hosted) | degradation depths (N runs) | exact-tier memorization | template-trigram memorization | framing-prefix rate |
+|---|---|---:|---:|---:|
+| `api:deepseek` | 11, 9, 6, 8 → median **8.5**, tightest range, 4/4 degrade | 0.8% | 3.3% | **53.3%** (2nd-highest in roster) |
+| `api:qwen` | 11, 8, **24**, 9 → median 10, noisier (one run to 24), 4/4 degrade | 1.7% | **10.0%** (ties codex:5.4) | 0.0% |
+| `api:glm` | 21, 14 (N=2, mixed generation-config protocol — §5 caveat) | 2.4% | 2.4% | 1.2% |
+
+Replicated on 49 additional runs from the temperature-fakeability lanes
+(EXP-007/007b/007c, zero additional cost): deepseek 18/18 degrade
+(depths 4–16), glm 18/18 degrade (depths 7–24), qwen 13/13 of completed runs
+degrade (depths 8–22). All three open-weight families degrade fast and
+consistently relative to the Anthropic/OpenAI/xAI lanes — this part of the
+signal is robust.
+
+**Ranked headroom prior, reading the table straight:** deepseek shows the
+fastest, tightest, most consistent collapse *and* the lowest memorization on
+both tiers among the three — the strongest "genuinely collapsing, not just
+reciting classics" signal. qwen is second: fast median depth but noisier
+(N=1 outlier to turn 24), and its template-trigram memorization (10.0%) is
+3× deepseek's, meaning the "open-weights barely memorize" story is
+tier-dependent and weaker for qwen specifically (FINDINGS §2.3). glm is
+weakest evidence of the three (N=2, mixed protocol, slowest degradation).
+One caveat that cuts against reading deepseek's number at face value: its
+53.3% framing-prefix rate (jokes prefaced with "Alright, how about this:
+...") is the second-highest in the whole 12-model roster, and FINDINGS §2.3
+shows framing prefixes structurally deflate the exact-match tier independent
+of true novelty (sonnet's 74.2% prefix rate is the documented mechanism) —
+deepseek's low *exact*-tier number is partly a delivery-format artifact, not
+purely novelty. The template-trigram tier is more robust to this dilution
+and still shows deepseek lowest (3.3%), so the ranking survives, just with
+the confidence appropriately tempered.
+
+**The finding this revision adds, not previously stated in this document:
+none of these three ranked profiles is directly actionable for model
+selection**, because none of the three hosted API checkpoints is the same
+model as a trainable 7–32B open-weight dense checkpoint from the same lab:
+
+- `deepseek-chat` is DeepSeek's flagship hosted alias (DeepSeek-V3-class
+  MoE, on the order of 600B+ total parameters) — there is no small dense
+  "DeepSeek" chat checkpoint at 7–32B to train. The closest same-lineage
+  open release at the right size, **DeepSeek-R1-Distill-Qwen-14B/32B**
+  (confirmed via current HF listings: MIT license, dense, 14B/32B), is
+  architecturally **Qwen-2.5 underneath**, R1-reasoning-distilled — a
+  materially different object (see the R1-distill caveat below), not a
+  proxy for `deepseek-chat`'s own conversational cascade behavior.
+- `qwen-plus-2025-07-28` is Alibaba's larger hosted variant, not
+  `Qwen3-8B`/`14B`/`32B` specifically — but it is at least the **same lab
+  and family**, and Qwen3's dense checkpoints (8B/14B/32B) are confirmed
+  Apache-2.0, open-weight, and available on Hugging Face/ModelScope. Qwen
+  is the only one of the three families with a clean, same-lineage,
+  right-size, cleanly-licensed answer.
+- `glm-4.5-air` is confirmed **106B total / 12B active** MoE, MIT-licensed,
+  open-weight — but "12B active" is not the number that governs feasibility
+  here: this plan's own VRAM arithmetic (§2.1) prices frozen weights plus a
+  colocated vLLM rollout copy, i.e. roughly **2× the full 106B in bf16
+  (~212 GB)** before LoRA/activation overhead, which is out of scope for
+  the single/dual-GPU LoRA budget this plan is sized to (comparable to why
+  §2.1 already puts Llama-3.3-70B "out of this experiment's scope"). GLM is
+  excluded on **compute-feasibility grounds**, not on cascade-signal
+  grounds — its FINDINGS profile is the weakest of the three anyway (N=2),
+  so nothing informative is being discarded.
+
+**Consequence for model selection, decisive:** the FINDINGS ranking
+(deepseek > qwen > glm) is a **same-family directional prior about which
+lab's models tend to collapse fast**, not a measurement on any checkpoint
+this plan can actually train. Qwen remains the only family where the prior
+and the trainable checkpoint are the same lineage, which is why it stays
+primary — but its own FINDINGS proxy (`qwen-plus`) showed only *moderate,
+noisier* headroom than deepseek's, so Phase 0 must not assume `qwen-plus`'s
+signal transfers cleanly down to the much smaller Qwen3-8B/14B dense
+checkpoints; it is a hypothesis Phase 0 tests, not an inherited result.
+
+**[PILOT-RESULT slot — unfilled, this plan does not close it]:** before
+committing GPU budget to either arm, run the validated cascade instrument
+(haiku + LABEL_PROMPT **v2** — see the instrument-version note below, this is
+deliberate, not an oversight) as a Phase 0 baseline, N=4–8 runs each, ~30
+turns, API/local-serving only (no training GPU needed for this step), on:
+
+1. **Qwen3-8B-Instruct** and **Qwen3-14B-Instruct** (primary/fallback
+   candidates, §2.3).
+2. **DeepSeek-R1-Distill-Qwen-14B** as a secondary probe *only* — included
+   because it is the closest available same-lineage-adjacent open dense
+   checkpoint at the right size to the family FINDINGS ranked highest for
+   headroom, not because it is expected to reproduce `deepseek-chat`'s
+   profile. Two caveats to weigh before promoting it past Phase 0:
+   (a) `negative-results.md` §3 (HumorGen) reports reasoning-augmented
+   "Think" variants scored *lower* on judged funniness than non-reasoning
+   variants — a reasoning-distilled base is not an obviously safe choice
+   for a humor-reward target; (b) R1-distill models default to emitting a
+   `<think>...</think>` chain before the answer, which complicates the SFT
+   curation recipe (§3.1's length-bound filters) and several reward terms'
+   length heuristics (`comprehensibility_reward`, `self_repetition_penalty`'s
+   window) unless thinking mode is disabled or the chain is stripped before
+   scoring — an engineering decision that must be made and smoke-tested
+   (§4.3) before launch, not discovered mid-run.
+
+Slot to fill in before Phase 1 launches: `[PILOT-RESULT: model X shows the
+lowest depth-to-degradation / highest cross-run path overlap among the
+candidates actually tested, i.e. most collapsed, hence most headroom for the
+GRPO arm to move]`. If the pilot shows Qwen3-8B is already near-ceiling
+(little collapse, little headroom), fall back to Qwen3-14B on 2×A100-80/
+H100-80 before spending on 8B GRPO; if R1-Distill-Qwen-14B shows meaningfully
+more headroom AND clears the reasoning-chain engineering gate, it is eligible
+to replace Qwen3-14B as fallback, not promoted to primary without a second,
+independent Phase-0 confirmation given caveat (a) above.
+
+**Instrument-version note (do not silently upgrade):** Phase 0 must run on
+the **v2** free-vocabulary labeler, the one every FINDINGS number is
+authoritative under — **not v3** (field-invalidated, 42.6% catch-all
+collapse on wild turns, EXP-008 addendum) and **not v4/EXP-010** (registered
+and passing its own fixture/probe bars as of this writing, but its Result is
+still `(pending)` in `EXPERIMENT_LOG.md` as of the last entry — do not adopt
+an unfinished instrument for a gating decision). If v4 finishes and clears
+its bars before Phase 0 launches, re-run this section's decision using v4 and
+say so explicitly; do not mix v2-labeled Phase-0 numbers with v4-labeled
+ones in the same headroom comparison.
+
+**Registry deprecation, scoped precisely so it isn't over-applied:**
+`deepseek-chat` deprecates **2026-07-24** and the registry successor is
+`deepseek-v4-flash` (`STATE.md`, `EXPERIMENT_LOG.md` EXP-007). This does
+**not** block Phase 0 or Phase 1 as designed above — neither arm calls
+`api:deepseek` at all (Phase 0 tests open-weight checkpoints via local/API
+serving of the checkpoints themselves, not the `deepseek-chat` hosted
+endpoint). It matters only if this plan is ever extended to *refresh* the
+FINDINGS deepseek profile via a fresh API call after 2026-07-24: that call
+will hit `deepseek-v4-flash`, a **different model** than the one the table
+above characterizes, and any such refresh must be reported as a new,
+separate instrument reading, not silently merged with the pre-07-24
+`deepseek-chat` numbers.
+
+### 2.5 Fallback
 
 **Fallback: Qwen3-14B-Instruct**, same LoRA setup, 2 GPUs for margin. Use if
 the Phase 0 pilot shows 8B has insufficient headroom, or if 8B GRPO training
 in Phase 1 shows the reward stack can't move the model's own cascade score at
 all within the smoke-test window (a training-capacity problem distinct from
-the headroom question).
+the headroom question). DeepSeek-R1-Distill-Qwen-14B is a secondary fallback
+per §2.4, contingent on clearing its own reasoning-chain engineering gate.
 
 ---
 
@@ -291,31 +446,44 @@ exactly like the GRPO checkpoint, not skipped.
 
 ### 4.2 GRPO with the humor reward stack
 
-`make_humor_reward_stack()` from
-`.claude/skills/humor-rl/examples/humor_reward_functions.py`, weights as
-specified in `SKILL.md`'s reward-stack table:
+**Code-vs-skill note (this pass verified `env/rewards.py` directly rather
+than trusting the skill's table):** `.claude/skills/humor-rl/SKILL.md`'s
+reward table still lists the judge term as "primary" with no numeric weight
+— but the actual shipped code, `env/rewards.py`'s `RewardConfig` /
+`reward_stack()`, has already closed that gap: `judge_weight` defaults to
+**1.0** and the class enforces a `[0, 1]` contract on the judge callable's
+return value (raises if violated), so the dominance failure the skill only
+warned about is now a constructor-level guard, not a design decision this
+plan has to make from scratch. Current shipped defaults, `reward_stack()`
+composed from `make_humor_reward_stack()`-equivalent config:
 
-| Term | Weight (from skill) |
-|---|---:|
-| judge / human preference | primary — **numeric weight unspecified in the skill; see flag below** |
-| `corpus_novelty_penalty` | −1.5 |
-| `self_repetition_penalty` (window=2000) | −1.0 |
-| `intra_group_diversity_reward` | +0.5 |
-| `comprehensibility_reward` | +0.3 |
+| Term | Weight (shipped default, `env/rewards.py`) | This plan's setting |
+|---|---:|---|
+| `judge_preference` | 1.0, `[0,1]`-contract enforced | **1.0** — use as shipped |
+| `corpus_novelty_penalty` (n-gram, `windowed=True` default) | −1.5 | **−1.5, windowed=True (default)** — padding/dilution CLOSED for this tier as of today (max-over-sliding-windows, `env/rewards.py` "PADDING/DILUTION -- CLOSED") |
+| `self_repetition_penalty` (window=2000, threshold=0.5) | −1.0 | **−1.0** — use as shipped |
+| `intra_group_diversity_reward` | +0.5 | **+0.5** — use as shipped |
+| `comprehensibility_reward` | +0.3 | **+0.3** — use as shipped |
+| `semantic_novelty_penalty` (`env/semantic_novelty.py`) | **0.0 (OFF by default)** | **TURN ON at −1.5, `reference="templates"`, threshold 0.38, `windowed=False`** — see flag below |
 
-**Honest gap in the skill, flagged rather than silently resolved:** the
-skill states the judge term is "primary" but gives it no numeric weight,
-only ordering it first in the returned list. If a raw LLM-judge score (e.g.
-1-10) is passed unnormalized alongside terms scaled to ±0.3-1.5, the judge
-term will numerically dominate by 5-10x and the novelty/diversity terms
-become close to inert — precisely the LLM-judge-reward-hacking failure mode
-`negative-results.md` §1 documents twice. **Design decision for this plan:**
-normalize the judge score to [0,1] (min-max or the judge's own stated scale)
-before applying a weight in the 1.0-2.0 range, so it stays dominant-but-not-
-overwhelming relative to the ±1.5-max novelty penalty. This is exactly the
-kind of thing the skill's own step 4 ("read the actual completions early... a
-few hundred steps in") is designed to catch, and the smoke test (§4.3) must
-verify it before the full run, not discover it at the end.
+**Decision this plan makes that the shipped default does not:** turn
+`semantic_novelty_weight` on. EXP-009 validated the whole-text tier at
+threshold 0.38 (paraphrase detection 1.000/1.000/0.500/0.810 across edit
+depths 1–4, FPR≤0.05) — it exists specifically to catch the 2-word-reskin
+evasion the n-gram tier is documented to miss, which is exactly the failure
+mode a GRPO policy under a novelty penalty is incentivized to find. Training
+with it off would leave a known, already-fixed hole open for no reason.
+**Do not additionally set `windowed=True` on the semantic tier.** That mode
+is real code (closes the same padding/dilution exploit for the embedding
+tier) but is **BLOCKED pending EXP-011**: it is calibrated against the same
+`DEFAULT_THRESHOLD=0.38` the whole-text tier uses, and a preliminary check
+found padded positives scoring far above that threshold in windowed mode
+(severity ~0.96 vs. 0.0 whole-text) — i.e. the 0.38 cutoff is
+mis-calibrated for windowed semantic scoring specifically, and using it
+un-re-swept would either over- or under-penalize in an unverified direction.
+Whole-text semantic + windowed n-gram (both validated at their shipped
+thresholds) is the correct combination for this plan; windowed semantic is a
+post-EXP-011 upgrade, not available today.
 
 - **`num_generations`:** 8. Skill guidance (`grpo-rl-training`) starts at 8
   and raises toward 16 if reward_std trends toward zero; going in at 8 rather
@@ -336,6 +504,88 @@ verify it before the full run, not discover it at the end.
 - **Compute-matched control arm's GRPO config is otherwise IDENTICAL** (same
   `num_generations`, same KL coefficient, same step count, same LR) — see §5.
 
+### 4.2.1 Episode format: conversational banter, not isolated one-liners
+
+**This is new in this revision — the prior draft specified the reward stack
+but never fixed what a training *episode* looks like.** Decisive choice: the
+humor-GRPO arm's episodes are conversational banter via `env/banter_env.py`'s
+`BanterEnv`, not single-turn joke completions. Rationale: STATE.md's own
+"does gaining humor gain taste" framing and gap #2 (multi-turn conversational
+humor) in `CLAUDE.md`'s Research Direction both point at conversational
+register as the more interesting construct than isolated one-liners, and
+`BanterEnv` is the only validated Track 2 instrument this repo has (EXP-005).
+Concretely:
+
+- **Episode:** `BanterEnv(partner_complete=..., judge=<haiku>, seed_topic=k)`,
+  `max_turns` defaults to `len(SCENARIO_OPENERS) == 8` — 8 conversational
+  turns per episode, one of 8 fixed, deterministic-order scenario openers
+  (`benchmark/banter.py`'s `SCENARIO_OPENERS`) per episode.
+- **Per-turn reward, composed** (this composition is specified here but
+  **does not exist in code yet** — flagged as a pre-launch build item, not
+  assumed done):
+  - `ablation_weight=1.0 × context_ablation_score()`'s **normalized**
+    delta (÷9.0, per `BanterEnv`'s own "MAGNITUDE FIX" default) — replaces
+    `judge_preference` from the main stack for this episode format, not
+    stacked on top of it. Rationale: the ablation delta *is* this episode
+    format's humor/context judge signal (EXP-005-validated haiku judge
+    under `benchmark.banter.JUDGE_PROMPT`); applying `judge_preference` on
+    top would double-count the same judge's opinion under two different
+    contracts (`env/rewards.py`'s `[0,1]` scorer vs. `banter_env`'s raw
+    `judge_complete(prompt) -> str` completion callable — the two are not
+    interchangeable per that module's own docstring, and composing both
+    is redundant, not additive, signal).
+  - `callback_weight=0.5 × callback bonus` (`BanterEnv` default, unchanged)
+    — flat bonus when `detect_callback()` fires against the partner's
+    turns so far.
+  - **`corpus_novelty_penalty` (−1.5, windowed=True) and
+    `self_repetition_penalty` (−1.0) applied to the policy's reply text,
+    exactly as in the main stack.** This is the mandatory addition
+    `BanterEnv` does not ship with — as built, `BanterEnv`'s only two
+    reward terms are callback + ablation delta, with **no novelty-vs-
+    memorized-corpus check at all**, which on its own would violate
+    `CLAUDE.md`'s hard rule (*"any generation eval MUST include a novelty
+    check against a memorized-joke corpus"*). Both penalty terms are pure
+    functions of completion text and batch-of-completions respectively, so
+    they compose onto a conversational reply exactly as they do onto a
+    single-turn joke — no format-specific rewrite needed, just wiring.
+  - **This is also the literal "design guard" EXP-005's own verdict
+    registers, now enforced rather than left as prose:** *"a Track 2 reward
+    should not use [ablation] delta alone to push past pleasantry-humor —
+    pair with callback bonus (already in banter_env) and novelty terms"*
+    (`EXPERIMENT_LOG.md`, EXP-005 Verdict). The caveat behind that guard:
+    generic on-topic pleasantry already earns ~2/3 of a genuinely
+    contextual reply's ablation delta (mean_delta 4.00 vs. 6.17 separation
+    from canned) — ablation delta alone cannot reliably distinguish
+    "genuinely funny and in-context" from "polite and on-topic," which is
+    exactly why callback + novelty terms are load-bearing here, not
+    decorative.
+  - `intra_group_diversity_reward` (+0.5) and `comprehensibility_reward`
+    (+0.3) apply per-turn unchanged (both are pure functions of the
+    completion / GRPO-group batch, agnostic to conversational structure).
+  - `semantic_novelty_penalty` (−1.5, whole-text, threshold 0.38) applies
+    per-turn unchanged, same rationale as §4.2.
+- **Swap-pairing for the ablation term, the one piece `BanterEnv` explicitly
+  leaves to the caller:** `step()` takes `swapped_context` as a required
+  argument for the ablation term to fire at all (contributes 0.0 if
+  omitted). This plan's answer: source it **in-group** — for a GRPO group of
+  `num_generations=8` rollouts started from the *same* `seed_topic`, at
+  turn `t`, rollout `i`'s `swapped_context` is rollout `j≠i`'s
+  conversation-so-far at the same turn index, rotating `j` across the group
+  the same way `benchmark.banter.swap_partner`'s fixed rotation does across
+  a pilot's fixed episode set. This requires the 8 rollouts in a group to be
+  stepped in lockstep (turn-synchronized), which is a real scheduling
+  constraint on the training loop, not just a data-plumbing detail — flag it
+  to whoever wires the TRL `GRPOTrainer` callback, since naive
+  per-rollout-independent generation would not preserve turn alignment.
+- **Judge-call budget, distinct from GPU-hours (see §7):** each turn makes
+  2 haiku calls (`true_score` + `swapped_score`, `context_ablation_score`'s
+  design). Per GRPO step: 8 generations × 8 turns × 2 = **128 haiku calls**.
+  Over a 500–1000 step run: 64,000–128,000 haiku calls — cheap in dollars at
+  haiku pricing, but a real latency dependency: GRPO step throughput is
+  bounded by external API round-trips, not just GPU compute, unless judge
+  calls are batched/parallelized aggressively. Budget wall-clock accordingly
+  (§7), not just GPU-hours.
+
 ### 4.3 Smoke-test gates (mandatory, per CLAUDE.md hard rules)
 
 1. **Forward pass:** single batch through the LoRA-wrapped model, verify
@@ -347,15 +597,41 @@ verify it before the full run, not discover it at the end.
 3. **Reward function unit tests, each in isolation** (per
    `grpo-rl-training`'s own "test rewards independently" golden rule):
    `corpus_novelty_penalty` returns near-max-negative on an exact copy of a
-   `chatgpt-25-templates.jsonl` entry; `self_repetition_penalty` fires on a
-   literal repeat within its own rolling window; `intra_group_diversity_reward`
-   returns 0 for singleton groups (per its own documented no-signal case);
-   `comprehensibility_reward` penalizes an empty string and a 300-token wall
-   of text equally on the length term.
-4. **Judge-score normalization check** (§4.2's flagged gap): confirm the
-   composed stack's five per-completion reward magnitudes are within the
-   same order of magnitude on a canned batch, not judge-dominated 10:1.
-5. **EVAL BATCH SIZE, separately from training** (CLAUDE.md hard rule,
+   `chatgpt-25-templates.jsonl` entry (both whole-text AND a padded/diluted
+   variant — confirm windowed mode still catches it, this is the specific
+   regression `env/tests/test_rewards.py`'s windowed class already locks in,
+   re-run it here rather than trusting it by citation); `self_repetition_penalty`
+   fires on a literal repeat within its own rolling window;
+   `intra_group_diversity_reward` returns 0 for singleton groups (per its own
+   documented no-signal case); `comprehensibility_reward` penalizes an empty
+   string and a 300-token wall of text equally on the length term;
+   `semantic_novelty_penalty` fires at ≥0.38 on a hand-written paraphrase of
+   one of the 25 templates (whole-text mode only — do not test or enable
+   `windowed=True` on this term, §4.2).
+4. **Judge-score normalization check** (§4.2's flagged gap, now
+   constructor-enforced in code but verify it anyway): confirm the composed
+   stack's per-completion reward magnitudes are within the same order of
+   magnitude on a canned batch, not judge-dominated 10:1.
+5. **Banter-composition smoke test (new, §4.2.1's build gap):** on a canned
+   2-rollout group, verify (a) `swapped_context` in-group sourcing produces a
+   real, non-empty string at every turn (no silent 0.0-fallback from a
+   missing swap partner); (b) `corpus_novelty_penalty`/
+   `self_repetition_penalty`/`semantic_novelty_penalty` fire correctly when
+   applied to `BanterEnv` reply text (these terms were built and tested
+   against single-turn completions — confirm nothing about conversational
+   framing, e.g. a reply prefixed with the partner's name or scenario
+   context, breaks their tokenization/normalization); (c) the ablation-delta
+   term is NOT double-counted against `judge_preference` (assert the main
+   stack's `judge_preference` term is absent from the banter-episode
+   composition, per §4.2.1's "replaces, not stacks" decision).
+6. **If DeepSeek-R1-Distill-Qwen-14B is in play (§2.4):** confirm the
+   thinking-chain handling decision (strip `<think>...</think>` before
+   reward scoring, or disable thinking mode entirely) is implemented and
+   verified on a canned generation *before* any reward function sees R1-
+   distill output — an un-stripped `<think>` block would blow every length-
+   based heuristic in `comprehensibility_reward` and `self_repetition_penalty`'s
+   window sizing.
+7. **EVAL BATCH SIZE, separately from training** (CLAUDE.md hard rule,
    verbatim: *"Smoke test must include EVAL batch size, not just training —
    eval can OOM even if training fits"*). The training config (num_generations=8,
    LoRA, single GPU, §2.1) and the `lm-evaluation-harness` eval config
@@ -405,64 +681,161 @@ verify it before the full run, not discover it at the end.
 
 Same GRPO config (§4.2: identical num_generations, KL coefficient, step
 count, LR, LoRA rank) on the **same base SFT checkpoint**, trained on
-non-humor data instead. Two options, ordered by how cleanly they isolate the
-"humor" variable:
+non-humor data instead. **Precisely what "compute-matched" is doing here,
+stated explicitly rather than left implicit:** this arm's entire job is to
+absorb "any RL training moves MMLU/GPQA a little, regardless of content" —
+extra gradient steps, extra exposure to a reward-shaped generation
+distribution, KL-anchored policy drift, all of it — so that whatever's left
+in the humor-GRPO-minus-control delta is attributable to *humor content
+specifically*, not to "we did more RL." Without this arm, a positive
+humor-GRPO delta against the frozen pre-training baseline is uninterpretable
+— it could be the humor reward stack, or it could be nothing more specific
+than "training", and §6's kill criteria are built around forcing exactly
+that comparison, not letting a frozen-baseline-only delta stand in for it.
 
-1. **Preferred — matched reward architecture, different content domain:**
-   reuse the exact same non-judge reward terms (`self_repetition_penalty`,
-   `intra_group_diversity_reward`, `comprehensibility_reward` — these are
-   content-agnostic n-gram/structural heuristics and work unmodified on any
-   text), swap the judge for a generic "story/response quality" judge, and
-   swap `corpus_novelty_penalty`'s reference corpus for a plagiarism corpus
-   of a different domain (e.g. published short-story openings, or the
-   `trl-lib/tldr` summarization prompts already referenced in the
-   `trl-fine-tuning` skill, treated as a creative-continuation task). This
-   isolates "training with this specific reward-stack architecture" from
-   "training on humor content specifically" — the tightest possible control
-   given the constraint that architecture and step count must match.
-2. **Fallback — cheaper, less clean:** GRPO on `trl-lib/tldr` with a plain
-   length+quality reward (no diversity/novelty terms at all), same step
-   count. Answers a blunter question — "does generic RL training on
-   *anything* move MMLU/GPQA a little" — and is useful as a coarse sanity
-   check even though it doesn't control for the reward-architecture
-   confound as tightly.
+**Format-matching consequence of §4.2.1 (must carry through, not just the
+reward terms):** since the humor-GRPO arm's episodes are conversational
+banter (`BanterEnv`, 8 turns, §4.2.1), the control arm's episodes must also
+be conversational and the same length — a single-turn control paired against
+a multi-turn humor arm would confound "conversational RL" with "humor RL,"
+reintroducing exactly the mismatch a compute-matched arm exists to remove.
+Two options, ordered by how cleanly they isolate the "humor" variable:
 
-Use option 1 as the primary control; option 2 only if building the matched
-reward-architecture control turns out to cost more engineering time than the
-budget in §7 tolerates.
+1. **Preferred — matched reward architecture AND matched episode format,
+   different content domain:** a `BanterEnv`-shaped 8-turn conversational
+   episode on a neutral topic domain (e.g. `SCENARIO_OPENERS`-style everyday
+   scenarios rewritten for a non-comedic register — practical-advice or
+   plain-narrative continuation rather than banter — or the `trl-lib/tldr`
+   summarization prompts reframed as a multi-turn clarifying-question
+   dialogue), reusing the exact same content-agnostic reward terms
+   (`self_repetition_penalty`, `intra_group_diversity_reward`,
+   `comprehensibility_reward`, `corpus_novelty_penalty` pointed at a
+   plagiarism corpus from the *same neutral domain* rather than the joke
+   corpus), and a callback-analog + ablation-delta-analog pair scored by a
+   generic "helpful/coherent response" judge in place of the banter judge
+   (same haiku model, same `[normalized delta]` mechanics, different
+   rubric). **Why this task is neutral:** it has no built-in relationship to
+   incongruity, timing, or comedic register — a "helpful clarifying
+   response" judge rewards coherence and relevance, not surprise-then-
+   resolution, so any MMLU/GPQA movement this arm produces cannot be
+   attributed to anything humor-specific by construction, only to the
+   shared RL architecture and step count. This is the tightest possible
+   control given the constraint that architecture, episode format, and step
+   count must all match — and it is more engineering than the prior draft
+   of this plan scoped (a new callback-analog needs picking, not just a
+   swapped judge rubric), so budget real build time for it (§7), not assume
+   it is a config change.
+2. **Fallback — cheaper, less clean, single-turn:** GRPO on `trl-lib/tldr`
+   with a plain length+quality reward (no diversity/novelty terms, no
+   conversational structure at all), same step count. Answers a blunter
+   question — "does generic RL training on *anything* move MMLU/GPQA a
+   little" — useful as a coarse sanity check, but now confounds two things
+   at once (non-humor content AND single-turn format vs. the humor arm's
+   multi-turn format), so a positive result under this fallback is weaker
+   evidence than under option 1 and should be reported with that caveat
+   attached, not silently treated as equivalent.
 
-### 5.3 Cascade benchmark before/after (the humor-side measure)
+Use option 1 as the primary control; option 2 only if building the
+matched-format, matched-reward-architecture control turns out to cost more
+engineering time than the budget in §7 tolerates — and if option 2 is used,
+say so plainly in the eventual write-up rather than letting a reader assume
+the tighter design ran.
+
+### 5.3 Cascade benchmark before/after — registered as a GATE, not just a measurement
 
 Uses the validated instrument from `EXPERIMENT_LOG.md`'s Instrument decision
-(haiku + LABEL_PROMPT v2, raw-label scoring primary, semantic reported
-alongside, never primary). **Prerequisite this plan does not skip:** since
-neither Qwen3 nor Llama-3.x appeared in EXP-004's roster, a fresh baseline
+(haiku + LABEL_PROMPT **v2**, raw-label scoring primary, semantic reported
+alongside, never primary — see §2.4's instrument-version note: not v3
+(field-invalidated) or v4/EXP-010 (result still pending as of this writing)).
+**Prerequisite this plan does not skip:** since neither Qwen3 nor
+DeepSeek-R1-Distill-Qwen appeared in EXP-004's roster, a fresh baseline
 cascade run on the chosen primary/fallback model is required as this
-experiment's own Phase 0 (§2.3's `[PILOT-RESULT]` slot), not inherited from
+experiment's own Phase 0 (§2.4's `[PILOT-RESULT]` slot), not inherited from
 EXP-004's numbers. Same depth (30 turns) and N (4-8 runs) as EXP-004 for
 direct comparability; before-training and after-training runs on the same
 model, same rejector, same prompt version.
 
+**The manipulation-check gate (new framing this revision adds, applying
+EXP-007b's lesson precisely):** EXP-007b ran a full 3-lane temperature
+ablation on qwen before discovering the endpoint silently ignored the
+temperature parameter — the resulting `[LEARN]` block is explicit: *"Before
+any sampling-parameter ablation, probe K identical requests at the extreme
+setting... register the check as a gate. Verify the manipulation reached the
+model before believing any delta."* Applied here: **before interpreting any
+MMLU/GPQA/BBH delta from the humor-GRPO arm, verify the humor-side
+manipulation actually reached the model** — i.e., cascade depth-to-
+degradation (post-GRPO) must show a real, directional improvement over
+cascade depth-to-degradation (pre-GRPO, same model, same rejector, same
+prompt version). Register this as a **binary pass/fail gate, checked before
+any reasoning-battery number is trusted**, not folded silently into the
+general kill-criteria list in §6:
+
+- **PASS:** post-training cascade depth improves over pre-training (or the
+  model reaches "survived" status more often) — the humor-side manipulation
+  reached the model. Proceed to interpret MMLU/GPQA/BBH deltas.
+- **FAIL:** post-training cascade depth is flat or worse than pre-training.
+  **Do not interpret the reasoning-battery deltas at all** — favorable or
+  not, they answer a question this run never actually asked, exactly as
+  EXP-007b's qwen deltas (distinct_2 +0.006, nowhere near the +0.30
+  prediction) turned out to measure a manipulation that never reached the
+  endpoint, not a real absence of temperature-fakeability. A FAIL here is
+  reported as **inconclusive/invalid**, matching §6's kill-criteria
+  language, not as a negative transfer result.
+
 ### 5.4 Novelty check against the memorized corpus (hard rule, not optional)
 
 Per `CLAUDE.md`: *"any generation eval MUST include a novelty check against a
-memorized-joke corpus."* Score post-GRPO generations' max n-gram Jaccard
-similarity (threshold 0.35, matching `corpus_novelty_penalty`'s own
-threshold) against the full ~1.2M-joke reference set (both license buckets +
-the 25 templates — read-only lookup, see §3.2's compliance flag), and report
-the fraction of generations exceeding threshold. **This must be reported
-alongside, not after, any cascade or MMLU/GPQA improvement claim** — a
-cascade-depth improvement produced by the model learning to recite a
-*different* set of memorized jokes than before is not evidence of anything
-this experiment is trying to measure, and the whole "transfer" claim would be
-sitting on a bad premise if the humor side didn't actually get more diverse
-or more novel.
+memorized-joke corpus."* Score post-GRPO generations against the full
+~1.2M-joke reference set (both license buckets + the 25 templates — read-only
+lookup, see §3.2's compliance flag), reporting **both** tiers side by side
+per the dual-tier lesson `docs/FINDINGS.md` §2.3/§4.6 surfaced this cycle
+(a single tier understated grok's and deepseek's true memorization reliance
+by different amounts):
+
+- **Exact-tier (n-gram, threshold 0.35, `corpus_novelty_penalty`'s own
+  threshold), windowed mode ON** — this is the mode to use at eval time,
+  explicitly, because the padding/dilution exploit is closed for this tier
+  (max-over-sliding-windows, default `windowed=True`) and whole-text-only
+  scoring would silently under-report memorization on any padded/diluted
+  generation.
+- **Template-trigram tier** (25 Jentzsch & Kersting templates, ≥0.5 trigram
+  Jaccard counts a hit) reported alongside — FINDINGS' own fix-wave finding
+  is that this tier catches memorization the exact tier misses on models
+  with a framing-prefix habit (e.g. `api:deepseek`'s 53.3% framing-prefix
+  rate deflates its exact-tier number specifically; §2.4). Check the
+  post-GRPO checkpoint's own framing-prefix rate as part of this report —
+  if GRPO training happens to increase framing-prefix usage (a policy could
+  learn "Alright, here's one:" as a cheap way to blunt the exact-match
+  penalty without becoming less memorization-reliant), the exact tier alone
+  would show a spurious "novelty improved" reading that the trigram tier
+  would catch.
+- **Semantic tier, whole-text mode only (threshold 0.38)** — do **not**
+  score novelty checks in windowed semantic mode; that mode is blocked
+  pending EXP-011 (§4.2). Whole-text semantic + windowed exact-tier is the
+  correct eval-time combination, matching the training-time reward
+  composition (§4.2) so the number reported here is measuring the same
+  thing the reward penalized during training, not a stricter or looser
+  standard applied only at the end.
+
+**This must be reported alongside, not after, any cascade or MMLU/GPQA
+improvement claim** — a cascade-depth improvement produced by the model
+learning to recite a *different* set of memorized jokes than before (or by
+learning a framing-prefix habit that dodges the exact tier specifically) is
+not evidence of anything this experiment is trying to measure, and the whole
+"transfer" claim would be sitting on a bad premise if the humor side didn't
+actually get more diverse or more novel.
 
 ---
 
 ## 6. Success / kill criteria
 
-**Continue (fund a fuller/paper-grade follow-up) if ALL of:**
+**Gate 0, checked BEFORE any of the below (§5.3's manipulation check):** did
+the humor-GRPO arm's post-training cascade depth actually improve over its
+own pre-training baseline? If **FAIL**, stop here — report
+inconclusive/invalid, do not proceed to interpret MMLU/GPQA/BBH deltas one
+way or the other, per EXP-007b's precedent.
+
+**Continue (fund a fuller/paper-grade follow-up) if Gate 0 PASSES and ALL of:**
 - MMLU delta (humor-GRPO minus compute-matched control) ≥ **+0.005** (half
   the registered prediction — a lower bar than the point prediction,
   because at this budget even confirming the *sign* and *rough magnitude*
@@ -501,7 +874,7 @@ or more novel.
 - Phase 0's `[PILOT-RESULT]` shows the chosen primary model already has
   near-ceiling cascade performance (minimal collapse, minimal headroom) —
   switch to the fallback model *before* spending GRPO budget rather than
-  discovering this after (this is precisely why §2.3 gates on the pilot
+  discovering this after (this is precisely why §2.4 gates on the pilot
   slot rather than picking blind).
 
 ---
@@ -510,16 +883,21 @@ or more novel.
 
 GPU-hours, back-of-envelope from §2.2 (A100-80 figures used as the
 conservative/upper-bound case; H100-80 would run ~35-40% cheaper in
-GPU-hours at the same step counts).
+GPU-hours at the same step counts). **Note the §4.2.1 episode-format change:**
+`BanterEnv`'s 8-turn episodes are shorter per-turn than the single-turn
+stack's completions but multiply generation calls by turn count — the
+per-step FLOPs estimate in §2.2 was computed for single-turn completions and
+should be treated as a lower bound for the banter format until re-derived
+per-turn; not re-derived here (flagged, not silently reused).
 
 | Item | Estimate (GPU-hours) |
 |---|---:|
 | SFT baseline, commercial-path (LoRA, 8B, ~60K examples) | ~4 |
 | SFT baseline, paper-path (commercial + research-only, larger set) | ~4-6 |
-| GRPO humor arm, commercial-path (500-1000 steps) | ~10-21 |
-| GRPO humor arm, paper-path (500-1000 steps) | ~10-21 |
-| Compute-matched control arm, commercial-path (matched steps) | ~10-21 |
-| Compute-matched control arm, paper-path (matched steps) | ~10-21 |
+| GRPO humor arm, commercial-path (500-1000 steps, banter episodes) | ~10-21 |
+| GRPO humor arm, paper-path (500-1000 steps, banter episodes) | ~10-21 |
+| Compute-matched control arm, commercial-path (matched steps, matched banter format) | ~10-21 |
+| Compute-matched control arm, paper-path (matched steps, matched banter format) | ~10-21 |
 | `lm-evaluation-harness` MMLU+GPQA, vLLM backend, ~8 checkpoints × ~0.75h | ~6 |
 | Cascade eval serving (vLLM inference only, before/after, both models) | ~2-4 |
 | Debug/OOM-retry/iteration buffer (~20-30% of the above) | ~15-20 |
@@ -532,33 +910,197 @@ magnitude of the effect; only fund the paper-path arms if the MVP clears the
 continue-bar (§6) and a stronger/larger-data version is worth the additional
 ~40-55 GPU-hours to strengthen the eventual paper's number.
 
-### 7.1 Calibration registration commands (copy-paste at run launch, not now)
+### 7.1 API / judge-call budget — distinct from GPU-hours, new this revision
+
+The GPU-hours table above prices compute; it does not price the **external
+judge-API dependency** the §4.2.1 banter format introduces (the single-turn
+stack's `judge_preference` term has the same dependency at a much lower
+call rate, priced here too for completeness):
+
+| Item | Calls | Approx. $ (haiku pricing, pennies/call) | Wall-clock note |
+|---|---:|---:|---|
+| Banter ablation judge (humor-GRPO arm): 8 gens × 8 turns × 2 calls/turn × 500-1000 steps | 32,000-64,000 | low single-digit $ to ~\$10s | **latency-bound, not $-bound** — GRPO step throughput waits on haiku round-trips unless batched/parallelized; budget wall-clock headroom in Phase 1's schedule, not just GPU-hours |
+| Compute-matched control's analogous judge (§5.2, matched call rate) | 32,000-64,000 | comparable | same caveat |
+| Phase 0 cascade pilot (haiku rejector, per model: 30 turns × 2 calls × N runs) | ~240-480/model × up to 4 models (Qwen3-8B/14B, R1-distill-14B, +fallback) | low single-digit $ | one-time, before GPU spend |
+| Post-training cascade re-run (same models, after GRPO) | same order as above | low single-digit $ | one-time per checkpoint |
+
+**Why this line matters enough to add:** none of the GPU-hour estimates
+above account for wall-clock time spent blocked on an external API judge —
+at 32,000+ calls per arm, even well-parallelized haiku round-trips (order
+100s of ms each) add up to real serial time if the training loop isn't
+structured to overlap judge scoring with the next rollout's generation. This
+is an engineering/scheduling risk to resolve during the §4.2.1 build, not
+purely a cost line.
+
+### 7.2 Calibration registration commands (copy-paste at run launch, not now)
+
+**Run-id note (bug this revision fixes):** the prior draft used
+`EXP-005-reverse-transfer` as the calibration run id — but `EXP-005` is
+already assigned in `EXPERIMENT_LOG.md` (banter judge validation), so that
+id collided with a real, unrelated experiment. This experiment has not yet
+been logged and has no `EXP-NNN` number of its own (`EXPERIMENT_LOG.md`
+assigns numbers sequentially at registration, not in a planning doc) — the
+commands below use a non-colliding placeholder id, `reverse-transfer-v1`;
+whoever registers this run should swap in the real `EXP-NNN` once
+`EXPERIMENT_LOG.md` assigns one (next available at time of writing: check
+the log's highest entry, currently through EXP-010 plus addenda — likely
+**EXP-011 is already reserved** for the windowed-semantic-novelty re-sweep
+per `env/semantic_novelty.py`'s own docstring, so this run is probably
+**EXP-012** or later; confirm against the log at registration time, don't
+assume).
 
 ```bash
 # Primary transfer predictions (register when the humor-GRPO arm actually launches)
-python3 .claude/scripts/calibration.py add EXP-005-reverse-transfer \
+python3 .claude/scripts/calibration.py add reverse-transfer-v1 \
   "GRPO on humor reward stack shifts MMLU accuracy vs compute-matched control" \
   mmlu_acc_delta 0.010
 
-python3 .claude/scripts/calibration.py add EXP-005-reverse-transfer \
+python3 .claude/scripts/calibration.py add reverse-transfer-v1 \
   "GRPO on humor reward stack shifts GPQA-diamond accuracy vs compute-matched control" \
   gpqa_diamond_acc_delta 0.005
 
 # Disproof check (register BEFORE the GRPO arm, at SFT-only launch)
-python3 .claude/scripts/calibration.py add EXP-005-reverse-transfer \
+python3 .claude/scripts/calibration.py add reverse-transfer-v1 \
   "SFT-only on curated humor data shifts MMLU accuracy vs compute-matched SFT control" \
   mmlu_acc_delta_sft_only 0.002
 
 # Humor-side companion metrics (cascade benchmark, same run id)
-python3 .claude/scripts/calibration.py add EXP-005-reverse-transfer \
+python3 .claude/scripts/calibration.py add reverse-transfer-v1 \
   "Post-GRPO model survives more cascade turns before degrading (pre vs post, same model)" \
   cascade_depth_delta_turns 5
 
-python3 .claude/scripts/calibration.py add EXP-005-reverse-transfer \
+python3 .claude/scripts/calibration.py add reverse-transfer-v1 \
   "Post-GRPO model shows higher within-model path divergence across runs (pre vs post)" \
   cascade_path_divergence_delta 0.07
 
 # After the run — close each with the actual measured delta, e.g.:
-# python3 .claude/scripts/calibration.py close EXP-005-reverse-transfer \
+# python3 .claude/scripts/calibration.py close reverse-transfer-v1 \
 #   "GRPO on humor reward stack shifts MMLU accuracy vs compute-matched control" <ACTUAL_DELTA>
 ```
+
+---
+
+## 8. Threats to validity
+
+New section this revision — the prior draft scattered these caveats across
+§1–§7; consolidated here so a reviewer can check the full list in one place
+before signing off on a GPU spend. None of these are hypothetical: each
+either already bit this project once (cited) or is a documented failure mode
+in the literature this plan draws on.
+
+### 8.1 Contamination between humor training data and eval sets
+
+Already gated in §3.1 (dedup against `chatgpt-25-templates.jsonl`, held-out
+human-eval jokes, cascade topic-seed prompts, and "a cheap contamination
+check against MMLU/GPQA text" — stated there as a gate, not resolved).
+Restated here because it is the single most common way a "transfer" result
+turns out to be spurious: **eval-train leakage looks exactly like a genuine
+capability shift until someone checks.** SocialGrep/Fraser/taivop Reddit
+corpora are large and heterogeneous enough that near-zero overlap with
+MMLU/GPQA is the expectation, not a certainty — run the check, report the
+overlap rate found (even if zero), and treat "we didn't check" as
+disqualifying for any positive result, per CLAUDE.md's "verify before
+claiming."
+
+### 8.2 Judge gaming
+
+Two independent judge dependencies in this design, each individually
+documented as hackable: `judge_preference` (main stack, `[0,1]`-contract
+enforced but still an LLM judge, and `negative-results.md` §1's GRPO+GPT-4.1
+collapse is exactly this failure mode) and the banter ablation judge
+(§4.2.1 — `banter_env.py`'s own docstring names the specific exploit,
+sprinkling context-echoing words to inflate the delta without genuine
+in-context responsiveness). Mitigations already specified, not new: the
+novelty/diversity/comprehensibility terms exist precisely to make a
+judge-only win insufficient (§4.2); the smoke-test's judge-normalization
+check (§4.3 item 4) catches magnitude dominance before launch; and
+`humor-rl/SKILL.md`'s own procedure ("read the actual completions early... a
+few hundred steps in") is a live-run check this plan inherits, not replaces.
+**Residual risk not fully closed by any of the above:** both judges are the
+same underlying model (haiku) under different rubrics — a systematic haiku
+bias (e.g., rewarding a particular register or verbosity level) would move
+both the training reward and any correlated eval (EQ-Bench, §5.1) the same
+direction, which is exactly why EQ-Bench is explicitly *not* in the
+frozen/primary success-criteria set (§5.1) and why the primary reasoning
+battery (MMLU/GPQA/BBH) is judge-free multiple-choice/exact-match scoring —
+the one part of this design immune to a shared-judge bias by construction.
+
+### 8.3 Seed variance at small N
+
+§1.2 already flags MMLU stderr (~0.004-0.005 at 7-8B) and GPQA-diamond's
+noise floor (~198 questions, one flip ≈0.5pp — within the registered
+predicted delta). Restated as a standing threat, not a one-time caveat: any
+single-seed run at this scale risks reporting noise as signal in either
+direction. Mitigation already specified in §6 (bootstrap CI per-subject, not
+a bare point estimate; require the delta direction to hold across ≥2 of 3
+primary signals). Not mitigated, and worth stating plainly: **this plan does
+not budget multiple training seeds per arm** (§7's GPU-hours are single-seed
+per arm) — a genuinely paper-grade version would re-run each arm at ≥2-3
+seeds before trusting a point estimate, and this plan's pilot-grade budget
+explicitly does not do that (matching this project's own house style of
+calling pilot-grade numbers pilot-grade, per `docs/FINDINGS.md`'s repeated
+"not paper numbers" framing).
+
+### 8.4 The "any RL moves MMLU a little" confound
+
+Stated precisely, per the task's own framing: **this is exactly and only
+the compute-matched control arm's job (§5.2).** Without it, a positive
+humor-GRPO delta against the frozen pre-training baseline is confounded with
+"more gradient steps, more KL-anchored drift, more reward-shaped generation
+exposure" — none of which requires humor content specifically. §5.2's
+matched-format (banter, §4.2.1), matched-architecture, matched-step-count
+control is designed to absorb exactly this effect, and §6's kill criteria
+are built around the control comparison, not the frozen-baseline comparison,
+for this exact reason ("the apparent effect only shows up... vanishes
+against the compute-matched control... should be reported as that, not
+spun"). The confound is not fully eliminated by a single control arm at
+single-seed N (§8.3 compounds here), but the design's entire causal-inference
+weight rests on this one comparison — if the control arm is skipped, cut
+down to option 2 (§5.2's single-turn fallback), or under-resourced relative
+to the humor arm, this entire plan's central claim becomes unfalsifiable
+against the "just more RL" explanation.
+
+### 8.5 The wrapper/access-path confound, applied to the eval battery
+
+`docs/FINDINGS.md` §5's most consequential 2026-07-17 finding was that the
+cascade benchmark's CLI-wrapper lanes (claude/codex) differ from native-API
+lanes in ways that contaminate family-level claims — verified in the
+project's own transcripts (haiku spending 25/30 turns in CLI-assistant
+persona; wrapper-specific opening-topic leakage) — and that this confound is
+"bounded, not eliminated." **The lesson applied to this plan, not previously
+stated here:** every checkpoint in this experiment (frozen base, SFT
+baseline, humor-GRPO, compute-matched control — 4+ checkpoints across two
+license paths, §3.2) must be evaluated on MMLU/GPQA/BBH through **the exact
+same access path** — same `lm-evaluation-harness` backend (vLLM, per §5.1),
+same checkpoint-loading convention (merged-LoRA-into-base or
+adapter-on-base, picked once and applied to every checkpoint, not mixed),
+same batch size and precision. Mixing access paths across checkpoints (e.g.
+evaluating the frozen base via a hosted API and the trained checkpoints via
+local vLLM) would reintroduce the identical class of confound FINDINGS §5
+had to bound after the fact for the cascade benchmark — cheaper to prevent
+by fixing the eval harness config once, before Phase 1, than to discover and
+bound after the numbers are in.
+
+### 8.6 Summary: the single biggest threat in this plan's own judgment
+
+Ranked above the rest, and specific to this plan rather than a restatement
+of a generic RL-eval concern: **the model-selection headroom prior (§2.4) is
+a same-family analogy, not a measurement on the actual training
+checkpoint.** FINDINGS' cascade data ranks `deepseek-chat`/`qwen-plus`/
+`glm-4.5-air` — three hosted flagship API models, none of them the 7-32B
+open-weight dense checkpoint this plan will actually train. Qwen is the only
+family where a clean, same-lineage, right-size checkpoint exists at all, and
+even there, `qwen-plus`'s own FINDINGS profile is the noisier, weaker-signal
+one of the three (one run to turn 24 out of 4; template-trigram
+memorization 3x deepseek's). It is entirely possible that Qwen3-8B/14B, once
+actually measured in Phase 0, shows too little cascade headroom for the
+humor-side manipulation check (§5.3's Gate 0) to ever pass — at which point
+this entire design, however carefully specified, cannot test the reverse-
+transfer hypothesis at all, regardless of GRPO config, reward stack, or
+control-arm rigor. This is precisely why §2.4 gates Phase 1 on a Phase 0
+pilot rather than picking blind, and why that gate is written as a genuine
+stop condition (§6, Gate 0) rather than a formality — but it means the
+riskiest point of failure in this whole plan is upstream of any RL training
+decision, in a cheap, non-GPU pilot this document cannot pre-answer. Budget
+attention accordingly: don't let Phase 0 become a rubber stamp because the
+expensive design work happened downstream of it.
