@@ -1,0 +1,5 @@
+{"run_id": "api:qwen-r05", "turn": 0, "joke": "Why don't skeletons fight each other?  \n\nThey don\u2019t have the guts.", "topic": "skeleton", "refusal": false, "temperature": 1.2, "ts": 1784292682.102149}
+{"run_id": "api:qwen-r05", "turn": 1, "joke": "Why don't scientists trust atoms?  \n\nBecause they make up everything!", "topic": "science", "refusal": false, "temperature": 1.2, "ts": 1784292688.233682}
+{"run_id": "api:qwen-r05", "turn": 2, "joke": "Why don't eggs tell secrets?  \n\nThey'd crack under pressure!", "topic": "egg", "refusal": false, "temperature": 1.2, "ts": 1784292694.611966}
+{"run_id": "api:qwen-r05", "turn": 3, "joke": "Why don't pirates ever get lost?  \n\nBecause they always follow their *arr*!", "topic": "pirate", "refusal": false, "temperature": 1.2, "ts": 1784292715.917495}
+{"run_id": "api:qwen-r05", "turn": 4, "joke": "Why don't paper towels ever get invited to parties?  \n\nBecause they\u2019re too absorbent!", "topic": "cleaning", "refusal": false, "temperature": 1.2, "ts": 1784292725.321812}

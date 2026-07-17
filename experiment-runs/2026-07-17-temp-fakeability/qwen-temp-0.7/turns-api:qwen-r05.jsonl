@@ -1,0 +1,2 @@
+{"run_id": "api:qwen-r05", "turn": 0, "joke": "Why don't skeletons fight each other?  \n\nThey don\u2019t have the guts.", "topic": "death", "refusal": false, "temperature": 0.7, "ts": 1784292713.7128031}
+{"run_id": "api:qwen-r05", "turn": 1, "joke": "Why don't scientists trust atoms?  \n\nBecause they make up everything!", "topic": "science", "refusal": false, "temperature": 0.7, "ts": 1784292720.843423}

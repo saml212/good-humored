@@ -211,6 +211,29 @@ check separates both from memorized recall — three orthogonal failure
 fingerprints, quantified per lab. Pilot-grade numbers (N=2–4, depth 30,
 wrapper confound bounded not eliminated); stats inference + FINDINGS next.
 
+**Correction (2026-07-17 morning, stats inference pass — see
+`benchmark/run_stats_inference.py` + `docs/FINDINGS.md` §4.4):**
+(1) The "8/10 models degrade" count above does not reproduce: recounting
+models with ≥1 degrading run gives **9/10** (only codex:mini fully clean).
+(2) The Verdict's "Anthropic: genuinely low memorization" holds for
+opus/sonnet/fable (pooled 3.6%) but NOT haiku (25.8% — stated correctly in
+the results bullet above, blurred in the verdict phrasing). Haiku's rate
+sits statistically in the GPT-family heavy-recall tier (Fisher
+haiku-vs-rest-of-family p = 6.5×10⁻¹¹), and haiku is also the rejector
+instrument — its dual role is the pilot's most awkward design fact.
+(3) Only the single Anthropic-vs-OpenAI family contrast on degradation
+depth (p = 0.0002, Cliff's δ −0.917) survives correction; the 45-pair
+exploratory battery does not (every Holm-corrected p = 1.0 at N=2–4) and
+must not be cited pairwise. IMPORTANT epistemic label (adversarial review
+2026-07-17): that family grouping was chosen AFTER this entry's Result
+bullet made the family pattern visible — it is a disclosed post-hoc
+contrast, strong exploratory evidence, NOT a blind pre-registered test;
+it needs a genuinely pre-registered replication before "confirmatory" is
+warranted. (4) The family contrast pools haiku's own-cascade depths, and
+haiku is also the rejector — the dual-role confound applies to haiku's
+degradation numbers too, direction untested; robustness check excluding
+haiku queued.
+
 ## EXP-005 — banter judge validation (2026-07-17, pre-registered BEFORE run)
 
 **Status:** running.
@@ -325,7 +348,35 @@ api:qwen (native API, versioned code qwen-plus-2025-07-28), temps
 {0.2, 0.7, 1.2}, N=6, depth 30. Registered predictions: distinct_2 delta
 ≈ +0.30 (calibration exp-007b-qwen-replication); set_jaccard delta ≈ −0.02
 (exp-007b-qwen-replication-path). Same success bar (sampling ≥ 3× path).
-Result: _(pending)_
+
+**Result (2026-07-17 morning, post-reset rerun):** REPLICATION INVALID —
+manipulation check failed. Measured deltas (0.2→1.2, sampling_diversity
+over lane dirs, same instrument as EXP-007): distinct_2 **+0.006** (pred
++0.30, miss), set_jaccard **+0.037** (pred −0.02). But neither number
+means what it would on a working manipulation: **all 6 runs at temperature
+1.2 open with a byte-identical first joke** (same skeleton classic, same
+double-space, same curly apostrophe) — as do all 6 at 0.2. Contrast
+deepseek under the identical protocol: 2 distinct first jokes at 0.2
+(near-greedy, expected) vs **6 distinct at 1.2** (temperature visibly
+honored). Downstream qwen divergence (set_jaccard 0.18–0.30) exists only
+because the haiku rejector varies. The temperature parameter demonstrably
+never took effect at the qwen endpoint — likely server-side clamping,
+ignoring of the param, or response caching on identical requests; these
+cannot be distinguished post hoc because the Alibaba free quota exhausted
+mid-experiment (temp-0.7 got 4/6 runs, temp-1.2 5/6, temp-0.2 4 full + 1
+near-full — unequal n noted). Calibrations closed with measured actuals
+(the misses are recorded; the confound explains, not excuses, them).
+
+**Verdict:** qwen is DISQUALIFIED as the second-model replication — no
+evidence for or against temperature-fakeability where temperature never
+reached the model. EXP-007's deepseek result stands but still generalizes
+to exactly one model. Follow-up: replicate on glm (native API, honors
+params — TBD via pre-probe) as EXP-007c, WITH a turn-1 variability
+manipulation check as a registered pass/fail gate this time.
+
+[LEARN] api-endpoints: Temperature ablations need a manipulation check before interpretation.
+Mistake: Ran a full 3-lane temperature ablation on qwen assuming the OpenAI-compat endpoint honors the temperature param; it silently didn't (byte-identical outputs at temp 1.2), costing the lane its replication value.
+Correction: Before any sampling-parameter ablation, probe K identical requests at the extreme setting and require ≥K/2 distinct outputs; register the check as a gate. Verify the manipulation reached the model before believing any delta.
 
 ---
 
@@ -444,3 +495,39 @@ its bias direction is CONSERVATIVE for collapse claims — label noise splits
 topics, making models look MORE diverse, so any collapse we find survives the
 noise; diversity findings get flagged instead. Paper-grade fix on the roadmap:
 constrained-vocabulary two-pass labeling instead of free labels.
+
+---
+
+## EXP-007c — glm temperature replication (2026-07-17, pre-registered BEFORE run)
+
+**Status:** running.
+
+**Hypothesis (one sentence):** The EXP-007 temperature-fakeability pattern
+(temperature buys surface diversity but cannot expand the topic pool)
+replicates on glm-4.5-air, the second native-API model whose endpoint
+demonstrably honors the temperature parameter.
+
+**Why glm and not qwen:** EXP-007b disqualified qwen — its endpoint
+silently ignored temperature (byte-identical outputs at 1.2). glm was
+pre-probed 2026-07-17: temperature >1.0 → loud HTTP 400 (legal range
+[0,1], so the param is parsed), 4/4 distinct outputs at 0.95, 3/3 distinct
+at 0.05. The [0,1] clamp changes the design: temps {0.05, 0.5, 0.95}.
+The 0.05-lane non-determinism (3/3 distinct even near-greedy) means the
+diversity floor is high, so the predicted distinct_2 delta is set well
+below deepseek's +0.39.
+
+**Design:** api:glm (glm-4.5-air, max_tokens 2048), temps {0.05, 0.5,
+0.95}, N=6 runs, depth 30, rejector haiku (never receives temperature).
+Same instrument as EXP-007/007b: sampling_diversity over each lane dir.
+
+**Manipulation-check gate (registered, pass/fail — the EXP-007b lesson):**
+the 0.95 lane must show ≥3 distinct turn-1 jokes across its 6 runs;
+otherwise the experiment is INVALID (no verdict either way), regardless of
+deltas.
+
+**Predictions (registered in calibration DB before launch):**
+- distinct_2 delta (0.05→0.95) ≈ **+0.15** (exp-007c-glm-replication)
+- set_jaccard delta ≈ **0.00** (exp-007c-glm-replication-path)
+- Success bar unchanged: sampling delta ≥ 3× |path delta|.
+
+Result: _(pending)_
