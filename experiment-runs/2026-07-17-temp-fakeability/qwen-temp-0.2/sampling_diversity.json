@@ -1,0 +1,18 @@
+{
+  "api:qwen": {
+    "n_runs": 6,
+    "n_jokes": 42,
+    "sampling_diversity": {
+      "distinct_1": 0.29532898041185335,
+      "distinct_2": 0.7370558375634517,
+      "mean_pairwise_trigram_jaccard": 0.018214376418818894,
+      "n_texts": 42.0
+    },
+    "path_divergence": {
+      "set_jaccard": 0.41111111111111115,
+      "prefix_depth": 0.0,
+      "norm_edit_distance": 0.5911111111111111,
+      "n_pairs": 15.0
+    }
+  }
+}

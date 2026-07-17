@@ -1,0 +1,29 @@
+{
+  "models": [
+    "api:kimi"
+  ],
+  "runs": 4,
+  "depth": 30,
+  "rejector": "haiku",
+  "temperature": null,
+  "label_space_degraded": false,
+  "failures": [
+    {
+      "run_id": "api:kimi-r00",
+      "error": "RuntimeError('api:kimi empty response')"
+    },
+    {
+      "run_id": "api:kimi-r01",
+      "error": "RuntimeError('api:kimi empty response')"
+    },
+    {
+      "run_id": "api:kimi-r02",
+      "error": "RuntimeError(\"claude -p rc=1: You've hit your session limit \u00b7 resets 4:30am (America/Los_Angeles)\")"
+    },
+    {
+      "run_id": "api:kimi-r03",
+      "error": "RuntimeError(\"claude -p rc=1: You've hit your session limit \u00b7 resets 4:30am (America/Los_Angeles)\")"
+    }
+  ],
+  "per_model": {}
+}

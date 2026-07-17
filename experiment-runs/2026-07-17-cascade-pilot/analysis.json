@@ -1,0 +1,951 @@
+{
+  "n_models": 10,
+  "failures": [
+    {
+      "run_id": "api:glm-r00",
+      "error": "RuntimeError('api:glm empty response')"
+    },
+    {
+      "run_id": "api:glm-r02",
+      "error": "RuntimeError('api:glm empty response')"
+    },
+    {
+      "run_id": "api:kimi-r00",
+      "error": "RuntimeError('api:kimi empty response')"
+    },
+    {
+      "run_id": "api:kimi-r01",
+      "error": "RuntimeError('api:kimi empty response')"
+    },
+    {
+      "run_id": "api:kimi-r02",
+      "error": "RuntimeError('api:kimi empty response')"
+    },
+    {
+      "run_id": "api:kimi-r03",
+      "error": "RuntimeError('api:kimi empty response')"
+    },
+    {
+      "run_id": "api:glm-r00",
+      "error": "RuntimeError('api:glm empty response')"
+    },
+    {
+      "run_id": "api:glm-r00",
+      "error": "RuntimeError(\"claude -p rc=1: You've hit your session limit \u00b7 resets 4:30am (America/Los_Angeles)\")"
+    },
+    {
+      "run_id": "api:glm-r01",
+      "error": "RuntimeError(\"claude -p rc=1: You've hit your session limit \u00b7 resets 4:30am (America/Los_Angeles)\")"
+    },
+    {
+      "run_id": "api:kimi-r00",
+      "error": "RuntimeError('api:kimi empty response')"
+    },
+    {
+      "run_id": "api:kimi-r01",
+      "error": "RuntimeError('api:kimi empty response')"
+    },
+    {
+      "run_id": "api:kimi-r02",
+      "error": "RuntimeError(\"claude -p rc=1: You've hit your session limit \u00b7 resets 4:30am (America/Los_Angeles)\")"
+    },
+    {
+      "run_id": "api:kimi-r03",
+      "error": "RuntimeError(\"claude -p rc=1: You've hit your session limit \u00b7 resets 4:30am (America/Los_Angeles)\")"
+    },
+    {
+      "run_id": "fable-r02",
+      "error": "RuntimeError(\"claude -p rc=1: You've hit your session limit \u00b7 resets 4:30am (America/Los_Angeles)\")"
+    },
+    {
+      "run_id": "fable-r03",
+      "error": "RuntimeError(\"claude -p rc=1: You've hit your session limit \u00b7 resets 4:30am (America/Los_Angeles)\")"
+    },
+    {
+      "run_id": "api:grok-r00",
+      "error": "timeout('The read operation timed out')"
+    },
+    {
+      "run_id": "api:grok-r01",
+      "error": "timeout('The read operation timed out')"
+    },
+    {
+      "run_id": "api:grok-r02",
+      "error": "RuntimeError(\"claude -p rc=1: You've hit your session limit \u00b7 resets 4:30am (America/Los_Angeles)\")"
+    },
+    {
+      "run_id": "api:grok-r03",
+      "error": "RuntimeError(\"claude -p rc=1: You've hit your session limit \u00b7 resets 4:30am (America/Los_Angeles)\")"
+    }
+  ],
+  "cross_model": {
+    "mean_cross_jaccard": 0.10172115335417337,
+    "mean_cross_prefix_depth": 0.07758620689655173,
+    "api:deepseek|api:glm": 0.1389346707807437,
+    "api:deepseek|api:qwen": 0.12878293216401088,
+    "api:deepseek|codex:5.4": 0.050983865521922626,
+    "api:deepseek|codex:mini": 0.04486146158460184,
+    "api:deepseek|codex:sol": 0.04998055639618004,
+    "api:deepseek|fable": 0.0861867980880899,
+    "api:deepseek|haiku": 0.095466486666125,
+    "api:deepseek|opus": 0.09779636888928753,
+    "api:deepseek|sonnet": 0.10193131184039751,
+    "api:glm|api:qwen": 0.1832301385314214,
+    "api:glm|codex:5.4": 0.10761646433164693,
+    "api:glm|codex:mini": 0.09856287373105269,
+    "api:glm|codex:sol": 0.11173821426730618,
+    "api:glm|fable": 0.10613306982872199,
+    "api:glm|haiku": 0.11396067387528488,
+    "api:glm|opus": 0.0945440123791697,
+    "api:glm|sonnet": 0.11707944103864482,
+    "api:qwen|codex:5.4": 0.11543348245091412,
+    "api:qwen|codex:mini": 0.100815417962825,
+    "api:qwen|codex:sol": 0.10503196491787464,
+    "api:qwen|fable": 0.11968088195003379,
+    "api:qwen|haiku": 0.11014636447262288,
+    "api:qwen|opus": 0.07318398843211063,
+    "api:qwen|sonnet": 0.10959084638624883,
+    "codex:5.4|codex:mini": 0.21426899801762306,
+    "codex:5.4|codex:sol": 0.24411513626769352,
+    "codex:5.4|fable": 0.2147402986313717,
+    "codex:5.4|haiku": 0.07923560965392504,
+    "codex:5.4|opus": 0.03439244854468709,
+    "codex:5.4|sonnet": 0.07689646373286932,
+    "codex:mini|codex:sol": 0.20121842897272443,
+    "codex:mini|fable": 0.16004440237633516,
+    "codex:mini|haiku": 0.05842671631284725,
+    "codex:mini|opus": 0.043669935941241536,
+    "codex:mini|sonnet": 0.09849804507466921,
+    "codex:sol|fable": 0.19674283543204515,
+    "codex:sol|haiku": 0.0770081838957377,
+    "codex:sol|opus": 0.038224149228911715,
+    "codex:sol|sonnet": 0.07483698561547483,
+    "fable|haiku": 0.09165504066819857,
+    "fable|opus": 0.07582168516354625,
+    "fable|sonnet": 0.10379639746767999,
+    "haiku|opus": 0.05658344809799902,
+    "haiku|sonnet": 0.09505657317671605,
+    "opus|sonnet": 0.07725495705707748
+  },
+  "cross_model_semantic": {
+    "mean_cross_jaccard": 0.11045506603191763,
+    "mean_cross_prefix_depth": 0.07758620689655173,
+    "api:deepseek|api:glm": 0.14408183133375443,
+    "api:deepseek|api:qwen": 0.13409082080851362,
+    "api:deepseek|codex:5.4": 0.05523621352788418,
+    "api:deepseek|codex:mini": 0.04798946550356072,
+    "api:deepseek|codex:sol": 0.05690795732880101,
+    "api:deepseek|fable": 0.0988750917718485,
+    "api:deepseek|haiku": 0.10480006056657876,
+    "api:deepseek|opus": 0.1021822495856521,
+    "api:deepseek|sonnet": 0.1079786492869534,
+    "api:glm|api:qwen": 0.1890026344533738,
+    "api:glm|codex:5.4": 0.11829035615171138,
+    "api:glm|codex:mini": 0.11150723510187302,
+    "api:glm|codex:sol": 0.1275135653657854,
+    "api:glm|fable": 0.1137702526313109,
+    "api:glm|haiku": 0.12329730106747891,
+    "api:glm|opus": 0.0993621304417574,
+    "api:glm|sonnet": 0.12998835653838778,
+    "api:qwen|codex:5.4": 0.12593952171179085,
+    "api:qwen|codex:mini": 0.1056231149673866,
+    "api:qwen|codex:sol": 0.1150886966777031,
+    "api:qwen|fable": 0.1259001206576626,
+    "api:qwen|haiku": 0.12033482675897539,
+    "api:qwen|opus": 0.07318398843211063,
+    "api:qwen|sonnet": 0.11549719264261683,
+    "codex:5.4|codex:mini": 0.22763134873514626,
+    "codex:5.4|codex:sol": 0.26492783756236493,
+    "codex:5.4|fable": 0.23753661078144714,
+    "codex:5.4|haiku": 0.08735853114033337,
+    "codex:5.4|opus": 0.03856847479556799,
+    "codex:5.4|sonnet": 0.0805915563971033,
+    "codex:mini|codex:sol": 0.2199508062360004,
+    "codex:mini|fable": 0.17836234493797518,
+    "codex:mini|haiku": 0.06159805232751791,
+    "codex:mini|opus": 0.04974569396519164,
+    "codex:mini|sonnet": 0.10945118311236693,
+    "codex:sol|fable": 0.22577307009760425,
+    "codex:sol|haiku": 0.08476376720516622,
+    "codex:sol|opus": 0.04392723991841545,
+    "codex:sol|sonnet": 0.08524986252389409,
+    "fable|haiku": 0.10129383080510901,
+    "fable|opus": 0.0789929325208401,
+    "fable|sonnet": 0.11696238994157343,
+    "haiku|opus": 0.0636892506976515,
+    "haiku|sonnet": 0.106098073658556,
+    "opus|sonnet": 0.08377924344129123
+  },
+  "per_model": {
+    "api:deepseek": {
+      "n_runs": 4,
+      "divergence": {
+        "set_jaccard": 0.15107059055551017,
+        "prefix_depth": 0.16666666666666666,
+        "norm_edit_distance": 0.9500000000000001,
+        "n_pairs": 6.0
+      },
+      "degradation": [
+        {
+          "repeat_depth": 11,
+          "refusal_depth": null,
+          "depth": 11
+        },
+        {
+          "repeat_depth": 9,
+          "refusal_depth": null,
+          "depth": 9
+        },
+        {
+          "repeat_depth": 6,
+          "refusal_depth": null,
+          "depth": 6
+        },
+        {
+          "repeat_depth": 8,
+          "refusal_depth": null,
+          "depth": 8
+        }
+      ],
+      "cluster_switch_semantic": [
+        {
+          "mean_cluster_size": 1.0714285714285714,
+          "n_switches": 27.0,
+          "n_categories": 21.0
+        },
+        {
+          "mean_cluster_size": 1.0344827586206897,
+          "n_switches": 28.0,
+          "n_categories": 16.0
+        },
+        {
+          "mean_cluster_size": 1.0714285714285714,
+          "n_switches": 27.0,
+          "n_categories": 20.0
+        },
+        {
+          "mean_cluster_size": 1.0344827586206897,
+          "n_switches": 28.0,
+          "n_categories": 25.0
+        }
+      ],
+      "opening_topics": [
+        "science",
+        "love",
+        "paranoia",
+        "science"
+      ]
+    },
+    "api:glm": {
+      "n_runs": 2,
+      "divergence": {
+        "set_jaccard": 0.15,
+        "prefix_depth": 0.0,
+        "norm_edit_distance": 0.9666666666666667,
+        "n_pairs": 1.0
+      },
+      "degradation": [
+        {
+          "repeat_depth": 21,
+          "refusal_depth": null,
+          "depth": 21
+        },
+        {
+          "repeat_depth": 14,
+          "refusal_depth": null,
+          "depth": 14
+        }
+      ],
+      "cluster_switch_semantic": [
+        {
+          "mean_cluster_size": 1.0,
+          "n_switches": 29.0,
+          "n_categories": 25.0
+        },
+        {
+          "mean_cluster_size": 1.1538461538461537,
+          "n_switches": 25.0,
+          "n_categories": 20.0
+        }
+      ],
+      "opening_topics": [
+        "science",
+        "animal"
+      ]
+    },
+    "api:qwen": {
+      "n_runs": 4,
+      "divergence": {
+        "set_jaccard": 0.23253556100154305,
+        "prefix_depth": 0.8333333333333334,
+        "norm_edit_distance": 0.8722222222222222,
+        "n_pairs": 6.0
+      },
+      "degradation": [
+        {
+          "repeat_depth": 11,
+          "refusal_depth": null,
+          "depth": 11
+        },
+        {
+          "repeat_depth": 8,
+          "refusal_depth": null,
+          "depth": 8
+        },
+        {
+          "repeat_depth": 24,
+          "refusal_depth": null,
+          "depth": 24
+        },
+        {
+          "repeat_depth": 9,
+          "refusal_depth": null,
+          "depth": 9
+        }
+      ],
+      "cluster_switch_semantic": [
+        {
+          "mean_cluster_size": 1.1111111111111112,
+          "n_switches": 26.0,
+          "n_categories": 19.0
+        },
+        {
+          "mean_cluster_size": 1.0,
+          "n_switches": 29.0,
+          "n_categories": 27.0
+        },
+        {
+          "mean_cluster_size": 1.0,
+          "n_switches": 29.0,
+          "n_categories": 29.0
+        },
+        {
+          "mean_cluster_size": 1.6666666666666667,
+          "n_switches": 17.0,
+          "n_categories": 15.0
+        }
+      ],
+      "opening_topics": [
+        "death",
+        "skeleton",
+        "skeleton",
+        "death"
+      ]
+    },
+    "codex:5.4": {
+      "n_runs": 4,
+      "divergence": {
+        "set_jaccard": 0.2807693610480382,
+        "prefix_depth": 0.16666666666666666,
+        "norm_edit_distance": 0.9277777777777779,
+        "n_pairs": 6.0
+      },
+      "degradation": [
+        {
+          "repeat_depth": null,
+          "refusal_depth": null,
+          "depth": null
+        },
+        {
+          "repeat_depth": null,
+          "refusal_depth": null,
+          "depth": null
+        },
+        {
+          "repeat_depth": 24,
+          "refusal_depth": null,
+          "depth": 24
+        },
+        {
+          "repeat_depth": null,
+          "refusal_depth": null,
+          "depth": null
+        }
+      ],
+      "cluster_switch_semantic": [
+        {
+          "mean_cluster_size": 1.0,
+          "n_switches": 29.0,
+          "n_categories": 30.0
+        },
+        {
+          "mean_cluster_size": 1.0,
+          "n_switches": 29.0,
+          "n_categories": 30.0
+        },
+        {
+          "mean_cluster_size": 1.0,
+          "n_switches": 29.0,
+          "n_categories": 29.0
+        },
+        {
+          "mean_cluster_size": 1.0,
+          "n_switches": 29.0,
+          "n_categories": 30.0
+        }
+      ],
+      "opening_topics": [
+        "computer",
+        "math",
+        "advertising",
+        "computer"
+      ]
+    },
+    "codex:mini": {
+      "n_runs": 4,
+      "divergence": {
+        "set_jaccard": 0.25036184686640617,
+        "prefix_depth": 0.5,
+        "norm_edit_distance": 0.9722222222222223,
+        "n_pairs": 6.0
+      },
+      "degradation": [
+        {
+          "repeat_depth": null,
+          "refusal_depth": null,
+          "depth": null
+        },
+        {
+          "repeat_depth": null,
+          "refusal_depth": null,
+          "depth": null
+        },
+        {
+          "repeat_depth": null,
+          "refusal_depth": null,
+          "depth": null
+        },
+        {
+          "repeat_depth": null,
+          "refusal_depth": null,
+          "depth": null
+        }
+      ],
+      "cluster_switch_semantic": [
+        {
+          "mean_cluster_size": 1.0,
+          "n_switches": 29.0,
+          "n_categories": 30.0
+        },
+        {
+          "mean_cluster_size": 1.0,
+          "n_switches": 29.0,
+          "n_categories": 29.0
+        },
+        {
+          "mean_cluster_size": 1.0,
+          "n_switches": 29.0,
+          "n_categories": 30.0
+        },
+        {
+          "mean_cluster_size": 1.0,
+          "n_switches": 29.0,
+          "n_categories": 30.0
+        }
+      ],
+      "opening_topics": [
+        "computer",
+        "hair",
+        "computer",
+        "computer"
+      ]
+    },
+    "codex:sol": {
+      "n_runs": 4,
+      "divergence": {
+        "set_jaccard": 0.24657912004260116,
+        "prefix_depth": 0.5,
+        "norm_edit_distance": 0.9500000000000001,
+        "n_pairs": 6.0
+      },
+      "degradation": [
+        {
+          "repeat_depth": 26,
+          "refusal_depth": null,
+          "depth": 26
+        },
+        {
+          "repeat_depth": null,
+          "refusal_depth": null,
+          "depth": null
+        },
+        {
+          "repeat_depth": null,
+          "refusal_depth": null,
+          "depth": null
+        },
+        {
+          "repeat_depth": null,
+          "refusal_depth": null,
+          "depth": null
+        }
+      ],
+      "cluster_switch_semantic": [
+        {
+          "mean_cluster_size": 1.0,
+          "n_switches": 29.0,
+          "n_categories": 29.0
+        },
+        {
+          "mean_cluster_size": 1.0,
+          "n_switches": 29.0,
+          "n_categories": 30.0
+        },
+        {
+          "mean_cluster_size": 1.0,
+          "n_switches": 29.0,
+          "n_categories": 30.0
+        },
+        {
+          "mean_cluster_size": 1.0,
+          "n_switches": 29.0,
+          "n_categories": 30.0
+        }
+      ],
+      "opening_topics": [
+        "travel",
+        "travel",
+        "travel",
+        "skeleton"
+      ]
+    },
+    "fable": {
+      "n_runs": 2,
+      "divergence": {
+        "set_jaccard": 0.23404255319148937,
+        "prefix_depth": 1.0,
+        "norm_edit_distance": 0.9333333333333333,
+        "n_pairs": 1.0
+      },
+      "degradation": [
+        {
+          "repeat_depth": 18,
+          "refusal_depth": null,
+          "depth": 18
+        },
+        {
+          "repeat_depth": null,
+          "refusal_depth": null,
+          "depth": null
+        }
+      ],
+      "cluster_switch_semantic": [
+        {
+          "mean_cluster_size": 1.0,
+          "n_switches": 29.0,
+          "n_categories": 28.0
+        },
+        {
+          "mean_cluster_size": 1.0,
+          "n_switches": 29.0,
+          "n_categories": 30.0
+        }
+      ],
+      "opening_topics": [
+        "programming",
+        "programming"
+      ]
+    },
+    "haiku": {
+      "n_runs": 4,
+      "divergence": {
+        "set_jaccard": 0.10056745056745058,
+        "prefix_depth": 0.16666666666666666,
+        "norm_edit_distance": 0.8166666666666668,
+        "n_pairs": 6.0
+      },
+      "degradation": [
+        {
+          "repeat_depth": 22,
+          "refusal_depth": null,
+          "depth": 22
+        },
+        {
+          "repeat_depth": 7,
+          "refusal_depth": null,
+          "depth": 7
+        },
+        {
+          "repeat_depth": 7,
+          "refusal_depth": null,
+          "depth": 7
+        },
+        {
+          "repeat_depth": 7,
+          "refusal_depth": null,
+          "depth": 7
+        }
+      ],
+      "cluster_switch_semantic": [
+        {
+          "mean_cluster_size": 1.0,
+          "n_switches": 29.0,
+          "n_categories": 27.0
+        },
+        {
+          "mean_cluster_size": 1.6666666666666667,
+          "n_switches": 17.0,
+          "n_categories": 11.0
+        },
+        {
+          "mean_cluster_size": 1.875,
+          "n_switches": 15.0,
+          "n_categories": 12.0
+        },
+        {
+          "mean_cluster_size": 1.5,
+          "n_switches": 19.0,
+          "n_categories": 12.0
+        }
+      ],
+      "opening_topics": [
+        "programming",
+        "science",
+        "science",
+        "travel"
+      ]
+    },
+    "opus": {
+      "n_runs": 4,
+      "divergence": {
+        "set_jaccard": 0.06104328941141086,
+        "prefix_depth": 0.0,
+        "norm_edit_distance": 0.8555555555555556,
+        "n_pairs": 6.0
+      },
+      "degradation": [
+        {
+          "repeat_depth": 13,
+          "refusal_depth": null,
+          "depth": 13
+        },
+        {
+          "repeat_depth": 11,
+          "refusal_depth": null,
+          "depth": 11
+        },
+        {
+          "repeat_depth": 13,
+          "refusal_depth": null,
+          "depth": 13
+        },
+        {
+          "repeat_depth": 13,
+          "refusal_depth": null,
+          "depth": 13
+        }
+      ],
+      "cluster_switch_semantic": [
+        {
+          "mean_cluster_size": 1.4285714285714286,
+          "n_switches": 20.0,
+          "n_categories": 15.0
+        },
+        {
+          "mean_cluster_size": 1.3636363636363635,
+          "n_switches": 21.0,
+          "n_categories": 16.0
+        },
+        {
+          "mean_cluster_size": 1.2,
+          "n_switches": 24.0,
+          "n_categories": 20.0
+        },
+        {
+          "mean_cluster_size": 1.3043478260869565,
+          "n_switches": 22.0,
+          "n_categories": 20.0
+        }
+      ],
+      "opening_topics": [
+        "makeup",
+        "marriage",
+        "farming",
+        "computer"
+      ]
+    },
+    "sonnet": {
+      "n_runs": 4,
+      "divergence": {
+        "set_jaccard": 0.11713140905654053,
+        "prefix_depth": 0.6666666666666666,
+        "norm_edit_distance": 0.9055555555555556,
+        "n_pairs": 6.0
+      },
+      "degradation": [
+        {
+          "repeat_depth": 20,
+          "refusal_depth": null,
+          "depth": 20
+        },
+        {
+          "repeat_depth": 11,
+          "refusal_depth": null,
+          "depth": 11
+        },
+        {
+          "repeat_depth": 10,
+          "refusal_depth": null,
+          "depth": 10
+        },
+        {
+          "repeat_depth": 14,
+          "refusal_depth": null,
+          "depth": 14
+        }
+      ],
+      "cluster_switch_semantic": [
+        {
+          "mean_cluster_size": 1.0344827586206897,
+          "n_switches": 28.0,
+          "n_categories": 26.0
+        },
+        {
+          "mean_cluster_size": 1.3636363636363635,
+          "n_switches": 21.0,
+          "n_categories": 14.0
+        },
+        {
+          "mean_cluster_size": 1.25,
+          "n_switches": 23.0,
+          "n_categories": 18.0
+        },
+        {
+          "mean_cluster_size": 1.0,
+          "n_switches": 29.0,
+          "n_categories": 25.0
+        }
+      ],
+      "opening_topics": [
+        "science",
+        "science",
+        "programming",
+        "science"
+      ]
+    }
+  },
+  "shared_topic_census_semantic": [
+    {
+      "topic": "science",
+      "n_models": 10
+    },
+    {
+      "topic": "animal",
+      "n_models": 9
+    },
+    {
+      "topic": "farming",
+      "n_models": 9
+    },
+    {
+      "topic": "time",
+      "n_models": 8
+    },
+    {
+      "topic": "food",
+      "n_models": 8
+    },
+    {
+      "topic": "travel",
+      "n_models": 8
+    },
+    {
+      "topic": "building",
+      "n_models": 7
+    },
+    {
+      "topic": "comedy",
+      "n_models": 7
+    },
+    {
+      "topic": "furniture",
+      "n_models": 7
+    },
+    {
+      "topic": "music",
+      "n_models": 7
+    },
+    {
+      "topic": "nothing",
+      "n_models": 6
+    },
+    {
+      "topic": "work",
+      "n_models": 6
+    },
+    {
+      "topic": "joke",
+      "n_models": 6
+    },
+    {
+      "topic": "silence",
+      "n_models": 6
+    },
+    {
+      "topic": "performance",
+      "n_models": 6
+    },
+    {
+      "topic": "book",
+      "n_models": 6
+    },
+    {
+      "topic": "humor",
+      "n_models": 6
+    },
+    {
+      "topic": "math",
+      "n_models": 6
+    },
+    {
+      "topic": "clothing",
+      "n_models": 6
+    },
+    {
+      "topic": "death",
+      "n_models": 6
+    },
+    {
+      "topic": "coffee",
+      "n_models": 6
+    },
+    {
+      "topic": "weather",
+      "n_models": 6
+    },
+    {
+      "topic": "cleaning",
+      "n_models": 6
+    },
+    {
+      "topic": "censorship",
+      "n_models": 5
+    },
+    {
+      "topic": "language",
+      "n_models": 5
+    },
+    {
+      "topic": "alcohol",
+      "n_models": 5
+    },
+    {
+      "topic": "mirror",
+      "n_models": 5
+    },
+    {
+      "topic": "art",
+      "n_models": 5
+    },
+    {
+      "topic": "computer",
+      "n_models": 5
+    },
+    {
+      "topic": "appliance",
+      "n_models": 5
+    },
+    {
+      "topic": "sleep",
+      "n_models": 5
+    },
+    {
+      "topic": "relationship",
+      "n_models": 4
+    },
+    {
+      "topic": "toy",
+      "n_models": 4
+    },
+    {
+      "topic": "rule",
+      "n_models": 4
+    },
+    {
+      "topic": "bike",
+      "n_models": 4
+    },
+    {
+      "topic": "traffic",
+      "n_models": 4
+    },
+    {
+      "topic": "programming",
+      "n_models": 4
+    },
+    {
+      "topic": "writing",
+      "n_models": 4
+    },
+    {
+      "topic": "space",
+      "n_models": 4
+    },
+    {
+      "topic": "phone",
+      "n_models": 4
+    }
+  ],
+  "opening_topic_census_raw": [
+    {
+      "topic": "science",
+      "n_runs": 8
+    },
+    {
+      "topic": "computer",
+      "n_runs": 6
+    },
+    {
+      "topic": "travel",
+      "n_runs": 4
+    },
+    {
+      "topic": "programming",
+      "n_runs": 4
+    },
+    {
+      "topic": "skeleton",
+      "n_runs": 3
+    },
+    {
+      "topic": "death",
+      "n_runs": 2
+    },
+    {
+      "topic": "love",
+      "n_runs": 1
+    },
+    {
+      "topic": "paranoia",
+      "n_runs": 1
+    },
+    {
+      "topic": "animal",
+      "n_runs": 1
+    },
+    {
+      "topic": "math",
+      "n_runs": 1
+    },
+    {
+      "topic": "advertising",
+      "n_runs": 1
+    },
+    {
+      "topic": "hair",
+      "n_runs": 1
+    },
+    {
+      "topic": "makeup",
+      "n_runs": 1
+    },
+    {
+      "topic": "marriage",
+      "n_runs": 1
+    },
+    {
+      "topic": "farming",
+      "n_runs": 1
+    }
+  ]
+}

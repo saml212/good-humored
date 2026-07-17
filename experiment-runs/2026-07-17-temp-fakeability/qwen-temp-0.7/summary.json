@@ -1,0 +1,33 @@
+{
+  "models": [
+    "api:qwen"
+  ],
+  "runs": 6,
+  "depth": 30,
+  "rejector": "haiku",
+  "temperature": 0.7,
+  "label_space_degraded": false,
+  "failures": [
+    {
+      "run_id": "api:qwen-r01",
+      "error": "RuntimeError(\"claude -p rc=1: You've hit your session limit \u00b7 resets 4:30am (America/Los_Angeles)\")"
+    },
+    {
+      "run_id": "api:qwen-r02",
+      "error": "RuntimeError(\"claude -p rc=1: You've hit your session limit \u00b7 resets 4:30am (America/Los_Angeles)\")"
+    },
+    {
+      "run_id": "api:qwen-r03",
+      "error": "RuntimeError(\"claude -p rc=1: You've hit your session limit \u00b7 resets 4:30am (America/Los_Angeles)\")"
+    },
+    {
+      "run_id": "api:qwen-r04",
+      "error": "RuntimeError(\"claude -p rc=1: You've hit your session limit \u00b7 resets 4:30am (America/Los_Angeles)\")"
+    },
+    {
+      "run_id": "api:qwen-r05",
+      "error": "RuntimeError(\"claude -p rc=1: You've hit your session limit \u00b7 resets 4:30am (America/Los_Angeles)\")"
+    }
+  ],
+  "per_model": {}
+}

@@ -224,6 +224,12 @@ _OPENAI_COMPAT_REGISTRY: Dict[str, Dict[str, Optional[str]]] = {
         "model": "grok-4.5",
     },
     "glm": {
+        # glm-4.5-air is ALSO a reasoning model (same failure mode as kimi:
+        # burns max_tokens=400 entirely on reasoning_content, returns empty
+        # content with finish_reason=length on cascade-length prompts —
+        # probed 2026-07-17, reasoning 1676 chars / content 0). Needs the
+        # same headroom.
+        "max_tokens": 2048,
         # glm-4-flash 400s "model does not exist" on this account — the
         # catalog has moved on (checked GET /v4/models: glm-4.5, -4.5-air,
         # -4.6, -4.7, -5, -5-turbo, -5.1, -5.2 are current). glm-4.5-air is

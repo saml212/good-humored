@@ -1,0 +1,350 @@
+{
+  "api:deepseek": {
+    "n_jokes": 120,
+    "exact_corpus_hits": 1,
+    "template_hits": 4,
+    "examples": [
+      {
+        "joke": "Why don't scientists trust atoms? Because they make up everything.",
+        "template": "chatgpt25-T4",
+        "sim": 0.6,
+        "exact": false
+      },
+      {
+        "joke": "Alright, how about this: Why did the scarecrow win an award? Because he was outstanding in his field.",
+        "template": "chatgpt25-T1",
+        "sim": 0.75,
+        "exact": false
+      },
+      {
+        "joke": "Alright. Here goes. Why did the scarecrow win an award? Because he was outstanding in his field.",
+        "template": "chatgpt25-T1",
+        "sim": 0.8,
+        "exact": false
+      },
+      {
+        "joke": "Why don't scientists trust atoms? Because they make up everything!",
+        "template": "chatgpt25-T4",
+        "sim": 0.6,
+        "exact": false
+      }
+    ]
+  },
+  "api:glm": {
+    "n_jokes": 165,
+    "exact_corpus_hits": 4,
+    "template_hits": 4,
+    "examples": [
+      {
+        "joke": "Why don't scientists trust atoms? Because they make up everything!",
+        "template": "chatgpt25-T4",
+        "sim": 0.6,
+        "exact": false
+      },
+      {
+        "joke": "Why did the tomato turn red? Because it saw the salad dressing!",
+        "template": "chatgpt25-T2",
+        "sim": 1.0,
+        "exact": true
+      },
+      {
+        "joke": "\"Why did the scarecrow win an award? Because he was outstanding in his field!\"",
+        "template": "chatgpt25-T1",
+        "sim": 1.0,
+        "exact": true
+      },
+      {
+        "joke": "Why did the scarecrow win an award?  \n*He was outstanding in his field!*",
+        "template": "chatgpt25-T1",
+        "sim": 0.64,
+        "exact": true
+      }
+    ]
+  },
+  "api:grok": {
+    "n_jokes": 78,
+    "exact_corpus_hits": 35,
+    "template_hits": 15,
+    "examples": [
+      {
+        "joke": "Why don't scientists trust atoms? Because they make up everything!",
+        "template": "chatgpt25-T4",
+        "sim": 0.6,
+        "exact": false
+      },
+      {
+        "joke": "Why did the coffee file a police report? It got mugged!",
+        "template": "chatgpt25-T14",
+        "sim": 0.58,
+        "exact": true
+      },
+      {
+        "joke": "Why did the scarecrow win an award? Because he was outstanding in his field!",
+        "template": "chatgpt25-T1",
+        "sim": 1.0,
+        "exact": true
+      },
+      {
+        "joke": "Why did the golfer wear two pairs of pants? In case he got a hole in one!",
+        "template": "chatgpt25-T15",
+        "sim": 0.67,
+        "exact": true
+      },
+      {
+        "joke": "Why did the tomato turn red? Because it saw the salad dressing!",
+        "template": "chatgpt25-T2",
+        "sim": 1.0,
+        "exact": true
+      }
+    ]
+  },
+  "api:kimi": {
+    "n_jokes": 22,
+    "exact_corpus_hits": 12,
+    "template_hits": 2,
+    "examples": [
+      {
+        "joke": "Why don't scientists trust atoms? Because they make up everything.",
+        "template": "chatgpt25-T4",
+        "sim": 0.6,
+        "exact": false
+      },
+      {
+        "joke": "Why did the scarecrow win an award? Because he was outstanding in his field.",
+        "template": "chatgpt25-T1",
+        "sim": 1.0,
+        "exact": true
+      }
+    ]
+  },
+  "api:qwen": {
+    "n_jokes": 120,
+    "exact_corpus_hits": 2,
+    "template_hits": 12,
+    "examples": [
+      {
+        "joke": "Why don't skeletons fight each other?  \n\nThey don\u2019t have the guts.",
+        "template": "chatgpt25-T24",
+        "sim": 0.64,
+        "exact": false
+      },
+      {
+        "joke": "Why don't scientists trust atoms?  \n\nBecause they make up everything!",
+        "template": "chatgpt25-T4",
+        "sim": 0.6,
+        "exact": false
+      },
+      {
+        "joke": "Why did the coffee file a police report?  \n\nIt got mugged every morning!",
+        "template": "chatgpt25-T14",
+        "sim": 0.5,
+        "exact": false
+      },
+      {
+        "joke": "Why don't skeletons fight each other?  \n\nThey don\u2019t have the guts.",
+        "template": "chatgpt25-T24",
+        "sim": 0.64,
+        "exact": false
+      },
+      {
+        "joke": "Why don't scientists trust atoms?  \n\nBecause they make up everything!",
+        "template": "chatgpt25-T4",
+        "sim": 0.6,
+        "exact": false
+      }
+    ]
+  },
+  "codex:5.4": {
+    "n_jokes": 120,
+    "exact_corpus_hits": 32,
+    "template_hits": 12,
+    "examples": [
+      {
+        "joke": "Why don\u2019t skeletons fight each other? They don\u2019t have the guts.",
+        "template": "chatgpt25-T24",
+        "sim": 1.0,
+        "exact": false
+      },
+      {
+        "joke": "Why did the scarecrow win an award? Because he was outstanding in his field.",
+        "template": "chatgpt25-T1",
+        "sim": 1.0,
+        "exact": true
+      },
+      {
+        "joke": "Why was the math book sad? It had too many problems.",
+        "template": "chatgpt25-T3",
+        "sim": 0.58,
+        "exact": true
+      },
+      {
+        "joke": "Why don\u2019t scientists trust atoms? Because they make up everything.",
+        "template": "chatgpt25-T4",
+        "sim": 1.0,
+        "exact": true
+      },
+      {
+        "joke": "Why did the scarecrow win an award? Because he was outstanding in his field.",
+        "template": "chatgpt25-T1",
+        "sim": 1.0,
+        "exact": true
+      }
+    ]
+  },
+  "codex:mini": {
+    "n_jokes": 120,
+    "exact_corpus_hits": 9,
+    "template_hits": 3,
+    "examples": [
+      {
+        "joke": "Why did the scarecrow win an award? Because he was outstanding in his field.",
+        "template": "chatgpt25-T1",
+        "sim": 1.0,
+        "exact": true
+      },
+      {
+        "joke": "Why don\u2019t skeletons fight each other? They don\u2019t have the guts.",
+        "template": "chatgpt25-T24",
+        "sim": 1.0,
+        "exact": false
+      },
+      {
+        "joke": "Why did the coffee file a police report? It got mugged.",
+        "template": "chatgpt25-T14",
+        "sim": 0.58,
+        "exact": true
+      }
+    ]
+  },
+  "codex:sol": {
+    "n_jokes": 120,
+    "exact_corpus_hits": 26,
+    "template_hits": 9,
+    "examples": [
+      {
+        "joke": "Why did the scarecrow win an award? He was outstanding in his field.",
+        "template": "chatgpt25-T1",
+        "sim": 0.64,
+        "exact": true
+      },
+      {
+        "joke": "Why don\u2019t skeletons fight each other? They don\u2019t have the guts.",
+        "template": "chatgpt25-T24",
+        "sim": 1.0,
+        "exact": false
+      },
+      {
+        "joke": "Why don\u2019t skeletons fight each other? They don\u2019t have the guts.",
+        "template": "chatgpt25-T24",
+        "sim": 1.0,
+        "exact": false
+      },
+      {
+        "joke": "Why was the math book sad? It had too many problems.",
+        "template": "chatgpt25-T3",
+        "sim": 0.58,
+        "exact": true
+      },
+      {
+        "joke": "Why don\u2019t skeletons fight each other? They don\u2019t have the guts.",
+        "template": "chatgpt25-T24",
+        "sim": 1.0,
+        "exact": false
+      }
+    ]
+  },
+  "fable": {
+    "n_jokes": 89,
+    "exact_corpus_hits": 7,
+    "template_hits": 2,
+    "examples": [
+      {
+        "joke": "Sure thing! Why did the scarecrow win an award? Because he was outstanding in his field.",
+        "template": "chatgpt25-T1",
+        "sim": 0.86,
+        "exact": false
+      },
+      {
+        "joke": "Why don't scientists trust atoms?\n\nBecause they make up everything!",
+        "template": "chatgpt25-T4",
+        "sim": 0.6,
+        "exact": false
+      }
+    ]
+  },
+  "haiku": {
+    "n_jokes": 120,
+    "exact_corpus_hits": 31,
+    "template_hits": 6,
+    "examples": [
+      {
+        "joke": "Why did the scarecrow win an award? Because he was outstanding in his field!",
+        "template": "chatgpt25-T1",
+        "sim": 1.0,
+        "exact": true
+      },
+      {
+        "joke": "Why did the golfer bring two pairs of pants? In case he got a hole in one!",
+        "template": "chatgpt25-T15",
+        "sim": 1.0,
+        "exact": false
+      },
+      {
+        "joke": "Why don't scientists trust atoms? Because they make up everything!",
+        "template": "chatgpt25-T4",
+        "sim": 0.6,
+        "exact": false
+      },
+      {
+        "joke": "Why don't scientists trust atoms?\n\nBecause they make up everything!",
+        "template": "chatgpt25-T4",
+        "sim": 0.6,
+        "exact": false
+      },
+      {
+        "joke": "Why did the scarecrow win an award?\n\nBecause he was outstanding in his field!",
+        "template": "chatgpt25-T1",
+        "sim": 1.0,
+        "exact": true
+      }
+    ]
+  },
+  "opus": {
+    "n_jokes": 120,
+    "exact_corpus_hits": 4,
+    "template_hits": 1,
+    "examples": [
+      {
+        "joke": "Why did the scarecrow win an award? He was outstanding in his field.",
+        "template": "chatgpt25-T1",
+        "sim": 0.64,
+        "exact": true
+      }
+    ]
+  },
+  "sonnet": {
+    "n_jokes": 120,
+    "exact_corpus_hits": 1,
+    "template_hits": 3,
+    "examples": [
+      {
+        "joke": "Why don't scientists trust atoms? Because they make up everything.",
+        "template": "chatgpt25-T4",
+        "sim": 0.6,
+        "exact": false
+      },
+      {
+        "joke": "Why don't scientists trust atoms? Because they make up everything.",
+        "template": "chatgpt25-T4",
+        "sim": 0.6,
+        "exact": false
+      },
+      {
+        "joke": "Why don't scientists trust atoms? Because they make up everything.",
+        "template": "chatgpt25-T4",
+        "sim": 0.6,
+        "exact": false
+      }
+    ]
+  }
+}

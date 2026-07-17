@@ -1,0 +1,21 @@
+{
+  "models": [
+    "api:glm"
+  ],
+  "runs": 2,
+  "depth": 30,
+  "rejector": "haiku",
+  "temperature": null,
+  "label_space_degraded": false,
+  "failures": [
+    {
+      "run_id": "api:glm-r00",
+      "error": "RuntimeError(\"claude -p rc=1: You've hit your session limit \u00b7 resets 4:30am (America/Los_Angeles)\")"
+    },
+    {
+      "run_id": "api:glm-r01",
+      "error": "RuntimeError(\"claude -p rc=1: You've hit your session limit \u00b7 resets 4:30am (America/Los_Angeles)\")"
+    }
+  ],
+  "per_model": {}
+}

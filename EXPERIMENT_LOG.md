@@ -174,9 +174,42 @@ run count N=4 is pilot-scale; the rejector's granularity jitter dilutes
 overlap metrics (conservative for collapse claims). This is a PILOT — effect
 directions and protocol shakeout, not paper numbers.
 
-**Result:** _(pending)_
+**Result (2026-07-17 ~02:45, 10/12 models with ≥2 complete runs — kimi 0
+runs (reasoning-model token starvation, then session limit), grok partial
+JSONLs only (xai timeouts + session limit), fable 2/4 (session limit)):**
 
-**Verdict:** _(pending)_
+- **Cross-model mean topic-set jaccard (raw): 0.102** (predicted 0.35 —
+  calibration closed). Semantic view: 0.111. Per EXP-006, at this regime
+  measured overlap is an UPPER bound on true overlap. The shared-escape-path
+  / ecosystem-collapse hypothesis is DEAD at depth 30: topic pools are
+  largely disjoint across models.
+- **Within-model mean set jaccard: 0.182** (predicted 0.55). No
+  lookup-table signature at depth 30 in ANY roster member.
+- **Degradation (repeating an already-rejected topic) is where the story
+  lives, and it is family-structured:** claude family degrades in 13/14
+  completed runs — haiku 4/4 (depths 22,7,7,7), sonnet 4/4 (20,11,10,14),
+  opus 4/4 (13,11,13,13 — eerily consistent), fable 1/2 (18); api
+  open-weights similar (deepseek 4/4 median ~8.5, qwen 4/4, glm 2/2);
+  **GPT family barely degrades**: mini 0/4, sol 1/4 (turn 26), 5.4 1/4
+  (turn 24). Both families run behind comparable CLI wrappers, so the
+  claude-vs-codex contrast survives the wrapper confound. Prediction
+  "≥1/3 of roster degrades by turn 30" — met massively (8/10 models).
+- **Memorized-joke reliance (exact corpus hits / jokes emitted) is a
+  SECOND, INDEPENDENT axis:** grok **45%** (35/78 — the "funny" brand is
+  the most memorization-reliant model measured), codex:5.4 27%, haiku 26%,
+  codex:sol 22%, fable 8%, opus 3%, sonnet 1%, deepseek 1%, qwen 2%.
+  Every model emitted scarecrow/atoms/skeleton classics.
+
+**Verdict:** The benchmark discriminates, but differently than registered:
+models don't share one well — each lab fails its own way. Anthropic:
+constraint collapse (repeats rejected topics by turn ~7–14, every run)
+with genuinely low memorization. OpenAI: strong constraint adherence but
+heavy verbatim recall (22–27%). xAI: extreme memorization (45%).
+Open-weights: fast degradation + template patterns. The cascade separates
+topic-pool size from constraint adherence under accumulation; the novelty
+check separates both from memorized recall — three orthogonal failure
+fingerprints, quantified per lab. Pilot-grade numbers (N=2–4, depth 30,
+wrapper confound bounded not eliminated); stats inference + FINDINGS next.
 
 ## EXP-005 — banter judge validation (2026-07-17, pre-registered BEFORE run)
 
@@ -286,6 +319,13 @@ the pool itself (set jaccard flat). The set-level trajectory metric is the
 temperature-unfakeable quantity; papers/pitch should say exactly that
 rather than "path divergence" generically. Replication on a second API
 model queued as follow-up before the claim generalizes beyond deepseek.
+
+**EXP-007b — qwen replication (pre-registered, running):** same design on
+api:qwen (native API, versioned code qwen-plus-2025-07-28), temps
+{0.2, 0.7, 1.2}, N=6, depth 30. Registered predictions: distinct_2 delta
+≈ +0.30 (calibration exp-007b-qwen-replication); set_jaccard delta ≈ −0.02
+(exp-007b-qwen-replication-path). Same success bar (sampling ≥ 3× path).
+Result: _(pending)_
 
 ---
 

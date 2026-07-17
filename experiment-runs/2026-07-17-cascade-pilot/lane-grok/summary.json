@@ -1,0 +1,28 @@
+{
+  "models": [
+    "api:grok"
+  ],
+  "runs": 4,
+  "depth": 30,
+  "rejector": "haiku",
+  "label_space_degraded": false,
+  "failures": [
+    {
+      "run_id": "api:grok-r00",
+      "error": "timeout('The read operation timed out')"
+    },
+    {
+      "run_id": "api:grok-r01",
+      "error": "timeout('The read operation timed out')"
+    },
+    {
+      "run_id": "api:grok-r02",
+      "error": "RuntimeError(\"claude -p rc=1: You've hit your session limit \u00b7 resets 4:30am (America/Los_Angeles)\")"
+    },
+    {
+      "run_id": "api:grok-r03",
+      "error": "RuntimeError(\"claude -p rc=1: You've hit your session limit \u00b7 resets 4:30am (America/Los_Angeles)\")"
+    }
+  ],
+  "per_model": {}
+}
