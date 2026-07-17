@@ -47,8 +47,8 @@ section_degradation_battery: it is a POST-HOC single contrast. It was not
 written into EXP-004's pre-registration; it was chosen after the pilot's
 results made the family-level degradation pattern visible. It is reported
 as the single best-supported contrast for that pattern (one test, so no
-multiple-comparisons correction burden, unlike the 45-pair exploratory
-matrix computed alongside it) — NOT as pre-registered confirmatory
+multiple-comparisons correction burden, unlike the C(n_models,2)-pair
+exploratory matrix computed alongside it) — NOT as pre-registered confirmatory
 evidence. A genuinely pre-registered replication is required before
 "confirmatory" language is earned. See FINDINGS.md §2.1/§4.3 for the
 corresponding language fix (adversarial review finding B2, 2026-07-17).
@@ -443,6 +443,12 @@ def section_headline_cross_model(paths: Dict[str, List[Sequence[str]]],
     per_pair_means = [v for k, v in analysis["cross_model"].items()
                       if "|" in k]
     boot_model_pair = bootstrap_ci(per_pair_means, stat_fn=mean, seed=seed)
+    # Computed from the actual roster size, not hardcoded -- this used to
+    # read a literal "45" (correct only while the roster was 10 models;
+    # C(10,2)=45). Caught 2026-07-17 when the roster grew to 11
+    # (C(11,2)=55) and the literal silently went stale. Never hardcode a
+    # combinatorial count that depends on runtime data size.
+    n_model_pairs = len(per_pair_means)
 
     return {
         "claim": "Pre-registered hypothesis: models share a substantially "
@@ -473,7 +479,7 @@ def section_headline_cross_model(paths: Dict[str, List[Sequence[str]]],
             "run_pair_level": {
                 **boot_run_pair,
                 "unit": "one value per (run_i-of-model_A, run_j-of-model_B) "
-                        "pair, pooled across all 45 model pairs",
+                        "pair, pooled across all %d model pairs" % n_model_pairs,
                 "matches_point_estimate": abs(boot_run_pair["point"] - observed) < 1e-9,
                 "caveat": "non-independent observations (each run appears "
                           "in many pairs) -- CI is likely too narrow; see "
@@ -481,8 +487,9 @@ def section_headline_cross_model(paths: Dict[str, List[Sequence[str]]],
             },
             "model_pair_level": {
                 **boot_model_pair,
-                "unit": "one value per model-PAIR mean jaccard (45 model "
-                        "pairs), the more conservative/exchangeable unit",
+                "unit": "one value per model-PAIR mean jaccard (%d model "
+                        "pairs), the more conservative/exchangeable unit"
+                        % n_model_pairs,
                 "point_vs_headline_diff": abs(boot_model_pair["point"] - observed),
             },
         },
@@ -496,15 +503,20 @@ def section_headline_within_model(analysis: Dict, seed: int = 0
     observed = mean(per_model_vals)
     boot = bootstrap_ci(per_model_vals, stat_fn=mean, seed=seed)
     return {
+        # NOTE: this claim string used to hardcode the observed value as a
+        # literal ("0.182") -- caught 2026-07-17 when the roster grew from
+        # 10 to 11 models (grok's high self-similarity moved the true mean
+        # to ~0.208) and the literal went stale. Interpolated from
+        # `observed` now so it can never again silently disagree with the
+        # `observed_within_model_mean_jaccard` field two lines down.
         "claim": "Within-model mean set jaccard across runs, averaged over "
-                 "models (predicted ~0.55; observed 0.182 -- calibration "
-                 "closed per EXP-004).",
+                 "models (EXP-004 predicted ~0.55; observed %.3f)." % observed,
         "observed_within_model_mean_jaccard": observed,
         "predicted": 0.55,
         "bootstrap_ci": {
             **boot,
-            "unit": "one value per MODEL (n=10): each model's own mean "
-                    "pairwise within-run set_jaccard",
+            "unit": "one value per MODEL (n=%d): each model's own mean "
+                    "pairwise within-run set_jaccard" % len(per_model_vals),
             "matches_point_estimate": abs(boot["point"] - observed) < 1e-9,
         },
         "per_model_point_estimates": {
@@ -551,9 +563,9 @@ def section_degradation_battery(analysis: Dict, seed: int = 0
     # level degradation pattern visible (adversarial review B2, see module
     # docstring). Reported as the single best-supported contrast for that
     # pattern (one test, so no multiple-comparisons burden, unlike the
-    # 45-pair matrix above) -- NOT as confirmatory evidence. A genuinely
-    # pre-registered replication is required before "confirmatory" is
-    # earned.
+    # C(n_models,2)-pair matrix above) -- NOT as confirmatory evidence. A
+    # genuinely pre-registered replication is required before
+    # "confirmatory" is earned.
     anth_pool = [d for m in ANTHROPIC_MODELS_ALL if m in depths
                  for d in depths[m]]
     openai_pool = [d for m in OPENAI_MODELS if m in depths
@@ -630,17 +642,19 @@ def section_degradation_battery(analysis: Dict, seed: int = 0
             "n_models_with_at_least_one_degrading_run": len(models_with_any_degradation),
             "n_models_total": len(models),
             "EXPERIMENT_LOG_claim": "'>=1/3 of roster degrades by turn 30 "
-                "-- met massively (8/10 models)'",
+                "-- met massively (8/10 models)' (original 10-model pilot; "
+                "roster is now %d models after fills merged)" % len(models),
             "audit_verdict": "The literal count of models with >=1 "
-                "degrading run among the 10 with per_model data is %d/%d "
+                "degrading run among the %d with per_model data is %d/%d "
                 "(only %s shows zero degradation across all its runs), not "
-                "8/10 as stated. The EXPERIMENT_LOG figure is not "
-                "reproduced exactly under the most natural reading of "
-                "'degrades' (>=1 run degrades); it may reflect a different "
-                "counting rule (e.g. majority-of-runs) that isn't specified "
-                "in the log. Flagged per task instructions, not silently "
-                "corrected in the log itself." % (
-                    len(models_with_any_degradation), len(models),
+                "8/10 as stated (that count was against the original "
+                "10-model roster; the log figure predates the fills). The "
+                "EXPERIMENT_LOG figure is not reproduced exactly under the "
+                "most natural reading of 'degrades' (>=1 run degrades); it "
+                "may reflect a different counting rule (e.g. majority-of-"
+                "runs) that isn't specified in the log. Flagged per task "
+                "instructions, not silently corrected in the log itself." % (
+                    len(models), len(models_with_any_degradation), len(models),
                     [m for m in models if n_degraded[m] == 0]),
         },
     }
@@ -722,14 +736,28 @@ def section_memorization(novelty: Dict, seed: int = 0) -> Dict[str, object]:
         "FLAGGED_NUANCE_haiku_dual_role": {
             "haiku_memorization_rate": haiku_hits / haiku_n,
             "haiku_wilson_ci": per_model_ci["haiku"],
+            # Rates below are interpolated from `novelty` now, not hardcoded
+            # -- caught 2026-07-17 when fable's rate moved 7.9%->4.7% (n=89
+            # -> n=149 after its fill lane landed) and the literal "fable
+            # (8%%)" in this string went stale while the real number
+            # (model_level_rates / per_model_ci) had already updated.
             "warning": "haiku is BOTH the rejector instrument (EXP-001/002/"
                 "008) AND a model-under-test in this cascade roster. Its "
-                "26%% memorization rate is far closer to the GPT-family "
-                "tier (22-27%%) than to opus (3%%) / sonnet (1%%) / fable "
-                "(8%%). A family-wide 'Anthropic = near-zero memorization' "
-                "claim holds for opus/sonnet/fable but NOT for haiku -- "
-                "stated bluntly per this project's rule against softening "
-                "Claude-model findings.",
+                "%.0f%% memorization rate is far closer to the GPT-family "
+                "tier (%.0f-%.0f%%) than to opus (%.0f%%) / sonnet (%.0f%%) "
+                "/ fable (%.0f%%). A family-wide 'Anthropic = near-zero "
+                "memorization' claim holds for opus/sonnet/fable but NOT "
+                "for haiku -- stated bluntly per this project's rule "
+                "against softening Claude-model findings." % (
+                    100 * haiku_hits / haiku_n,
+                    100 * min(novelty[m]["exact_corpus_hits"] / novelty[m]["n_jokes"]
+                              for m in OPENAI_MODELS if m in novelty),
+                    100 * max(novelty[m]["exact_corpus_hits"] / novelty[m]["n_jokes"]
+                              for m in OPENAI_MODELS if m in novelty),
+                    100 * novelty["opus"]["exact_corpus_hits"] / novelty["opus"]["n_jokes"],
+                    100 * novelty["sonnet"]["exact_corpus_hits"] / novelty["sonnet"]["n_jokes"],
+                    100 * novelty["fable"]["exact_corpus_hits"] / novelty["fable"]["n_jokes"],
+                ),
         },
     }
 

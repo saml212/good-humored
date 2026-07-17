@@ -1,0 +1,183 @@
+{
+  "models": [
+    "fable"
+  ],
+  "runs": 2,
+  "depth": 30,
+  "rejector": "haiku",
+  "temperature": null,
+  "label_space_degraded": false,
+  "failures": [],
+  "per_model": {
+    "fable": {
+      "divergence": {
+        "set_jaccard": 0.3333333333333333,
+        "prefix_depth": 1.0,
+        "norm_edit_distance": 0.9333333333333333,
+        "n_pairs": 1.0
+      },
+      "degradation": [
+        {
+          "repeat_depth": null,
+          "refusal_depth": null,
+          "depth": null
+        },
+        {
+          "repeat_depth": null,
+          "refusal_depth": null,
+          "depth": null
+        }
+      ],
+      "divergence_semantic": {
+        "set_jaccard": 0.3333333333333333,
+        "prefix_depth": 1.0,
+        "norm_edit_distance": 0.9333333333333333,
+        "n_pairs": 1.0
+      },
+      "degradation_semantic": [
+        {
+          "repeat_depth": null,
+          "refusal_depth": null,
+          "depth": null
+        },
+        {
+          "repeat_depth": null,
+          "refusal_depth": null,
+          "depth": null
+        }
+      ],
+      "paths": [
+        [
+          "programming",
+          "death",
+          "farming",
+          "water",
+          "bike",
+          "cheese",
+          "space",
+          "bear",
+          "golf",
+          "math",
+          "clothing",
+          "music",
+          "work",
+          "science",
+          "art",
+          "stair",
+          "camping",
+          "time",
+          "pasta",
+          "toy",
+          "travel",
+          "building",
+          "dish",
+          "dog",
+          "stationery",
+          "hair",
+          "phone",
+          "egg",
+          "candle",
+          "body"
+        ],
+        [
+          "programming",
+          "bone",
+          "farming",
+          "coffee",
+          "ocean",
+          "space",
+          "laundry",
+          "music",
+          "time travel",
+          "elevator",
+          "bike",
+          "cheese",
+          "travel",
+          "noodle",
+          "ghost",
+          "math",
+          "weather",
+          "egg",
+          "art",
+          "hair",
+          "money",
+          "sleep",
+          "golf",
+          "science",
+          "writing",
+          "shoe",
+          "wall",
+          "crime",
+          "dog",
+          "phone"
+        ]
+      ],
+      "paths_semantic": [
+        [
+          "programming",
+          "death",
+          "farming",
+          "water",
+          "bike",
+          "cheese",
+          "space",
+          "bear",
+          "golf",
+          "math",
+          "clothing",
+          "music",
+          "work",
+          "science",
+          "art",
+          "stair",
+          "camping",
+          "time",
+          "pasta",
+          "toy",
+          "travel",
+          "building",
+          "dish",
+          "dog",
+          "stationery",
+          "hair",
+          "phone",
+          "egg",
+          "candle",
+          "body"
+        ],
+        [
+          "programming",
+          "bone",
+          "farming",
+          "coffee",
+          "ocean",
+          "space",
+          "laundry",
+          "music",
+          "time travel",
+          "elevator",
+          "bike",
+          "cheese",
+          "travel",
+          "noodle",
+          "ghost",
+          "math",
+          "weather",
+          "egg",
+          "art",
+          "hair",
+          "money",
+          "sleep",
+          "golf",
+          "science",
+          "writing",
+          "shoe",
+          "wall",
+          "crime",
+          "dog",
+          "phone"
+        ]
+      ]
+    }
+  }
+}

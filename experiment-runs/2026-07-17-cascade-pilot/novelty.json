@@ -62,9 +62,9 @@
     ]
   },
   "api:grok": {
-    "n_jokes": 78,
-    "exact_corpus_hits": 35,
-    "template_hits": 15,
+    "n_jokes": 198,
+    "exact_corpus_hits": 81,
+    "template_hits": 41,
     "examples": [
       {
         "joke": "Why don't scientists trust atoms? Because they make up everything!",
@@ -99,9 +99,9 @@
     ]
   },
   "api:kimi": {
-    "n_jokes": 22,
-    "exact_corpus_hits": 12,
-    "template_hits": 2,
+    "n_jokes": 60,
+    "exact_corpus_hits": 24,
+    "template_hits": 3,
     "examples": [
       {
         "joke": "Why don't scientists trust atoms? Because they make up everything.",
@@ -113,6 +113,12 @@
         "joke": "Why did the scarecrow win an award? Because he was outstanding in his field.",
         "template": "chatgpt25-T1",
         "sim": 1.0,
+        "exact": true
+      },
+      {
+        "joke": "I don't trust atoms because they make up everything.",
+        "template": "chatgpt25-T4",
+        "sim": 0.5,
         "exact": true
       }
     ]
@@ -254,9 +260,9 @@
     ]
   },
   "fable": {
-    "n_jokes": 89,
+    "n_jokes": 149,
     "exact_corpus_hits": 7,
-    "template_hits": 2,
+    "template_hits": 4,
     "examples": [
       {
         "joke": "Sure thing! Why did the scarecrow win an award? Because he was outstanding in his field.",
@@ -268,6 +274,18 @@
         "joke": "Why don't scientists trust atoms?\n\nBecause they make up everything!",
         "template": "chatgpt25-T4",
         "sim": 0.6,
+        "exact": false
+      },
+      {
+        "joke": "No skeletons, no semicolons \u2014 got it! How about this:\n\nWhy did the scarecrow win an award?\n\nBecause he was outstanding i",
+        "template": "chatgpt25-T1",
+        "sim": 0.52,
+        "exact": false
+      },
+      {
+        "joke": "Fair enough \u2014 no programming, no bones. Let's try the animal kingdom: Why did the scarecrow win an award? Because he was",
+        "template": "chatgpt25-T1",
+        "sim": 0.5,
         "exact": false
       }
     ]

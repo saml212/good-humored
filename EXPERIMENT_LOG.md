@@ -627,3 +627,27 @@ dropped. Zero complete cascade runs ever; its 54.5% memorization rate
 scrap-based flag, never a path finding. A future kimi lane needs
 streaming with reasoning-budget control or a non-reasoning kimi variant,
 not a bigger constant.
+
+**EXP-004 addendum 2 — fill lanes merged, all numbers refreshed
+(2026-07-17 morning):** roster is now 11 models with complete path data
+(grok in; kimi out per addendum 1). Refreshed headlines
+(stats_inference.json regenerated, integrity 11/11 exact):
+- Cross-model jaccard 0.102 → **0.1126** — STILL below the entire
+  pooled-frequency null (10k draws, range 0.1189–0.1567, 281 topics,
+  diagnostics now persisted in the JSON). Headline survives grok.
+- **grok's first complete cascade data breaks its "unmeasured" status
+  and completes its profile:** 0 degradations in 4 runs (OpenAI-style
+  adherence) + set_jaccard **0.443** (highest within-model overlap
+  measured; next is codex:5.4 at 0.281) + memorization tightened to
+  **40.9%** [34.3, 47.9] (n=198). Adherent, fixed repertoire, top
+  memorizer: the retrieval-machine profile, now with path evidence.
+- **fable breaks the Anthropic constraint-collapse pattern:** 1/4
+  degradations (opus/sonnet/haiku remain 12/12 uniform). Family contrast
+  weakens accordingly: −15.17 → **−13.17** turns (p = 0.0002, Cliff's δ
+  −0.917 → −0.781). No-haiku robustness contrast (new in driver):
+  **−11.42**, p = 0.0005, δ −0.708 — the dual-role confound does not
+  carry the family result. fable memorization on fuller data: 4.7%
+  [2.3, 9.4] (n=149).
+- kimi scraps recount: 40.0% [28.6, 52.6] (n=60) — stays a flag, never a
+  path claim. FINDINGS.md refresh in progress; that document + the JSONs
+  are the authoritative statement of these numbers.

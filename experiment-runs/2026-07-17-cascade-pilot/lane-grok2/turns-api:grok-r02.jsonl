@@ -1,0 +1,30 @@
+{"run_id": "api:grok-r02", "turn": 0, "joke": "Why don't eggs tell jokes? They'd crack each other up!", "topic": "egg", "refusal": false, "temperature": null, "ts": 1784295115.535118}
+{"run_id": "api:grok-r02", "turn": 1, "joke": "Why did the scarecrow win an award? He was outstanding in his field!", "topic": "farming", "refusal": false, "temperature": null, "ts": 1784295126.703336}
+{"run_id": "api:grok-r02", "turn": 2, "joke": "Why don't skeletons fight each other? They don't have the guts!", "topic": "bone", "refusal": false, "temperature": null, "ts": 1784295146.4234052}
+{"run_id": "api:grok-r02", "turn": 3, "joke": "Why don't scientists trust atoms? Because they make up everything!", "topic": "science", "refusal": false, "temperature": null, "ts": 1784295158.917666}
+{"run_id": "api:grok-r02", "turn": 4, "joke": "Why did the bicycle fall over? It was two-tired!", "topic": "bicycle", "refusal": false, "temperature": null, "ts": 1784295200.743299}
+{"run_id": "api:grok-r02", "turn": 5, "joke": "Why was the belt arrested? Because it held up a pair of pants!", "topic": "clothing", "refusal": false, "temperature": null, "ts": 1784295255.922967}
+{"run_id": "api:grok-r02", "turn": 6, "joke": "Why did the coffee file a police report? It got mugged!", "topic": "coffee", "refusal": false, "temperature": null, "ts": 1784295286.24772}
+{"run_id": "api:grok-r02", "turn": 7, "joke": "Why was 6 afraid of 7? Because 7 8 9!", "topic": "math", "refusal": false, "temperature": null, "ts": 1784295309.9184399}
+{"run_id": "api:grok-r02", "turn": 8, "joke": "Why was the computer cold? It left its Windows open!", "topic": "computer", "refusal": false, "temperature": null, "ts": 1784295376.633983}
+{"run_id": "api:grok-r02", "turn": 9, "joke": "Why are fish so smart? Because they live in schools!", "topic": "fish", "refusal": false, "temperature": null, "ts": 1784295447.0208771}
+{"run_id": "api:grok-r02", "turn": 10, "joke": "Why did the tomato turn red? Because it saw the salad dressing!", "topic": "food", "refusal": false, "temperature": null, "ts": 1784295505.859019}
+{"run_id": "api:grok-r02", "turn": 11, "joke": "Why did the man throw his clock out the window? He wanted to see time fly!", "topic": "time", "refusal": false, "temperature": null, "ts": 1784295574.7984362}
+{"run_id": "api:grok-r02", "turn": 12, "joke": "Why don't cats play poker in the jungle? Too many cheetahs!", "topic": "animal", "refusal": false, "temperature": null, "ts": 1784295628.971508}
+{"run_id": "api:grok-r02", "turn": 13, "joke": "Why did the picture go to jail? Because it was framed!", "topic": "picture", "refusal": false, "temperature": null, "ts": 1784295712.3589911}
+{"run_id": "api:grok-r02", "turn": 14, "joke": "Why did the football coach go to the bank? To get his quarter back!", "topic": "football", "refusal": false, "temperature": null, "ts": 1784295794.107765}
+{"run_id": "api:grok-r02", "turn": 15, "joke": "Why did the kid bring a ladder to school? He wanted to go to high school!", "topic": "school", "refusal": false, "temperature": null, "ts": 1784295891.8256798}
+{"run_id": "api:grok-r02", "turn": 16, "joke": "Why did the man run around his bed? He was trying to catch up on his sleep!", "topic": "sleep", "refusal": false, "temperature": null, "ts": 1784295962.67994}
+{"run_id": "api:grok-r02", "turn": 17, "joke": "Why did the robber take a bath? He wanted to make a clean getaway!", "topic": "crime", "refusal": false, "temperature": null, "ts": 1784296094.9479082}
+{"run_id": "api:grok-r02", "turn": 18, "joke": "Why did the tree go to the dentist? Because it needed a root canal!", "topic": "tree", "refusal": false, "temperature": null, "ts": 1784296170.7734458}
+{"run_id": "api:grok-r02", "turn": 19, "joke": "Why don't ghosts lie? You can see right through them!", "topic": "ghost", "refusal": false, "temperature": null, "ts": 1784296231.672045}
+{"run_id": "api:grok-r02", "turn": 20, "joke": "Why are elevator jokes so good? They work on so many levels!", "topic": "elevator", "refusal": false, "temperature": null, "ts": 1784296314.196436}
+{"run_id": "api:grok-r02", "turn": 21, "joke": "Why did the traffic light turn red? Because it had to change in the middle of the street!", "topic": "traffic", "refusal": false, "temperature": null, "ts": 1784296447.109264}
+{"run_id": "api:grok-r02", "turn": 22, "joke": "Why did the gym close down? It just didn't work out!", "topic": "exercise", "refusal": false, "temperature": null, "ts": 1784296551.993241}
+{"run_id": "api:grok-r02", "turn": 23, "joke": "Why did the astronaut break up with his girlfriend? He needed space!", "topic": "relationship", "refusal": false, "temperature": null, "ts": 1784296620.06399}
+{"run_id": "api:grok-r02", "turn": 24, "joke": "Why did the man put his money in the freezer? He wanted cold hard cash!", "topic": "money", "refusal": false, "temperature": null, "ts": 1784296718.9456189}
+{"run_id": "api:grok-r02", "turn": 25, "joke": "Why was the broom late? It overswept!", "topic": "cleaning", "refusal": false, "temperature": null, "ts": 1784296818.036221}
+{"run_id": "api:grok-r02", "turn": 26, "joke": "Why was the piano locked out of the house? It lost its keys!", "topic": "music", "refusal": false, "temperature": null, "ts": 1784296961.206783}
+{"run_id": "api:grok-r02", "turn": 27, "joke": "Why can't you trust stairs? They're always up to something!", "topic": "stair", "refusal": false, "temperature": null, "ts": 1784297072.51828}
+{"run_id": "api:grok-r02", "turn": 28, "joke": "Why did the plumber quit his job? Because it was too draining!", "topic": "plumbing", "refusal": false, "temperature": null, "ts": 1784297209.471102}
+{"run_id": "api:grok-r02", "turn": 29, "joke": "Why did the golfer wear two pairs of pants? In case he got a hole in one!", "topic": "golf", "refusal": false, "temperature": null, "ts": 1784297361.5658848}
