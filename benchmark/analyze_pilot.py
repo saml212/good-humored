@@ -26,7 +26,19 @@ from .metrics import (cluster_switch_stats, cross_model_overlap,
 
 
 def load_lanes(pilot_dir: Path) -> Dict[str, List[List[str]]]:
-    """Pool raw paths from every lane's summary.json under pilot_dir."""
+    """Pool raw paths from every lane's summary.json under pilot_dir.
+
+    MERGES across lanes when the same model key appears in more than one
+    lane's per_model — a "-fill-" lane topping up runs that failed in the
+    main lane for that provider family is keyed by the same model string
+    (e.g. "api:glm" in both lane-api and lane-api-fill-glm), and a plain
+    overwrite here would silently drop whichever lane's summary.json
+    sorts first, losing real completed runs from the final analysis. Run
+    lists are concatenated (never deduped/reconciled beyond that): every
+    metric downstream (path_divergence, cross_model_overlap) is an
+    unordered function over the run list, so concatenation order is not
+    load-bearing.
+    """
     paths: Dict[str, List[List[str]]] = {}
     failures: List[Dict] = []
     for summary_file in sorted(pilot_dir.glob("*/summary.json")):
@@ -34,7 +46,8 @@ def load_lanes(pilot_dir: Path) -> Dict[str, List[List[str]]]:
             s = json.load(f)
         failures.extend(s.get("failures", []))
         for model, pm in s.get("per_model", {}).items():
-            paths[model] = pm["paths"]  # RAW — primary per EXP-004
+            # MERGE, not overwrite — RAW paths, primary per EXP-004.
+            paths.setdefault(model, []).extend(pm["paths"])
     return paths, failures
 
 
