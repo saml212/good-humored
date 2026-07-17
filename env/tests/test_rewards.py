@@ -15,7 +15,7 @@ from env.rewards import (_SELF_REPETITION_BOUNDARY_FLOOR, ComprehensibilityRewar
                          CorpusNoveltyPenalty, IntraGroupDiversityReward,
                          JudgePreferenceReward, RewardConfig,
                          SelfRepetitionPenalty, _jaccard, _ngrams, _normalize,
-                         combined_reward, reward_stack)
+                         _window_token_spans, combined_reward, reward_stack)
 
 FIXTURE_CORPUS_DIR = Path(__file__).parent / "fixtures" / "corpus"
 
@@ -191,6 +191,467 @@ class TestCorpusNoveltyPenalty(unittest.TestCase):
                         "point is a similarity that falls BELOW threshold")
         [reward] = penalty(prompts=[None], completions=_completions(reskinned))
         self.assertEqual(reward, 0.0)  # full evasion, exactly as documented
+
+
+class TestCorpusNoveltyPaddingDilution(unittest.TestCase):
+    """The 2026-07-17 adversarial audit's padding/dilution exploit, as
+    regression tests: a VERBATIM memorized joke inside ~5 repetitions of
+    filler used to defeat BOTH n-gram tiers at once (exact-hash: the
+    full text hashes differently; trigram: boilerplate dilutes Jaccard
+    below threshold). Fixed by the windowed tier (default ON). Each
+    exploit is asserted in BOTH modes -- `windowed=False` must still
+    reproduce the evasion (locking in that the exploit was real and that
+    the fix is the windows, not some fixture accident), and the default
+    windowed mode must catch it at severity 1.0."""
+
+    # The fixture template, verbatim (see fixtures/corpus/
+    # chatgpt-25-templates.jsonl).
+    TEMPLATE = ("Why don't scientists trust atoms? Because they make up "
+               "everything.")
+
+    # Five DIFFERENT filler sentences -- the audit's dilution needs
+    # varied filler here because trigram sets deduplicate: repeating one
+    # sentence 5x adds only ~8 distinct trigrams, which does NOT dilute
+    # whole-text Jaccard below 0.35 against a 10-token template. Varied
+    # filler is also the stronger (more attacker-realistic) form.
+    FILLERS = ["Here is a little something to brighten your day.",
+               "People often ask me for my best material.",
+               "Comedy is all about timing and delivery, friends.",
+               "Let me set the stage with some context first.",
+               "Warm up the audience before the main event."]
+
+    def test_windowed_is_the_default(self):
+        penalty = CorpusNoveltyPenalty(FIXTURE_CORPUS_DIR)
+        self.assertTrue(penalty.windowed)
+
+    def test_exploit_reproduced_with_windowing_off(self):
+        # The auditor's exact reproduction: verbatim template after ~5
+        # filler sentences pays ZERO penalty from both whole-text tiers.
+        penalty = CorpusNoveltyPenalty(FIXTURE_CORPUS_DIR, weight=-1.5,
+                                       windowed=False)
+        exploit = " ".join(self.FILLERS) + " " + self.TEMPLATE
+        [reward] = penalty(prompts=[None], completions=_completions(exploit))
+        self.assertEqual(reward, 0.0)  # full evasion, exactly as audited
+
+    def test_verbatim_template_in_padding_caught_at_full_severity(self):
+        # THE fix under test: the same exploit against the DEFAULT
+        # construction must score severity 1.0 (full weight) -- the
+        # stride-1, template-length window aligns exactly on the
+        # embedded template (trigram Jaccard 1.0, and a window
+        # exact-hash hit), and dilution cannot lower a max over windows.
+        penalty = CorpusNoveltyPenalty(FIXTURE_CORPUS_DIR, weight=-1.5)
+        exploit = " ".join(self.FILLERS) + " " + self.TEMPLATE
+        [reward] = penalty(prompts=[None], completions=_completions(exploit))
+        self.assertEqual(reward, -1.5)
+
+    def test_padding_position_does_not_matter(self):
+        # Prefix, suffix, and both-sides padding must all be caught --
+        # the guarantee is positional (stride 1), not "the joke is at
+        # the end".
+        penalty = CorpusNoveltyPenalty(FIXTURE_CORPUS_DIR, weight=-1.5)
+        pad = " ".join(self.FILLERS)
+        variants = [pad + " " + self.TEMPLATE,
+                    self.TEMPLATE + " " + pad,
+                    " ".join(self.FILLERS[:3]) + " " + self.TEMPLATE + " "
+                    + " ".join(self.FILLERS[3:])]
+        rewards = penalty(prompts=[None] * 3, completions=variants)
+        self.assertEqual(rewards, [-1.5, -1.5, -1.5])
+
+    def test_verbatim_corpus_joke_in_padding_caught_by_window_hash(self):
+        # The exact-hash tier's windowed form: a verbatim NON-template
+        # corpus joke (shares no trigrams with the template, so the
+        # trigram windows can't be what catches it) embedded in padding.
+        # Its normalized length (12) falls inside the template-derived
+        # window-size range {10, 11, 12} (template length 10 + slack 2),
+        # so a stride-1 window hashes to exactly the memorized joke.
+        with tempfile.TemporaryDirectory() as d:
+            tmpl_path = Path(d) / "chatgpt-25-templates.jsonl"
+            with open(tmpl_path, "w") as f:
+                f.write('{"id": "t0", "text": "Quantum pigeons negotiate '
+                        'treaties with sleepy volcanoes every autumn '
+                        'morning."}\n')  # 10 normalized tokens
+            jokes_path = Path(d) / "jokes.jsonl"
+            with open(jokes_path, "w") as f:
+                f.write('{"text": "My toaster filed a complaint about '
+                        'cold bread union meetings last week."}\n')
+                # ^ 12 normalized tokens, vocabulary disjoint from the
+                # template above
+            joke = ("My toaster filed a complaint about cold bread union "
+                   "meetings last week.")
+            exploit = " ".join(self.FILLERS) + " " + joke
+
+            off = CorpusNoveltyPenalty(d, weight=-1.5, windowed=False)
+            [evaded] = off(prompts=[None], completions=_completions(exploit))
+            self.assertEqual(evaded, 0.0)  # exploit real against this
+                                           # corpus too
+
+            on = CorpusNoveltyPenalty(d, weight=-1.5)
+            [caught] = on(prompts=[None], completions=_completions(exploit))
+            self.assertEqual(caught, -1.5)
+
+    def test_genuinely_novel_long_completion_not_newly_penalized(self):
+        # False-positive guard: a long, genuinely novel completion (no
+        # template-like span anywhere in it) must score 0.0 under the
+        # default windowed mode, identical to the shipped whole-text
+        # score -- windowing must not turn length itself into a penalty.
+        novel = ("The lighthouse keeper counted seagulls every morning "
+                "while his coffee went cold on the railing. Nobody in "
+                "the village believed his tally, so he started "
+                "photographing each bird with a disposable camera he "
+                "kept in the lamp room, and the pharmacy developed the "
+                "film weekly without ever asking questions about it.")
+        on = CorpusNoveltyPenalty(FIXTURE_CORPUS_DIR, weight=-1.5)
+        off = CorpusNoveltyPenalty(FIXTURE_CORPUS_DIR, weight=-1.5,
+                                   windowed=False)
+        [r_on] = on(prompts=[None], completions=_completions(novel))
+        [r_off] = off(prompts=[None], completions=_completions(novel))
+        self.assertEqual(r_on, 0.0)
+        self.assertEqual(r_on, r_off)
+
+    def test_shipped_scores_preserved_on_non_adversarial_inputs(self):
+        # Default-ON safety, locked in: for the existing fixture cases
+        # (exact corpus hit, near-template ramp, unrelated text) the
+        # windowed default must produce bit-identical rewards to
+        # windowed=False -- the max over windows only diverges from the
+        # whole-text score when a diluted memorized span is present.
+        near_template = ("Why don't scientists trust electrons? Because "
+                        "they make up everything.")
+        exact_joke = ("Why did the chicken cross the road? To get to the "
+                     "other side.")
+        cases = [exact_joke, near_template, JOKE_A]
+        on = CorpusNoveltyPenalty(FIXTURE_CORPUS_DIR, weight=-1.5)
+        off = CorpusNoveltyPenalty(FIXTURE_CORPUS_DIR, weight=-1.5,
+                                   windowed=False)
+        self.assertEqual(on(prompts=[None] * 3, completions=cases),
+                         off(prompts=[None] * 3, completions=cases))
+
+    def test_reskin_inside_padding_still_evades_ngram_windows(self):
+        # Windowing makes scoring UNIFORM w.r.t. padding; it does not
+        # close the 2-word-reskin gap (limitation #1, deliberately
+        # preserved -- the SEMANTIC tier's job). A padded reskin must
+        # score exactly what the bare reskin scores: 0.0. This also
+        # locks in the upward-only window slack decision -- sub-template
+        # windows would inflate Jaccard past threshold here (a 9-token
+        # window over this reskin scores 4/11 > 0.35).
+        reskinned = ("Why don't scientists trust protons? Because they "
+                    "make up anything.")
+        penalty = CorpusNoveltyPenalty(FIXTURE_CORPUS_DIR, weight=-1.5)
+        exploit = " ".join(self.FILLERS) + " " + reskinned
+        [reward] = penalty(prompts=[None], completions=_completions(exploit))
+        self.assertEqual(reward, 0.0)
+
+    def test_joke_beyond_max_scan_tokens_cap_evades_windows(self):
+        # The documented cap security implication, locked in as a test
+        # rather than left as prose: padding longer than max_scan_tokens
+        # pushes the memorized joke past the window scan's frontier and
+        # the window tiers cannot see it (whole-text tiers still apply,
+        # but they are what dilution defeats). The 5 fillers total 42
+        # normalized tokens, so a cap of 30 excludes the joke entirely;
+        # the default cap (4096) catches the same completion.
+        exploit = " ".join(self.FILLERS) + " " + self.TEMPLATE
+        capped = CorpusNoveltyPenalty(FIXTURE_CORPUS_DIR, weight=-1.5,
+                                      max_scan_tokens=30)
+        [r_capped] = capped(prompts=[None], completions=_completions(exploit))
+        self.assertEqual(r_capped, 0.0)  # evaded: joke lives past the cap
+
+        default_cap = CorpusNoveltyPenalty(FIXTURE_CORPUS_DIR, weight=-1.5)
+        [r_default] = default_cap(prompts=[None],
+                                  completions=_completions(exploit))
+        self.assertEqual(r_default, -1.5)
+
+    def test_degenerate_completions_stay_zero_with_windowing_on(self):
+        penalty = CorpusNoveltyPenalty(FIXTURE_CORPUS_DIR, weight=-1.5)
+        rewards = penalty(prompts=[None] * 3,
+                          completions=_completions("", "   ", "😂😂😂"))
+        self.assertEqual(rewards, [0.0, 0.0, 0.0])
+
+
+class TestWindowTokenSpans(unittest.TestCase):
+    """Direct unit tests for `_window_token_spans`, the boundary
+    tokenizer the 2026-07-17 audit BLOCKER fix introduces (see
+    `CorpusNoveltyPenalty`'s "PADDING/DILUTION, ROUND 2" docstring
+    section). These pin down the primitive itself, independent of the
+    reward-scoring regression tests below."""
+
+    def _tokens(self, text):
+        return [text[s:e] for s, e in _window_token_spans(text)]
+
+    def test_punctuation_is_a_boundary_not_a_deletion(self):
+        # THE bug: norm() deletes "." leaving "hereWhy" fused. The
+        # boundary tokenizer must instead split at it.
+        self.assertEqual(self._tokens("here.Why"), ["here", "Why"])
+
+    def test_hyphen_is_a_boundary(self):
+        self.assertEqual(self._tokens("here-Why"), ["here", "Why"])
+
+    def test_zero_width_space_is_a_boundary(self):
+        # U+200B is not in string.punctuation and not str.isspace() --
+        # norm() neither deletes nor splits on it. Category 'Cf' catches it.
+        self.assertEqual(self._tokens("here​Why"), ["here", "Why"])
+
+    def test_other_zero_width_format_chars_are_boundaries(self):
+        for ch in ("‌", "‍", "﻿", "⁠", "­"):
+            self.assertEqual(self._tokens("a" + ch + "b"), ["a", "b"],
+                             "char %r should be a boundary" % ch)
+
+    def test_internal_apostrophe_splits_the_contraction(self):
+        # By design (see docstring): boundary-tokens != norm()-tokens for
+        # a contraction. The round-trip is restored by SLICING the
+        # original text over a whole window and re-running norm(), not
+        # by treating these tokens as the final comparison unit.
+        self.assertEqual(self._tokens("don't"), ["don", "t"])
+
+    def test_whitespace_including_newline_and_tab_are_boundaries(self):
+        self.assertEqual(self._tokens("a b\nc\td"), ["a", "b", "c", "d"])
+
+    def test_spans_slice_back_to_original_substrings_with_case(self):
+        # Spans index into the ORIGINAL (un-lowered) text -- case and
+        # internal punctuation of the token itself are preserved.
+        text = "Warm up.Why don't scientists trust atoms?"
+        spans = _window_token_spans(text)
+        # "Why" through "atoms" is one contiguous run of tokens; slicing
+        # from the start of "Why" to the end of "atoms" must reproduce
+        # the substring verbatim, apostrophe and all.
+        why_idx = [text[s:e] for s, e in spans].index("Why")
+        atoms_idx = [text[s:e] for s, e in spans].index("atoms")
+        start = spans[why_idx][0]
+        end = spans[atoms_idx][1]
+        self.assertEqual(text[start:end], "Why don't scientists trust atoms")
+
+    def test_empty_and_all_boundary_text_yields_no_spans(self):
+        self.assertEqual(_window_token_spans(""), [])
+        self.assertEqual(_window_token_spans("... --- \n\t ​"), [])
+
+
+class TestCorpusNoveltyPunctuationGluedPadding(unittest.TestCase):
+    """2026-07-17 audit BLOCKER regression tests, exactly reproducing the
+    auditor's table: `benchmark/joke_novelty.py`'s `norm()` DELETES
+    punctuation instead of treating it as a boundary, so padding GLUED
+    to a memorized joke by punctuation (or a zero-width character norm()
+    doesn't even touch) used to fuse the joke's edge token into the
+    padding's edge token -- evading the windowed exact-hash tier
+    ENTIRELY for non-template corpus jokes (no fallback tier covers
+    them), and weakening (or, for a short-enough template, fully
+    defeating) the trigram tier for templates. `windowed=False` is
+    asserted alongside each case to lock in that the exploit was REAL
+    (not a fixture accident) and that the boundary-tokenizer fix (not
+    some incidental change) is what closes it -- same convention as
+    `TestCorpusNoveltyPaddingDilution` above, which only ever exercised
+    whitespace joins and so never caught this."""
+
+    TEMPLATE = TestCorpusNoveltyPaddingDilution.TEMPLATE
+    FILLERS = TestCorpusNoveltyPaddingDilution.FILLERS
+
+    # A NON-template verbatim corpus joke (fresh fixture below), so the
+    # trigram tier -- which only knows the 25 templates -- structurally
+    # CANNOT be what catches it: this isolates the exact-hash window
+    # tier's own punctuation-glued-padding bug.
+    NON_TEMPLATE_JOKE = ("My toaster filed a complaint about cold bread "
+                        "union meetings last week.")  # 12 normalized tokens
+
+    @classmethod
+    def setUpClass(cls):
+        # A fresh, disjoint-vocabulary template (10 normalized tokens, no
+        # internal punctuation) so NON_TEMPLATE_JOKE's length (12) falls
+        # inside the template-derived window-size range {10, 11, 12} --
+        # same construction as
+        # test_verbatim_corpus_joke_in_padding_caught_by_window_hash
+        # above, reused here for the punctuation-glued join methods.
+        cls._tmpdir = tempfile.TemporaryDirectory()
+        d = Path(cls._tmpdir.name)
+        (d / "chatgpt-25-templates.jsonl").write_text(
+            '{"id": "t0", "text": "Quantum pigeons negotiate treaties '
+            'with sleepy volcanoes every autumn morning."}\n')
+        (d / "jokes.jsonl").write_text(
+            '{"text": "%s"}\n' % cls.NON_TEMPLATE_JOKE)
+        cls.corpus_dir = d
+
+    @classmethod
+    def tearDownClass(cls):
+        cls._tmpdir.cleanup()
+
+    def _padding(self):
+        return " ".join(self.FILLERS)
+
+    def _assert_full_severity_on_off(self, text):
+        on = CorpusNoveltyPenalty(self.corpus_dir, weight=-1.5)
+        off = CorpusNoveltyPenalty(self.corpus_dir, weight=-1.5,
+                                   windowed=False)
+        [r_on] = on(prompts=[None], completions=_completions(text))
+        [r_off] = off(prompts=[None], completions=_completions(text))
+        self.assertEqual(r_on, -1.5)   # THE FIX: caught at full severity
+        self.assertEqual(r_off, 0.0)   # locks in the exploit was real
+
+    # -- the auditor's exact reproduction table, one join method each --
+
+    def test_period_glued_padding(self):
+        self._assert_full_severity_on_off(
+            self._padding() + "." + self.NON_TEMPLATE_JOKE)
+
+    def test_hyphen_glued_padding(self):
+        self._assert_full_severity_on_off(
+            self._padding() + "-" + self.NON_TEMPLATE_JOKE)
+
+    def test_zero_width_space_glued_padding(self):
+        # U+200B: not in string.punctuation, not str.isspace() -- the
+        # auditor's own probe. The OLD norm()-only tokenization neither
+        # deleted nor split on it, so this used to be worse than the
+        # ASCII-punctuation joins (no seam of any kind after norm()).
+        self._assert_full_severity_on_off(
+            self._padding() + "​" + self.NON_TEMPLATE_JOKE)
+
+    def test_pure_concatenation_no_added_separator(self):
+        # No join character is INSERTED by this test at all -- direct
+        # string concatenation. The padding's own last sentence
+        # ("...before the main event.") already ends in ".", so the
+        # exact same fusion mechanism fires with zero test-added glue,
+        # confirming this isn't an artifact of a specific join character.
+        self._assert_full_severity_on_off(
+            self._padding() + self.NON_TEMPLATE_JOKE)
+
+    def test_newline_glued_padding(self):
+        # Whitespace -- was ALREADY correct before this fix (str.split()
+        # inside norm() splits on any whitespace, \n included). Locked in
+        # here as a regression test alongside the punctuation cases so
+        # the "whitespace is fine, punctuation isn't" distinction is
+        # explicit and tested, not just asserted in prose.
+        self._assert_full_severity_on_off(
+            self._padding() + "\n" + self.NON_TEMPLATE_JOKE)
+
+    def test_tab_glued_padding(self):
+        self._assert_full_severity_on_off(
+            self._padding() + "\t" + self.NON_TEMPLATE_JOKE)
+
+    # -- template-specific cases (trigram tier, not just exact-hash) --
+
+    def test_template_sandwich_fused_both_edges(self):
+        # Both edges glued by punctuation, no whitespace anywhere near
+        # the embedded template -- the sandwich-fusion case the audit
+        # flagged as weakening severity to (L-4)/L under the old code.
+        on = CorpusNoveltyPenalty(FIXTURE_CORPUS_DIR, weight=-1.5)
+        off = CorpusNoveltyPenalty(FIXTURE_CORPUS_DIR, weight=-1.5,
+                                   windowed=False)
+        text = self._padding() + "." + self.TEMPLATE + "-" + self._padding()
+        [r_on] = on(prompts=[None], completions=_completions(text))
+        [r_off] = off(prompts=[None], completions=_completions(text))
+        self.assertEqual(r_on, -1.5)
+        self.assertEqual(r_off, 0.0)
+
+    def test_template_ending_in_punctuation_round_trips_through_norm(self):
+        # The template itself ends in "." (norm() deletes it). Glue the
+        # NEXT word directly onto that trailing period with no added
+        # separator -- exercises exactly the round-trip argument in
+        # _window_token_spans's docstring: the boundary-tokenizer window
+        # containing the template must, once sliced from the ORIGINAL
+        # text and re-normalized, hash IDENTICALLY to norm(TEMPLATE),
+        # even though the template's own trailing punctuation sits right
+        # at the window's edge with no whitespace after it.
+        on = CorpusNoveltyPenalty(FIXTURE_CORPUS_DIR, weight=-1.5)
+        off = CorpusNoveltyPenalty(FIXTURE_CORPUS_DIR, weight=-1.5,
+                                   windowed=False)
+        text = self.TEMPLATE + self._padding()  # "...everything." + "Here is..."
+        [r_on] = on(prompts=[None], completions=_completions(text))
+        [r_off] = off(prompts=[None], completions=_completions(text))
+        self.assertEqual(r_on, -1.5)
+        self.assertEqual(r_off, 0.0)
+
+    def test_reskin_inside_punctuation_glued_padding_still_evades(self):
+        # False-positive guard, mirroring
+        # test_reskin_inside_padding_still_evades_ngram_windows above:
+        # the fix must not turn the boundary tokenizer into a fuzzy
+        # matcher. A 2-word reskin glued into padding by "." must still
+        # evade completely (limitation #1, deliberately preserved).
+        reskinned = ("Why don't scientists trust protons? Because they "
+                    "make up anything.")
+        penalty = CorpusNoveltyPenalty(FIXTURE_CORPUS_DIR, weight=-1.5)
+        exploit = self._padding() + "." + reskinned
+        [reward] = penalty(prompts=[None], completions=_completions(exploit))
+        self.assertEqual(reward, 0.0)
+
+
+class TestCorpusNoveltyUnicodeMarkGluedPadding(unittest.TestCase):
+    """2026-07-18 audit BLOCKER regression tests: `_is_window_boundary_char`
+    checked `isspace()` / `string.punctuation` / Unicode category 'Cf'
+    (format/zero-width) but NOT 'Mn' (mark, nonspacing), 'Me' (mark,
+    enclosing), or 'Cc' (control) -- so a combining/enclosing mark or a
+    control character glued at the padding/joke seam was just as invisible
+    to the boundary tokenizer as the zero-width characters
+    `TestCorpusNoveltyPunctuationGluedPadding` above already closes, one
+    Unicode-category short. Reproduced exactly as the audit describes: a
+    bare U+0301 COMBINING ACUTE ACCENT glued between padding and a
+    VERBATIM non-template corpus joke scored reward 0.0 -- full evasion of
+    the windowed exact-hash tier -- before the `_is_window_boundary_char`
+    fix (Mn/Me/Cc added alongside the existing Cf). NBSP (U+00A0) and
+    ideographic space (U+3000) are included too, NOT because they were
+    ever broken (both already satisfy `str.isspace()`) but to lock them in
+    as passing regression cases alongside the newly-fixed ones, per the
+    audit's request for one combined table."""
+
+    TEMPLATE = TestCorpusNoveltyPaddingDilution.TEMPLATE
+    FILLERS = TestCorpusNoveltyPaddingDilution.FILLERS
+    NON_TEMPLATE_JOKE = TestCorpusNoveltyPunctuationGluedPadding.NON_TEMPLATE_JOKE
+
+    @classmethod
+    def setUpClass(cls):
+        # Same fixture shape as TestCorpusNoveltyPunctuationGluedPadding:
+        # a fresh, disjoint-vocabulary template (10 normalized tokens, no
+        # internal punctuation) plus NON_TEMPLATE_JOKE (12 normalized
+        # tokens) as a jokes.jsonl entry, so the joke's length falls
+        # inside the template-derived window-size range {10, 11, 12} and
+        # a stride-1 window can hash-match it exactly.
+        cls._tmpdir = tempfile.TemporaryDirectory()
+        d = Path(cls._tmpdir.name)
+        (d / "chatgpt-25-templates.jsonl").write_text(
+            '{"id": "t0", "text": "Quantum pigeons negotiate treaties '
+            'with sleepy volcanoes every autumn morning."}\n')
+        (d / "jokes.jsonl").write_text(
+            '{"text": "%s"}\n' % cls.NON_TEMPLATE_JOKE)
+        cls.corpus_dir = d
+
+    @classmethod
+    def tearDownClass(cls):
+        cls._tmpdir.cleanup()
+
+    def _padding(self):
+        return " ".join(self.FILLERS)
+
+    def _assert_full_severity_on_off(self, join_char):
+        text = self._padding() + join_char + self.NON_TEMPLATE_JOKE
+        on = CorpusNoveltyPenalty(self.corpus_dir, weight=-1.5)
+        off = CorpusNoveltyPenalty(self.corpus_dir, weight=-1.5,
+                                   windowed=False)
+        [r_on] = on(prompts=[None], completions=_completions(text))
+        [r_off] = off(prompts=[None], completions=_completions(text))
+        self.assertEqual(r_on, -1.5)   # THE FIX: caught at full severity
+        self.assertEqual(r_off, 0.0)   # locks in the exploit was real
+
+    # -- the audit's exact reproduction table, one join char each --
+
+    def test_combining_acute_accent_glued_padding(self):
+        # U+0301 COMBINING ACUTE ACCENT -- category Mn. The BLOCKER's
+        # exact reproduction: neither isspace() nor string.punctuation
+        # nor (pre-fix) any covered Unicode category.
+        self._assert_full_severity_on_off("́")
+
+    def test_enclosing_circle_backslash_glued_padding(self):
+        # U+20E0 COMBINING ENCLOSING CIRCLE BACKSLASH -- category Me, the
+        # "enclosing mark" half of the Zalgo-text family, same gap as Mn.
+        self._assert_full_severity_on_off("⃠")
+
+    def test_control_char_glued_padding(self):
+        # U+0007 BEL -- category Cc, neither whitespace nor punctuation.
+        self._assert_full_severity_on_off("")
+
+    def test_nbsp_glued_padding(self):
+        # U+00A0 NO-BREAK SPACE -- str.isspace() is already True for
+        # this one, so it was never broken; locked in here as a passing
+        # regression case alongside the newly-fixed ones above.
+        self._assert_full_severity_on_off(" ")
+
+    def test_ideographic_space_glued_padding(self):
+        # U+3000 IDEOGRAPHIC SPACE -- also already str.isspace() == True,
+        # same "already passing, lock it in" rationale as NBSP above.
+        self._assert_full_severity_on_off("　")
 
 
 class TestSelfRepetitionPenalty(unittest.TestCase):

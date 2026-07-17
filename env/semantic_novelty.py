@@ -89,27 +89,66 @@ included, never subject to sampling), but real: consider periodically
 re-sampling the seed across training, or expanding the cap, if this term
 is ever relied on for a long run.
 
-KNOWN, UNFIXED LIMITATION -- PADDING/DILUTION FULLY EVADES THIS TERM
-(2026-07-17 adversarial audit, empirically confirmed against the real
-model + real corpus): prepending generic filler sentences to a VERBATIM
-memorized template dilutes the whole-text embedding until similarity
-drops below threshold -- ~15 repetitions of one filler sentence brings
-the penalty to ~7% severity, ~20 brings it to exactly 0.0, and it stays
-evaded at any longer padding. The same trick zeroes out
-CorpusNoveltyPenalty's exact-hash AND trigram tiers at just ~5
-repetitions. Net: a policy can emit a memorized joke 100% verbatim
-inside ~200-300 words of boilerplate and pay ZERO novelty penalty from
-either tier -- a strictly easier exploit than the 2-word reskin this
-module was built to close, and it attacks the mean-pooled-embedding
-design itself, not the threshold. Do NOT rely on this term alone as the
-anti-memorization defense in a real training run until fixed. Known
-mitigation direction: max-over-sliding-windows scoring (embed windows of
-the completion, take the max similarity against templates) -- dilution
-cannot lower the max over a window that contains the memorized text.
-Note the exploit is partially self-limiting in the full 5-term stack
-(200 words of repeated boilerplate is exactly what SelfRepetitionPenalty
-and the judge term punish), but that is an accident of composition, not
-a defense this term provides.
+PADDING/DILUTION -- CLOSED FOR WINDOWED MODE (2026-07-17 fix; the
+original audit finding kept on record below). The exploit, empirically
+confirmed against the real model + real corpus: prepending generic
+filler sentences to a VERBATIM memorized template dilutes the whole-text
+mean-pooled embedding until similarity drops below threshold -- ~15
+repetitions of one filler sentence brought the penalty to ~7% severity,
+~20 brought it to exactly 0.0, and it stayed evaded at any longer
+padding. The same trick zeroed out CorpusNoveltyPenalty's exact-hash AND
+trigram tiers at just ~5 repetitions. It attacked the
+mean-pooled-embedding design itself, not the threshold.
+
+STATUS OF THE FIX, per tier:
+  - n-gram tier (`env.rewards.CorpusNoveltyPenalty`): CLOSED, ON BY
+    DEFAULT (`windowed=True`) -- max-over-sliding-windows with a stride-1
+    exact-alignment guarantee; the verbatim-inside-padding case now
+    scores severity 1.0. See that class's docstring for the full design,
+    the default-ON justification, and its residual risks.
+  - semantic tier (this module): CLOSED IN WINDOWED MODE, which is
+    OPT-IN (`SemanticNoveltyPenalty(..., windowed=True)`, default OFF)
+    PENDING EXP-011 -- max cosine over sliding windows against the 25
+    templates, keeping the templates-only reference and
+    DEFAULT_THRESHOLD=0.38. The calibration-transfer ASSUMPTION: a
+    window that contains the paraphrase, with bounded surrounding
+    filler, approximates the paraphrase-alone embedding closely enough
+    that the templates-only threshold still separates (the window
+    ladder guarantees every candidate span is fully contained in a
+    window it occupies >=1/3 of -- see SemanticNoveltyPenalty's
+    docstring -- and the audit measured threshold-crossing only below
+    ~10% joke fraction, so 1/3 leaves margin). EMPIRICAL SPOT-CHECK
+    (2026-07-17, real model + real templates, offline): the assumption
+    HOLDS on the detection side -- the 20-rep dilution exploit scores
+    severity ~0.96 windowed vs exactly 0.0 whole-text -- but FAILS on
+    the false-positive side: a genuinely novel multi-sentence
+    completion's best WINDOW similarity against the 25 templates came
+    out ~0.55 (vs ~0.3 whole-text), i.e. short windows of arbitrary
+    text sit closer to short joke sentences in MiniLM space than whole
+    completions do, and at threshold 0.38 windowed mode DOES penalize
+    novel long completions. EXP-011 (re-run
+    env/validate_semantic_novelty.py's positives/negatives through
+    windowed scoring, positives embedded in 0/5/20/50 reps of padding,
+    negatives INCLUDING multi-sentence novel completions -- the
+    negative class windowing newly exposes -- then re-sweep for the
+    lowest threshold with FPR<=0.05; expect it to land well above
+    0.38) is REQUIRED before any windowed threshold is trusted. Until
+    then the shipped, validated whole-text behavior is preserved
+    exactly by the default, and enabling windowed=True at
+    DEFAULT_THRESHOLD is known-miscalibrated, not merely unvalidated.
+
+RESIDUAL RISKS WINDOWING DOES NOT SOLVE (both tiers): (1) a memorized
+joke or paraphrase interleaved word-by-word with filler has no
+contiguous span for any window to isolate -- every window is diluted at
+every scale and trigrams are broken by construction; still open, and
+only accidentally mitigated by composition (word-by-word interleaving is
+exactly what SelfRepetitionPenalty/comprehensibility/judge punish);
+(2) padding past the window caps (`max_scan_tokens` for n-gram,
+`max_windows`' coverage frontier here) evades the window tiers -- both
+caps and their exact frontiers are documented on their constructors;
+(3) the n-gram tier's 2-word-reskin gap is unchanged by windowing (a
+padded reskin now scores exactly what the bare reskin scores -- uniform,
+not fixed); the semantic tier remains the reskin/paraphrase defense.
 """
 
 import json
@@ -119,7 +158,7 @@ from pathlib import Path
 from typing import Callable, List, Optional, Sequence, Tuple, Union
 
 from benchmark.joke_novelty import load_templates
-from env.rewards import _contents, _normalize
+from env.rewards import _contents, _normalize, _window_token_spans
 
 _MODEL_NAME = "all-MiniLM-L6-v2"
 
@@ -313,6 +352,83 @@ class SemanticNoveltyPenalty:
     class makes the same outcome explicit and skips the wasted embedding
     call rather than relying on an accidental zero).
 
+    WINDOWED MODE (`windowed=True`, DEFAULT OFF -- opt-in pending
+    EXP-011, see module docstring): closes the padding/dilution exploit
+    for this tier by scoring max cosine over sliding, BOUNDARY-tokenized
+    windows of the completion (plus the whole text, so windowed scores
+    are always >= shipped scores) against the SAME reference embeddings.
+    Default OFF preserves the shipped, validated whole-text behavior
+    bit-for-bit; the templates-only reference and
+    `DEFAULT_THRESHOLD=0.38` are kept in windowed mode on the
+    calibration-transfer assumption stated in the module docstring --
+    which a real-model spot-check found holds for DETECTION but NOT for
+    the false-positive baseline (window similarity for novel text runs
+    ~0.55, above 0.38), so EXP-011's re-swept threshold is REQUIRED
+    before enabling this flag in a real run; see module docstring.
+
+    "Boundary-tokenized" (2026-07-17 audit BLOCKER fix; see
+    `_window_texts`'s docstring for the full explanation): windows are
+    derived via `env.rewards._window_token_spans` -- punctuation,
+    whitespace, and zero-width/format characters (Unicode category
+    'Cf') all act as token separators -- rather than plain
+    `text.split()` (whitespace only), which used to let padding GLUED to
+    a template by punctuation or a zero-width character (no whitespace
+    at all) fuse the template's edge word into the padding's edge word,
+    same class of bug as `env.rewards.CorpusNoveltyPenalty`'s own
+    windowed tier (lower severity here: approximate cosine similarity
+    degrades gracefully on a misaligned edge rather than fully evading,
+    but the fix is the same). Window CONTENT is always sliced from the
+    ORIGINAL completion text, never reconstructed from stripped tokens,
+    so a template's own internal punctuation (e.g. "don't") reaches the
+    embedder intact.
+
+    Window ladder + containment guarantee: window sizes derive from the
+    templates' BOUNDARY-tokenizer lengths (NOT raw whitespace-token
+    counts -- the two can differ for a template with internal
+    punctuation, e.g. this project's own fixture template has 11
+    boundary-tokens vs. 10 whitespace-tokens, from "don't"'s
+    apostrophe). Cover targets C_k start at the shortest template length
+    and double up to (longest template length + `window_growth`), each
+    level using stride S_k = max(1, C_k // 2) and
+    window size W_k = C_k + S_k - 1. Window starts are 0, S_k, 2S_k, ...
+    plus a final tail window ending exactly at the last token. Covering
+    lemma: for any contiguous span of P <= C_k tokens, the valid-start
+    interval [p + P - W_k, p] has length W_k - P + 1 >= S_k, so it
+    contains a multiple of S_k (or, at the right edge, the appended tail
+    start) -- i.e. EVERY span up to the longest template length +
+    `window_growth` (paraphrase-runs-longer headroom, default 8) is
+    FULLY CONTAINED in at least one window. Dilution bound: a span of
+    length P in (C_{k-1}, C_k] occupies >= P / W_k > C_{k-1} / (1.5 *
+    2 * C_{k-1}) = 1/3 of its containing window, so in-window filler
+    never exceeds 2/3 -- far from the ~90% dilution the audit measured
+    as needed to cross below threshold. Spans shorter than the shortest
+    template are still fully contained (level 0) at a weaker fraction;
+    they are sub-template fragments, not full paraphrases.
+
+    Performance + cap: all of a completion's windows (whole text first)
+    are embedded in ONE `embed_fn` call per completion -- never one call
+    per window. (Non-windowed mode keeps the shipped one-call-per-BATCH
+    path untouched.) Identical window texts are deduplicated before
+    embedding (adversarial repetition produces many duplicate windows --
+    dedup makes the attack cheaper for us, not the attacker). Windows
+    are capped at `max_windows` per completion (default 256), split
+    evenly across ladder levels, keeping each level's EARLIEST windows.
+    SECURITY IMPLICATION, stated plainly: when the cap binds, each
+    level's coverage is a PREFIX of the completion (level k covers
+    roughly its first budget * S_k + W_k tokens; >= ~640 whitespace
+    tokens per level at defaults with real-corpus template lengths) and
+    a memorized span pushed entirely past every level's frontier evades
+    this tier's windows. That needs several hundred tokens of padding --
+    ~5x ComprehensibilityReward's max_tokens band -- and the whole-text
+    score still applies; a one-time RuntimeWarning fires if the cap ever
+    binds so a training run can't silently live past the frontier.
+
+    Degenerate windows follow the degenerate-completion convention
+    above: a window whose `_normalize` token set is empty (all-emoji /
+    whitespace padding) is skipped before embedding, exactly like a
+    degenerate completion. The whole-completion guard runs first either
+    way -- a fully degenerate completion is never windowed at all.
+
     `embed_fn`, if supplied, is `Callable[[Sequence[str]], <array-like of
     shape (len(texts), dim)>]` and is used in place of a real
     `SentenceTransformer` -- the ONLY way to unit-test this class's actual
@@ -342,6 +458,9 @@ class SemanticNoveltyPenalty:
         embed_fn: Optional[Callable[[Sequence[str]], object]] = None,
         allow_degraded: bool = False,
         batch_size: int = 256,
+        windowed: bool = False,
+        window_growth: int = 8,
+        max_windows: int = 256,
     ):
         if corpus_dir is None:
             raise ValueError(
@@ -390,8 +509,13 @@ class SemanticNoveltyPenalty:
         self.weight = weight
         self.threshold = threshold
         self.reference = reference
+        self.windowed = windowed
+        self.window_growth = window_growth
+        self.max_windows = max_windows
         self.degraded = False
         self._embed = embed_fn
+        self._cap_warned = False
+        self._window_levels: List[Tuple[int, int, int]] = []
         self.n_templates = 0
         self.n_corpus_scanned = 0
         self.n_corpus_embedded = 0
@@ -464,6 +588,47 @@ class SemanticNoveltyPenalty:
                 "compare against the general joke corpus instead." %
                 corpus_path)
 
+        # Windowed-mode ladder (see class docstring): cover targets C
+        # from the shortest template length, doubling up to the longest
+        # + `window_growth`; per level, stride S = max(1, C // 2) and
+        # window size W = C + S - 1 (the smallest W satisfying the
+        # covering lemma W >= P + S - 1 for spans up to P = C).
+        # Template lengths are the only length anchor windowing has, so
+        # windowed mode requires at least one template regardless of
+        # `reference` (reference="templates" already enforces that).
+        #
+        # BOUNDARY-tokenizer lengths (`_window_token_spans`, shared with
+        # `env.rewards.CorpusNoveltyPenalty`'s own windowed fix), NOT raw
+        # `t.split()` whitespace-token counts (2026-07-17 audit BLOCKER
+        # fix, same class of bug as that module -- see `_window_texts`
+        # below for the full explanation). This can change the ladder
+        # for a template containing internal punctuation: this project's
+        # own fixture template ("Why don't scientists...") has 11
+        # boundary-tokens vs. 10 raw whitespace-tokens, from "don't"'s
+        # apostrophe -- `_window_texts` slices window text from the
+        # ORIGINAL completion, so this length only affects window
+        # SIZING, never destroys any character.
+        tmpl_word_lens = [len(_window_token_spans(t)) for t in template_texts
+                          if _window_token_spans(t)]
+        if windowed and not tmpl_word_lens:
+            raise ValueError(
+                "semantic_novelty_penalty: windowed=True derives its "
+                "window sizes from the templates' token lengths, but %s "
+                "has no non-empty 'chatgpt-25-templates.jsonl' entries. "
+                "Windowed mode has no length anchor without templates." %
+                corpus_path)
+        if tmpl_word_lens:
+            cover = max(min(tmpl_word_lens), 3)
+            p_max = max(tmpl_word_lens) + window_growth
+            while True:
+                cover = min(cover, p_max)
+                stride = max(1, cover // 2)
+                self._window_levels.append(
+                    (cover, stride, cover + stride - 1))
+                if cover >= p_max:
+                    break
+                cover *= 2
+
         remaining_cap = max(corpus_cap - len(template_texts), 0)
         sampled_texts, n_scanned = _reservoir_sample_jokes(
             corpus_path, cap=remaining_cap, seed=sample_seed)
@@ -505,6 +670,79 @@ class SemanticNoveltyPenalty:
             self._template_embeddings if reference == "templates"
             else self._corpus_embeddings)
 
+    def _window_texts(self, text: str) -> List[str]:
+        """Sliding-window texts for one completion, per the class
+        docstring's ladder: for each (cover, stride, width) level,
+        BOUNDARY-tokenizer-token windows starting at 0, stride,
+        2*stride, ... plus a tail window ending at the last token (the
+        covering lemma's right-edge case). Duplicate window texts
+        (adversarial repetition) and degenerate windows (empty
+        `_normalize` token set, e.g. all-emoji padding) are skipped
+        WITHOUT consuming window budget. Budget: `max_windows` split
+        evenly across levels, keeping each level's earliest windows --
+        when it binds, a one-time RuntimeWarning names the
+        coverage-frontier security implication (see class docstring).
+
+        2026-07-17 audit BLOCKER fix, same class of bug as
+        `env.rewards.CorpusNoveltyPenalty`'s windowed tier (lower
+        severity here -- this tier is approximate cosine similarity, not
+        exact matching, so a misaligned window edge degrades gracefully
+        rather than fully evading -- but the SAME fix applies): window
+        POSITIONS now come from `_window_token_spans` (shared with
+        `env.rewards`), which treats punctuation, whitespace, AND
+        zero-width/format characters as token SEPARATORS, so padding
+        glued to a memorized template by "." or a zero-width character
+        (with no whitespace at all) no longer fuses the template's edge
+        word into the padding's edge word the way plain `text.split()`
+        did. Window CONTENT is still SLICED FROM THE ORIGINAL `text`
+        (`text[start:end]`), never reconstructed by joining stripped
+        boundary-tokens -- exactly like `CorpusNoveltyPenalty`'s fix,
+        and for the same reason: a template's own internal punctuation
+        (e.g. "don't") is itself a boundary character under this
+        tokenizer, so slicing preserves it intact for the embedder to
+        see, while joining stripped tokens would not ("don" + " " + "t"
+        != "don't")."""
+        spans = _window_token_spans(text)
+        n = len(spans)
+        if not self._window_levels:
+            return []
+        budget = max(1, self.max_windows // len(self._window_levels))
+        out: List[str] = []
+        seen = set()
+        capped = False
+        for _cover, stride, width in self._window_levels:
+            if n <= width:
+                continue  # whole text (always embedded) covers this level
+            starts = list(range(0, n - width + 1, stride))
+            if starts[-1] != n - width:
+                starts.append(n - width)  # tail window: covering lemma's
+                                          # right-edge case
+            emitted = 0
+            for s in starts:
+                if emitted >= budget:
+                    capped = True
+                    break
+                win = text[spans[s][0]:spans[s + width - 1][1]]
+                if win in seen or not _normalize(win):
+                    continue
+                seen.add(win)
+                out.append(win)
+                emitted += 1
+        if capped and not self._cap_warned:
+            warnings.warn(
+                "semantic_novelty_penalty: windowed mode hit max_windows"
+                "=%d on a %d-token completion -- window coverage is now a "
+                "PREFIX of the completion per ladder level, and a "
+                "memorized span pushed past every level's frontier evades "
+                "the window tier (whole-text scoring still applies). "
+                "Completions this long are degenerate under the rest of "
+                "the stack, but do not ignore this in a real training "
+                "run: raise max_windows or investigate what the policy "
+                "is emitting. This warning fires once per instance." %
+                (self.max_windows, n), RuntimeWarning, stacklevel=3)
+            self._cap_warned = True
+        return out
+
     def __call__(self, prompts, completions, **kwargs) -> List[float]:
         texts = _contents(completions)
         rewards = [0.0] * len(texts)
@@ -520,6 +758,25 @@ class SemanticNoveltyPenalty:
             return rewards
 
         import numpy as np
+
+        if self.windowed:
+            # Windowed mode: ONE embed_fn call per completion -- the
+            # whole text first (so windowed scores are always >= the
+            # shipped whole-text score), then every window. Severity is
+            # the max over all of them, ramped exactly like the shipped
+            # path below.
+            for orig_i in non_degenerate_idx:
+                text = texts[orig_i]
+                candidates = [text] + self._window_texts(text)
+                embeddings = np.asarray(self._embed(candidates))
+                score = float(
+                    (embeddings @ self._reference_embeddings.T).max())
+                if score <= self.threshold:
+                    continue
+                severity = (score - self.threshold) / (1.0 - self.threshold)
+                rewards[orig_i] = self.weight * severity
+            return rewards
+
         query_texts = [texts[i] for i in non_degenerate_idx]
         query_embeddings = np.asarray(self._embed(query_texts))
         # (n_query, dim) @ (dim, n_reference) -> (n_query, n_reference);

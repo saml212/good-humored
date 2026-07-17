@@ -69,11 +69,13 @@ than merging into this file.
 """
 
 import re
+import string
+import unicodedata
 import warnings
 from collections import deque
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Callable, Dict, List, Optional, Union
+from typing import Any, Callable, List, Optional, Tuple, Union
 
 from benchmark.joke_novelty import (load_corpus_hashes, load_templates, norm,
                                     trigram_jaccard, trigrams)
@@ -116,6 +118,108 @@ def _jaccard(a: set, b: set) -> float:
     if not a or not b:
         return 0.0
     return len(a & b) / len(a | b)
+
+
+def _is_window_boundary_char(ch: str) -> bool:
+    """A single character that acts as a token SEPARATOR when deriving
+    window POSITIONS for `CorpusNoveltyPenalty`'s windowed tier (and
+    reused by `env.semantic_novelty`'s own window tier -- see that
+    module's `_window_texts`). This is intentionally broader than what
+    `norm()` treats as a separator: whitespace (any `str.isspace()`
+    character, including newline/tab) and every `string.punctuation`
+    character are boundaries here too, PLUS four Unicode general
+    categories that cover the zero-width/invisible/glyph-invisible join
+    characters `norm()` neither deletes nor splits on:
+
+      - 'Cf' ("Format") -- the zero-width/invisible join characters
+        (U+200B ZERO WIDTH SPACE, U+200C, U+200D, U+FEFF, U+2060 WORD
+        JOINER, U+00AD SOFT HYPHEN, ...) that are neither whitespace by
+        `str.isspace()` NOR in `string.punctuation` (the 2026-07-17
+        audit's exact U+200B reproduction).
+      - 'Mn' ("Mark, nonspacing") and 'Me' ("Mark, enclosing") -- the
+        combining/enclosing marks that render glued directly onto the
+        PRECEDING character with zero visible width of their own (the
+        Zalgo-text family: U+0301 COMBINING ACUTE ACCENT, U+20E0
+        COMBINING ENCLOSING CIRCLE BACKSLASH, ...). Same evasion shape as
+        'Cf': a combining mark placed at a padding/joke seam is invisible
+        to both `isspace()` and `string.punctuation`, so without this
+        category it silently glues the joke's edge token to the
+        padding's edge token exactly like an unhandled zero-width
+        character did (2026-07-18 audit BLOCKER: a bare U+0301 at the
+        seam of a verbatim, non-template corpus joke scored reward 0.0 --
+        full evasion of the windowed exact-hash tier, before this fix).
+      - 'Cc' ("Control") -- ASCII/Latin-1 control characters (U+0007 BEL,
+        U+0000 NUL, ...) that are likewise neither whitespace nor
+        punctuation and were the same class of invisible seam.
+
+    ('Mc', "Mark, spacing combining" -- e.g. Devanagari vowel signs --
+    is deliberately NOT included: those marks occupy real visual width
+    and behave like ordinary word characters for this purpose, not like
+    an invisible join.)"""
+    return (ch.isspace() or ch in string.punctuation
+            or unicodedata.category(ch) in ("Cf", "Mn", "Me", "Cc"))
+
+
+def _window_token_spans(text: str) -> List[Tuple[int, int]]:
+    """Boundary-tokenize `text` for WINDOW-DERIVATION only: returns
+    `(start, end)` CHARACTER-OFFSET spans into `text` (unmodified) of
+    maximal runs of non-boundary characters (see
+    `_is_window_boundary_char`). Deliberately NOT a replacement for
+    `norm()` and NOT used for the actual hash/trigram COMPARISON -- see
+    `CorpusNoveltyPenalty`'s docstring's "window-derivation vs
+    comparison space" note, and `_windowed_best` below, for how the two
+    stay consistent.
+
+    THE BUG THIS CLOSES: `norm()` DELETES punctuation (`str.translate`
+    with a deletion table) instead of treating it as a separator. Given
+    whitespace-separated padding that's harmless (norm() still splits on
+    the surrounding whitespace), but padding joined to a memorized joke
+    by punctuation alone (or a zero-width character, which `norm()`
+    doesn't touch AT ALL) FUSES the last padding word to the joke's
+    first word (or vice-versa) into one bogus token -- silently changing
+    both the embedded joke's normalized token count (breaking exact-hash
+    window-size alignment) and its trigram set (breaking trigram
+    windows) with no cap-boundary or threshold involved: a full,
+    silent bypass. This function restores a real word boundary at every
+    punctuation/whitespace/zero-width character while leaving `norm()`
+    itself untouched (it still backs every whole-text hash/trigram
+    comparison elsewhere, including the benchmark pipeline's hash-locked
+    expectations).
+
+    Returns SPANS, not token strings, so callers can slice the ORIGINAL
+    text (`text[start:end]`) -- required for correctness, not a style
+    choice: a token's own INTERNAL punctuation (an apostrophe in a
+    contraction like "don't", a hyphen in a compound word) is itself a
+    boundary character under this function, so a single template
+    containing one is split into more than one boundary-token here (e.g.
+    "don't" -> "don", "t") even though `norm()` fuses it into ONE token
+    ("dont") -- this project's own fixture template ("Why don't
+    scientists trust atoms?...") is exactly this case: 11
+    boundary-tokens here vs. 10 `norm()`-tokens. Slicing the ORIGINAL
+    text across a whole matched WINDOW (not each boundary-token
+    individually) and re-running the UNCHANGED `norm()` over that slice
+    reconstitutes the fused form exactly, because the apostrophe is
+    still physically present in the slice -- round-tripping to
+    bit-identical output vs. `norm()` applied to the bare template/joke
+    text. Reconstructing window text by lower-casing and space-joining
+    the boundary-tokens themselves (discarding the original characters)
+    would NOT round-trip this way (`"don" + " " + "t" != "dont"`) and
+    would silently stop matching any memorized text containing internal
+    punctuation -- this is why `_windowed_best` slices `text` directly
+    rather than joining tokens from this function's spans.
+    """
+    spans: List[Tuple[int, int]] = []
+    start: Optional[int] = None
+    for i, ch in enumerate(text):
+        if _is_window_boundary_char(ch):
+            if start is not None:
+                spans.append((start, i))
+                start = None
+        elif start is None:
+            start = i
+    if start is not None:
+        spans.append((start, len(text)))
+    return spans
 
 
 def _completion_text(completion) -> str:
@@ -362,19 +466,195 @@ class CorpusNoveltyPenalty:
     that embedding tier, validated at 100% paraphrase detection /
     FPR<=0.05 -- opt in via `RewardConfig.semantic_novelty_weight`.)
 
-    KNOWN, UNFIXED LIMITATION #2 -- PADDING/DILUTION (2026-07-17
-    adversarial audit, empirically confirmed): prepending ~5 repetitions
-    of a generic filler sentence to a VERBATIM memorized joke defeats
-    BOTH tiers of this term at once -- the exact-hash tier because the
-    normalized hash no longer matches, and the trigram tier because
-    boilerplate trigrams dilute Jaccard below `threshold`. The
-    semantic tier (`SemanticNoveltyPenalty`) falls to the same trick at
-    ~20 repetitions. A policy can therefore emit a memorized joke
-    verbatim inside a few hundred words of boilerplate and pay zero
-    novelty penalty from every tier. See `env/semantic_novelty.py`'s
-    module docstring for the full numbers and the mitigation direction
-    (max-over-sliding-windows scoring); until that lands, novelty terms
-    must not be the sole anti-memorization defense in a training run.
+    PADDING/DILUTION -- CLOSED for this term (2026-07-17; was "KNOWN,
+    UNFIXED LIMITATION #2"). The exploit, kept on record: prepending ~5
+    repetitions of a generic filler sentence to a VERBATIM memorized joke
+    used to defeat BOTH tiers at once -- the exact-hash tier because the
+    whole text's normalized hash no longer matched, and the trigram tier
+    because boilerplate trigrams diluted whole-text Jaccard below
+    `threshold`. Fixed by max-over-sliding-windows scoring, ON BY DEFAULT
+    (`windowed=True`): both tiers are additionally scored over sliding
+    token windows of the completion and the MAX severity over {whole
+    text} ∪ {windows} is taken -- dilution cannot lower the max over a
+    window that contains the memorized text.
+
+    Windowed design + the no-miss guarantee, TWO SEPARATE SPACES (2026-
+    07-17 BLOCKER FIX -- see "PADDING/DILUTION, ROUND 2" below for what
+    was wrong and why): window POSITIONS are derived in a
+    boundary-tokenizer's token space (`_window_token_spans`), but window
+    CONTENT is always the ORIGINAL text re-sliced and pushed back
+    through the UNCHANGED `norm()` before any hash/trigram comparison --
+    so comparisons still land in exactly the same normalized space the
+    corpus's own hashes/trigram sets were built in.
+
+      - Window sizes: for each template, its OWN boundary-tokenizer
+        length BL (see `_window_token_spans` -- NOT its `norm()`-token
+        length L; the two can differ, see below), sizes {BL ..
+        BL+`window_slack`} (slack is UPWARD-ONLY, default 2). Slack
+        below BL is deliberately NOT scanned: sub-template windows
+        systematically inflate Jaccard by trimming non-matching tokens
+        out of the union, which would silently convert the locked-in,
+        deliberately-preserved "2-word reskin evades" behavior (see
+        limitation #1 above -- that gap belongs to the SEMANTIC tier)
+        into an uncalibrated fuzzy detector. Upward slack tolerates a
+        few tokens INSERTED inside an embedded copy; W=BL is what the
+        guarantee needs.
+      - Stride: 1, always. GUARANTEE: `_window_token_spans` treats
+        punctuation, whitespace, AND zero-width/format characters
+        (Unicode category 'Cf' -- U+200B, U+200C, U+200D, U+FEFF,
+        U+2060, U+00AD, ...) all as separators (never deleted-in-place
+        the way `norm()` deletes punctuation), so a memorized joke
+        emitted verbatim amid ANY kind of padding -- whitespace-
+        separated, punctuation-glued, zero-width-glued, or even
+        directly concatenated with no separator character at all, AS
+        LONG AS the immediately-adjacent character on at least one side
+        is itself punctuation/whitespace/zero-width (padding text
+        ending in its own sentence-final "." glued straight to the next
+        word, say) -- occupies a CONTIGUOUS run of exactly BL
+        boundary-tokens inside the completion's boundary-token
+        sequence. With stride 1 and window size BL, some window's SPAN
+        exactly covers that run; slicing `text` at that span and
+        re-running the untouched `norm()` over the slice reconstitutes
+        BIT-IDENTICAL output to `norm()` applied to the bare
+        template/joke text (internal punctuation like a contraction's
+        apostrophe is still physically present in the slice, so it
+        re-fuses exactly as it would in the original) -- hash equality
+        or trigram-Jaccard 1.0 follows, and severity is
+        (1.0-t)/(1.0-t) = 1.0 regardless of how much padding surrounds
+        it or what characters join it. `_window_token_spans`'s own
+        docstring works through this round-trip in detail, including
+        why BL != L for a template containing internal punctuation
+        (this project's own fixture template, "Why don't scientists
+        trust atoms?...", is exactly this case: BL=11, L=10) and why
+        window CONTENT must be re-sliced from the original text rather
+        than reconstructed by joining stripped boundary-tokens.
+      - Cost: each candidate window is independently re-normalized (via
+        `norm()`) and re-trigrammed rather than incrementally slid --
+        O(window size) per window instead of the old scheme's O(1)
+        amortized slide, because a stable, single global `norm()`-token
+        stream is exactly the representation that let padding-glued
+        text fuse silently in the first place. Bounded by
+        `max_scan_tokens` and small window sizes (tens of tokens, not
+        thousands) in practice -- correctness over cleverness was the
+        explicit trade here.
+      - Exact-hash windows: every window (at the union of all
+        template-derived BL-based sizes) is re-sliced, `norm()`-hashed,
+        and checked against the corpus hash set PLUS the 25 templates'
+        own normalized hashes (templates are the highest-value verbatim
+        target and are not guaranteed to appear in jokes.jsonl) -- a
+        hit is severity 1.0.
+      - Cap: windows only scan the first `max_scan_tokens` (default
+        1024, retuned down from an original 4096 -- see the
+        constructor's comment and the PERF note below for why) boundary-
+        tokens, bounding reward-function latency. SECURITY IMPLICATION,
+        stated plainly: a memorized joke placed ENTIRELY beyond the cap
+        evades the window tiers. With defaults that requires >1024
+        tokens (~8-9x `ComprehensibilityReward`'s max_tokens band) of
+        padding first -- a completion the rest of the stack already
+        treats as degenerate -- and typical RL generation limits sit far
+        below it; the whole-text tiers still apply to the full, uncapped
+        text.
+
+    Default-ON justification (why this is safe for shipped scores on
+    non-adversarial inputs): the final severity is max(whole-text score,
+    window scores), so windowed mode can only ever be >= the shipped
+    score, and it exceeds it ONLY when (a) some window exactly
+    hash-matches a corpus joke or template -- i.e. the completion
+    literally contains a memorized joke verbatim, the exact behavior
+    this term exists to punish -- or (b) some window's trigram-Jaccard
+    against a template exceeds the whole text's, which requires a
+    locally-template-similar span whose similarity the surrounding text
+    was diluting away: the exploit mechanism itself, whether deployed
+    intentionally or not. Genuinely novel text does not share >35% of
+    exact word-trigrams with a memorized template inside an aligned
+    window by chance. For short completions (no window smaller than the
+    text) the window set degenerates to the whole text and scores are
+    bit-identical to shipped behavior -- locked in by
+    env/tests/test_rewards.py's windowed regression class.
+
+    PADDING/DILUTION, ROUND 2 -- FIXED (2026-07-17, adversarial-audit
+    BLOCKER, kept on record): the FIRST windowed fix above still derived
+    window POSITIONS by slicing `norm(text).split()` directly, and
+    `norm()` DELETES punctuation (a `str.translate` deletion table)
+    rather than treating it as a separator. Whitespace-separated padding
+    normalized cleanly (nothing to delete between words), but padding
+    joined to a memorized joke by punctuation alone -- "...filler.Why
+    don't..." -- silently FUSED the last padding word to the joke's
+    first word ("filler" + "Why" -> "fillerwhy" after lowercasing, one
+    bogus token) with no visible seam. Verified exploits: (1) a verbatim
+    NON-template corpus joke joined to padding by ".", "-", or a
+    zero-width character (U+200B is not even in `string.punctuation`, so
+    the old code neither deleted NOR split on it -- worse than the
+    ASCII-punctuation cases) scored reward 0.0 -- FULL evasion of the
+    windowed exact-hash tier, with no fallback (the trigram tier only
+    covers the 25 templates, not arbitrary corpus jokes); (2) for
+    templates, single-boundary fusion dropped a token from one edge of
+    the embedded copy (Jaccard (L-3)/(L-1) instead of 1.0), sandwich
+    fusion dropped a token from BOTH edges ((L-4)/L) -- weakening
+    severity well below 1.0 today, and a full bypass (Jaccard 0) is
+    reachable in principle for a short enough template. FIX:
+    `_window_token_spans` (see its own docstring) derives window
+    POSITIONS from a boundary tokenizer that treats punctuation,
+    whitespace, AND zero-width/format characters as separators, never
+    deletions -- closing all of the above -- while window CONTENT is
+    still re-sliced from the ORIGINAL text and re-normalized via the
+    UNCHANGED `norm()` before comparison, so the comparison space itself
+    never changed. See `env/tests/test_rewards.py`'s
+    `TestCorpusNoveltyPunctuationGluedPadding` for the exact
+    reproductions, now locked in as regression tests instead.
+
+    RESIDUAL RISKS windowing does NOT solve (stated so nobody reads
+    "closed" as "solved everything"): (1) a paraphrase/reskin embedded
+    in padding still evades exactly as far as the BARE paraphrase does
+    -- windowing makes scoring uniform w.r.t. padding, it does not see
+    past substituted words (limitation #1; the semantic tier's job);
+    (2) a memorized joke interleaved word-by-word with filler ("word1
+    blah word2 blah ...") has no contiguous normalized run, so no
+    window isolates it -- trigrams are broken by construction and this
+    tier cannot catch it (nor could any contiguous-window scheme);
+    (3) verbatim NON-template corpus jokes whose normalized length
+    falls outside every template-derived window size, when padded,
+    still evade the exact-hash window tier (they already evaded every
+    shipped tier when padded, so windowing is a strict improvement, but
+    full coverage would need a corpus-lengths hash index -- not built
+    tonight); (4) the `max_scan_tokens` cap boundary above; (5) TRUE
+    zero-separator concatenation -- the padding's OWN last character
+    AND the joke's own first character are BOTH plain word characters
+    with nothing (no punctuation, no whitespace, no zero-width
+    character) between them at all (an attacker who deliberately avoids
+    ending padding in sentence-final punctuation before splicing in the
+    joke) -- is indistinguishable at the character level from a single
+    fused word, and no separator-based tokenizer, this one included, can
+    recover a boundary that was never physically there. This is a
+    fundamental limit of any boundary/separator scheme, not specific to
+    this fix; genuinely closing it would need a different mechanism
+    entirely (e.g. a suffix-array / substring-index scan over the
+    corpus, not attempted here).
+
+    PERF (2026-07-18 audit MAJOR, acknowledged and sized -- NOT
+    redesigned; correctness over cleverness was the explicit trade the
+    windowed rewrite made, see "Cost" above, and this note is that trade
+    made honest with numbers rather than left as an unquantified
+    docstring claim): per-window re-normalization is measured
+    ~12x slower at the cap than the old incremental-slide scheme it
+    replaced. On the audit machine, one completion's windowed
+    `CorpusNoveltyPenalty.__call__` costs approximately:
+
+        max_scan_tokens=256   ->   67ms
+        max_scan_tokens=1024  ->  297ms
+        max_scan_tokens=4096  -> 1175ms   (vs. ~93ms for the old,
+                                            non-windowed incremental
+                                            slide at the same cap)
+
+    TRAINING-LOOP IMPLICATION: this cost is per-completion, and GRPO
+    scores every completion in a batch through every reward term each
+    step. A batch of completions clustered near the cap adds this cost
+    times batch size to reward computation alone -- easily minutes per
+    step for a batch in the tens-to-hundreds of near-cap completions,
+    on top of whatever the policy forward/backward pass already costs.
+    This is why `max_scan_tokens`'s default was retuned down (see the
+    constructor) rather than left at the value chosen under the old,
+    ~12x-cheaper cost model.
 
     ALSO NOTE (convention divergence, intentionally NOT patched):
     `benchmark/joke_novelty.py`'s `trigram_jaccard()` returns 0.0 for a
@@ -393,7 +673,25 @@ class CorpusNoveltyPenalty:
     __name__ = "corpus_novelty_penalty"
 
     def __init__(self, corpus_dir: Optional[Union[str, Path]],
-                weight: float = -1.5, threshold: float = 0.35, n: int = 3):
+                weight: float = -1.5, threshold: float = 0.35, n: int = 3,
+                windowed: bool = True, window_slack: int = 2,
+                # Retuned 2026-07-18 (audit MAJOR) from an original 4096
+                # down to 1024. The old 4096 default was chosen under the
+                # OLD, incremental-slide cost model (~93ms @ 4096 -- see
+                # the class docstring's PERF note); the windowed re-norm
+                # rewrite costs ~1175ms @ 4096 on the audit machine, an
+                # ~12x regression that is a real training-loop cost at
+                # GRPO batch scale, not a one-off. 1024 boundary-tokens is
+                # ~8-9x `ComprehensibilityReward`'s default max_tokens=120
+                # band -- a completion that runs a memorized joke past
+                # that point is already deep in filler the rest of the
+                # stack treats as degenerate, so the cap-evasion tradeoff
+                # documented above (a joke placed entirely beyond the cap
+                # evades the window tiers) is unchanged in kind, just
+                # smaller in the token count it requires. Override
+                # explicitly if a specific deployment's completions
+                # legitimately run longer than this.
+                max_scan_tokens: int = 1024):
         if corpus_dir is None:
             raise ValueError(
                 "corpus_novelty_penalty: corpus_dir is required (got None). "
@@ -424,6 +722,85 @@ class CorpusNoveltyPenalty:
         self.weight = weight
         self.threshold = threshold
         self.n = n
+        self.windowed = windowed
+        self.window_slack = window_slack
+        self.max_scan_tokens = max_scan_tokens
+
+        # Windowed-tier precomputation (cheap, done unconditionally so
+        # flipping `windowed` post-construction is coherent):
+        #   _tmpl_specs: (trigram set, BOUNDARY-tokenizer token length
+        #     BL) per template -- the per-template window-size anchor.
+        #     BL, not the `norm()`-token length L, because window
+        #     POSITIONS are scanned in `_window_token_spans`'s boundary-
+        #     token space (see that function's docstring for why BL can
+        #     differ from L -- e.g. this project's own fixture template
+        #     has BL=11, L=10, from "don't"'s internal apostrophe).
+        #   _hash_window_sizes: union of every template-derived size
+        #     range {BL .. BL+slack} -- the sizes the exact-hash window
+        #     scan checks.
+        #   _window_hashes: corpus hashes PLUS each template's own
+        #     normalized (`norm()`-based, unchanged) hash (see docstring
+        #     -- templates are the highest-value verbatim target and
+        #     aren't guaranteed to be rows of jokes.jsonl; whole-text
+        #     tier is NOT changed to include them, only the window
+        #     scan).
+        self._tmpl_specs = []
+        self._window_hashes = set(self.corpus_hashes)
+        sizes = set()
+        for t in self.templates:
+            tmpl_norm = norm(t["text"])
+            boundary_len = len(_window_token_spans(t["text"]))
+            if boundary_len == 0:
+                continue
+            self._tmpl_specs.append((t["_trigrams"], boundary_len))
+            self._window_hashes.add(hash(tmpl_norm))
+            for w in range(boundary_len, boundary_len + window_slack + 1):
+                sizes.add(w)
+        self._hash_window_sizes = sorted(sizes)
+
+    def _windowed_best(self, text: str) -> float:
+        """Max similarity-equivalent over sliding windows of `text`: 1.0
+        for an exact-hash window hit (window text is a memorized corpus
+        joke or template verbatim), else the max window trigram-Jaccard
+        against any template. See the class docstring's "Windowed
+        design" / "PADDING/DILUTION, ROUND 2" sections for the full
+        design: window POSITIONS come from `_window_token_spans`'s
+        boundary tokenizer (punctuation/whitespace/zero-width all
+        separators), but window CONTENT is always a slice of the
+        ORIGINAL `text` re-normalized via the unchanged `norm()` before
+        hashing/trigramming -- so the comparison space is bit-identical
+        to the corpus's own `norm()`-based hashes/trigram sets
+        regardless of what padding-join character (if any) surrounds a
+        memorized span in the completion."""
+        spans = _window_token_spans(text)[:self.max_scan_tokens]
+        n_tok = len(spans)
+        if n_tok == 0:
+            return 0.0
+
+        for w in self._hash_window_sizes:
+            if w > n_tok:
+                break  # sizes are sorted ascending
+            for s in range(n_tok - w + 1):
+                window_text = text[spans[s][0]:spans[s + w - 1][1]]
+                if hash(norm(window_text)) in self._window_hashes:
+                    return 1.0
+
+        best = 0.0
+        for tmpl_trigrams, boundary_len in self._tmpl_specs:
+            if not tmpl_trigrams:
+                continue  # <3-token template: trigram tier can't see it
+                          # (same as shipped whole-text trigram_jaccard)
+            for w in range(boundary_len, boundary_len + self.window_slack + 1):
+                if w > n_tok:
+                    break
+                for s in range(n_tok - w + 1):
+                    window_text = text[spans[s][0]:spans[s + w - 1][1]]
+                    sim = trigram_jaccard(trigrams(window_text), tmpl_trigrams)
+                    if sim > best:
+                        best = sim
+                        if best >= 1.0:
+                            return 1.0
+        return best
 
     def __call__(self, prompts, completions, **kwargs) -> List[float]:
         rewards = []
@@ -437,6 +814,13 @@ class CorpusNoveltyPenalty:
                 sim = trigram_jaccard(jt, t["_trigrams"])
                 if sim > best:
                     best = sim
+            # Windowed tier: max over {whole text} ∪ {windows} -- can
+            # only raise `best`, never lower it, so shipped whole-text
+            # behavior is a floor (see docstring's default-ON note).
+            if self.windowed and best < 1.0:
+                win_best = self._windowed_best(text)
+                if win_best > best:
+                    best = win_best
             if best <= self.threshold:
                 rewards.append(0.0)
             else:

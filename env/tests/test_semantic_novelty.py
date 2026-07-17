@@ -15,7 +15,8 @@ from unittest import mock
 
 import env.semantic_novelty as sn
 from benchmark.joke_novelty import load_templates
-from env.rewards import RewardConfig, combined_reward, reward_stack
+from env.rewards import (RewardConfig, _normalize, combined_reward,
+                         reward_stack)
 from env.semantic_novelty import (SemanticNoveltyPenalty,
                                   SemanticNoveltyUnavailable,
                                   _reservoir_sample_jokes)
@@ -351,6 +352,247 @@ class TestReferenceModeSelection(unittest.TestCase):
                           reference="templates")
         [reward] = term(prompts=[None], completions=["template match"])
         self.assertLess(reward, 0.0)
+
+
+def _make_dilution_embed_fn(joke_vocab, log=None):
+    """Fake embedder that MODELS MEAN-POOLING DILUTION -- the exact
+    mechanism the 2026-07-17 audit exploited -- instead of exact-text
+    lookup: embeds any text as the unit vector of (a, b) where `a` =
+    token count from `joke_vocab` and `b` = every other token. A text
+    that is all joke-vocab embeds at (1, 0) (so the fixture template is
+    its own reference axis), pure filler embeds at (0, 1), and a mix
+    lands in between exactly the way filler dilutes a mean-pooled
+    embedding: 20 reps of 6-token filler around a 10-token joke gives
+    cosine 10/sqrt(10^2 + 120^2) ~= 0.083 vs the template axis --
+    below DEFAULT_THRESHOLD, reproducing the audited whole-text evasion
+    hand-computably. `log`, if supplied, is a list that records every
+    batch of texts passed to the embedder (call counting + degenerate-
+    window assertions)."""
+    def _embed(texts):
+        if log is not None:
+            log.append(list(texts))
+        out = []
+        for t in texts:
+            toks = _normalize(t)
+            a = sum(1 for tok in toks if tok in joke_vocab)
+            b = len(toks) - a
+            n = (a * a + b * b) ** 0.5
+            out.append((a / n, b / n) if n else (0.0, 0.0))
+        return out
+    return _embed
+
+
+class TestWindowedSemanticDilution(unittest.TestCase):
+    """The 2026-07-17 padding/dilution exploit against THIS tier, as
+    regression tests: ~20 repetitions of filler around a verbatim
+    template dilutes the whole-text mean-pooled embedding below
+    DEFAULT_THRESHOLD (audited against the real model; reproduced here
+    via `_make_dilution_embed_fn`, which models the same mechanism).
+    `windowed=True` (opt-in, default OFF pending EXP-011 -- see module
+    docstring) must catch it: some ladder window fully contains the
+    embedded span with bounded in-window filler, and dilution cannot
+    lower the max over windows.
+
+    Fixture geometry, hand-derivable throughout: the fixture template
+    ("Why don't scientists trust atoms? Because they make up
+    everything.") is 11 BOUNDARY-tokens (not 10 whitespace words --
+    "don't"'s internal apostrophe is itself a boundary character under
+    `_window_token_spans`, see that function's docstring and the
+    2026-07-17 audit BLOCKER fix note on the class docstring), so the
+    ladder is [(11, 5, 15), (19, 9, 27)] (cover, stride, width) with
+    window_growth=8 -- asserted below so every hand computation is
+    guarded, not guessed. The content-based hand computations below
+    (cosine similarity, filler-vs-template token split) are UNCHANGED
+    from before this fix: window CONTENT is sliced from the original
+    text and still contains "don't" intact, so `_normalize` (which,
+    unlike `_window_token_spans`, keeps a contraction as ONE token) still
+    counts exactly 10 template words in the captured span -- only the
+    ladder's own units (boundary-tokens, not whitespace-tokens) changed."""
+
+    FILLER = "here is some filler text padding"  # 6 tokens, none in the
+                                                 # template's vocabulary
+
+    @classmethod
+    def setUpClass(cls):
+        [tmpl] = load_templates(FIXTURE_CORPUS_DIR)
+        cls.TEMPLATE = tmpl["text"]  # re-derived, not hand-copied
+
+    def _term(self, log=None, **kwargs):
+        vocab = set(_normalize(self.TEMPLATE))
+        return SemanticNoveltyPenalty(
+            corpus_dir=FIXTURE_CORPUS_DIR,
+            embed_fn=_make_dilution_embed_fn(vocab, log=log), **kwargs)
+
+    def _exploit(self, reps=20):
+        return (self.FILLER + " ") * reps + self.TEMPLATE
+
+    def test_windowed_is_opt_in_and_default_off(self):
+        # The shipped, EXP-009-validated whole-text behavior must remain
+        # the default until EXP-011 re-validates the threshold for
+        # windowed scoring (see module docstring).
+        self.assertFalse(self._term().windowed)
+        self.assertTrue(self._term(windowed=True).windowed)
+
+    def test_window_ladder_matches_hand_derivation(self):
+        term = self._term(windowed=True)
+        self.assertEqual(term._window_levels, [(11, 5, 15), (19, 9, 27)])
+
+    def test_exploit_reproduced_whole_text_dilution_evades_default_mode(self):
+        # The auditor's reproduction: 20 filler reps + verbatim template
+        # scores cosine 10/sqrt(100 + 120^2) ~= 0.083 < 0.38 whole-text
+        # -> zero penalty in (default) non-windowed mode.
+        term = self._term()
+        [reward] = term(prompts=[None], completions=[self._exploit(reps=20)])
+        self.assertEqual(reward, 0.0)
+
+    def test_windowed_catches_twenty_rep_dilution_hand_computed(self):
+        # The fix under test. Best window: the level-0 tail window
+        # (width 15 BOUNDARY-tokens, ending at the last token) = 4
+        # filler boundary-tokens + all 11 of the template's own
+        # boundary-tokens ("don't" -> "don", "t"). Sliced from the
+        # ORIGINAL text and re-`_normalize`d for this hand computation,
+        # "don't" is intact again -- 4 filler + all 10 template WORDS ->
+        # cosine 10/sqrt(10^2 + 4^2) = 10/sqrt(116) ~= 0.928, far above
+        # threshold despite 92% whole-text dilution, UNCHANGED by this
+        # fix (only the ladder's own units changed -- see class
+        # docstring).
+        term = self._term(windowed=True)
+        [reward] = term(prompts=[None], completions=[self._exploit(reps=20)])
+        sim = 10.0 / (116.0 ** 0.5)
+        expected = -1.5 * (sim - sn.DEFAULT_THRESHOLD) / (1.0 - sn.DEFAULT_THRESHOLD)
+        self.assertAlmostEqual(reward, expected, places=6)
+        self.assertLess(reward, -1.0)  # not a borderline catch
+
+    def test_more_padding_does_not_weaken_the_windowed_catch(self):
+        # Dilution's whole premise was "more filler -> less penalty".
+        # Max-over-windows must be invariant to extra padding (until the
+        # cap frontier): 60 reps must score exactly what 20 reps does.
+        term = self._term(windowed=True)
+        rewards = term(prompts=[None, None],
+                       completions=[self._exploit(reps=20),
+                                    self._exploit(reps=60)])
+        self.assertAlmostEqual(rewards[0], rewards[1], places=6)
+
+    def test_punctuation_glued_padding_scores_identically_to_spaced(self):
+        # 2026-07-17 audit BLOCKER fix, same class as
+        # env.rewards.CorpusNoveltyPenalty's: padding joined to the
+        # template with NO whitespace at all (only a ".", one per rep,
+        # directly glued) used to fuse the last filler word into the
+        # template's first word under plain `text.split()` windowing.
+        # Boundary-tokenized windowing (`_window_token_spans`) must
+        # score this IDENTICALLY to the whitespace-joined exploit --
+        # scoring is now invariant to the padding join character, not
+        # just to how much padding there is.
+        term = self._term(windowed=True)
+        glued = (self.FILLER + ".") * 20 + self.TEMPLATE
+        spaced = self._exploit(reps=20)
+        rewards = term(prompts=[None, None], completions=[glued, spaced])
+        self.assertAlmostEqual(rewards[0], rewards[1], places=6)
+        self.assertLess(rewards[0], -1.0)  # not a borderline catch
+
+    def test_one_embed_call_per_completion_when_windowed(self):
+        # Performance contract: windowed mode batches ALL of a
+        # completion's windows (plus the whole text) into ONE embed_fn
+        # call -- never one call per window -- and degenerate
+        # completions are skipped without any call at all.
+        log = []
+        term = self._term(log=log, windowed=True)
+        n_construction = len(log)
+        term(prompts=[None] * 3,
+             completions=[self._exploit(reps=20), "a short novel quip", ""])
+        scoring_calls = log[n_construction:]
+        self.assertEqual(len(scoring_calls), 2)  # 2 non-degenerate only
+        # First candidate of each call is the whole completion text
+        # (windowed scores are always >= the shipped whole-text score).
+        self.assertEqual(scoring_calls[0][0], self._exploit(reps=20))
+        self.assertEqual(scoring_calls[1][0], "a short novel quip")
+
+    def test_non_windowed_default_keeps_single_batch_call(self):
+        # The shipped path's one-call-per-BATCH shape must be untouched
+        # by this feature (it is the validated EXP-009 behavior).
+        log = []
+        term = self._term(log=log)
+        n_construction = len(log)
+        term(prompts=[None, None],
+             completions=["a short novel quip", "another novel line"])
+        self.assertEqual(len(log) - n_construction, 1)
+
+    def test_genuinely_novel_long_completion_not_newly_penalized(self):
+        # False-positive guard: 130 words of non-template vocabulary --
+        # every window embeds at (0, 1), orthogonal to the template axis
+        # -- must score 0.0 in BOTH modes. Windowing must not turn
+        # length into a penalty.
+        novel = ("the lighthouse keeper counted seagulls while coffee "
+                "went cold on the railing nobody believed his tally ") * 8
+        on = self._term(windowed=True)
+        off = self._term()
+        [r_on] = on(prompts=[None], completions=[novel])
+        [r_off] = off(prompts=[None], completions=[novel])
+        self.assertEqual(r_on, 0.0)
+        self.assertEqual(r_on, r_off)
+
+    def test_short_completion_windowed_equals_non_windowed(self):
+        # A completion shorter than every window width degenerates to
+        # whole-text-only scoring -- windowed and non-windowed must be
+        # bit-identical (shipped-behavior preservation on the inputs
+        # this stack actually rewards).
+        text = "scientists trust weird tiny hats"  # 5 words < width 15
+        on = self._term(windowed=True)
+        off = self._term()
+        self.assertEqual(on(prompts=[None], completions=[text]),
+                         off(prompts=[None], completions=[text]))
+
+    def test_degenerate_windows_skipped_and_joke_amid_emoji_caught(self):
+        # Degenerate-WINDOW semantics (mirrors the degenerate-completion
+        # convention): emoji-only windows must be skipped before
+        # embedding -- never handed to embed_fn -- while windows that
+        # do contain the embedded template still catch it. 30 emoji
+        # tokens + the verbatim template: the level-0 tail window is 4
+        # emoji + 10 template words, whose _normalize drops the emoji
+        # entirely -> pure template -> cosine 1.0 -> full weight.
+        log = []
+        term = self._term(log=log, windowed=True)
+        n_construction = len(log)
+        exploit = ("😂 " * 30) + self.TEMPLATE
+        [reward] = term(prompts=[None], completions=[exploit])
+        self.assertEqual(reward, -1.5)
+        for batch in log[n_construction:]:
+            for text in batch:
+                self.assertTrue(_normalize(text),
+                                "degenerate window reached embed_fn: %r" % text)
+
+    def test_cap_frontier_evades_and_warns_once(self):
+        # The documented max_windows security implication, locked in as
+        # a test: with the cap squeezed to 4 (budget 2 per ladder
+        # level), coverage is a ~20-35-word prefix per level, so a
+        # template pushed 240 words deep sits past every frontier and
+        # the window tier cannot see it (whole-text is diluted -> 0.0).
+        # The cap must warn EXACTLY once per instance, not per call.
+        term = self._term(windowed=True, max_windows=4)
+        deep = self._exploit(reps=40)  # joke at words 240..249
+        with warnings.catch_warnings(record=True) as caught:
+            warnings.simplefilter("always")
+            [r1] = term(prompts=[None], completions=[deep])
+            [r2] = term(prompts=[None], completions=[deep])
+        self.assertEqual(r1, 0.0)  # evaded: past the coverage frontier
+        self.assertEqual(r2, 0.0)
+        cap_warnings = [w for w in caught
+                        if issubclass(w.category, RuntimeWarning)
+                        and "max_windows" in str(w.message)]
+        self.assertEqual(len(cap_warnings), 1)
+
+    def test_windowed_without_templates_raises(self):
+        # Windowed mode's ladder is anchored on template lengths -- a
+        # corpus with no templates (only reachable via
+        # reference="corpus") has no length anchor and must refuse
+        # loudly at construction, not silently score without windows.
+        with tempfile.TemporaryDirectory() as d:
+            with open(Path(d) / "jokes.jsonl", "w") as f:
+                f.write(json.dumps({"text": "a joke with no templates"}) + "\n")
+            with self.assertRaises(ValueError):
+                SemanticNoveltyPenalty(
+                    corpus_dir=d, embed_fn=_make_embed_fn({}, default=(1.0, 0.0)),
+                    reference="corpus", threshold=0.9, windowed=True)
 
 
 class TestDegradedMode(unittest.TestCase):

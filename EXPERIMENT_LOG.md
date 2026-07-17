@@ -916,3 +916,63 @@ promotion to authoritative instrument is BLOCKED on the haiku
 unparseable anomaly, not on coverage. Calibrations: all three closed
 (0.90/0.95 ✓sign, 1.00/0.94 ✓, 0.1723/0.17 ✓ near-exact). Data:
 experiment-runs/2026-07-17-v4-validation/.
+
+---
+
+## Windowed novelty tiers — dilution exploit closed (2026-07-17, 3-round adversarial cycle)
+
+**The exploit (from EXP-009's audit):** verbatim memorized joke + ~5
+filler repetitions evaded the n-gram tier entirely; ~20 evaded the
+semantic tier (mean-pool dilution). **The fix:** max-over-sliding-windows
+scoring. n-gram windowed mode is ON BY DEFAULT (max can only raise
+severity; shipped scores bit-identical on non-adversarial inputs —
+fuzzed 500 cases, 0 violations). Semantic windowed mode is OPT-IN,
+default OFF: the builder's own real-model check found the whole-text
+0.38 threshold is MISCALIBRATED for windows (novel long completions
+falsely penalized −0.42) — EXP-011 registered below.
+
+**Adversarial cycle (3 rounds, each finding real defects):**
+1. Round 1 killed the original "no-miss guarantee": norm() DELETES
+   punctuation, so punctuation-glued padding fused tokens
+   ("here.Why"→"herewhy") — full evasion via period/hyphen/U+200B/
+   concatenation. Every builder regression test had used space-joins.
+2. Fix: character-offset window spans (boundary = whitespace ∪
+   punctuation ∪ category Cf) + slice-original-text-then-renorm (the
+   internal-apostrophe round-trip case). Round 2 re-audit: original
+   table 9/10 at severity 1.0 — but found the boundary set INCOMPLETE:
+   combining marks (Mn — Zalgo family) gave full evasion again; also
+   sized a ~12× perf regression at the 4096-token scan cap.
+3. Final fix: boundary predicate → categories {Cf, Mn, Me, Cc} (Mc
+   deliberately excluded — spacing marks behave as word chars); 5 new
+   regression tests (U+0301, U+20E0, BEL, NBSP, U+3000 → all severity
+   1.0, all with windowed=False evasion controls); perf note with
+   measured numbers; max_scan_tokens retuned 4096→1024 under the new
+   cost model. Orchestrator-verified end-to-end (Mn-glued verbatim
+   corpus joke: −1.5 windowed / 0.0 control; 187/187 env tests).
+
+**Documented residuals (honest, not hidden):** (1) true zero-separator
+concatenation with no boundary char physically present is unrecoverable
+by any separator-based tokenizer (auditor judged acceptable-as-
+documented; the real fix is substring/suffix-index scanning, noted in
+docstring); (2) windowed semantic threshold awaits EXP-011; (3)
+paraphrase-interleaved-with-filler remains the semantic tier's job.
+
+**EXP-011 (registered, blocked on scheduling):** re-sweep the windowed
+semantic threshold — positives embedded in 0/5/20/50 filler reps,
+negatives EXPANDED with multi-sentence novel completions at lengths
+that straddle each window-ladder level (the auditor's refinement: short
+negatives never trigger windowing and would flatter the threshold).
+Bars: FPR ≤0.05 on the expanded set; verbatim+padded detection ≥95%;
+padding-invariance within 2pp between 5 and 50 reps; paraphrase
+detection not below EXP-009's whole-text operating point on unpadded
+inputs, else windowed ships as a dilution-only complement. Expected
+threshold ≈0.6 region (real-model spot-check), shipped as a separate
+WINDOWED_THRESHOLD constant.
+
+[LEARN] reward-hacking: Threshold calibration does not transfer across scoring granularities.
+Mistake: assumed the validated whole-text 0.38 semantic threshold would transfer to max-over-windows scoring of the same embeddings.
+Correction: detection transfers but the negative-class baseline shifts (short windows of novel text sit ~0.2 closer to short templates); every granularity change needs its own FPR sweep before its threshold is trusted.
+
+[LEARN] adversarial-audit: Text-normalization assumptions are attack surface — test the JOIN characters, not just the content.
+Mistake: the windowed no-miss "guarantee" was proven only for whitespace joins, and all its regression tests used space-joins; punctuation-deletion in norm() and then the Mn/Me Unicode gap each gave full silent evasion in successive rounds.
+Correction: any guarantee resting on tokenization must enumerate the boundary-character space (whitespace, punctuation, Cf/Mn/Me/Cc, digits, none) and carry a regression test per class, including explicit evasion-control assertions for the non-fixed cases.
