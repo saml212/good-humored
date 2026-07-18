@@ -1037,3 +1037,68 @@ conventional topic pool). Within-model mean 0.218. Incidence 10/12
 unchanged (kimi is neither Anthropic nor OpenAI). FINDINGS headline
 updated accordingly — the shared-pool hypothesis stays dead (0.119 vs
 predicted 0.35), it just dies by a less theatrical margin.
+
+---
+
+## EXP-012 — contained-kernel certification vs human consensus (2026-07-17 evening, pre-registered BEFORE run)
+
+**Design constraint this experiment serves (Sam, today):** the RL reward
+must be a CONTAINED KERNEL — model calls + pure computation, no humans at
+training time. Human judgment data is therefore used exactly once,
+offline, to CERTIFY the kernel's judged components. This experiment is
+that certification.
+
+**Hypothesis (one sentence):** The kernel's naked funniness judge
+(haiku, normalized) ranks Oogiri candidate responses in meaningful
+agreement with the ~100-human consensus ranking that already exists for
+each prompt.
+
+**Design:** sample N≈30 Oogiri prompts (each with ~100 candidates rated
+by ~100 independent judges — popularity-bias-free by construction; data
+via data_adapters/oogiri.py, research-only license flag, final license
+call still pending with Sam); score every candidate with the contained
+judge; per-prompt Spearman ρ vs human consensus; report mean ρ + CI +
+distribution. Call budget ≤ ~3,500 haiku calls.
+
+**Predictions (registered blind):** mean ρ ≈ **0.40**
+(exp-012-judge-certification; LLM-judge-vs-human-humor agreement runs
+moderate in the literature, and Oogiri's consensus is unusually clean).
+Floor: ρ ≤ 0.10 means the naked judge is useless as a kernel component
+→ kernel redesign blocks any GPU spend. This is a measurement, not a
+pass/fail bar — the number IS the certificate.
+
+**Follow-on (EXP-013/014, gates):** the BVT multiplicative gate and
+two-stage incongruity gate (THEORY-MAP §12 specs) are being implemented
+in parallel; once fixture-validated they re-run this certification. The
+registered comparison: theory-structured kernel vs naked judge on the
+SAME prompts — if structure beats vibes against human consensus, the
+central tenet becomes the empirically superior reward.
+
+Result: _(pending)_
+
+**EXP-012 registration correction (2026-07-17, BEFORE any result —
+audit-caught, recorded so the amendment provably precedes the data):**
+the registration above misdescribed the instrument. It cites the
+literature's Oogiri-Master shape (~100 candidates × ~100 independent
+judges, popularity-bias-free). The only adapter that exists is
+**Oogiri-GO**: ~6.3 candidates/prompt, consensus ranked on the `star`
+field — a popularity-type signal. The harness self-corrected loudly
+(its docstring + report.json `data_source` field state this); the
+registration did not, until now. Consequences, stated before the number
+arrives: (1) the "popularity-bias-free by construction" claim is
+RETRACTED for this run — that property belongs to Oogiri-Master, no
+adapter yet; (2) per-prompt ρ over ~6 candidates is far noisier than
+over ~100 — the mean over 30 prompts stands but its CI will be wide;
+(3) the registered prediction 0.40 was calibrated against the cleaner
+instrument's literature and STANDS AS REGISTERED (predictions don't
+move after registration; if it misses partly because the prior was set
+against the wrong instrument description, that miss is recorded like
+any other). Also recorded: mid-run, an audit process accidentally
+git-stashed the live run's output directory, orphaning the cache and
+raw-log inodes — the process survived and report.json writes fresh at
+completion, but the on-disk label_cache.jsonl is STALE for resume
+purposes and must not be trusted for cache hits on any re-run.
+
+[LEARN] registration-discipline: Verify the instrument's ACTUAL shape against the adapter before registering, not against the literature's description of a sibling dataset.
+Mistake: EXP-012's registration described Oogiri-Master's 100-judge panel while the only existing adapter loads Oogiri-GO (~6.3 star-ranked candidates/prompt) — the prediction was calibrated against an instrument we don't have.
+Correction: A registration must name the exact dataset+field the harness will consume (adapter, split, ranking field, per-prompt fanout), checked against the loader's code, before the prediction is registered.

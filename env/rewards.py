@@ -66,6 +66,19 @@ file's own import stays exactly as pure-stdlib as before for every caller
 that doesn't opt in. See `env/semantic_novelty.py`'s module docstring for
 why it lives apart (guarded `sentence_transformers`/`numpy` import) rather
 than merging into this file.
+
+Two MORE separate, optional modules exist for the same reason, both
+implementing `docs/THEORY-MAP.md` §12's registration-grade specs and both
+PRE-VALIDATION (EXP-013/EXP-014 have not run as of this writing):
+`env/bvt_gate.py`'s `BVTGateReward` (§12.1, Benign Violation Theory's
+violation*benign product gate, wired via `RewardConfig.bvt_gate_weight`)
+and `env/incongruity_gate.py`'s `TwoStageIncongruityGate` (§12.2, Suls's
+two-stage predict-then-diverge gate, wired via
+`RewardConfig.two_stage_incongruity_weight`). Both default to 0.0 (OFF)
+and are lazily imported by `reward_stack()` only when their weight is
+nonzero -- see that function's docstring for why `BVTGateReward` is
+lazily imported too despite having no ML dependency of its own (a
+circular-import hazard, not a missed simplification).
 """
 
 import re
@@ -270,6 +283,27 @@ class RewardConfig:
     if `sentence_transformers`/`numpy` aren't installed -- see that
     module for why that's a feature, not a bug.
 
+    `bvt_gate_weight` and `two_stage_incongruity_weight` are TWO MORE NEW,
+    OPTIONAL tiers (`env/bvt_gate.py`'s `BVTGateReward`,
+    `env/incongruity_gate.py`'s `TwoStageIncongruityGate` --
+    `docs/THEORY-MAP.md` §12.1/§12.2's registration-grade specs), both
+    defaulting to 0.0 -- OFF, same "zero behavior change for every
+    existing config" guarantee `semantic_novelty_weight` makes. Unlike
+    `semantic_novelty_weight`, BOTH are POSITIVE bonus terms (a genuine
+    dual appraisal / a genuine resolved surprise is something to reward,
+    not penalize) -- see `__post_init__`'s `_BONUS_FIELDS`. `bvt_gate_weight`
+    needs `violation_judge` and `benign_judge` BOTH set (either callable
+    shape identical to `judge` above); `two_stage_incongruity_weight`
+    needs `incongruity_predictor` set (`Callable[[str], str]`, NOT the
+    `judge` shape -- this term needs raw text generations, not a score)
+    and, like `semantic_novelty_weight`, an embedding backend (can raise
+    `SemanticNoveltyUnavailable`, reused from `env.semantic_novelty`, not
+    a new exception type). Neither weight's own recommended nonzero value
+    is registered yet -- both remain PRE-VALIDATION tiers (EXP-013/
+    EXP-014) as of this writing; see each module's docstring for the
+    pre-registered bars that must clear before either ships with a real
+    weight in a live run.
+
     `judge` and `joke_corpus_dir` are left `None` by default on purpose --
     both are must-inject dependencies (a live judge model; a real
     memorized-joke corpus), and `reward_stack()`/`combined_reward()` fail
@@ -285,11 +319,12 @@ class RewardConfig:
     memorization behavior this whole stack exists to suppress, and
     nothing about calling `reward_stack()` would surface that mistake
     short of reading a training run's completions. Symmetrically, a bonus
-    weight (`intra_group_diversity_weight`, `comprehensibility_weight`) or
-    `judge_weight` with a flipped (negative) sign silently rewards the
-    OPPOSITE of what it's meant to encourage. All five are checked at
-    construction time so a typo'd minus sign fails immediately and
-    loudly, not three hundred training steps in.
+    weight (`intra_group_diversity_weight`, `comprehensibility_weight`,
+    `bvt_gate_weight`, `two_stage_incongruity_weight`) or `judge_weight`
+    with a flipped (negative) sign silently rewards the OPPOSITE of what
+    it's meant to encourage. All eight (3 penalty + 4 bonus + judge_weight)
+    are checked at construction time so a typo'd minus sign fails
+    immediately and loudly, not three hundred training steps in.
     """
 
     # judge_preference
@@ -323,11 +358,31 @@ class RewardConfig:
     # Recommended weight when enabled: -1.5, mirroring corpus_novelty_weight.
     semantic_novelty_weight: float = 0.0
 
+    # bvt_gate_reward (OPTIONAL tier, OFF by default -- see
+    # env/bvt_gate.py and docs/THEORY-MAP.md §12.1). No ML dependency --
+    # pure judge calls, like `judge`/`judge_weight` above. Both judges
+    # must be set for this term to contribute anything (see
+    # BVTGateReward's own None-handling).
+    violation_judge: Optional[Callable[[Any, str], float]] = None
+    benign_judge: Optional[Callable[[Any, str], float]] = None
+    bvt_gate_weight: float = 0.0
+
+    # two_stage_incongruity_gate (OPTIONAL tier, OFF by default -- see
+    # env/incongruity_gate.py and docs/THEORY-MAP.md §12.2). Needs an
+    # embedding backend, like semantic_novelty_weight -- can raise
+    # SemanticNoveltyUnavailable at construction (reused exception type,
+    # not a new one -- see that module).
+    incongruity_predictor: Optional[Callable[[str], str]] = None
+    two_stage_incongruity_weight: float = 0.0
+    incongruity_surprise_threshold: float = 0.5
+    incongruity_drop_threshold: float = 0.15
+
     def __post_init__(self) -> None:
         _PENALTY_FIELDS = ("corpus_novelty_weight", "self_repetition_weight",
                           "semantic_novelty_weight")
         _BONUS_FIELDS = ("intra_group_diversity_weight",
-                        "comprehensibility_weight")
+                        "comprehensibility_weight", "bvt_gate_weight",
+                        "two_stage_incongruity_weight")
         for name in _PENALTY_FIELDS:
             value = getattr(self, name)
             if value > 0:
@@ -343,15 +398,34 @@ class RewardConfig:
             if value < 0:
                 raise ValueError(
                     "RewardConfig.%s must be >= 0 (got %r). This is a "
-                    "BONUS term (diversity/comprehensibility) -- a "
-                    "negative weight silently converts it into a penalty "
-                    "for exactly the behavior this stack is trying to "
-                    "encourage." % (name, value))
+                    "BONUS term (diversity/comprehensibility/bvt-gate/"
+                    "incongruity-gate) -- a negative weight silently "
+                    "converts it into a penalty for exactly the behavior "
+                    "this stack is trying to encourage." % (name, value))
         if self.judge_weight < 0:
             raise ValueError(
                 "RewardConfig.judge_weight must be >= 0 (got %r). A "
                 "negative judge weight silently rewards the policy for "
                 "being judged LESS funny." % self.judge_weight)
+        # Audit finding (2026-07-17): the incongruity thresholds are
+        # GATE parameters, not weights — a non-positive surprise
+        # threshold makes gate 1 trivially always-pass (any distance
+        # >= a negative number), and a non-positive drop threshold
+        # nearly always-passes gate 2, silently defeating the strict-AND
+        # design the gate's own docstring calls its most load-bearing
+        # constraint. Not reachable by RL pressure, only by operator
+        # misconfiguration during threshold sweeps (EXP-014) — which is
+        # exactly when a silent always-pass gate would poison a
+        # validation result.
+        for name in ("incongruity_surprise_threshold",
+                    "incongruity_drop_threshold"):
+            value = getattr(self, name)
+            if not value > 0:
+                raise ValueError(
+                    "RewardConfig.%s must be > 0 (got %r). A non-positive "
+                    "gate threshold makes the two-stage incongruity gate "
+                    "trivially always-pass, converting a strict AND gate "
+                    "into an unconditional bonus." % (name, value))
 
 
 # ------------------------------------------------------------ the terms
@@ -1077,8 +1151,11 @@ class ComprehensibilityReward:
 
 def reward_stack(config: RewardConfig) -> List[Callable[..., List[float]]]:
     """Build the reward terms as a LIST of separate TRL reward_funcs, each
-    already scaled by its configured weight. 5 terms by default; 6 if
-    `config.semantic_novelty_weight != 0.0` (see below).
+    already scaled by its configured weight. 5 terms by default; up to 8
+    if `config.semantic_novelty_weight`, `config.bvt_gate_weight`, and/or
+    `config.two_stage_incongruity_weight` are nonzero (see below) -- each
+    is an independent opt-in, so any subset of {5, 6, 7, 8} terms is
+    reachable depending on which weights are set.
 
     Pass this list to `GRPOTrainer(reward_funcs=...)` (rather than
     `combined_reward`'s single summed function) to keep every term
@@ -1103,6 +1180,29 @@ def reward_stack(config: RewardConfig) -> List[Callable[..., List[float]]]:
     `SemanticNoveltyUnavailable` if `sentence_transformers`/`numpy` aren't
     installed; that is deliberate (see that module's docstring), not a bug
     to work around by catching it here.
+
+    `config.bvt_gate_weight` and `config.two_stage_incongruity_weight`
+    (`docs/THEORY-MAP.md` §12.1/§12.2) follow the identical pattern:
+    default 0.0 (off, zero behavior/dependency-footprint change for every
+    existing config), each independently imported LAZILY here -- inside
+    this function body, not at this module's top level -- and appended
+    only when its own weight is nonzero. `env.bvt_gate` (pure judge calls,
+    zero ML deps) is lazily imported for the SAME reason
+    `env.semantic_novelty` is, not because it needs a guarded ML import
+    too: `env.bvt_gate` and `env.incongruity_gate` both import `_contents`
+    FROM this module at their own top level, so an unconditional
+    top-level import of either back INTO this module would be a genuine
+    circular import (this module -> env.bvt_gate -> this module). §12's
+    own prose describes BVTGateReward as needing "no lazy import" since
+    it has no heavy ML dependency to guard against -- true in isolation,
+    but importing it unconditionally at this module's top level would
+    still create that cycle, so it is lazily imported here anyway,
+    gated on `bvt_gate_weight != 0.0` exactly like the ML-dependent
+    terms. This is a deliberate, flagged deviation from that literal
+    phrasing (see `env/incongruity_gate.py`'s module docstring for the
+    fuller note), not a missed simplification -- it costs nothing, since
+    this function runs once per training-run setup, not once per
+    completion.
     """
     funcs = [
         JudgePreferenceReward(judge=config.judge, weight=config.judge_weight),
@@ -1128,14 +1228,29 @@ def reward_stack(config: RewardConfig) -> List[Callable[..., List[float]]]:
         funcs.append(SemanticNoveltyPenalty(
             corpus_dir=config.joke_corpus_dir,
             weight=config.semantic_novelty_weight))
+    if config.bvt_gate_weight != 0.0:
+        from env.bvt_gate import BVTGateReward  # lazy: see docstring (circular-import note)
+        funcs.append(BVTGateReward(
+            violation_judge=config.violation_judge,
+            benign_judge=config.benign_judge,
+            weight=config.bvt_gate_weight))
+    if config.two_stage_incongruity_weight != 0.0:
+        from env.incongruity_gate import TwoStageIncongruityGate  # lazy: see docstring
+        funcs.append(TwoStageIncongruityGate(
+            predictor=config.incongruity_predictor,
+            weight=config.two_stage_incongruity_weight,
+            surprise_threshold=config.incongruity_surprise_threshold,
+            drop_threshold=config.incongruity_drop_threshold))
     return funcs
 
 
 def combined_reward(config: RewardConfig) -> Callable[..., List[float]]:
-    """Build a SINGLE TRL-compatible reward function: the sum of all 5
-    weighted terms, one scalar per completion.
+    """Build a SINGLE TRL-compatible reward function: the sum of all
+    weighted terms `reward_stack()` builds (5 by default, up to 8 with
+    the optional tiers -- see that function's docstring), one scalar per
+    completion.
 
-    Convenient when you want one "reward" column rather than five, at the
+    Convenient when you want one "reward" column rather than several, at the
     direct cost of the per-term visibility `reward_stack()` preserves --
     prefer `reward_stack()` while actively debugging a run; `combined_reward`
     is fine once the stack is trusted, or for anything (e.g. `cascade_env.py`

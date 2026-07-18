@@ -77,6 +77,18 @@ class TestRewardConfigSignGuards(unittest.TestCase):
         with self.assertRaises(ValueError):
             RewardConfig(judge_weight=-1.0)
 
+    def test_nonpositive_incongruity_thresholds_raise(self):
+        # Audit finding: a non-positive gate threshold silently converts
+        # the strict-AND incongruity gate into an always-pass bonus.
+        with self.assertRaises(ValueError):
+            RewardConfig(incongruity_surprise_threshold=-1.0)
+        with self.assertRaises(ValueError):
+            RewardConfig(incongruity_surprise_threshold=0.0)
+        with self.assertRaises(ValueError):
+            RewardConfig(incongruity_drop_threshold=-1.0)
+        with self.assertRaises(ValueError):
+            RewardConfig(incongruity_drop_threshold=0.0)
+
     def test_zero_weights_are_valid_both_directions(self):
         # Zero disables a term without flipping its sign -- must not raise.
         RewardConfig(corpus_novelty_weight=0.0, self_repetition_weight=0.0,
