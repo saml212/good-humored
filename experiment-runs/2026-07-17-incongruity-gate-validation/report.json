@@ -1,0 +1,140 @@
+{
+  "experiment": "EXP-014-incongruity-gate-validation",
+  "command": "python3 -m env.validate_incongruity_gate --judge claude:haiku --repeats 3 --retries 1 --max-calls 900 --out experiment-runs/2026-07-17-incongruity-gate-validation",
+  "run_stamp": "20260717T193010",
+  "judge": "claude:haiku",
+  "repeats": 3,
+  "retries": 1,
+  "n_items": 40,
+  "wall_seconds": 1850.5,
+  "model_load_seconds": 0.23,
+  "embedding_model": "all-MiniLM-L6-v2",
+  "surprise_threshold": 0.5,
+  "drop_threshold": 0.15,
+  "split_prompt": "Below is a joke. Identify its SETUP (everything before the\nreveal) and its PUNCHLINE (the reveal itself). If the joke has no\nidentifiable setup/punchline structure (e.g. it is a single-clause pun with\nno buildup), output exactly \"NO_SPLIT\" and nothing else.\n\nJoke: {completion}\n\nOutput exactly two lines:\nSETUP: <the setup text>\nPUNCHLINE: <the punchline text>\n",
+  "predict_cold_prompt": "Setup: {setup}\n\nPredict, in ONE short sentence, the single most natural, UNSURPRISING way\nyou would expect this to continue -- not a joke, just the ordinary\ncontinuation a typical person would expect.\n\nOutput ONLY your one-sentence predicted continuation.\n",
+  "predict_primed_prompt": "Setup: {setup}\n\nThis is the setup of a joke that ends in a clever twist, pun, or reframe.\nPredict, in ONE short sentence, what you think the twist/punchline is.\n\nOutput ONLY your one-sentence predicted punchline.\n",
+  "split_note": "SPLIT_PROMPT calls are answered by a zero-cost replay of the fixture's gold setup/punchline, not a real predictor call -- see module docstring. Only cold/primed calls are real and count against --max-calls.",
+  "per_class_rates": {
+    "real_joke": {
+      "n_items": 12,
+      "n_observations": 36,
+      "gate_1_pass_rate": 0.8055555555555556,
+      "gate_2_pass_rate": 0.4444444444444444,
+      "both_gates_pass_rate": 0.3888888888888889,
+      "mean_d_cold": 0.6712506810824076,
+      "mean_d_primed": 0.5555986381239362
+    },
+    "setup_nonsequitur": {
+      "n_items": 12,
+      "n_observations": 36,
+      "gate_1_pass_rate": 1.0,
+      "gate_2_pass_rate": 0.0,
+      "both_gates_pass_rate": 0.0,
+      "mean_d_cold": 0.9446791344218783,
+      "mean_d_primed": 0.9282561010784574
+    },
+    "boring_expected": {
+      "n_items": 8,
+      "n_observations": 24,
+      "gate_1_pass_rate": 0.2916666666666667,
+      "gate_2_pass_rate": 0.041666666666666664,
+      "both_gates_pass_rate": 0.041666666666666664,
+      "mean_d_cold": 0.34921257197856903,
+      "mean_d_primed": 0.6346927483876547
+    },
+    "vague_abstract_gaming_probe": {
+      "n_items": 8,
+      "n_observations": 24,
+      "gate_1_pass_rate": 1.0,
+      "gate_2_pass_rate": 0.08333333333333333,
+      "both_gates_pass_rate": 0.08333333333333333,
+      "mean_d_cold": 0.8539853791395823,
+      "mean_d_primed": 0.8292082051436106
+    }
+  },
+  "separation_surprising_minus_boring_gate1": 0.6111111111111112,
+  "separation_real_joke_minus_nonsequitur_gate2": 0.4444444444444444,
+  "real_joke_pass_rate": 0.3888888888888889,
+  "predicted_real_joke_pass_rate_registered": 0.65,
+  "vague_probe_gate2_pass_rate": 0.08333333333333333,
+  "disproof_check_gate1_alone_diff_real_joke_minus_nonsequitur": -0.19444444444444442,
+  "disproof_check_predicted_registered": 0.0,
+  "repeat_consistency": 0.5555555555555556,
+  "repeat_consistency_class": "real_joke",
+  "bars": [
+    {
+      "name": "real_joke_gate1_pass_rate",
+      "value": 0.8055555555555556,
+      "op": ">=",
+      "threshold": 0.85,
+      "passed": false
+    },
+    {
+      "name": "setup_nonsequitur_gate1_pass_rate",
+      "value": 1.0,
+      "op": ">=",
+      "threshold": 0.85,
+      "passed": true
+    },
+    {
+      "name": "boring_expected_gate1_pass_rate",
+      "value": 0.2916666666666667,
+      "op": "<=",
+      "threshold": 0.15,
+      "passed": false
+    },
+    {
+      "name": "separation_surprising_minus_boring_gate1",
+      "value": 0.6111111111111112,
+      "op": ">=",
+      "threshold": 0.7,
+      "passed": false
+    },
+    {
+      "name": "real_joke_gate2_pass_rate",
+      "value": 0.4444444444444444,
+      "op": ">=",
+      "threshold": 0.7,
+      "passed": false
+    },
+    {
+      "name": "setup_nonsequitur_gate2_pass_rate",
+      "value": 0.0,
+      "op": "<=",
+      "threshold": 0.2,
+      "passed": true
+    },
+    {
+      "name": "separation_real_joke_minus_nonsequitur_gate2",
+      "value": 0.4444444444444444,
+      "op": ">=",
+      "threshold": 0.5,
+      "passed": false
+    },
+    {
+      "name": "vague_abstract_gaming_probe_gate2_pass_rate",
+      "value": 0.08333333333333333,
+      "op": "<=",
+      "threshold": 0.25,
+      "passed": true
+    },
+    {
+      "name": "repeat_consistency_real_joke",
+      "value": 0.5555555555555556,
+      "op": ">=",
+      "threshold": 0.85,
+      "passed": false
+    }
+  ],
+  "all_bars_pass": false,
+  "call_stats": {
+    "calls": 240,
+    "cache_hits": 0,
+    "unparseable": 0,
+    "max_calls": 900,
+    "budget_exhausted": false
+  },
+  "cache_path": "experiment-runs/2026-07-17-incongruity-gate-validation/label_cache.jsonl",
+  "raw_log_path": "experiment-runs/2026-07-17-incongruity-gate-validation/incongruity_raw.20260717T193010.jsonl"
+}

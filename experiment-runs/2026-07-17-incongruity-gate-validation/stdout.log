@@ -1,0 +1,28 @@
+/private/tmp/claude-501/-Users-samuellarson-Experiments-good-humored/3ca763fc-95e0-4888-9f25-f23d72582abe/scratchpad/embed-venv/lib/python3.9/site-packages/urllib3/__init__.py:35: NotOpenSSLWarning: urllib3 v2 only supports OpenSSL 1.1.1+, currently the 'ssl' module is compiled with 'LibreSSL 2.8.3'. See: https://github.com/urllib3/urllib3/issues/3020
+  warnings.warn(
+command: python3 -m env.validate_incongruity_gate --judge claude:haiku --repeats 3 --retries 1 --max-calls 900 --out experiment-runs/2026-07-17-incongruity-gate-validation
+
+=== EXP-014 incongruity gate validation (claude:haiku, 3 repeats, 40 items) ===
+real_joke                        n_obs=36  gate1=0.806  gate2=0.444  both=0.389
+setup_nonsequitur                n_obs=36  gate1=1.000  gate2=0.000  both=0.000
+boring_expected                  n_obs=24  gate1=0.292  gate2=0.042  both=0.042
+vague_abstract_gaming_probe      n_obs=24  gate1=1.000  gate2=0.083  both=0.083
+real_joke_pass_rate = 0.389 (predicted 0.65)
+separation(surprising - boring) gate1 = 0.611 (bar >= 0.70)
+separation(real_joke - nonsequitur) gate2 = 0.444 (bar >= 0.50)
+disproof: gate1-alone diff(real_joke - nonsequitur) = -0.194 (predicted ~0)
+repeat_consistency(real_joke) = 0.556 (bar >= 0.85)
+
+=== bars ===
+[FAIL] real_joke_gate1_pass_rate                        value=0.806 >= 0.85
+[PASS] setup_nonsequitur_gate1_pass_rate                value=1.000 >= 0.85
+[FAIL] boring_expected_gate1_pass_rate                  value=0.292 <= 0.15
+[FAIL] separation_surprising_minus_boring_gate1         value=0.611 >= 0.7
+[FAIL] real_joke_gate2_pass_rate                        value=0.444 >= 0.7
+[PASS] setup_nonsequitur_gate2_pass_rate                value=0.000 <= 0.2
+[FAIL] separation_real_joke_minus_nonsequitur_gate2     value=0.444 >= 0.5
+[PASS] vague_abstract_gaming_probe_gate2_pass_rate      value=0.083 <= 0.25
+[FAIL] repeat_consistency_real_joke                     value=0.556 >= 0.85
+
+calls=240 cache_hits=0 unparseable=0 wall=1850.5s budget_exhausted=False
+report: experiment-runs/2026-07-17-incongruity-gate-validation/report.json

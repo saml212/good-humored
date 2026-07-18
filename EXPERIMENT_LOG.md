@@ -1222,3 +1222,52 @@ dilution is the adversarial live threat), whole-text for passive
 evals. A max(both-modes) composite would dominate both individually
 but its union FPR is unmeasured — registered as EXP-011b if wanted,
 not improvised now. 410 env tests green.
+
+---
+
+## EXP-013 / EXP-014 — Results (2026-07-17 night): structure validates, instrument fails — the EXP-012 pattern repeats
+
+**EXP-013 (BVT gate, 265 calls): 7/10 bars, headline FAILS.** Margin
+0.031 vs predicted +0.40. The benign axis discriminates beautifully
+(separation 8.33), echo checks pass, repeat consistency 0.950, and the
+disclaimer-washing guard holds on severe violations. The failure is
+localized and diagnostic: haiku's violation judge succumbs to a halo
+effect that two SEPARATE judge calls were designed to prevent — it
+rates the violation dimension of genuinely funny benign violations
+0–4/10 despite explicit instructions to score violation regardless of
+funniness. Meanwhile the registered DISPROOF CHECK confirmed the
+theory's core claim: the current additive stack scores violation_only
+at 80% of both-class reward — the exact compensation failure the
+multiplicative gate exists to close. The problem is real; haiku cannot
+yet execute the measurement.
+
+**EXP-014 (incongruity gate, 240 calls): 3/9 bars.** real_joke pass
+0.389 vs predicted 0.65. The ANTI-GAMING machinery works exactly as
+designed: vague-abstract probe 0.083 (bar ≤0.25), nonsequitur gate-2 a
+perfect 0.000 (resolution never credits an unrelated punchline), and
+the gate-1-alone disproof shows stage 2 genuinely earns its keep. The
+failures cluster on gate-1's surprise proxy: single-guess embedding
+distance is noisy (a boring continuation phrased differently reads as
+"surprising"), and haiku's guess-to-guess variance drops repeat
+consistency to 0.556. §12.2 pre-flagged this as "a proxy of a proxy" —
+now it is a measured limitation, not a suspicion.
+
+**The unified kernel verdict after EXP-012/013/014 (one night, all
+pre-registered, all closed):** the verifiable two-thirds of the kernel
+is solid and adversarially hardened; the theory GATES' protective
+structure (anti-gaming probes, echo resistance, strict-AND, the
+additive-compensation disproof) validates; but EVERY component where
+haiku-as-humor-judge is load-bearing failed its discrimination bar —
+judge-vs-humans at chance (012), violation halo (013), surprise-proxy
+noise (014). The judged third needs a better instrument, not better
+structure: candidates, in cost order — multi-sample probe designs
+(cheap, EXP-014b), a different judge model for the violation axis
+(untested; note EXP-003b's bigger≠better lesson was for LABELING, a
+different task), an RM trained on Oogiri-Master consensus (blocked on
+Sam's acquisition call). GPU block stands. Bookkeeping: the env test
+baseline is 410 (pre-gate-validation), not 306 — the earlier count was
+a stale-pycache artifact; 775 repo-wide now green.
+
+[LEARN] instrument-design: Judge-structure fixes cannot rescue judge-capability gaps.
+Mistake: expected separate focused judge calls (violation vs benignity) to eliminate the halo effect and single-guess embedding distance to proxy surprisal — both structural fixes to what turned out to be capability limits of the haiku instrument.
+Correction: validate the INSTRUMENT on the component task (can this judge rate violation independent of funniness at all?) before designing structure around it; structure multiplies instrument quality, it does not create it.
