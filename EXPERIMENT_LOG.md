@@ -1102,3 +1102,56 @@ purposes and must not be trusted for cache hits on any re-run.
 [LEARN] registration-discipline: Verify the instrument's ACTUAL shape against the adapter before registering, not against the literature's description of a sibling dataset.
 Mistake: EXP-012's registration described Oogiri-Master's 100-judge panel while the only existing adapter loads Oogiri-GO (~6.3 star-ranked candidates/prompt) — the prediction was calibrated against an instrument we don't have.
 Correction: A registration must name the exact dataset+field the harness will consume (adapter, split, ranking field, per-prompt fanout), checked against the loader's code, before the prediction is registered.
+
+---
+
+## EXP-013 / EXP-014 — theory-gate validations (2026-07-17 night, pre-registered BEFORE runs)
+
+**Hypotheses:** (013) the BVT product gate scores the fixture's `both`
+class (genuine benign violations) far above all three single-axis
+classes — violation-only, benign-only, neither — AND holds the
+disclaimer-washing guard (benign mean ≤3.0/10 on
+`disclaimer_washed_violation`); (014) the two-stage incongruity gate
+passes real setup/punchline jokes while rejecting non-sequiturs,
+boring-expected endings, and the vague-abstract gaming probe (gate-2
+pass ≤0.25 on the probe class).
+
+**Instruments (exact, per the EXP-012 lesson):** the committed fixtures
+env/tests/fixtures/bvt_gate_fixture.jsonl (40 items, 5 classes × 8) and
+incongruity_gate_fixture.jsonl (40 items: real_joke 12,
+setup_nonsequitur 12, boring_expected 8, vague_abstract_gaming_probe 8);
+judge/predictor = claude:haiku via the neutral-cwd CLI pattern
+(EXP-003b: haiku is the validated instrument tier); embeddings
+all-MiniLM-L6-v2 for the incongruity distance. Bars as registered in
+THEORY-MAP §12; runners to be built mirroring validate_semantic_novelty.
+
+**Predictions (registered blind):**
+- 013: both-class mean product minus the MAX of the three other class
+  means ≈ **+0.40** (exp-013-bvt-validation).
+- 014: real_joke both-gates pass rate ≈ **0.65** (haiku predictor noise
+  will fail some genuinely good jokes; exp-014-incongruity-validation);
+  vague-probe gate-2 pass predicted ~0.15 (bar ≤0.25).
+
+Result: _(pending)_
+
+**EXP-010 promotion-gate resolution (2026-07-17 night — the haiku
+unparseable anomaly is exonerating, not damning):** joining the v4
+field cache to haiku's turns shows the "29.2% unparseable" is
+concentrated in NON-JOKES: the wrapper-persona refusal turns ("I'm
+Claude Code, built to help with software engineering tasks. I'm not
+going to continue...") from the hijacked runs the hostile review
+identified, plus stage-direction outputs ("*nothing*", "*...*"). 13
+unique texts account for the whole effect (the same refusal repeats
+across turns, inflating the per-turn rate). v4 refusing to topic-label
+a refusal is CORRECT instrument behavior — and strictly better than
+v2, which labeled those same turns as topics (haiku r01's turn-7 "ai"
+repeat, one of the 12/12 Anthropic degradations, is persona text
+labeled "ai" by v2). Verdict: the v4 promotion blocker is RESOLVED —
+v4 is promoted as the analysis instrument for future paper-grade runs;
+the pilot's published numbers remain v2-labeled with the documented
+conservative caveat, now plus this note: v2's topic-labeling of
+refusal text marginally INFLATES Anthropic degradation counts (haiku
+r01's event is persona-driven), which the wrapper-stack scope
+reduction already covers. Instrument-evaluation lesson folded into the
+field-coverage doctrine: decompose unparseable rates by input type —
+a "failure" concentrated on non-joke inputs is the instrument working.
