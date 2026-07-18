@@ -123,6 +123,43 @@
       }
     ]
   },
+  "api:kimi-k3": {
+    "n_jokes": 120,
+    "exact_corpus_hits": 25,
+    "template_hits": 20,
+    "examples": [
+      {
+        "joke": "Why don't scientists trust atoms? Because they make up everything!",
+        "template": "chatgpt25-T4",
+        "sim": 0.6,
+        "exact": false
+      },
+      {
+        "joke": "Comedian: Why did the scarecrow win an award? Because he was outstanding in his field!",
+        "template": "chatgpt25-T1",
+        "sim": 0.92,
+        "exact": false
+      },
+      {
+        "joke": "Why did the golfer bring two pairs of pants? In case he got a hole in one!",
+        "template": "chatgpt25-T15",
+        "sim": 1.0,
+        "exact": false
+      },
+      {
+        "joke": "Why did the computer go to the doctor? Because it had a virus!",
+        "template": "chatgpt25-T12",
+        "sim": 1.0,
+        "exact": false
+      },
+      {
+        "joke": "Why did the scarecrow win an award? Because he was outstanding in his field!",
+        "template": "chatgpt25-T1",
+        "sim": 1.0,
+        "exact": true
+      }
+    ]
+  },
   "api:qwen": {
     "n_jokes": 120,
     "exact_corpus_hits": 2,

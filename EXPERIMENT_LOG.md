@@ -1010,3 +1010,30 @@ profile suggests OpenAI-style adherence is unlikely, open-weights-style
 mid-cascade collapse is the base rate).
 
 Result: _(pending)_
+
+**EXP-004 addendum 3 — Result (2026-07-17 evening):** kimi-k3
+(thinking-disabled) ran the standard protocol cleanly: 4/4 complete
+runs, zero failures, ~3s/turn. **Memorization: 25/120 = 20.8% exact-tier
+[14.5, 28.9] vs blind prediction 0.20 — near-exact calibration hit.**
+Degradation: 3/4 runs at depths 12, 12, 24 (one survivor); censored
+median 18 vs predicted 12 — a miss under the survival-inclusive
+convention (degraded-only median is exactly 12; convention was not
+pinned at registration — lesson: REGISTER THE CONVENTION WITH THE
+METRIC). Self-jaccard 0.329 (second only to grok's 0.443) with prefix
+agreement 0.0 — a fixed mid-size pool walked in varying order.
+Openers are the well-worn classics (farming/bike/math/coffee), matching
+the memorization profile: kimi-k3's fingerprint sits between grok
+(fixed retrieval repertoire) and open-weights (mid-cascade collapse) —
+moderate-heavy recall + moderate pool + mid-depth degradation.
+
+**Roster-level consequence, reported before anything cites the old
+number: the 12-model cross-model jaccard is 0.1191, and the "below the
+entire pooled-frequency null" claim NO LONGER HOLDS** (null range now
+0.1167–0.1597, observed sits just inside the floor; p = 0.9999 —
+overlap remains at the extreme low end of chance-cooccurrence, far
+below the null mean 0.1377, but "below every draw" died with kimi-k3's
+conventional topic pool). Within-model mean 0.218. Incidence 10/12
+(mini and grok remain the only fully clean models). Family contrasts
+unchanged (kimi is neither Anthropic nor OpenAI). FINDINGS headline
+updated accordingly — the shared-pool hypothesis stays dead (0.119 vs
+predicted 0.35), it just dies by a less theatrical margin.

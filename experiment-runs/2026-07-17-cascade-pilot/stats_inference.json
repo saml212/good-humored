@@ -30,6 +30,11 @@
       "mtime_utc": "2026-07-17T13:21:37.024420+00:00"
     },
     {
+      "path": "experiment-runs/2026-07-17-cascade-pilot/lane-api-kimi-k3/summary.json",
+      "mtime_epoch": 1784333572.561331,
+      "mtime_utc": "2026-07-18T00:12:52.561331+00:00"
+    },
+    {
       "path": "experiment-runs/2026-07-17-cascade-pilot/lane-claude/summary.json",
       "mtime_epoch": 1784281267.6243916,
       "mtime_utc": "2026-07-17T09:41:07.624392+00:00"
@@ -59,27 +64,27 @@
     "reconstruction_matches_analysis_json": true,
     "max_cross_model_abs_diff": 0.0,
     "max_per_model_abs_diff": 0.0,
-    "n_models_reconstructed": 11,
-    "n_models_in_analysis_json": 11
+    "n_models_reconstructed": 12,
+    "n_models_in_analysis_json": 12
   },
   "headline_cross_model_overlap": {
     "claim": "Pre-registered hypothesis: models share a substantially overlapping topic pool (predicted cross-model jaccard ~0.35). FAILED -- see EXP-004.",
-    "observed_mean_cross_jaccard": 0.11258141673007813,
+    "observed_mean_cross_jaccard": 0.11907160125992675,
     "predicted": 0.35,
     "null_test": {
       "pooled_frequency_baseline": {
-        "p_value": 1.0,
+        "p_value": 0.9999000099990001,
         "n_perm": 10000,
         "hypothesis": "observed overlap higher than a bag-of-topics shared-pool baseline predicts \u2014 see docstring for assumptions",
         "AUTHORITATIVE_FOR_THIS_CLAIM": true,
         "diagnostics": {
-          "n_distinct_topics": 281,
+          "n_distinct_topics": 290,
           "n_perm": 10000,
-          "pooled_null_min": 0.11887060456333172,
-          "pooled_null_max": 0.15670602359676014,
-          "pooled_null_mean": 0.13630094570126036,
-          "observed_below_entire_null_range": true,
-          "recomputed_p_value_for_integrity_check": 1.0,
+          "pooled_null_min": 0.11671306706996007,
+          "pooled_null_max": 0.1596873986937054,
+          "pooled_null_mean": 0.13770247723462056,
+          "observed_below_entire_null_range": false,
+          "recomputed_p_value_for_integrity_check": 0.9999000099990001,
           "diagnostics_p_value_matches_authoritative_p_value": true
         }
       },
@@ -93,49 +98,50 @@
     },
     "bootstrap_ci": {
       "run_pair_level": {
-        "point": 0.11258141673007813,
-        "lo": 0.10718996335450295,
-        "hi": 0.11783415564740375,
+        "point": 0.11907160125992675,
+        "lo": 0.11413783123060213,
+        "hi": 0.12405226932206675,
         "n_boot": 10000,
-        "n": 800,
+        "n": 968,
         "alpha": 0.05,
         "method": "monte_carlo",
-        "unit": "one value per (run_i-of-model_A, run_j-of-model_B) pair, pooled across all 55 model pairs",
+        "unit": "one value per (run_i-of-model_A, run_j-of-model_B) pair, pooled across all 66 model pairs",
         "matches_point_estimate": true,
         "caveat": "non-independent observations (each run appears in many pairs) -- CI is likely too narrow; see module docstring on _flat_cross_run_jaccards."
       },
       "model_pair_level": {
-        "point": 0.11329913211940282,
-        "lo": 0.09830314906628719,
-        "hi": 0.12960985454845544,
+        "point": 0.11928173689047289,
+        "lo": 0.10504483060052275,
+        "hi": 0.13504309771633177,
         "n_boot": 10000,
-        "n": 55,
+        "n": 66,
         "alpha": 0.05,
         "method": "monte_carlo",
-        "unit": "one value per model-PAIR mean jaccard (55 model pairs), the more conservative/exchangeable unit",
-        "point_vs_headline_diff": 0.0007177153893246913
+        "unit": "one value per model-PAIR mean jaccard (66 model pairs), the more conservative/exchangeable unit",
+        "point_vs_headline_diff": 0.00021013563054614326
       }
     }
   },
   "headline_within_model_divergence": {
-    "claim": "Within-model mean set jaccard across runs, averaged over models (EXP-004 predicted ~0.55; observed 0.208).",
-    "observed_within_model_mean_jaccard": 0.20754103379460284,
+    "claim": "Within-model mean set jaccard across runs, averaged over models (EXP-004 predicted ~0.55; observed 0.218).",
+    "observed_within_model_mean_jaccard": 0.21765396852360194,
     "predicted": 0.55,
     "bootstrap_ci": {
-      "point": 0.20754103379460284,
-      "lo": 0.150650000402631,
-      "hi": 0.27060279988382696,
+      "point": 0.21765396852360194,
+      "lo": 0.161719875399479,
+      "hi": 0.27780186310316063,
       "n_boot": 10000,
-      "n": 11,
+      "n": 12,
       "alpha": 0.05,
       "method": "monte_carlo",
-      "unit": "one value per MODEL (n=11): each model's own mean pairwise within-run set_jaccard",
+      "unit": "one value per MODEL (n=12): each model's own mean pairwise within-run set_jaccard",
       "matches_point_estimate": true
     },
     "per_model_point_estimates": {
       "api:deepseek": 0.15107059055551017,
       "api:glm": 0.15,
       "api:grok": 0.4428115743905217,
+      "api:kimi-k3": 0.32889625054259203,
       "api:qwen": 0.23253556100154305,
       "codex:5.4": 0.2807693610480382,
       "codex:mini": 0.25036184686640617,
@@ -160,7 +166,7 @@
         "cliffs_delta": -1.0,
         "cliffs_delta_magnitude": "large",
         "p_holm": 1.0,
-        "p_bh": 0.11458333333333333
+        "p_bh": 0.13333333333333333
       },
       "api:deepseek|api:grok": {
         "stat_mean_diff": -21.5,
@@ -173,7 +179,20 @@
         "cliffs_delta": -1.0,
         "cliffs_delta_magnitude": "large",
         "p_holm": 1.0,
-        "p_bh": 0.07482993197278912
+        "p_bh": 0.08571428571428572
+      },
+      "api:deepseek|api:kimi-k3": {
+        "stat_mean_diff": -11.0,
+        "p_value": 0.02857142857142857,
+        "n_perm_used": 70,
+        "method": "exact",
+        "p_floor": 0.014285714285714285,
+        "na": 4,
+        "nb": 4,
+        "cliffs_delta": -1.0,
+        "cliffs_delta_magnitude": "large",
+        "p_holm": 1.0,
+        "p_bh": 0.08571428571428572
       },
       "api:deepseek|api:qwen": {
         "stat_mean_diff": -4.5,
@@ -186,7 +205,7 @@
         "cliffs_delta": -0.4375,
         "cliffs_delta_magnitude": "medium",
         "p_holm": 1.0,
-        "p_bh": 0.6547619047619047
+        "p_bh": 0.6149068322981366
       },
       "api:deepseek|codex:5.4": {
         "stat_mean_diff": -20.0,
@@ -199,7 +218,7 @@
         "cliffs_delta": -1.0,
         "cliffs_delta_magnitude": "large",
         "p_holm": 1.0,
-        "p_bh": 0.07482993197278912
+        "p_bh": 0.08571428571428572
       },
       "api:deepseek|codex:mini": {
         "stat_mean_diff": -21.5,
@@ -212,7 +231,7 @@
         "cliffs_delta": -1.0,
         "cliffs_delta_magnitude": "large",
         "p_holm": 1.0,
-        "p_bh": 0.07482993197278912
+        "p_bh": 0.08571428571428572
       },
       "api:deepseek|codex:sol": {
         "stat_mean_diff": -20.5,
@@ -225,7 +244,7 @@
         "cliffs_delta": -1.0,
         "cliffs_delta_magnitude": "large",
         "p_holm": 1.0,
-        "p_bh": 0.07482993197278912
+        "p_bh": 0.08571428571428572
       },
       "api:deepseek|fable": {
         "stat_mean_diff": -18.5,
@@ -238,7 +257,7 @@
         "cliffs_delta": -1.0,
         "cliffs_delta_magnitude": "large",
         "p_holm": 1.0,
-        "p_bh": 0.07482993197278912
+        "p_bh": 0.08571428571428572
       },
       "api:deepseek|haiku": {
         "stat_mean_diff": -2.25,
@@ -264,7 +283,7 @@
         "cliffs_delta": -0.9375,
         "cliffs_delta_magnitude": "large",
         "p_holm": 1.0,
-        "p_bh": 0.11458333333333333
+        "p_bh": 0.13333333333333333
       },
       "api:deepseek|sonnet": {
         "stat_mean_diff": -5.25,
@@ -277,7 +296,7 @@
         "cliffs_delta": -0.8125,
         "cliffs_delta_magnitude": "large",
         "p_holm": 1.0,
-        "p_bh": 0.14285714285714288
+        "p_bh": 0.16638655462184873
       },
       "api:glm|api:grok": {
         "stat_mean_diff": -12.5,
@@ -290,7 +309,20 @@
         "cliffs_delta": -1.0,
         "cliffs_delta_magnitude": "large",
         "p_holm": 1.0,
-        "p_bh": 0.11458333333333333
+        "p_bh": 0.13333333333333333
+      },
+      "api:glm|api:kimi-k3": {
+        "stat_mean_diff": -2.0,
+        "p_value": 0.8,
+        "n_perm_used": 15,
+        "method": "exact",
+        "p_floor": 0.06666666666666667,
+        "na": 2,
+        "nb": 4,
+        "cliffs_delta": 0.0,
+        "cliffs_delta_magnitude": "negligible",
+        "p_holm": 1.0,
+        "p_bh": 0.9962264150943396
       },
       "api:glm|api:qwen": {
         "stat_mean_diff": 4.5,
@@ -303,7 +335,7 @@
         "cliffs_delta": 0.5,
         "cliffs_delta_magnitude": "large",
         "p_holm": 1.0,
-        "p_bh": 0.825
+        "p_bh": 0.792
       },
       "api:glm|codex:5.4": {
         "stat_mean_diff": -11.0,
@@ -316,7 +348,7 @@
         "cliffs_delta": -1.0,
         "cliffs_delta_magnitude": "large",
         "p_holm": 1.0,
-        "p_bh": 0.11458333333333333
+        "p_bh": 0.13333333333333333
       },
       "api:glm|codex:mini": {
         "stat_mean_diff": -12.5,
@@ -329,7 +361,7 @@
         "cliffs_delta": -1.0,
         "cliffs_delta_magnitude": "large",
         "p_holm": 1.0,
-        "p_bh": 0.11458333333333333
+        "p_bh": 0.13333333333333333
       },
       "api:glm|codex:sol": {
         "stat_mean_diff": -11.5,
@@ -342,7 +374,7 @@
         "cliffs_delta": -1.0,
         "cliffs_delta_magnitude": "large",
         "p_holm": 1.0,
-        "p_bh": 0.11458333333333333
+        "p_bh": 0.13333333333333333
       },
       "api:glm|fable": {
         "stat_mean_diff": -9.5,
@@ -355,7 +387,7 @@
         "cliffs_delta": -0.75,
         "cliffs_delta_magnitude": "large",
         "p_holm": 1.0,
-        "p_bh": 0.21568627450980393
+        "p_bh": 0.24812030075187969
       },
       "api:glm|haiku": {
         "stat_mean_diff": 6.75,
@@ -368,7 +400,7 @@
         "cliffs_delta": 0.5,
         "cliffs_delta_magnitude": "large",
         "p_holm": 1.0,
-        "p_bh": 0.6285714285714286
+        "p_bh": 0.5866666666666667
       },
       "api:glm|opus": {
         "stat_mean_diff": 5.0,
@@ -381,7 +413,7 @@
         "cliffs_delta": 1.0,
         "cliffs_delta_magnitude": "large",
         "p_holm": 1.0,
-        "p_bh": 0.11458333333333333
+        "p_bh": 0.13333333333333333
       },
       "api:glm|sonnet": {
         "stat_mean_diff": 3.75,
@@ -394,7 +426,20 @@
         "cliffs_delta": 0.625,
         "cliffs_delta_magnitude": "large",
         "p_holm": 1.0,
-        "p_bh": 0.7521367521367521
+        "p_bh": 0.7183673469387755
+      },
+      "api:grok|api:kimi-k3": {
+        "stat_mean_diff": 10.5,
+        "p_value": 0.14285714285714285,
+        "n_perm_used": 70,
+        "method": "exact",
+        "p_floor": 0.014285714285714285,
+        "na": 4,
+        "nb": 4,
+        "cliffs_delta": 0.75,
+        "cliffs_delta_magnitude": "large",
+        "p_holm": 1.0,
+        "p_bh": 0.24812030075187969
       },
       "api:grok|api:qwen": {
         "stat_mean_diff": 17.0,
@@ -407,7 +452,7 @@
         "cliffs_delta": 1.0,
         "cliffs_delta_magnitude": "large",
         "p_holm": 1.0,
-        "p_bh": 0.07482993197278912
+        "p_bh": 0.08571428571428572
       },
       "api:grok|codex:5.4": {
         "stat_mean_diff": 1.5,
@@ -472,7 +517,7 @@
         "cliffs_delta": 1.0,
         "cliffs_delta_magnitude": "large",
         "p_holm": 1.0,
-        "p_bh": 0.07482993197278912
+        "p_bh": 0.08571428571428572
       },
       "api:grok|opus": {
         "stat_mean_diff": 17.5,
@@ -485,7 +530,7 @@
         "cliffs_delta": 1.0,
         "cliffs_delta_magnitude": "large",
         "p_holm": 1.0,
-        "p_bh": 0.07482993197278912
+        "p_bh": 0.08571428571428572
       },
       "api:grok|sonnet": {
         "stat_mean_diff": 16.25,
@@ -498,7 +543,111 @@
         "cliffs_delta": 1.0,
         "cliffs_delta_magnitude": "large",
         "p_holm": 1.0,
-        "p_bh": 0.07482993197278912
+        "p_bh": 0.08571428571428572
+      },
+      "api:kimi-k3|api:qwen": {
+        "stat_mean_diff": 6.5,
+        "p_value": 0.2,
+        "n_perm_used": 70,
+        "method": "exact",
+        "p_floor": 0.014285714285714285,
+        "na": 4,
+        "nb": 4,
+        "cliffs_delta": 0.6875,
+        "cliffs_delta_magnitude": "large",
+        "p_holm": 1.0,
+        "p_bh": 0.33
+      },
+      "api:kimi-k3|codex:5.4": {
+        "stat_mean_diff": -9.0,
+        "p_value": 0.2571428571428571,
+        "n_perm_used": 70,
+        "method": "exact",
+        "p_floor": 0.014285714285714285,
+        "na": 4,
+        "nb": 4,
+        "cliffs_delta": -0.625,
+        "cliffs_delta_magnitude": "large",
+        "p_holm": 1.0,
+        "p_bh": 0.4040816326530612
+      },
+      "api:kimi-k3|codex:mini": {
+        "stat_mean_diff": -10.5,
+        "p_value": 0.14285714285714285,
+        "n_perm_used": 70,
+        "method": "exact",
+        "p_floor": 0.014285714285714285,
+        "na": 4,
+        "nb": 4,
+        "cliffs_delta": -0.75,
+        "cliffs_delta_magnitude": "large",
+        "p_holm": 1.0,
+        "p_bh": 0.24812030075187969
+      },
+      "api:kimi-k3|codex:sol": {
+        "stat_mean_diff": -9.5,
+        "p_value": 0.14285714285714285,
+        "n_perm_used": 70,
+        "method": "exact",
+        "p_floor": 0.014285714285714285,
+        "na": 4,
+        "nb": 4,
+        "cliffs_delta": -0.6875,
+        "cliffs_delta_magnitude": "large",
+        "p_holm": 1.0,
+        "p_bh": 0.24812030075187969
+      },
+      "api:kimi-k3|fable": {
+        "stat_mean_diff": -7.5,
+        "p_value": 0.2571428571428571,
+        "n_perm_used": 70,
+        "method": "exact",
+        "p_floor": 0.014285714285714285,
+        "na": 4,
+        "nb": 4,
+        "cliffs_delta": -0.5625,
+        "cliffs_delta_magnitude": "large",
+        "p_holm": 1.0,
+        "p_bh": 0.4040816326530612
+      },
+      "api:kimi-k3|haiku": {
+        "stat_mean_diff": 8.75,
+        "p_value": 0.17142857142857143,
+        "n_perm_used": 70,
+        "method": "exact",
+        "p_floor": 0.014285714285714285,
+        "na": 4,
+        "nb": 4,
+        "cliffs_delta": 0.75,
+        "cliffs_delta_magnitude": "large",
+        "p_holm": 1.0,
+        "p_bh": 0.29010989010989013
+      },
+      "api:kimi-k3|opus": {
+        "stat_mean_diff": 7.0,
+        "p_value": 0.37142857142857144,
+        "n_perm_used": 70,
+        "method": "exact",
+        "p_floor": 0.014285714285714285,
+        "na": 4,
+        "nb": 4,
+        "cliffs_delta": 0.25,
+        "cliffs_delta_magnitude": "small",
+        "p_holm": 1.0,
+        "p_bh": 0.5571428571428572
+      },
+      "api:kimi-k3|sonnet": {
+        "stat_mean_diff": 5.75,
+        "p_value": 0.2857142857142857,
+        "n_perm_used": 70,
+        "method": "exact",
+        "p_floor": 0.014285714285714285,
+        "na": 4,
+        "nb": 4,
+        "cliffs_delta": 0.5,
+        "cliffs_delta_magnitude": "large",
+        "p_holm": 1.0,
+        "p_bh": 0.43853820598006643
       },
       "api:qwen|codex:5.4": {
         "stat_mean_diff": -15.5,
@@ -511,7 +660,7 @@
         "cliffs_delta": -0.9375,
         "cliffs_delta_magnitude": "large",
         "p_holm": 1.0,
-        "p_bh": 0.11458333333333333
+        "p_bh": 0.13333333333333333
       },
       "api:qwen|codex:mini": {
         "stat_mean_diff": -17.0,
@@ -524,7 +673,7 @@
         "cliffs_delta": -1.0,
         "cliffs_delta_magnitude": "large",
         "p_holm": 1.0,
-        "p_bh": 0.07482993197278912
+        "p_bh": 0.08571428571428572
       },
       "api:qwen|codex:sol": {
         "stat_mean_diff": -16.0,
@@ -537,7 +686,7 @@
         "cliffs_delta": -1.0,
         "cliffs_delta_magnitude": "large",
         "p_holm": 1.0,
-        "p_bh": 0.07482993197278912
+        "p_bh": 0.08571428571428572
       },
       "api:qwen|fable": {
         "stat_mean_diff": -14.0,
@@ -550,7 +699,7 @@
         "cliffs_delta": -0.875,
         "cliffs_delta_magnitude": "large",
         "p_holm": 1.0,
-        "p_bh": 0.11458333333333333
+        "p_bh": 0.13333333333333333
       },
       "api:qwen|haiku": {
         "stat_mean_diff": 2.25,
@@ -563,7 +712,7 @@
         "cliffs_delta": 0.625,
         "cliffs_delta_magnitude": "large",
         "p_holm": 1.0,
-        "p_bh": 0.6795366795366795
+        "p_bh": 0.6419452887537994
       },
       "api:qwen|opus": {
         "stat_mean_diff": 0.5,
@@ -641,7 +790,7 @@
         "cliffs_delta": 1.0,
         "cliffs_delta_magnitude": "large",
         "p_holm": 1.0,
-        "p_bh": 0.07482993197278912
+        "p_bh": 0.08571428571428572
       },
       "codex:5.4|opus": {
         "stat_mean_diff": 16.0,
@@ -654,7 +803,7 @@
         "cliffs_delta": 1.0,
         "cliffs_delta_magnitude": "large",
         "p_holm": 1.0,
-        "p_bh": 0.07482993197278912
+        "p_bh": 0.08571428571428572
       },
       "codex:5.4|sonnet": {
         "stat_mean_diff": 14.75,
@@ -667,7 +816,7 @@
         "cliffs_delta": 1.0,
         "cliffs_delta_magnitude": "large",
         "p_holm": 1.0,
-        "p_bh": 0.07482993197278912
+        "p_bh": 0.08571428571428572
       },
       "codex:mini|codex:sol": {
         "stat_mean_diff": 1.0,
@@ -706,7 +855,7 @@
         "cliffs_delta": 1.0,
         "cliffs_delta_magnitude": "large",
         "p_holm": 1.0,
-        "p_bh": 0.07482993197278912
+        "p_bh": 0.08571428571428572
       },
       "codex:mini|opus": {
         "stat_mean_diff": 17.5,
@@ -719,7 +868,7 @@
         "cliffs_delta": 1.0,
         "cliffs_delta_magnitude": "large",
         "p_holm": 1.0,
-        "p_bh": 0.07482993197278912
+        "p_bh": 0.08571428571428572
       },
       "codex:mini|sonnet": {
         "stat_mean_diff": 16.25,
@@ -732,7 +881,7 @@
         "cliffs_delta": 1.0,
         "cliffs_delta_magnitude": "large",
         "p_holm": 1.0,
-        "p_bh": 0.07482993197278912
+        "p_bh": 0.08571428571428572
       },
       "codex:sol|fable": {
         "stat_mean_diff": 2.0,
@@ -758,7 +907,7 @@
         "cliffs_delta": 1.0,
         "cliffs_delta_magnitude": "large",
         "p_holm": 1.0,
-        "p_bh": 0.07482993197278912
+        "p_bh": 0.08571428571428572
       },
       "codex:sol|opus": {
         "stat_mean_diff": 16.5,
@@ -771,7 +920,7 @@
         "cliffs_delta": 1.0,
         "cliffs_delta_magnitude": "large",
         "p_holm": 1.0,
-        "p_bh": 0.07482993197278912
+        "p_bh": 0.08571428571428572
       },
       "codex:sol|sonnet": {
         "stat_mean_diff": 15.25,
@@ -784,7 +933,7 @@
         "cliffs_delta": 1.0,
         "cliffs_delta_magnitude": "large",
         "p_holm": 1.0,
-        "p_bh": 0.07482993197278912
+        "p_bh": 0.08571428571428572
       },
       "fable|haiku": {
         "stat_mean_diff": 16.25,
@@ -797,7 +946,7 @@
         "cliffs_delta": 0.875,
         "cliffs_delta_magnitude": "large",
         "p_holm": 1.0,
-        "p_bh": 0.11458333333333333
+        "p_bh": 0.13333333333333333
       },
       "fable|opus": {
         "stat_mean_diff": 14.5,
@@ -810,7 +959,7 @@
         "cliffs_delta": 1.0,
         "cliffs_delta_magnitude": "large",
         "p_holm": 1.0,
-        "p_bh": 0.07482993197278912
+        "p_bh": 0.08571428571428572
       },
       "fable|sonnet": {
         "stat_mean_diff": 13.25,
@@ -823,7 +972,7 @@
         "cliffs_delta": 0.875,
         "cliffs_delta_magnitude": "large",
         "p_holm": 1.0,
-        "p_bh": 0.11458333333333333
+        "p_bh": 0.13333333333333333
       },
       "haiku|opus": {
         "stat_mean_diff": -1.75,
@@ -836,7 +985,7 @@
         "cliffs_delta": -0.5,
         "cliffs_delta_magnitude": "large",
         "p_holm": 1.0,
-        "p_bh": 0.8815331010452963
+        "p_bh": 0.850420168067227
       },
       "haiku|sonnet": {
         "stat_mean_diff": -3.0,
@@ -849,7 +998,7 @@
         "cliffs_delta": -0.5,
         "cliffs_delta_magnitude": "large",
         "p_holm": 1.0,
-        "p_bh": 0.7030075187969925
+        "p_bh": 0.6678571428571428
       },
       "opus|sonnet": {
         "stat_mean_diff": -1.25,
@@ -862,12 +1011,12 @@
         "cliffs_delta": -0.0625,
         "cliffs_delta_magnitude": "negligible",
         "p_holm": 1.0,
-        "p_bh": 1.0
+        "p_bh": 0.9962264150943396
       }
     },
     "correction_used_primary": "holm",
     "correction_note": "BH also computed (p_bh field) for cross-check; Holm is the corrected p-value cited in FINDINGS.md.",
-    "n_pairs_corrected": 55,
+    "n_pairs_corrected": 66,
     "anthropic_vs_openai_family_contrast": {
       "stat_mean_diff": -13.166666666666668,
       "p_value": 0.00019998000199980003,
@@ -921,6 +1070,7 @@
         "api:deepseek": 4,
         "api:glm": 2,
         "api:grok": 4,
+        "api:kimi-k3": 4,
         "api:qwen": 4,
         "codex:5.4": 4,
         "codex:mini": 4,
@@ -934,6 +1084,7 @@
         "api:deepseek": 4,
         "api:glm": 2,
         "api:grok": 0,
+        "api:kimi-k3": 3,
         "api:qwen": 4,
         "codex:5.4": 1,
         "codex:mini": 0,
@@ -946,6 +1097,7 @@
       "models_with_at_least_one_degrading_run": [
         "api:deepseek",
         "api:glm",
+        "api:kimi-k3",
         "api:qwen",
         "codex:5.4",
         "codex:sol",
@@ -954,10 +1106,10 @@
         "opus",
         "sonnet"
       ],
-      "n_models_with_at_least_one_degrading_run": 9,
-      "n_models_total": 11,
-      "EXPERIMENT_LOG_claim": "'>=1/3 of roster degrades by turn 30 -- met massively (8/10 models)' (original 10-model pilot; roster is now 11 models after fills merged)",
-      "audit_verdict": "The literal count of models with >=1 degrading run among the 11 with per_model data is 9/11 (only ['api:grok', 'codex:mini'] shows zero degradation across all its runs), not 8/10 as stated (that count was against the original 10-model roster; the log figure predates the fills). The EXPERIMENT_LOG figure is not reproduced exactly under the most natural reading of 'degrades' (>=1 run degrades); it may reflect a different counting rule (e.g. majority-of-runs) that isn't specified in the log. Flagged per task instructions, not silently corrected in the log itself."
+      "n_models_with_at_least_one_degrading_run": 10,
+      "n_models_total": 12,
+      "EXPERIMENT_LOG_claim": "'>=1/3 of roster degrades by turn 30 -- met massively (8/10 models)' (original 10-model pilot; roster is now 12 models after fills merged)",
+      "audit_verdict": "The literal count of models with >=1 degrading run among the 12 with per_model data is 10/12 (only ['api:grok', 'codex:mini'] shows zero degradation across all its runs), not 8/10 as stated (that count was against the original 10-model roster; the log figure predates the fills). The EXPERIMENT_LOG figure is not reproduced exactly under the most natural reading of 'degrades' (>=1 run degrades); it may reflect a different counting rule (e.g. majority-of-runs) that isn't specified in the log. Flagged per task instructions, not silently corrected in the log itself."
     }
   },
   "meta_excluded_robustness": {
@@ -973,12 +1125,13 @@
     "raw_turns_reconstruction_integrity_check": {
       "ok": true,
       "mismatches": {},
-      "n_models_checked": 11
+      "n_models_checked": 12
     },
     "n_runs_per_model": {
       "api:deepseek": 4,
       "api:glm": 2,
       "api:grok": 4,
+      "api:kimi-k3": 4,
       "api:qwen": 4,
       "codex:5.4": 4,
       "codex:mini": 4,
@@ -1003,6 +1156,12 @@
         null,
         null,
         null,
+        null
+      ],
+      "api:kimi-k3": [
+        12,
+        12,
+        24,
         null
       ],
       "api:qwen": [
@@ -1059,6 +1218,7 @@
         "api:deepseek": 4,
         "api:glm": 2,
         "api:grok": 0,
+        "api:kimi-k3": 3,
         "api:qwen": 4,
         "codex:5.4": 1,
         "codex:mini": 0,
@@ -1142,6 +1302,16 @@
         "surviving_run_ids": [
           "api:glm-r01",
           "api:glm-r03"
+        ]
+      },
+      {
+        "lane": "experiment-runs/2026-07-17-cascade-pilot/lane-api-kimi-k3",
+        "model": "api:kimi-k3",
+        "surviving_run_ids": [
+          "api:kimi-k3-r00",
+          "api:kimi-k3-r01",
+          "api:kimi-k3-r02",
+          "api:kimi-k3-r03"
         ]
       },
       {
@@ -1296,6 +1466,13 @@
         "survived": 4,
         "n_runs": 4
       },
+      "api:kimi-k3": {
+        "topic_repeat": 3,
+        "meta_register_repeat": 0,
+        "refusal": 0,
+        "survived": 1,
+        "n_runs": 4
+      },
       "api:qwen": {
         "topic_repeat": 2,
         "meta_register_repeat": 0,
@@ -1354,16 +1531,16 @@
       }
     },
     "totals": {
-      "topic_repeat": 7,
+      "topic_repeat": 10,
       "meta_register_repeat": 9,
       "refusal": 11,
-      "survived": 15,
-      "n_runs": 42
+      "survived": 16,
+      "n_runs": 46
     },
     "raw_turns_reconstruction_integrity_check": {
       "ok": true,
       "mismatches": {},
-      "n_models_checked": 11
+      "n_models_checked": 12
     }
   },
   "memorization_proportions": {
@@ -1392,6 +1569,12 @@
         "lo": 0.2856949053488255,
         "hi": 0.5263394650795924,
         "n": 60
+      },
+      "api:kimi-k3": {
+        "phat": 0.20833333333333334,
+        "lo": 0.14528439608109694,
+        "hi": 0.2894767843298135,
+        "n": 120
       },
       "api:qwen": {
         "phat": 0.016666666666666666,
@@ -1568,6 +1751,12 @@
           "hi": 0.5263394650795924,
           "n": 60
         },
+        "api:kimi-k3": {
+          "phat": 0.20833333333333334,
+          "lo": 0.14528439608109694,
+          "hi": 0.2894767843298135,
+          "n": 120
+        },
         "api:qwen": {
           "phat": 0.016666666666666666,
           "lo": 0.004582564565921141,
@@ -1740,6 +1929,12 @@
           "lo": 0.01714950216439568,
           "hi": 0.1370051647634852,
           "n": 60
+        },
+        "api:kimi-k3": {
+          "phat": 0.16666666666666666,
+          "lo": 0.11055996367984616,
+          "hi": 0.24345281393262286,
+          "n": 120
         },
         "api:qwen": {
           "phat": 0.1,
@@ -1984,6 +2179,30 @@
         },
         "style_confound_framing_prefix_rate": 0.0
       },
+      "api:kimi-k3": {
+        "n_jokes": 120,
+        "exact_tier": {
+          "hits": 25,
+          "rate": 0.20833333333333334,
+          "wilson_95ci": {
+            "phat": 0.20833333333333334,
+            "lo": 0.14528439608109694,
+            "hi": 0.2894767843298135,
+            "n": 120
+          }
+        },
+        "template_trigram_tier": {
+          "hits": 20,
+          "rate": 0.16666666666666666,
+          "wilson_95ci": {
+            "phat": 0.16666666666666666,
+            "lo": 0.11055996367984616,
+            "hi": 0.24345281393262286,
+            "n": 120
+          }
+        },
+        "style_confound_framing_prefix_rate": 0.0
+      },
       "api:qwen": {
         "n_jokes": 120,
         "exact_tier": {
@@ -2195,6 +2414,11 @@
       },
       "api:kimi": {
         "n_jokes": 60,
+        "framing_prefix_hits": 0,
+        "framing_prefix_rate": 0.0
+      },
+      "api:kimi-k3": {
+        "n_jokes": 120,
         "framing_prefix_hits": 0,
         "framing_prefix_rate": 0.0
       },

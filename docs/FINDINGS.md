@@ -1,7 +1,8 @@
 # Findings — cascade pilot (2026-07-17)
 
-Status: pilot-grade, refreshed after fill lanes merged. Roster is now
-**11 models**, N=4 runs/model except `api:glm` (N=2 — see §5). Not paper
+Status: pilot-grade, refreshed after fill lanes merged and the kimi-k3
+lane landed. Roster is now **12 models**, N=4 runs/model except
+`api:glm` (N=2 — see §5). Not paper
 numbers. Every number below traces to
 `experiment-runs/2026-07-17-cascade-pilot/` and the Result/Verdict blocks
 of EXP-004 through EXP-009 in `EXPERIMENT_LOG.md` (including the EXP-004
@@ -40,15 +41,15 @@ and our recomputed value is the one used.
 
 EXP-004 pre-registered, before any data existed: frontier and open-weight
 models share a substantially overlapping joke-topic pool, predicted
-cross-model mean topic-set Jaccard **≈ 0.35**. Measured (11-model roster):
-**0.113**.
+cross-model mean topic-set Jaccard **≈ 0.35**. Measured (12-model roster,
+kimi-k3 lane included): **0.119**.
 
 The within-model prediction failed the same direction, more severely: models
 were predicted to repeat *themselves* across runs more than they'd match
 each other (≈0.55 self-Jaccard). Measured within-model self-Jaccard:
-**0.208** — up from the 10-model pilot's 0.182, driven almost entirely by
-grok's newly-landed complete cascade data (self-Jaccard 0.443, the highest
-of any model; §2.3).
+**0.218** — up from the 10-model pilot's 0.182, driven by grok
+(self-Jaccard 0.443, the highest of any model; §2.3) and kimi-k3 (0.329,
+second-highest; §2.4).
 
 Both misses point the same way — models are more idiosyncratic, not more
 uniform, than the pre-registration assumed. What emerged instead was not
@@ -57,25 +58,27 @@ strong, each different, none matching the shared-pool story:
 
 | Prediction (EXP-004, pre-registered) | Measured | Test | Result |
 |---|---|---|---|
-| Cross-model Jaccard ≈ 0.35 | **0.113** | `pooled_frequency_baseline` null, one-sided | Observed sits *below the entire simulated null distribution* (10,000 draws, range 0.119–0.157). p = 1.0 with add-one correction ⟺ all 10,000 synthetic draws were ≥ observed |
-| Within-model Jaccard ≈ 0.55 | **0.208** | bootstrap CI, model-level (n=11) | 95% CI [0.151, 0.271] |
-| ≥1/3 of roster degrades by turn 30 | met, but the log's "8/10" count doesn't reproduce | incidence audit | **9/11** models show ≥1 degrading run (`codex:mini` and, now, `grok` both fully clean); see §4.4 |
+| Cross-model Jaccard ≈ 0.35 | **0.119** | `pooled_frequency_baseline` null, one-sided | Observed sits at the extreme low end of the simulated null (10,000 draws, range 0.117–0.160, mean 0.138); p = 0.9999 for the registered "above-null" alternative |
+| Within-model Jaccard ≈ 0.55 | **0.218** | bootstrap CI, model-level (n=12) | see `stats_inference.json` |
+| ≥1/3 of roster degrades by turn 30 | met | incidence audit | **10/12** models show ≥1 degrading run (`codex:mini` and `grok` fully clean); see §4.4 |
 
-The `pooled_frequency_baseline` result is worth sitting with: it is not
-merely "not significantly above chance." The real cross-model overlap is
-*lower than every one of 10,000 synthetic universes* in which each model
-draws i.i.d. from one shared, frequency-weighted topic bag built from the
-pilot's own vocabulary (281 distinct topics — up from 270 as grok's real
-vocabulary joined the pool). Real models show less overlap than a
-chance-cooccurrence baseline in a shared vocabulary predicts. Per EXP-006
-(§3), the pilot's overlap regime (0.10–0.22) is one where labeler noise
-makes measured overlap an *upper bound* on true overlap — so if anything,
-true cross-model disjointness is understated here, not overstated. The
-null distribution's min/max and the vocabulary size above are now
-persisted directly in `stats_inference.json` under
-`headline_cross_model_overlap.null_test.pooled_frequency_baseline.diagnostics`
-(`pooled_frequency_null_diagnostics`) — cited from there, not computed
-off-pipeline as in the prior draft of this document.
+An honest evolution of this headline, worth stating precisely because an
+earlier revision of this document said something stronger: at 11 models
+the observed overlap sat *below every one of 10,000 null draws*. Adding
+kimi-k3 — whose topic pool is conventional (farming/bike/math/coffee
+openers, 20.8% memorization) — raised observed overlap to 0.119, which
+now sits just **inside the floor** of the null range (0.117–0.160)
+rather than below it. The conclusion is unchanged in substance and
+weaker in rhetoric: cross-model overlap is at or below the lowest
+levels chance co-occurrence in a shared vocabulary would produce, far
+below the null's mean (0.138), and nowhere near the pre-registered 0.35
+— the shared-pool hypothesis stays dead; it just dies by a less
+theatrical margin than the 11-model snapshot suggested. Per EXP-006
+(§3), the pilot's overlap regime is one where labeler noise makes
+measured overlap an *upper bound* on true overlap. The null
+distribution's min/max/mean and vocabulary size are persisted in
+`stats_inference.json` under
+`headline_cross_model_overlap.null_test.pooled_frequency_baseline.diagnostics`.
 
 `label_shuffle` was also computed (p = 1.0) and is reported for
 transparency only — it is the documented **wrong** null for a shared-pool
@@ -320,19 +323,27 @@ comparatively robust to this (Jaccard is computed over trigram sets, so a
 fixed-length prefix dilutes but does not zero out the score), which is
 part of why both tiers belong in the table, not just the exact one.
 
-**kimi is DROPPED from the roster, not merely flagged.** Per the EXP-004
-addendum: kimi-k2.5 is a reasoning model whose `reasoning_content` burn
-grows with the cascade's accumulating rejection list, so no fixed
-`max_tokens` survived depth 30 — three escalating attempts all failed
-(400 → empty at turn 1; 2048 → died turns 6/12; 4096 → died turns 20/18,
-the pre-committed "4096 or drop" threshold). Zero complete cascade runs,
-ever. Its memorization number is real but remains a scrap-based flag, not
-a path finding: **40.0%** [28.6%, 52.6%] (24/60 jokes, tighter than the
-prior 22-joke estimate but still built entirely from partial/failed-run
-scraps). Notably close to grok's 40.9% — but with no path data to
-corroborate it and a design-level reason (the max_tokens failure mode)
-that it will likely never get any, this repo does not include kimi in the
-per-lab fingerprint claims.
+**kimi-k2.5 is DROPPED from the roster; kimi-k3 replaced it and ran the
+full protocol.** Per the EXP-004 addenda: kimi-k2.5's `reasoning_content`
+burn grows with the accumulating rejection list, so no fixed `max_tokens`
+survived depth 30 (three escalating failures; zero complete runs ever —
+its 40.0% [28.6, 52.6] memorization number stays a scrap-based flag).
+The addendum's own prescribed fix — a reasoning-budget control — exists
+for **kimi-k3**: with Moonshot's `thinking: {"type": "disabled"}` it runs
+the standard 400-token protocol (manipulation-gated before launch;
+0 reasoning tokens, ~3s/turn). Results (4/4 complete runs, blind
+predictions registered first): exact-tier memorization **20.8%**
+[14.5, 28.9] vs predicted 0.20 — a near-exact calibration hit;
+degradation in 3/4 runs at depths 12, 12, 24 (censored median 18 vs
+predicted 12 — a miss; the registration failed to pin the
+survivor-handling convention, now a logged lesson); self-Jaccard
+**0.329**, second only to grok, with prefix agreement 0.0 — a fixed
+mid-size pool walked in varying order. Its fingerprint sits between
+grok's (fixed retrieval repertoire) and the open-weights pattern
+(mid-cascade collapse). Protocol caveats stated up front: the endpoint
+hard-pins temperature 0.6 (no temperature control — same ablation caveat
+class as the CLI lanes), and all claims are about *no-think* k3, not
+k3-with-reasoning.
 
 ### 2.4 Open-weights — fast degradation, low memorization
 
