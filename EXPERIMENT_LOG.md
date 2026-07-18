@@ -1155,3 +1155,42 @@ r01's event is persona-driven), which the wrapper-stack scope
 reduction already covers. Instrument-evaluation lesson folded into the
 field-coverage doctrine: decompose unparseable rates by input type —
 a "failure" concentrated on non-joke inputs is the instrument working.
+
+---
+
+## EXP-012 — Result (2026-07-17 night): THE FLOOR FIRED
+
+**mean ρ = 0.056**, bootstrap CI **[−0.14, 0.25]** (29 valid prompts,
+184 calls, zero unparseable) vs registered prediction 0.40 — a large
+miss, and below the registered floor (ρ ≤ 0.10 → the naked judge is
+not certifiable as a kernel component). Zero-call diagnostics from the
+cached scores sharpen the diagnosis: the judge is NOT degenerate (it
+uses the full 1–8 range with a healthy spread), yet its top-voted-vs-
+bottom-voted pairwise win rate is **0.467 — exactly chance**. The judge
+holds real opinions; they simply do not track this human signal.
+
+**What this does and does not show (instrument caveats pre-registered
+in the correction above):** the target was Oogiri-GO star counts over
+~6 candidates/prompt — a popularity-type signal on a tiny per-prompt
+fanout, NOT Oogiri-Master's ~96-candidate blind-vote consensus. Two
+hypotheses are indistinguishable in this data: (a) haiku's funniness
+taste genuinely fails to track oogiri-style human preference; (b) the
+star-count target is too noisy/biased to certify against. Per-prompt ρ
+ranged −1.0 to +1.0 (n≈6 per prompt is brutal). The Oogiri-Master
+acquisition (adapter built, data awaiting Sam's builder-ToS decision)
+is now the critical path to distinguishing (a) from (b).
+
+**Registered consequence, honored:** GPU spend on any kernel whose
+judge term is load-bearing is BLOCKED pending re-certification — either
+against the cleaner instrument (EXP-012b, Oogiri-Master) or by the
+theory gates demonstrating better human agreement (EXP-013/014 fixture
+validations running; their human-agreement version queues behind the
+Oogiri-Master decision). This is the certification protocol doing its
+job: the naked judge failed BEFORE a GPU-hour was spent on it, not
+after. The verifiable two-thirds of the kernel (novelty, diversity,
+repetition, comprehensibility) is untouched by this result — only the
+judged third is uncertified.
+
+**Verdict:** honest negative, high value. "Never train on a judge
+alone" was the project's founding rule on documented external evidence;
+EXP-012 makes it an internally measured fact about our own judge.

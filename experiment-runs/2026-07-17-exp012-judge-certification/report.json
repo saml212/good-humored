@@ -1,0 +1,776 @@
+{
+  "experiment": "EXP-012-judge-certification-oogiri",
+  "command": "python3 -m env.certify_judge_oogiri --n-prompts 30 --seed 20260717 --judge claude:haiku --min-candidates 2 --max-calls 3500 --retries 1 --allowed-licenses research_only --out experiment-runs/2026-07-17-exp012-judge-certification/report.json",
+  "run_stamp": "20260717T181445",
+  "judge_prompt_version": "exp012-v1",
+  "judge_prompt": "Rate the funniness of this response to this prompt.\n\nPrompt: {context}\n\nResponse: {candidate}\n\nOn a scale from 1 (not funny at all) to 10 (extremely funny), how funny is this response? Output ONLY a single integer from 1 to 10, nothing else.\n",
+  "judge_provider": "claude:haiku",
+  "seed": 20260717,
+  "n_prompts_requested_cli": 30,
+  "min_candidates": 2,
+  "allowed_licenses": [
+    "research_only"
+  ],
+  "data_source": "oogiri-go (data_adapters/oogiri.py), research_only. REGISTERED-DESIGN DEVIATION: EXP-012's registration and CLAUDE.md's Research Direction section describe Oogiri-Master's ~100-candidates/~100-independent-judges methodology; Oogiri-Master has no public pre-built release (oogiri.py module docstring), so this certification runs against Oogiri-GO instead -- candidates are scored by the 'star' aggregate like/popularity count (a WEAKER human signal per that module's own docstring), averaging ~6.3 candidates/prompt, not ~100. See this script's module docstring for the full statement.",
+  "load_stats": {
+    "total_rows": 23769,
+    "i2t_excluded": 17336,
+    "t2t_rows": 6433,
+    "other_type_excluded": 0,
+    "distinct_t2t_prompts": 1099,
+    "multi_candidate_groups": 1009,
+    "single_candidate_dropped": 90,
+    "ranked_groups_emitted": 1009,
+    "candidates_emitted": 6343
+  },
+  "wall_seconds": 1232.1,
+  "cache_path": "experiment-runs/2026-07-17-exp012-judge-certification/label_cache.jsonl",
+  "raw_log_path": "experiment-runs/2026-07-17-exp012-judge-certification/raw_per_prompt.20260717T181445.jsonl",
+  "predicted_mean_rho_registered": 0.4,
+  "floor_mean_rho_registered": 0.1,
+  "per_prompt": [
+    {
+      "source_id": "oogiri-go-t2t-0387",
+      "context": "In situations like this, it's tough to have a power outage.",
+      "n_candidates": 10,
+      "n_scored": 10,
+      "n_unparseable": 0,
+      "rho": 0.0,
+      "human_scores": [
+        3.0,
+        6.0,
+        2.0,
+        3.0,
+        3.0,
+        3.0,
+        9.0,
+        24.0,
+        4.0,
+        3.0
+      ],
+      "judge_scores": [
+        0.5,
+        0.6,
+        0.7,
+        0.3,
+        0.5,
+        0.7,
+        0.5,
+        0.6,
+        0.6,
+        0.2
+      ]
+    },
+    {
+      "source_id": "oogiri-go-t2t-0316",
+      "context": "I have my birthday tomorrow, to be exact.",
+      "n_candidates": 5,
+      "n_scored": 5,
+      "n_unparseable": 0,
+      "rho": -0.7254762501100117,
+      "human_scores": [
+        3.0,
+        6.0,
+        3.0,
+        3.0,
+        3.0
+      ],
+      "judge_scores": [
+        0.5,
+        0.1,
+        0.5,
+        0.3,
+        0.2
+      ]
+    },
+    {
+      "source_id": "oogiri-go-t2t-0201",
+      "context": "Everyone has thought about it once.",
+      "n_candidates": 9,
+      "n_scored": 9,
+      "n_unparseable": 0,
+      "rho": -0.031261216574968866,
+      "human_scores": [
+        3.0,
+        4.0,
+        9.0,
+        5.0,
+        3.0,
+        5.0,
+        3.0,
+        2.0,
+        3.0
+      ],
+      "judge_scores": [
+        0.6,
+        0.6,
+        0.2,
+        0.7,
+        0.6,
+        0.5,
+        0.3,
+        0.5,
+        0.4
+      ]
+    },
+    {
+      "source_id": "oogiri-go-t2t-0554",
+      "context": "Please lose your memory.",
+      "n_candidates": 4,
+      "n_scored": 4,
+      "n_unparseable": 0,
+      "rho": 0.23570226039551587,
+      "human_scores": [
+        3.0,
+        2.0,
+        1.0,
+        1.0
+      ],
+      "judge_scores": [
+        0.6,
+        0.4,
+        0.4,
+        0.6
+      ]
+    },
+    {
+      "source_id": "oogiri-go-t2t-1027",
+      "context": "What's the reason for not getting excited about cold beer?",
+      "n_candidates": 8,
+      "n_scored": 8,
+      "n_unparseable": 0,
+      "rho": 0.2906190968595482,
+      "human_scores": [
+        2.0,
+        6.0,
+        1.0,
+        3.0,
+        4.0,
+        2.0,
+        3.0,
+        1.0
+      ],
+      "judge_scores": [
+        0.3,
+        0.5,
+        0.4,
+        0.2,
+        0.4,
+        0.4,
+        0.6,
+        0.4
+      ]
+    },
+    {
+      "source_id": "oogiri-go-t2t-0240",
+      "context": "How can you tell whose pants one of the girls in class left behind in the dressing room?",
+      "n_candidates": 9,
+      "n_scored": 9,
+      "n_unparseable": 0,
+      "rho": -0.06550280794721897,
+      "human_scores": [
+        16.0,
+        6.0,
+        5.0,
+        3.0,
+        3.0,
+        4.0,
+        15.0,
+        6.0,
+        6.0
+      ],
+      "judge_scores": [
+        0.4,
+        0.5,
+        0.4,
+        0.4,
+        0.6,
+        0.6,
+        0.7,
+        0.5,
+        0.3
+      ]
+    },
+    {
+      "source_id": "oogiri-go-t2t-0250",
+      "context": "I bet this guy likes chess, why do you think so?",
+      "n_candidates": 7,
+      "n_scored": 7,
+      "n_unparseable": 0,
+      "rho": 0.46770717334674267,
+      "human_scores": [
+        2.0,
+        2.0,
+        5.0,
+        2.0,
+        5.0,
+        2.0,
+        5.0
+      ],
+      "judge_scores": [
+        0.2,
+        0.2,
+        0.5,
+        0.2,
+        0.5,
+        0.7,
+        0.5
+      ]
+    },
+    {
+      "source_id": "oogiri-go-t2t-0121",
+      "context": "Can you tell me an Australian idiom?",
+      "n_candidates": 5,
+      "n_scored": 5,
+      "n_unparseable": 0,
+      "rho": -0.9733285267845753,
+      "human_scores": [
+        3.0,
+        3.0,
+        1835.0,
+        9.0,
+        6.0
+      ],
+      "judge_scores": [
+        0.5,
+        0.5,
+        0.3,
+        0.4,
+        0.4
+      ]
+    },
+    {
+      "source_id": "oogiri-go-t2t-0645",
+      "context": "Please think about an article that makes me believe you're serious with all your might.",
+      "n_candidates": 6,
+      "n_scored": 6,
+      "n_unparseable": 0,
+      "rho": -0.22580645161290322,
+      "human_scores": [
+        3.0,
+        9.0,
+        3.0,
+        6.0,
+        1.0,
+        3.0
+      ],
+      "judge_scores": [
+        0.5,
+        0.7,
+        0.7,
+        0.2,
+        0.7,
+        0.6
+      ]
+    },
+    {
+      "source_id": "oogiri-go-t2t-0762",
+      "context": "The probability of you being able to join our company is 1 in 8192. Do you have any questions at the end?",
+      "n_candidates": 8,
+      "n_scored": 8,
+      "n_unparseable": 0,
+      "rho": null,
+      "human_scores": [
+        3.0,
+        3.0,
+        3.0,
+        3.0,
+        3.0,
+        3.0,
+        3.0,
+        3.0
+      ],
+      "judge_scores": [
+        0.7,
+        0.6,
+        0.6,
+        0.6,
+        0.5,
+        0.7,
+        0.7,
+        0.7
+      ]
+    },
+    {
+      "source_id": "oogiri-go-t2t-0803",
+      "context": "Think of a program that can get a 550% viewership on New Year's Eve.",
+      "n_candidates": 9,
+      "n_scored": 9,
+      "n_unparseable": 0,
+      "rho": -0.709963362443439,
+      "human_scores": [
+        7.0,
+        7.0,
+        6.0,
+        5.0,
+        4.0,
+        5.0,
+        6.0,
+        8.0,
+        4.0
+      ],
+      "judge_scores": [
+        0.4,
+        0.5,
+        0.3,
+        0.6,
+        0.5,
+        0.6,
+        0.2,
+        0.1,
+        0.6
+      ]
+    },
+    {
+      "source_id": "oogiri-go-t2t-0454",
+      "context": "McDonald's shock new menu.",
+      "n_candidates": 4,
+      "n_scored": 4,
+      "n_unparseable": 0,
+      "rho": 0.2581988897471611,
+      "human_scores": [
+        1.0,
+        21.0,
+        3.0,
+        2.0
+      ],
+      "judge_scores": [
+        0.4,
+        0.4,
+        0.5,
+        0.4
+      ]
+    },
+    {
+      "source_id": "oogiri-go-t2t-0479",
+      "context": "Oil King, or something like that.",
+      "n_candidates": 8,
+      "n_scored": 8,
+      "n_unparseable": 0,
+      "rho": -0.48436295349518815,
+      "human_scores": [
+        3.0,
+        3.0,
+        4.0,
+        3.0,
+        5.0,
+        7.0,
+        4.0,
+        5.0
+      ],
+      "judge_scores": [
+        0.4,
+        0.5,
+        0.4,
+        0.6,
+        0.6,
+        0.3,
+        0.3,
+        0.2
+      ]
+    },
+    {
+      "source_id": "oogiri-go-t2t-0949",
+      "context": "What kind of documentary title would be likely to appear on a persistent documentary program from now on?",
+      "n_candidates": 7,
+      "n_scored": 7,
+      "n_unparseable": 0,
+      "rho": -0.13338778844417354,
+      "human_scores": [
+        6.0,
+        3.0,
+        3.0,
+        24.0,
+        3.0,
+        79.0,
+        24.0
+      ],
+      "judge_scores": [
+        0.5,
+        0.4,
+        0.6,
+        0.2,
+        0.6,
+        0.5,
+        0.7
+      ]
+    },
+    {
+      "source_id": "oogiri-go-t2t-1001",
+      "context": "What would you do if you were switched bodies with a cat?",
+      "n_candidates": 3,
+      "n_scored": 3,
+      "n_unparseable": 0,
+      "rho": 0.5,
+      "human_scores": [
+        2.0,
+        3.0,
+        11.0
+      ],
+      "judge_scores": [
+        0.2,
+        0.7,
+        0.4
+      ]
+    },
+    {
+      "source_id": "oogiri-go-t2t-0672",
+      "context": "She just let out a fart and is now embarrassedly quiet. Can you say something clever to her?",
+      "n_candidates": 8,
+      "n_scored": 8,
+      "n_unparseable": 0,
+      "rho": 0.031070887689050725,
+      "human_scores": [
+        417.0,
+        12.0,
+        8.0,
+        210.0,
+        9.0,
+        7.0,
+        7.0,
+        24.0
+      ],
+      "judge_scores": [
+        0.6,
+        0.3,
+        0.6,
+        0.7,
+        0.7,
+        0.2,
+        0.7,
+        0.2
+      ]
+    },
+    {
+      "source_id": "oogiri-go-t2t-0117",
+      "context": "Can you teach me something that doesn't exist but is likely to be found in a middle school?",
+      "n_candidates": 6,
+      "n_scored": 6,
+      "n_unparseable": 0,
+      "rho": 0.4030299679679092,
+      "human_scores": [
+        10.0,
+        6.0,
+        808.0,
+        8.0,
+        18.0,
+        6.0
+      ],
+      "judge_scores": [
+        0.5,
+        0.6,
+        0.7,
+        0.6,
+        0.5,
+        0.2
+      ]
+    },
+    {
+      "source_id": "oogiri-go-t2t-0030",
+      "context": "Add one letter to one of Doraemon's secret gadgets and make it useless.",
+      "n_candidates": 4,
+      "n_scored": 4,
+      "n_unparseable": 0,
+      "rho": 0.6324555320336759,
+      "human_scores": [
+        7.0,
+        6.0,
+        5.0,
+        300.0
+      ],
+      "judge_scores": [
+        0.4,
+        0.6,
+        0.1,
+        0.6
+      ]
+    },
+    {
+      "source_id": "oogiri-go-t2t-0446",
+      "context": "Make everyone happy in 7 words or less.",
+      "n_candidates": 7,
+      "n_scored": 7,
+      "n_unparseable": 0,
+      "rho": 0.0,
+      "human_scores": [
+        3.0,
+        3.0,
+        257.0,
+        3.0,
+        3.0,
+        3.0,
+        3.0
+      ],
+      "judge_scores": [
+        0.7,
+        0.4,
+        0.7,
+        0.7,
+        0.7,
+        0.7,
+        0.8
+      ]
+    },
+    {
+      "source_id": "oogiri-go-t2t-0721",
+      "context": "That carpenter must be the daughter's boyfriend. How did I notice?",
+      "n_candidates": 5,
+      "n_scored": 5,
+      "n_unparseable": 0,
+      "rho": 0.6454972243679028,
+      "human_scores": [
+        3.0,
+        3.0,
+        1.0,
+        5.0,
+        3.0
+      ],
+      "judge_scores": [
+        0.5,
+        0.5,
+        0.5,
+        0.6,
+        0.6
+      ]
+    },
+    {
+      "source_id": "oogiri-go-t2t-0749",
+      "context": "The manners of listening to a 1000-piece orchestra concert are bad.",
+      "n_candidates": 7,
+      "n_scored": 7,
+      "n_unparseable": 0,
+      "rho": 0.44095855184409843,
+      "human_scores": [
+        3.0,
+        3.0,
+        3.0,
+        3.0,
+        3.0,
+        8.0,
+        3.0
+      ],
+      "judge_scores": [
+        0.5,
+        0.6,
+        0.6,
+        0.3,
+        0.5,
+        0.6,
+        0.5
+      ]
+    },
+    {
+      "source_id": "oogiri-go-t2t-0356",
+      "context": "If Ayako Imoto were a driving instructor at a driving school, what might happen?",
+      "n_candidates": 3,
+      "n_scored": 3,
+      "n_unparseable": 0,
+      "rho": 0.5,
+      "human_scores": [
+        101.0,
+        3.0,
+        3.0
+      ],
+      "judge_scores": [
+        0.5,
+        0.5,
+        0.3
+      ]
+    },
+    {
+      "source_id": "oogiri-go-t2t-0313",
+      "context": "I hate this kind of panda bread.",
+      "n_candidates": 4,
+      "n_scored": 4,
+      "n_unparseable": 0,
+      "rho": 0.7071067811865476,
+      "human_scores": [
+        1.0,
+        3.0,
+        3.0,
+        1.0
+      ],
+      "judge_scores": [
+        0.2,
+        0.6,
+        0.3,
+        0.3
+      ]
+    },
+    {
+      "source_id": "oogiri-go-t2t-0577",
+      "context": "Please repeat it and make me sad.",
+      "n_candidates": 9,
+      "n_scored": 9,
+      "n_unparseable": 0,
+      "rho": 0.16695576778015705,
+      "human_scores": [
+        9.0,
+        3.0,
+        3.0,
+        2.0,
+        3.0,
+        3.0,
+        9.0,
+        8.0,
+        2.0
+      ],
+      "judge_scores": [
+        0.7,
+        0.7,
+        0.5,
+        0.7,
+        0.5,
+        0.5,
+        0.5,
+        0.5,
+        0.2
+      ]
+    },
+    {
+      "source_id": "oogiri-go-t2t-0136",
+      "context": "Caught a wild insect while collecting.",
+      "n_candidates": 2,
+      "n_scored": 2,
+      "n_unparseable": 0,
+      "rho": -1.0,
+      "human_scores": [
+        12.0,
+        25.0
+      ],
+      "judge_scores": [
+        0.4,
+        0.3
+      ]
+    },
+    {
+      "source_id": "oogiri-go-t2t-0874",
+      "context": "What did Inaba want to do by taking 100 people with him?",
+      "n_candidates": 3,
+      "n_scored": 3,
+      "n_unparseable": 0,
+      "rho": 1.0,
+      "human_scores": [
+        3.0,
+        2.0,
+        5.0
+      ],
+      "judge_scores": [
+        0.5,
+        0.4,
+        0.6
+      ]
+    },
+    {
+      "source_id": "oogiri-go-t2t-0503",
+      "context": "Please add one letter to that character's name and make it funny.",
+      "n_candidates": 4,
+      "n_scored": 4,
+      "n_unparseable": 0,
+      "rho": 0.2,
+      "human_scores": [
+        962.0,
+        80.0,
+        93.0,
+        1143.0
+      ],
+      "judge_scores": [
+        0.4,
+        0.2,
+        0.5,
+        0.3
+      ]
+    },
+    {
+      "source_id": "oogiri-go-t2t-0251",
+      "context": "I called out once.",
+      "n_candidates": 3,
+      "n_scored": 3,
+      "n_unparseable": 0,
+      "rho": -0.8660254037844387,
+      "human_scores": [
+        3.0,
+        6.0,
+        5.0
+      ],
+      "judge_scores": [
+        0.5,
+        0.3,
+        0.5
+      ]
+    },
+    {
+      "source_id": "oogiri-go-t2t-0748",
+      "context": "The light is dim under the lantern, but you should have noticed something, right?",
+      "n_candidates": 6,
+      "n_scored": 6,
+      "n_unparseable": 0,
+      "rho": 0.7214084193623482,
+      "human_scores": [
+        6.0,
+        1.0,
+        3.0,
+        3.0,
+        3.0,
+        9.0
+      ],
+      "judge_scores": [
+        0.7,
+        0.3,
+        0.4,
+        0.3,
+        0.3,
+        0.4
+      ]
+    },
+    {
+      "source_id": "oogiri-go-t2t-0993",
+      "context": "What will the Dragon God do if I gather 7 Drago Balls?",
+      "n_candidates": 8,
+      "n_scored": 8,
+      "n_unparseable": 0,
+      "rho": -0.3588227330503932,
+      "human_scores": [
+        3.0,
+        4.0,
+        3.0,
+        3.0,
+        248.0,
+        3.0,
+        3.0,
+        4.0
+      ],
+      "judge_scores": [
+        0.5,
+        0.3,
+        0.5,
+        0.7,
+        0.5,
+        0.4,
+        0.6,
+        0.5
+      ]
+    }
+  ],
+  "n_prompts_requested": 30,
+  "n_prompts_scored": 30,
+  "n_prompts_with_valid_rho": 29,
+  "n_prompts_degenerate": 1,
+  "mean_rho": 0.0560956227011499,
+  "mean_rho_bootstrap_ci": {
+    "point": 0.0560956227011499,
+    "lo": -0.14239942419639104,
+    "hi": 0.24863134751632487,
+    "n_boot": 10000,
+    "n": 29,
+    "alpha": 0.05,
+    "method": "monte_carlo"
+  },
+  "call_stats": {
+    "calls": 184,
+    "cache_hits": 0,
+    "unparseable": 0,
+    "max_calls": 3500,
+    "budget_exhausted": false
+  }
+}

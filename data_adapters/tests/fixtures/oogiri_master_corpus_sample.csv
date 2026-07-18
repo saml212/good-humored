@@ -1,0 +1,16 @@
+id,prompt_id,prompt,response,vote_count
+corpus-0001-01,0001,"「あ、財布忘れた」と気づいた瞬間に言いそうなこと","財布「え、僕の話してた?」",12
+corpus-0001-02,0001,"「あ、財布忘れた」と気づいた瞬間に言いそうなこと","もう一回家に帰る勇気がない",7
+corpus-0001-03,0001,"「あ、財布忘れた」と気づいた瞬間に言いそうなこと","今日は現金じゃなくて愛で払う",3
+corpus-0001-04,0001,"「あ、財布忘れた」と気づいた瞬間に言いそうなこと","",0
+corpus-0002-01,0002,"世界一遅い宅配便の言い訳","台風を待っていました",9
+corpus-0002-02,0002,"世界一遅い宅配便の言い訳","配達員が道に迷って観光していました",9
+corpus-0003-01,0003,"新種の動物園ができるとしたら看板に書く注意書き","ライオンにウインクしないでください",5
+corpus-0004-01,0004,"singleton prompt with only one candidate","only one response here",4
+corpus-0005-01,0005,"malformed vote count row","this response has a bad vote count",not-a-number
+corpus-0005-02,0005,"malformed vote count row","this one is fine though",2
+corpus-0005-03,0005,"malformed vote count row","and this one too",6
+corpus-0006-01,,"row missing prompt_id","should be skipped entirely",3
+corpus-0007-01,0007,,"row missing prompt text, should be skipped",3
+corpus-0008-01,0008,"original prompt text for group 8","first response in mismatched-prompt group",4
+corpus-0008-02,0008,"DIFFERENT prompt text (typo/re-crawl drift)","second response in mismatched-prompt group",1

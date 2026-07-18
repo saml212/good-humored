@@ -16,6 +16,15 @@ commercial-safe and research-only data.
                          (jmhessel/newyorker_caption_contest, HF) loader,
                          'ranking' config, text-only,
                          license_class='commercial_safe' (CC-BY-4.0).
+    oogiri_master.py  -- Oogiri-Corpus (Murakami et al. 2025,
+                         arXiv:2512.21494 "Oogiri-Master") loader, parses
+                         an already-obtained Oogiri-Corpus.csv,
+                         license_class='research_only'. NO network fetch
+                         path exists -- no public release of this dataset
+                         was found anywhere as of this module's
+                         verification pass (see that module's docstring);
+                         `ensure_sample()` raises rather than pretending
+                         to download.
     local_corpus.py   -- adapter over the already-downloaded
                          ~/Experiments/good-humored-data/corpus/ (887,639
                          commercial-safe + 310,151 research-only single
