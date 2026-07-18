@@ -108,34 +108,46 @@ STATUS OF THE FIX, per tier:
     the default-ON justification, and its residual risks.
   - semantic tier (this module): CLOSED IN WINDOWED MODE, which is
     OPT-IN (`SemanticNoveltyPenalty(..., windowed=True)`, default OFF)
-    PENDING EXP-011 -- max cosine over sliding windows against the 25
-    templates, keeping the templates-only reference and
-    DEFAULT_THRESHOLD=0.38. The calibration-transfer ASSUMPTION: a
+    -- max cosine over sliding windows against the 25 templates, keeping
+    the templates-only reference. The calibration-transfer ASSUMPTION: a
     window that contains the paraphrase, with bounded surrounding
     filler, approximates the paraphrase-alone embedding closely enough
-    that the templates-only threshold still separates (the window
-    ladder guarantees every candidate span is fully contained in a
-    window it occupies >=1/3 of -- see SemanticNoveltyPenalty's
-    docstring -- and the audit measured threshold-crossing only below
-    ~10% joke fraction, so 1/3 leaves margin). EMPIRICAL SPOT-CHECK
-    (2026-07-17, real model + real templates, offline): the assumption
-    HOLDS on the detection side -- the 20-rep dilution exploit scores
-    severity ~0.96 windowed vs exactly 0.0 whole-text -- but FAILS on
-    the false-positive side: a genuinely novel multi-sentence
-    completion's best WINDOW similarity against the 25 templates came
-    out ~0.55 (vs ~0.3 whole-text), i.e. short windows of arbitrary
-    text sit closer to short joke sentences in MiniLM space than whole
-    completions do, and at threshold 0.38 windowed mode DOES penalize
-    novel long completions. EXP-011 (re-run
-    env/validate_semantic_novelty.py's positives/negatives through
-    windowed scoring, positives embedded in 0/5/20/50 reps of padding,
-    negatives INCLUDING multi-sentence novel completions -- the
-    negative class windowing newly exposes -- then re-sweep for the
-    lowest threshold with FPR<=0.05; expect it to land well above
-    0.38) is REQUIRED before any windowed threshold is trusted. Until
-    then the shipped, validated whole-text behavior is preserved
-    exactly by the default, and enabling windowed=True at
-    DEFAULT_THRESHOLD is known-miscalibrated, not merely unvalidated.
+    that a templates-only threshold still separates (the window ladder
+    guarantees every candidate span is fully contained in a window it
+    occupies >=1/3 of -- see SemanticNoveltyPenalty's docstring -- and
+    the audit measured threshold-crossing only below ~10% joke fraction,
+    so 1/3 leaves margin). EMPIRICAL SPOT-CHECK (2026-07-17, real model +
+    real templates, offline): the assumption HOLDS on the detection side
+    -- the 20-rep dilution exploit scores severity ~0.96 windowed vs
+    exactly 0.0 whole-text -- but FAILS on the false-positive side at
+    the WHOLE-TEXT threshold specifically: a genuinely novel
+    multi-sentence completion's best WINDOW similarity against the 25
+    templates came out ~0.55 (vs ~0.3 whole-text), i.e. short windows of
+    arbitrary text sit closer to short joke sentences in MiniLM space
+    than whole completions do, so `DEFAULT_THRESHOLD=0.38` specifically
+    is known-miscalibrated for windowed scoring.
+
+    EXP-011 (2026-07-17, RESOLVED): re-ran env/validate_semantic_novelty.
+    py's positives/negatives through windowed scoring (positives
+    embedded in 0/5/20/50 reps of padding PLUS a new verbatim-template
+    class; negatives EXPANDED with multi-sentence novel completions
+    straddling every window-ladder level's width -- the negative class
+    windowing newly exposes) and re-swept for the lowest threshold with
+    FPR<=0.05. Result: **WINDOWED_THRESHOLD=0.47** (see that constant,
+    below DEFAULT_THRESHOLD's own definition, for the full write-up) --
+    lower than the pre-registered blind prediction (~0.60), but all four
+    registered bars PASS (FPR<=0.05 on the expanded negatives;
+    verbatim+padded detection 1.0; padding-invariance 0.0095pp between 5
+    and 50 reps; paraphrase detection unchanged at 1.0 vs the whole-text
+    operating point) -- see `experiment-runs/2026-07-17-exp011-windowed-
+    semantic/report.json`. `windowed=True` STILL DEFAULTS TO
+    `DEFAULT_THRESHOLD` (0.38, the wrong constant for this mode) unless
+    a caller passes `threshold=WINDOWED_THRESHOLD` explicitly -- this
+    module does not auto-select a threshold by `windowed`; flipping
+    windowed mode's own default (OFF -> ON) and/or wiring
+    `WINDOWED_THRESHOLD` in as its automatic threshold are separate,
+    deliberate follow-up decisions the orchestrator makes, not made by
+    landing this constant.
 
 RESIDUAL RISKS WINDOWING DOES NOT SOLVE (both tiers): (1) a memorized
 joke or paraphrase interleaved word-by-word with filler has no
@@ -217,6 +229,76 @@ DEFAULT_SAMPLE_SEED = 20260717
 # docstring's WARNING for the numbers; `reference="corpus"` requires its
 # own explicit `threshold` and has no default.
 DEFAULT_THRESHOLD = 0.38
+
+# EXP-011 (2026-07-17): the re-swept threshold for WINDOWED
+# (`windowed=True`) max-over-sliding-windows scoring -- a SEPARATE
+# constant from DEFAULT_THRESHOLD above, never overwriting it (windowed
+# and whole-text scoring are different granularities with different
+# negative-class baselines -- see `env.validate_semantic_novelty`'s
+# `run_windowed_validation` and this file's own "PADDING/DILUTION" section
+# above for why 0.38 is measured-miscalibrated for windows: novel long
+# completions' best WINDOW similarity runs ~0.55 against the templates,
+# well above the whole-text threshold).
+#
+# Test set (the registered EXP-011 design, EXPERIMENT_LOG.md's "Windowed
+# novelty tiers" entry, plus the auditor's refinement to it):
+# POSITIVES = this module's whole-text reskins (depths 1/2/4) + 5 hand
+#   paraphrases + a NEW verbatim-template class (all 25 templates,
+#   unmodified -- the exact shape of the audited dilution exploit), each
+#   embedded inside 0/5/20/50 repetitions of a generic filler sentence.
+# NEGATIVES = the whole-text validation's own 100 novel negatives (reused
+#   unpadded) + a NEW class of 120 multi-sentence novel completions
+#   (concatenations of 2-5 genuinely different corpus jokes + non-joke
+#   prose) constructed at boundary-token lengths straddling (below/at/
+#   above) every window-ladder level's width -- short single-sentence
+#   negatives never trigger windowing at all and would flatter the
+#   threshold by never exercising the new scoring path.
+# Both scored via `SemanticNoveltyPenalty._window_texts`/
+# `_template_embeddings` directly (windowed_semantic_scores reuses the
+# class's own windowing, never re-implements it) -- exact scoring parity
+# with this class's own windowed `__call__` branch below.
+#
+# RESULT: threshold=0.47 (lowest clearing FPR<=0.05 on the expanded
+# negative set) -- ALL FOUR registered bars PASS:
+#   - FPR<=0.05 on the expanded negative set: 0.0455 (target <=0.05)
+#   - verbatim+padded detection >=0.95: 1.0 (75/75, padding reps 5/20/50)
+#   - padding-invariance <=2pp between 5 and 50 reps: 0.0095pp delta
+#     (detection 0.752 at pad=5 vs 0.762 at pad=50, all positive kinds
+#     combined)
+#   - paraphrase detection not below EXP-009's whole-text operating point
+#     on unpadded inputs: 1.0 windowed-unpadded vs 1.0 whole-text (equal)
+# Decision per the registered rule: windowed mode qualifies as a FULL
+# REPLACEMENT CANDIDATE (all bars clear), pending the orchestrator's
+# sign-off to actually flip `windowed=True`'s default -- see
+# `experiment-runs/2026-07-17-exp011-windowed-semantic/report.json` for
+# the complete sweep, FPR curve, and per-(kind, padding-level) detection
+# breakdown.
+#
+# HONEST RESIDUAL, not one of the four registered bars but visible in the
+# same report: the harder reskin classes (depth_4 raw group / the
+# depth-clamped-to-3 subset -- templates with too few substitutable
+# content words for a full depth-4 edit) detect measurably worse under
+# this threshold (0.0 and 0.381) than under the whole-text 0.38 threshold
+# (0.5 and 0.81 respectively, per experiment-runs/2026-07-17-semantic-
+# novelty-validation/report.json) -- the necessarily HIGHER windowed
+# operating point (0.47 vs 0.38, required to hold the expanded negative
+# set's FPR) trades some sensitivity on the weakest, heavily-substituted
+# reskins for closing the padding/dilution exploit. Verbatim and full
+# paraphrase detection (the constructs windowed mode exists to fix) are
+# both unaffected (1.0 either way).
+#
+# The blind pre-registered prediction (calibration id
+# exp-011-windowed-threshold) was ~0.60 -- the measured result (0.47) ran
+# meaningfully lower; left here for the calibration record, not smoothed
+# over.
+#
+# NOT wired as any class's default -- `SemanticNoveltyPenalty.__init__`
+# keeps resolving `windowed=True` constructions to DEFAULT_THRESHOLD
+# unless a caller passes `threshold=WINDOWED_THRESHOLD` explicitly.
+# Flipping windowed mode's default (`windowed=False` -> `True`) and/or
+# wiring this constant in as windowed mode's own automatic default is a
+# deliberate follow-up decision, not made by this constant's addition.
+WINDOWED_THRESHOLD = 0.47
 
 
 class SemanticNoveltyUnavailable(ImportError):
@@ -352,19 +434,26 @@ class SemanticNoveltyPenalty:
     class makes the same outcome explicit and skips the wasted embedding
     call rather than relying on an accidental zero).
 
-    WINDOWED MODE (`windowed=True`, DEFAULT OFF -- opt-in pending
-    EXP-011, see module docstring): closes the padding/dilution exploit
-    for this tier by scoring max cosine over sliding, BOUNDARY-tokenized
-    windows of the completion (plus the whole text, so windowed scores
-    are always >= shipped scores) against the SAME reference embeddings.
-    Default OFF preserves the shipped, validated whole-text behavior
-    bit-for-bit; the templates-only reference and
-    `DEFAULT_THRESHOLD=0.38` are kept in windowed mode on the
-    calibration-transfer assumption stated in the module docstring --
-    which a real-model spot-check found holds for DETECTION but NOT for
-    the false-positive baseline (window similarity for novel text runs
-    ~0.55, above 0.38), so EXP-011's re-swept threshold is REQUIRED
-    before enabling this flag in a real run; see module docstring.
+    WINDOWED MODE (`windowed=True`, DEFAULT OFF): closes the
+    padding/dilution exploit for this tier by scoring max cosine over
+    sliding, BOUNDARY-tokenized windows of the completion (plus the
+    whole text, so windowed scores are always >= shipped scores) against
+    the SAME reference embeddings. Default OFF preserves the shipped,
+    validated whole-text behavior bit-for-bit. The templates-only
+    reference set carries over unchanged to windowed mode, but the
+    THRESHOLD does not: `DEFAULT_THRESHOLD=0.38` was calibrated for
+    whole-text scoring and is NOT valid for windowed scoring (a
+    real-model spot-check found the calibration-transfer assumption
+    holds for DETECTION but not for the false-positive baseline --
+    window similarity for novel text runs ~0.55, above 0.38). EXP-011
+    (2026-07-17, RESOLVED -- see module docstring's "STATUS OF THE FIX"
+    section and `WINDOWED_THRESHOLD`'s own comment above) re-swept this
+    and landed **`WINDOWED_THRESHOLD=0.47`**. This constructor does NOT
+    auto-select it: `SemanticNoveltyPenalty(..., windowed=True)` without
+    an explicit `threshold=` still resolves to `DEFAULT_THRESHOLD`
+    (0.38, the wrong constant for this mode) -- callers who want the
+    validated windowed operating point must pass
+    `threshold=env.semantic_novelty.WINDOWED_THRESHOLD` explicitly.
 
     "Boundary-tokenized" (2026-07-17 audit BLOCKER fix; see
     `_window_texts`'s docstring for the full explanation): windows are

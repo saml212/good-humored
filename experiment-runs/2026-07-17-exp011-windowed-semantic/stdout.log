@@ -1,0 +1,28 @@
+/private/tmp/claude-501/-Users-samuellarson-Experiments-good-humored/3ca763fc-95e0-4888-9f25-f23d72582abe/scratchpad/embed-venv/lib/python3.9/site-packages/urllib3/__init__.py:35: NotOpenSSLWarning: urllib3 v2 only supports OpenSSL 1.1.1+, currently the 'ssl' module is compiled with 'LibreSSL 2.8.3'. See: https://github.com/urllib3/urllib3/issues/3020
+  warnings.warn(
+/Users/samuellarson/Experiments/good-humored/env/validate_semantic_novelty.py:721: RuntimeWarning: divide by zero encountered in matmul
+  scores.append(float((embeddings @ term._template_embeddings.T).max()))
+/Users/samuellarson/Experiments/good-humored/env/validate_semantic_novelty.py:721: RuntimeWarning: overflow encountered in matmul
+  scores.append(float((embeddings @ term._template_embeddings.T).max()))
+/Users/samuellarson/Experiments/good-humored/env/validate_semantic_novelty.py:721: RuntimeWarning: invalid value encountered in matmul
+  scores.append(float((embeddings @ term._template_embeddings.T).max()))
+/Users/samuellarson/Experiments/good-humored/env/validate_semantic_novelty.py:829: RuntimeWarning: semantic_novelty_penalty: windowed mode hit max_windows=256 on a 597-token completion -- window coverage is now a PREFIX of the completion per ladder level, and a memorized span pushed past every level's frontier evades the window tier (whole-text scoring still applies). Completions this long are degenerate under the rest of the stack, but do not ignore this in a real training run: raise max_windows or investigate what the policy is emitting. This warning fires once per instance.
+  baseline_negative_scores = windowed_semantic_scores(
+command: python3 -m env.validate_semantic_novelty --windowed --padding-reps 0,5,20,50 --corpus-dir /Users/samuellarson/Experiments/good-humored-data/corpus --out-dir experiment-runs/2026-07-17-exp011-windowed-semantic --corpus-cap 50000
+padding_reps: [0, 5, 20, 50]
+windowed positives: 75 reskins (25 templates x 3 depths) + 5 paraphrases + 25 verbatim = 105 total
+windowed negatives: 100 baseline (reused from EXP-009) + 250 straddle-pool candidates scanned
+semantic_novelty_penalty: embedding 50000 corpus items (25 templates, ALWAYS kept + 49975 jokes reservoir-sampled from 1197790 scanned, cap=50000, seed=20260717)...
+semantic_novelty_penalty: done (50000 embedded, coverage 4.1723% of scanned jokes + 100% of templates).
+window ladder (cover, stride, width): [(9, 4, 12), (18, 9, 26), (25, 12, 36)]
+straddle target lengths (boundary-tokens): [8, 12, 18, 22, 26, 32, 36, 42]
+windowed scoring: 105 positive-embeddings x 4 pad levels + 220 negatives (100 baseline + 120 straddling) in 32.939s
+
+=== EXP-011 windowed semantic novelty -- RECOMMENDED threshold=0.47 (lowest clearing FPR<=0.05 on the expanded negative set) ===
+  [PASS] fpr_le_0.05_on_expanded_negatives -> {'pass': True, 'fpr': 0.045454545454545456, 'target': 0.05}
+  [PASS] verbatim_padded_detection_ge_0.95 -> {'pass': True, 'detection': 1.0, 'target': 0.95, 'n': 75}
+  [PASS] padding_invariance_le_2pp_between_5_and_50_reps -> {'pass': True, 'delta': 0.00952380952380949, 'detection_pad5': 0.7523809523809524, 'detection_pad50': 0.7619047619047619, 'target_max_delta': 0.02}
+  [PASS] paraphrase_detection_not_below_exp009_whole_text_unpadded -> {'pass': True, 'windowed_unpadded': 1.0, 'whole_text_operating_point': 1.0}
+  decision: full_replacement_candidate
+
+wrote experiment-runs/2026-07-17-exp011-windowed-semantic/report.json

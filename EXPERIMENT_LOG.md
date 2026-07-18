@@ -1194,3 +1194,31 @@ judged third is uncertified.
 **Verdict:** honest negative, high value. "Never train on a judge
 alone" was the project's founding rule on documented external evidence;
 EXP-012 makes it an internally measured fact about our own judge.
+
+---
+
+## EXP-011 — Result (2026-07-17 night): windowed semantic threshold = 0.47, all four bars PASS
+
+Registered prediction 0.60, actual **0.47** (miss of 0.13, direction
+correct — the spot-check's ~0.6 eyeball overshot; closed honestly).
+Bars: FPR 0.0455 on the expanded 220-negative set (incl. the
+straddling-length class the audit demanded) ✓; verbatim+padded
+detection 1.0 at every padding level ✓; padding-invariance 0.95pp ✓;
+unpadded paraphrase detection 1.0, no regression vs EXP-009 ✓. FPR
+curve smooth through the operating point, no cliffs. Whole-text path
+re-verified byte-identical (0.38 / same numbers).
+
+**Deployment decision (registered rule says full-replacement
+qualifies; the data adds nuance):** the higher threshold costs
+deep-reskin sensitivity (depth-4: 0.81 whole-text → 0.38 windowed;
+the clamped depth-3 subclass 0.5 → 0.0) while the actual exploit
+targets — verbatim-in-padding and paraphrases — hold at 1.0.
+Windowed and whole-text now dominate DIFFERENT threat models:
+whole-text@0.38 for deep reskins (but dilutable), windowed@0.47 for
+dilution immunity (but shallower on heavy substitution). Decision:
+`WINDOWED_THRESHOLD = 0.47` ships as a validated constant; default
+stays OFF; deployment guidance = windowed for TRAINING runs (where
+dilution is the adversarial live threat), whole-text for passive
+evals. A max(both-modes) composite would dominate both individually
+but its union FPR is unmeasured — registered as EXP-011b if wanted,
+not improvised now. 410 env tests green.

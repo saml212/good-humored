@@ -2,13 +2,15 @@
 threshold-sweep helpers -- NO model download / sentence_transformers
 import anywhere in this file (the validation script's own module-level
 imports are lightweight for exactly this reason; sentence_transformers
-and the real model.encode() call live inside main(), never at module
-scope). ONE EXCEPTION: `TestSemanticScoresReferenceSet` below imports
-`numpy` locally, inside its own test methods, to build tiny hand-picked
-unit vectors for `semantic_scores`' extracted, dependency-injectable
-templates-vs-general-corpus logic (`numpy` is a real, already-required
-dependency of that function -- see its docstring -- unlike
-sentence_transformers, which stays fully out of this file).
+and the real model.encode() call live inside main()/run_windowed_
+validation(), never at module scope). ONE EXCEPTION: `TestSemanticScoresReferenceSet`
+and the EXP-011 `TestWindowedSemanticScores` below import `numpy` locally,
+inside their own test methods, and construct `SemanticNoveltyPenalty` with a
+FAKE `embed_fn` (never a real `SentenceTransformer`) to build tiny
+hand-picked unit vectors for `semantic_scores`'/`windowed_semantic_scores`'
+extracted, dependency-injectable logic (`numpy` is a real, already-required
+dependency of both -- see their docstrings -- unlike sentence_transformers,
+which stays fully out of this file).
 Run: python3 -m unittest discover -s env/tests -v
 """
 
@@ -17,11 +19,23 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from env.validate_semantic_novelty import (STOPWORDS, _content_candidates,
+from env.rewards import _normalize, _window_token_spans
+from env.semantic_novelty import SemanticNoveltyPenalty
+from env.validate_semantic_novelty import (BAR_PADDING_INVARIANCE_MAX_DELTA,
+                                           HAND_PARAPHRASES, MAX_JOKES_PER_NEGATIVE,
+                                           MIN_JOKES_PER_NEGATIVE, NONJOKE_PROSE,
+                                           STOPWORDS, WINDOW_PADDING_FILLER,
+                                           _content_candidates, _parse_padding_reps,
                                            _substitute_for, build_negatives,
                                            build_positive_records,
-                                           generate_reskin, pick_threshold,
-                                           semantic_scores, sweep)
+                                           build_straddle_lengths,
+                                           build_straddling_negatives,
+                                           build_windowed_positive_records,
+                                           generate_reskin, pad_with_filler,
+                                           pick_threshold, semantic_scores,
+                                           sweep, windowed_semantic_scores)
+
+FIXTURE_CORPUS_DIR = Path(__file__).parent / "fixtures" / "corpus"
 
 # The real chatgpt25-T24 template text -- deliberately the template with
 # the FEWEST substitution candidates (skeletons/fight/guts = 3), used to
@@ -338,6 +352,317 @@ class TestSweepAndPickThreshold(unittest.TestCase):
         ]
         chosen = pick_threshold(rows, target_fpr=0.05)
         self.assertEqual(chosen, rows[-1])
+
+
+# ------------------------------------------------------- EXP-011 (windowed)
+
+
+class TestParsePaddingReps(unittest.TestCase):
+    def test_default_string_parses_in_order(self):
+        self.assertEqual(_parse_padding_reps("0,5,20,50"), [0, 5, 20, 50])
+
+    def test_dedupes_and_sorts_out_of_order_input(self):
+        self.assertEqual(_parse_padding_reps("20,0,5,5,50"), [0, 5, 20, 50])
+
+    def test_tolerates_whitespace_around_entries(self):
+        self.assertEqual(_parse_padding_reps(" 0 , 5 ,20 "), [0, 5, 20])
+
+    def test_non_integer_entry_raises_value_error(self):
+        with self.assertRaises(ValueError):
+            _parse_padding_reps("0,five,20")
+
+    def test_negative_entry_raises_value_error(self):
+        with self.assertRaises(ValueError):
+            _parse_padding_reps("0,-5,20")
+
+    def test_empty_string_raises_value_error(self):
+        with self.assertRaises(ValueError):
+            _parse_padding_reps("")
+
+
+class TestPadWithFiller(unittest.TestCase):
+    def test_zero_reps_returns_text_unchanged(self):
+        self.assertEqual(pad_with_filler("hello world", 0), "hello world")
+
+    def test_negative_reps_returns_text_unchanged(self):
+        # Defensive -- reps should never be negative in practice
+        # (_parse_padding_reps already rejects it), but pad_with_filler
+        # itself shouldn't misbehave if called directly with one.
+        self.assertEqual(pad_with_filler("hello world", -1), "hello world")
+
+    def test_positive_reps_prepends_filler_that_many_times(self):
+        padded = pad_with_filler("hello world", 3)
+        self.assertEqual(padded, (WINDOW_PADDING_FILLER + " ") * 3 + "hello world")
+        self.assertTrue(padded.endswith("hello world"))
+        self.assertEqual(padded.count(WINDOW_PADDING_FILLER), 3)
+
+
+class TestBuildWindowedPositiveRecords(unittest.TestCase):
+    def test_adds_one_verbatim_record_per_template_unmodified(self):
+        templates = [{"id": "t0", "text": "some fake template text here"},
+                    {"id": "t1", "text": "another fake template over there"}]
+        records = build_windowed_positive_records(templates, seed=1)
+        verbatim = [r for r in records if r["kind"] == "verbatim"]
+        self.assertEqual(len(verbatim), 2)
+        self.assertEqual({r["template_id"] for r in verbatim}, {"t0", "t1"})
+        for t, r in zip(templates, verbatim):
+            match = next(v for v in verbatim if v["template_id"] == t["id"])
+            self.assertEqual(match["text"], t["text"])  # UNMODIFIED
+            self.assertIsNone(match["actual_depth"])
+
+    def test_still_contains_the_underlying_reskins_and_paraphrases(self):
+        templates = [{"id": "t0", "text": "some fake template text here"}]
+        records = build_windowed_positive_records(templates, seed=1)
+        reskins = [r for r in records if r["kind"] == "reskin"]
+        paraphrases = [r for r in records if r["kind"] == "paraphrase"]
+        self.assertEqual(len(reskins), 3)  # one per EDIT_DEPTHS entry
+        self.assertEqual(len(paraphrases), len(HAND_PARAPHRASES))
+
+    def test_total_count_is_reskins_plus_paraphrases_plus_verbatim(self):
+        templates = [{"id": "t%d" % i, "text": "template text %d" % i}
+                    for i in range(4)]
+        records = build_windowed_positive_records(templates, seed=1)
+        self.assertEqual(len(records), 4 * 3 + len(HAND_PARAPHRASES) + 4)
+
+
+class TestBuildStraddleLengths(unittest.TestCase):
+    def test_real_template_ladder_hand_computed(self):
+        # The REAL 25-template ladder (measured against the actual corpus
+        # at ~/Experiments/good-humored-data/corpus, window_growth=8
+        # default): [(9, 4, 12), (18, 9, 26), (25, 12, 36)]. Widths 12/26/36
+        # -8/-4/0/+6 delta ladder -> {8,12,18} u {22,26,32} u {32,36,42}.
+        levels = [(9, 4, 12), (18, 9, 26), (25, 12, 36)]
+        self.assertEqual(build_straddle_lengths(levels),
+                         [8, 12, 18, 22, 26, 32, 36, 42])
+
+    def test_single_level_floors_at_three(self):
+        # width=3, deltas (-4, 0, 6) -> raw {-1, 3, 9}; the -1 must floor
+        # to 3 (a length below 3 is meaningless -- _content_candidates/
+        # _window_token_spans both operate on real tokens), so the -4
+        # delta and the 0 delta COLLIDE at 3 and dedupe to a single entry.
+        self.assertEqual(build_straddle_lengths([(3, 1, 3)]), [3, 9])
+
+    def test_output_is_sorted_and_deduplicated(self):
+        # Two levels sharing a boundary (level 0's "+6" == level 1's "-4"
+        # midpoint collision) must not produce a duplicate entry.
+        levels = [(9, 4, 12), (10, 5, 14)]  # widths 12 and 14: +6 of 12 (18)
+                                            # and -4 of 14 (10) don't
+                                            # collide here, but the
+                                            # function must still dedupe
+                                            # in general -- see the
+                                            # 32-collision case above.
+        lengths = build_straddle_lengths(levels)
+        self.assertEqual(lengths, sorted(set(lengths)))
+
+
+class TestBuildStraddlingNegatives(unittest.TestCase):
+    JOKE_POOL = ["joke number %d about something totally different" % i
+                for i in range(20)]
+
+    def test_record_count_matches_lengths_times_reps(self):
+        records = build_straddling_negatives(
+            self.JOKE_POOL, target_lengths=[6, 15], reps_per_length=4, seed=1)
+        self.assertEqual(len(records), 2 * 4)
+
+    def test_actual_length_hits_target_exactly(self):
+        records = build_straddling_negatives(
+            self.JOKE_POOL, target_lengths=[6, 15, 30], reps_per_length=3, seed=1)
+        for r in records:
+            self.assertEqual(r["actual_length"], r["target_length"])
+            self.assertEqual(len(_window_token_spans(r["text"])), r["target_length"])
+
+    def test_truncation_never_splits_mid_token(self):
+        # A boundary-token-exact truncation must never leave a dangling
+        # partial word -- re-tokenizing the truncated text must find
+        # EXACTLY target_length spans, each a complete boundary-token
+        # (already covered by test_actual_length_hits_target_exactly, but
+        # this test additionally checks no trailing partial-word noise:
+        # the text must not end mid-way through what would have been the
+        # next token).
+        records = build_straddling_negatives(
+            self.JOKE_POOL, target_lengths=[10], reps_per_length=5, seed=7)
+        for r in records:
+            self.assertFalse(r["text"].endswith(" "))
+            self.assertTrue(r["text"])  # non-empty
+
+    def test_n_jokes_within_configured_bounds(self):
+        records = build_straddling_negatives(
+            self.JOKE_POOL, target_lengths=[10], reps_per_length=25, seed=3)
+        for r in records:
+            self.assertGreaterEqual(r["n_jokes"], MIN_JOKES_PER_NEGATIVE)
+            self.assertLessEqual(r["n_jokes"], MAX_JOKES_PER_NEGATIVE)
+
+    def test_small_joke_pool_clamps_n_jokes_without_crashing(self):
+        # A pool smaller than MAX_JOKES_PER_NEGATIVE must clamp k to the
+        # pool size (rng.sample without replacement would otherwise raise
+        # on k > population).
+        small_pool = ["only joke one here", "only joke two here"]
+        records = build_straddling_negatives(
+            small_pool, target_lengths=[8], reps_per_length=5, seed=1)
+        for r in records:
+            self.assertLessEqual(r["n_jokes"], len(small_pool))
+
+    def test_deterministic_given_same_seed(self):
+        r1 = build_straddling_negatives(
+            self.JOKE_POOL, target_lengths=[10, 20], reps_per_length=3, seed=42)
+        r2 = build_straddling_negatives(
+            self.JOKE_POOL, target_lengths=[10, 20], reps_per_length=3, seed=42)
+        self.assertEqual([r["text"] for r in r1], [r["text"] for r in r2])
+
+    def test_different_seed_yields_different_text(self):
+        r1 = build_straddling_negatives(
+            self.JOKE_POOL, target_lengths=[15], reps_per_length=3, seed=1)
+        r2 = build_straddling_negatives(
+            self.JOKE_POOL, target_lengths=[15], reps_per_length=3, seed=2)
+        self.assertNotEqual([r["text"] for r in r1], [r["text"] for r in r2])
+
+    def test_every_draw_includes_at_least_one_prose_sentence(self):
+        # Sanity check on the construction itself -- the registered design
+        # is "concatenations of 2-5 genuinely different corpus jokes +
+        # non-joke prose", not a single joke alone. Every draw (n_prose is
+        # recorded regardless of whether truncation later cuts into it)
+        # must include at least one NONJOKE_PROSE sentence.
+        records = build_straddling_negatives(
+            self.JOKE_POOL, target_lengths=[6, 40], reps_per_length=5, seed=1)
+        for r in records:
+            self.assertGreaterEqual(r["n_prose"], 1)
+            self.assertGreaterEqual(r["n_jokes"], MIN_JOKES_PER_NEGATIVE)
+
+
+def _make_dilution_embed_fn(joke_vocab):
+    """Fake embedder MODELING MEAN-POOLING DILUTION -- same pattern as
+    env/tests/test_semantic_novelty.py's `_make_dilution_embed_fn`
+    (duplicated here, not imported, so this test file stays self-contained
+    per its own module docstring's "no cross-file test coupling"
+    convention): embeds text as the unit vector of (a, b) where `a` =
+    token count from `joke_vocab`, `b` = every other token. Pure
+    joke-vocab text embeds at (1, 0) (the template's own reference axis),
+    pure non-vocab text at (0, 1)."""
+    def _embed(texts):
+        out = []
+        for t in texts:
+            toks = _normalize(t)
+            a = sum(1 for tok in toks if tok in joke_vocab)
+            b = len(toks) - a
+            n = (a * a + b * b) ** 0.5
+            out.append((a / n, b / n) if n else (0.0, 0.0))
+        return out
+    return _embed
+
+
+class TestWindowedSemanticScores(unittest.TestCase):
+    """`windowed_semantic_scores`'s core contract: reuse
+    `SemanticNoveltyPenalty._window_texts`/`_template_embeddings` for EXACT
+    scoring parity with the shipped windowed `__call__` path, returning
+    the RAW max-over-windows score (no threshold/ramp applied) a threshold
+    sweep needs. Fixture corpus (1 template, 11 boundary-tokens -- "Why
+    don't scientists trust atoms? Because they make up everything." --
+    same fixture env/tests/test_semantic_novelty.py's
+    TestWindowedSemanticDilution uses) + the dilution-modeling fake embed_fn
+    above, so every expected score is hand-derivable, not guessed."""
+
+    FILLER = "here is some filler text padding"  # 6 tokens, none in the
+                                                 # template's vocabulary
+
+    @classmethod
+    def setUpClass(cls):
+        from benchmark.joke_novelty import load_templates
+        [tmpl] = load_templates(FIXTURE_CORPUS_DIR)
+        cls.TEMPLATE = tmpl["text"]
+
+    def _term(self, **kwargs):
+        vocab = set(_normalize(self.TEMPLATE))
+        return SemanticNoveltyPenalty(
+            corpus_dir=FIXTURE_CORPUS_DIR,
+            embed_fn=_make_dilution_embed_fn(vocab), windowed=True, **kwargs)
+
+    def test_window_ladder_matches_hand_derivation(self):
+        # Same fixture, same hand-derived ladder as
+        # test_semantic_novelty.py's TestWindowedSemanticDilution.
+        term = self._term()
+        self.assertEqual(term._window_levels, [(11, 5, 15), (19, 9, 27)])
+
+    def test_twenty_rep_dilution_exploit_hand_computed(self):
+        term = self._term()
+        embed_fn = _make_dilution_embed_fn(set(_normalize(self.TEMPLATE)))
+        exploit = (self.FILLER + " ") * 20 + self.TEMPLATE
+        [score] = windowed_semantic_scores([exploit], term, embed_fn)
+        # Same hand computation as test_semantic_novelty.py's
+        # test_windowed_catches_twenty_rep_dilution_hand_computed: best
+        # window is the level-0 tail window (4 filler + 10 template
+        # words) -> cosine 10/sqrt(116).
+        expected = 10.0 / (116.0 ** 0.5)
+        self.assertAlmostEqual(score, expected, places=6)
+
+    def test_genuinely_novel_text_scores_near_zero(self):
+        term = self._term()
+        embed_fn = _make_dilution_embed_fn(set(_normalize(self.TEMPLATE)))
+        novel = ("the lighthouse keeper counted seagulls while coffee "
+                "went cold on the railing nobody believed his tally ") * 8
+        [score] = windowed_semantic_scores([novel], term, embed_fn)
+        self.assertAlmostEqual(score, 0.0, places=6)
+
+    def test_more_padding_does_not_change_the_windowed_score(self):
+        # Max-over-windows invariance to extra padding, mirroring
+        # test_semantic_novelty.py's own regression test for the shipped
+        # __call__ path -- windowed_semantic_scores must show the SAME
+        # invariance since it reuses the identical windowing machinery.
+        term = self._term()
+        embed_fn = _make_dilution_embed_fn(set(_normalize(self.TEMPLATE)))
+        exploit_20 = (self.FILLER + " ") * 20 + self.TEMPLATE
+        exploit_60 = (self.FILLER + " ") * 60 + self.TEMPLATE
+        scores = windowed_semantic_scores([exploit_20, exploit_60], term, embed_fn)
+        self.assertAlmostEqual(scores[0], scores[1], places=6)
+
+    def test_scoring_parity_with_the_shipped_call_path(self):
+        # THE load-bearing contract this function exists for: the raw
+        # score windowed_semantic_scores returns must reconstruct EXACTLY
+        # the penalty `SemanticNoveltyPenalty.__call__`'s own windowed
+        # branch would compute from that same score (weight * ramp), for
+        # the SAME term/embed_fn/text -- proving this validation script's
+        # numbers cannot silently drift from the shipped class's scoring.
+        vocab = set(_normalize(self.TEMPLATE))
+        embed_fn = _make_dilution_embed_fn(vocab)
+        term = self._term(threshold=0.5, weight=-1.5)
+        exploit = (self.FILLER + " ") * 20 + self.TEMPLATE
+
+        [score] = windowed_semantic_scores([exploit], term, embed_fn)
+        [reward] = term(prompts=[None], completions=[exploit])
+
+        self.assertGreater(score, term.threshold)
+        expected_reward = term.weight * (score - term.threshold) / (1.0 - term.threshold)
+        self.assertAlmostEqual(reward, expected_reward, places=6)
+
+    def test_one_embed_call_per_text_matching_the_class_contract(self):
+        calls = []
+        vocab = set(_normalize(self.TEMPLATE))
+        base_embed = _make_dilution_embed_fn(vocab)
+
+        def logging_embed(texts):
+            calls.append(list(texts))
+            return base_embed(texts)
+
+        term = self._term()
+        exploit = (self.FILLER + " ") * 20 + self.TEMPLATE
+        windowed_semantic_scores([exploit, "a short novel quip"], term, logging_embed)
+        self.assertEqual(len(calls), 2)  # one call per text, not per window
+        self.assertEqual(calls[0][0], exploit)   # whole text is always
+        self.assertEqual(calls[1][0], "a short novel quip")  # candidate[0]
+
+
+class TestExp011Constants(unittest.TestCase):
+    """Sanity checks on the EXP-011 module-level constants -- cheap
+    guards against a typo silently weakening a registered bar."""
+
+    def test_padding_invariance_bar_is_two_percentage_points(self):
+        self.assertAlmostEqual(BAR_PADDING_INVARIANCE_MAX_DELTA, 0.02)
+
+    def test_nonjoke_prose_pool_is_nonempty_and_distinct_from_templates(self):
+        self.assertGreaterEqual(len(NONJOKE_PROSE), 3)
+        self.assertEqual(len(NONJOKE_PROSE), len(set(NONJOKE_PROSE)))
+
+    def test_min_jokes_not_greater_than_max_jokes(self):
+        self.assertLessEqual(MIN_JOKES_PER_NEGATIVE, MAX_JOKES_PER_NEGATIVE)
 
 
 if __name__ == "__main__":
