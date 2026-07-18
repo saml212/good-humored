@@ -1,6 +1,39 @@
 # STATE
 
-_Last updated: 2026-07-17 end of day_
+_Last updated: 2026-07-17 late night (kernel-certification arc closed)_
+
+## NEWEST: the contained-kernel certification arc (EXP-011–014, one night, all pre-registered, all closed)
+
+The RL reward is now a **contained kernel** (Sam's design constraint:
+no humans at training time; human data used once, offline, to certify).
+The night's certification results, honest version:
+- **Verifiable two-thirds** (novelty n-gram windowed default-on
+  @EXP-011-validated thresholds, semantic tier, repetition, diversity,
+  comprehensibility): solid, adversarially hardened, dilution exploit
+  closed end-to-end.
+- **Theory-gate STRUCTURE validates**: anti-gaming probes pass (vague
+  probe 0.083 ≤ 0.25; nonsequitur resolution exactly 0.0), echo
+  resistance passes, and the registered disproof CONFIRMED the additive
+  stack's compensation failure (violation-only earns 80% of both-class
+  reward — the exact hole the multiplicative BVT gate exists to close).
+- **But every component where haiku-as-humor-judge is load-bearing
+  FAILED its bar**: naked judge vs human consensus ρ=0.056 (chance on
+  top-vs-bottom, EXP-012 — THE FLOOR FIRED); violation-judge halo
+  (EXP-013 margin 0.031 vs pred 0.40); surprise-proxy noise (EXP-014
+  pass 0.389 vs pred 0.65). One sentence: **structure multiplies
+  instrument quality, it does not create it.**
+- **Consequence, registered and honored: GPU spend on any
+  judge-load-bearing kernel is BLOCKED** pending a better judged-third
+  instrument. Paths, in cost order: multi-sample probes (EXP-014b,
+  cheap); different judge model for the violation axis; an RM trained
+  on Oogiri-Master consensus (**blocked on Sam** — dataset verified
+  real, ~96 blind-vote candidates/prompt, UNRELEASED; only path today
+  is the authors' scraper under unresolved source-site ToS; adapter
+  built+tested and waiting). kimi-k3 benchmarked (memorization 20.8%
+  vs pred 0.20 — calibration hit; fingerprint between grok and
+  open-weights); 12-model roster final; "below the entire null"
+  headline honestly weakened to "at the null's floor" when kimi-k3
+  joined. Calibration ledger: **27 closed, 0 open.**
 
 ## Current focus
 
