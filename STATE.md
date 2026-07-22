@@ -1,6 +1,34 @@
 # STATE
 
-_Last updated: 2026-07-17 late night (kernel-certification arc closed)_
+_Last updated: 2026-07-22 (direction refresh from Sam)_
+
+## DIRECTION REFRESH (Sam, 2026-07-22 — supersedes emphasis, not architecture)
+
+Sam's assessment, adopted: **the cascade is a diagnostic benchmark, not a
+funniness benchmark** — it measures necessary conditions (novelty,
+constraint adherence, pool structure) and "tells a compelling part of the
+story," but cannot evaluate whether anything is funny. Keep it AND
+improve it; do not confuse it for the ceiling. The new center of
+gravity, two workstreams (research agents dispatched 2026-07-22):
+1. **Direct funniness via the math of expectation violation** — Sam's
+   framing: a joke is an on-purpose hallucination; semantic similarity
+   tracks expectation up to a pivot, then breaks it in a way that
+   RESOLVES. Formalize what mathematically separates a controlled
+   departure (joke) from an uncontrolled one (hallucination):
+   surprisal-curve shape, Bayesian surprise/belief revision,
+   Kao-style noisy-channel ambiguity+distinctiveness — upgraded from
+   judge proxies to REAL logprobs if our API providers expose them
+   (the §12.2 Tier-A path; EXP-014 showed the proxy version is noisy).
+2. **Conversational measurement expansion** — "we have only scratched
+   the surface": callbacks/reincorporation, timing, escalation,
+   audience-model updating (does the model learn the rejector's
+   revealed preferences?), cascade 2.0 semantic step-size trajectories.
+   Constraints unchanged: contained kernel, theory-traceable, our
+   multi-turn niche.
+Also: new RL-environment skills exist in the rockie catalog; agent-side
+pull is blocked by an OS-level volume permission (HARNESS-NOTES L15) —
+Sam runs `rockie skill catalog` / `rockie skill pull` from his own
+shell.
 
 ## NEWEST: the contained-kernel certification arc (EXP-011–014, one night, all pre-registered, all closed)
 
