@@ -1370,3 +1370,39 @@ under these providers is dead; policy-own-rollout scoring is free.
 [LEARN] provider-instrumentation: External chat APIs cannot score a given text's conditional logprob — only their own generations'.
 Mistake: THEORY-MAP §12.2 left "real logprobs via API" as the assumed Tier-A upgrade path without a pre-probe.
 Correction: echo+logprobs is rejected, prefix text is never scored, and instructed regurgitation yields logprob 0.0 (obedience signal); true surprisal is only free for a locally-loaded model scoring its own tokens — judge-side and policy-side surprisal are architecturally different problems and must be designed separately.
+
+---
+
+## EXP-016 — callback-as-transformation (2026-07-22, pre-registered BEFORE run)
+
+**The bug this fixes (coverage-audit find):** benchmark/banter.py's
+detect_callback is bag-of-words (≥5-letter content-word overlap after a
+gap) with NO transformation requirement — a model literally repeating
+its earlier line scores the full callback bonus. Norrick's
+reincorporation construct (the craft consensus too) requires return
+WITH TRANSFORMATION; a verbatim callback should decay like any repeated
+joke (THEORY-MAP §6 novelty-decay chain). This is the self-repetition
+reskin bug's mirror image, in reward-path code, found before it shaped
+a training run.
+
+**Hypothesis (one sentence):** gating on callback detection and scoring
+by transformation distance (reused-but-transformed: the
+SelfRepetitionPenalty distance machinery, sign-managed) separates
+genuine callbacks from trivial/verbatim reuse on a hand-built fixture.
+
+**Design:** new computable term (NO judge anywhere — verifiable tier):
+detection gate (improved lexical+embedding match to an earlier-turn
+bit, with the documented false-positive words excluded) × transformation
+score (1 − similarity between callback turn and original, floored at
+0 for near-verbatim). Fixture (EXP-005 pattern): genuine_callback /
+coincidental_word_reuse / trivial_paraphrase / verbatim_repeat /
+no_callback × 8 each = 40 items, hand-written. Validation is pure local
+compute.
+
+**Predictions (registered blind):** mean(genuine) − mean(trivial_paraphrase
+∪ verbatim_repeat) ≈ **0.50** in normalized reward units
+(exp-016-callback-margin); coincidental_word_reuse mean ≤ 0.10 (the
+false-positive bar — detection gate must not fire on shared common
+words); no_callback exactly 0.
+
+Result: _(pending)_
