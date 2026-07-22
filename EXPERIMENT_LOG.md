@@ -1406,3 +1406,43 @@ false-positive bar — detection gate must not fire on shared common
 words); no_callback exactly 0.
 
 Result: _(pending)_
+
+**EXP-015 — Result (2026-07-22): HEADLINE IS AN ARTIFACT; hypothesis
+falsified under the clean test.** The measured ρ=+0.80 (p=0.0028)
+reproduced bit-for-bit through two independent routes — and then died
+under the audit's confound hunt: run_cascade's FIXED 30-turn loop never
+stops at degradation, so degraded models' post-repeat oscillation
+(step-size ≈ 0; e.g. opus r0's back half is `comedy`×10 at exactly 0.0)
+mechanically drags whole-path means down in lockstep with censored
+depth. Pre-repeat-only steps: ρ=0.396, p=0.20 (n.s.). Guaranteed-clean
+early window (first 5 steps, pre-repeat for all 46 runs): **ρ=−0.15,
+p=0.64 — no relationship.** Family-block permutation additionally
+raises the raw p ~10× (0.0028→0.0296): part of even the raw number is
+the already-known family split re-derived. Registered secondary (grok
+lowest entropy) also cleanly false — grok is tied for HIGHEST
+within-run topic entropy (4.907 ceiling), which combined with its
+0.443 cross-run set overlap yields the sharpened characterization:
+grok walks a BROAD path and walks the SAME broad path every run (a
+fixed setlist, not a small cage). Oscillation guard: all 4 flags are
+false positives of the quartile-threshold design (near-ceiling topic
+entropy, flagged via step-entropy OR-logic alone) — REWORK (AND logic
+or absolute thresholds) before any citation. Module itself: audited
+COMMIT (bit-for-bit reproduction, 39/39 tests, convention checks
+against published tables all exact).
+
+**Calibration note (the honest asterisk):** exp-015-stepsize-survival
+was closed at the measured +0.80 per protocol — but per the EXP-007b
+precedent, that close MEASURES AN ARTIFACT and must never be read as a
+successful prediction: the clean-test actual is ≈0, far from the
+registered +0.50. A "beat the prediction" close that dies under audit
+is the strongest argument this project has for auditing before citing.
+
+**Verdict:** cascade 2.0's first trajectory result is a documented
+negative with a methods lesson attached; the trajectory machinery
+itself is sound and stays (pre-repeat-windowed metrics are the valid
+going-forward form). FINDINGS gets this as a negative-result note, not
+a headline.
+
+[LEARN] trajectory-metrics: Fixed-length episode designs leak post-degradation behavior into whole-path statistics.
+Mistake: EXP-015's registered metric ("mean step-size") was computed over all 29 steps of a fixed 30-turn cascade, so post-repeat oscillation contaminated the mean and manufactured ρ=+0.80 with the depth variable it was predicting.
+Correction: any trajectory statistic on cascade runs must be windowed to pre-degradation steps (or a fixed early window shorter than the minimum observed depth), and the registration must pin the window definition BEFORE the run — an unpinned window is an unpinned convention, the same class as the EXP-014b survivor-median lesson.
