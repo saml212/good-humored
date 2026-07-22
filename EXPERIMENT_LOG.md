@@ -1446,3 +1446,50 @@ a headline.
 [LEARN] trajectory-metrics: Fixed-length episode designs leak post-degradation behavior into whole-path statistics.
 Mistake: EXP-015's registered metric ("mean step-size") was computed over all 29 steps of a fixed 30-turn cascade, so post-repeat oscillation contaminated the mean and manufactured ρ=+0.80 with the depth variable it was predicting.
 Correction: any trajectory statistic on cascade runs must be windowed to pre-degradation steps (or a fixed early window shorter than the minimum observed depth), and the registration must pin the window definition BEFORE the run — an unpinned window is an unpinned convention, the same class as the EXP-014b survivor-median lesson.
+
+**EXP-016 — Result (2026-07-22): MIXED — real fix, fixture-flattered
+margin, and three pre-wiring findings.** On the registered instrument
+(the committed 40-item fixture) all three bars pass: margin 0.820
+(pred 0.50 — calibration closed at the measured value, with the same
+asterisk as EXP-015: a beat-the-prediction number that did not
+generalize), coincidental 0.000, no_callback 0.000. The bug it fixes is
+real and quantified: the OLD detector pays the FULL bonus to verbatim
+repeats and single-shared-word coincidences alike; the new term scores
+both 0 while genuine transformed callbacks score 0.99.
+
+**But the audit's blind held-out set (15 items authored WITHOUT
+consulting the scorer — now preserved as
+benchmark/fixtures/callback_transform_holdout.jsonl) deflates the
+characterization:** margin drops to **0.555** (bar 0.50 — clears,
+barely); the coincidental false-positive bar **FAILS** at 0.333 (bar
+≤0.10 — a natural 3-shared-content-word coincidence scores max credit;
+the committed fixture had only ever used one shared word by
+construction); a hyphen-level transcription edit escapes the 0.8
+verbatim floor at 0.35. Three findings any future wiring PR must
+design around, none live today (the term is unwired/inert, audited
+zero env/ imports, sign-safe):
+1. **Correlated blind spot, quantified:** moderate multi-word
+   paraphrase (clause reorder + 2-3 swaps, zero new content) earns
+   +0.35..0.45 net at default weights — callback credit fires while
+   SelfRepetitionPenalty's trigram similarity falls below ITS 0.5
+   threshold. Both trigram terms miss TOGETHER past a paraphrase
+   intensity; single-word swaps are caught (net −0.15). The semantic
+   tier is the designed cross-check; wiring is blocked until it (or a
+   tightened floor) covers the dead zone.
+2. **Intervening-exclusion regression:** the old detector's
+   anti-topical-continuity guard was silently dropped — continuous
+   restatement of one topic scores transformation 1.0. Must be
+   reintroduced before wiring.
+3. **Embedding OR-path inversion:** floor 0.6 sits ABOVE the measured
+   genuine-coreference band (0.31-0.48), so as calibrated it can never
+   catch its target case and would only extend the paraphrase-gaming
+   surface. Ships disabled; recalibrate before ever enabling.
+
+**Verdict:** the term is a strict improvement over the shipped
+detector on the two cleanly-fixed failure classes, and NOT yet
+validated past its own fixture — logged as mixed, with the held-out
+set now a permanent regression fixture.
+
+[LEARN] fixture-validation: Builder-authored fixtures are fit-prone — every fixture-validated metric needs an auditor-authored blind held-out set before its bars are cited.
+Mistake: EXP-016's committed fixture used single-word swaps and one-shared-word coincidences by construction; the reported margin (0.82) and FP bar (0.000) were properties of those constructions, not the metric — held-out items dropped the margin to 0.55 and failed the FP bar at 0.33.
+Correction: fixture-based validation reports both numbers (committed + blind held-out) or neither; the held-out set is authored by someone who has not seen the scorer, and it ships in the repo as a standing regression fixture.

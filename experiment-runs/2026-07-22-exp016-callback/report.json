@@ -1,0 +1,565 @@
+{
+  "experiment": "EXP-016-callback-transform-validation",
+  "run_stamp": "20260722T121902",
+  "n_items": 40,
+  "min_gap": 3,
+  "wall_seconds": 2.498,
+  "embed_mode_run": true,
+  "new_per_class": {
+    "genuine_callback": {
+      "n": 8,
+      "mean": 0.9913793103448276,
+      "min": 0.9655172413793104,
+      "max": 1.0
+    },
+    "trivial_paraphrase": {
+      "n": 8,
+      "mean": 0.34213083259619637,
+      "min": 0.0,
+      "max": 0.4375
+    },
+    "coincidental_word_reuse": {
+      "n": 8,
+      "mean": 0.0,
+      "min": 0.0,
+      "max": 0.0
+    },
+    "verbatim_repeat": {
+      "n": 8,
+      "mean": 0.0,
+      "min": 0.0,
+      "max": 0.0
+    },
+    "no_callback": {
+      "n": 8,
+      "mean": 0.0,
+      "min": 0.0,
+      "max": 0.0
+    }
+  },
+  "old_per_class": {
+    "genuine_callback": {
+      "n": 8,
+      "mean": 1.0,
+      "min": 1.0,
+      "max": 1.0
+    },
+    "trivial_paraphrase": {
+      "n": 8,
+      "mean": 1.0,
+      "min": 1.0,
+      "max": 1.0
+    },
+    "coincidental_word_reuse": {
+      "n": 8,
+      "mean": 1.0,
+      "min": 1.0,
+      "max": 1.0
+    },
+    "verbatim_repeat": {
+      "n": 8,
+      "mean": 1.0,
+      "min": 1.0,
+      "max": 1.0
+    },
+    "no_callback": {
+      "n": 8,
+      "mean": 0.0,
+      "min": 0.0,
+      "max": 0.0
+    }
+  },
+  "margin_genuine_minus_trivial_union_verbatim": 0.8203138940467294,
+  "predicted_margin_registered": 0.5,
+  "pooled_trivial_verbatim_mean": 0.17106541629809818,
+  "bars": [
+    {
+      "name": "exp016_callback_margin_genuine_minus_trivial_union_verbatim",
+      "value": 0.8203138940467294,
+      "op": ">=",
+      "threshold": 0.5,
+      "passed": true
+    },
+    {
+      "name": "exp016_coincidental_word_reuse_mean",
+      "value": 0.0,
+      "op": "<=",
+      "threshold": 0.1,
+      "passed": true
+    },
+    {
+      "name": "exp016_no_callback_mean_exactly_zero",
+      "value": 0.0,
+      "op": "==",
+      "threshold": 0.0,
+      "passed": true
+    }
+  ],
+  "all_bars_pass": true,
+  "embed_mode_per_class": {
+    "genuine_callback": {
+      "n": 8,
+      "mean": 0.9913793103448276,
+      "min": 0.9655172413793104,
+      "max": 1.0
+    },
+    "trivial_paraphrase": {
+      "n": 8,
+      "mean": 0.34213083259619637,
+      "min": 0.0,
+      "max": 0.4375
+    },
+    "coincidental_word_reuse": {
+      "n": 8,
+      "mean": 0.0,
+      "min": 0.0,
+      "max": 0.0
+    },
+    "verbatim_repeat": {
+      "n": 8,
+      "mean": 0.0,
+      "min": 0.0,
+      "max": 0.0
+    },
+    "no_callback": {
+      "n": 8,
+      "mean": 0.0,
+      "min": 0.0,
+      "max": 0.0
+    }
+  },
+  "embed_mode_bars": [
+    {
+      "name": "exp016_callback_margin_genuine_minus_trivial_union_verbatim",
+      "value": 0.8203138940467294,
+      "op": ">=",
+      "threshold": 0.5,
+      "passed": true
+    },
+    {
+      "name": "exp016_coincidental_word_reuse_mean",
+      "value": 0.0,
+      "op": "<=",
+      "threshold": 0.1,
+      "passed": true
+    },
+    {
+      "name": "exp016_no_callback_mean_exactly_zero",
+      "value": 0.0,
+      "op": "==",
+      "threshold": 0.0,
+      "passed": true
+    }
+  ],
+  "embed_mode_all_bars_pass": true,
+  "old_vs_new": {
+    "gen-coffee": {
+      "gold_class": "genuine_callback",
+      "old_matched_word": "priya",
+      "old_score": 1.0,
+      "new_matched_turn_idx": 0,
+      "new_detection_reasons": [
+        "content_words"
+      ],
+      "new_trigram_similarity": 0.0,
+      "new_score": 1.0
+    },
+    "gen-neighbor": {
+      "gold_class": "genuine_callback",
+      "old_matched_word": "garden",
+      "old_score": 1.0,
+      "new_matched_turn_idx": 0,
+      "new_detection_reasons": [
+        "content_words"
+      ],
+      "new_trigram_similarity": 0.034482758620689655,
+      "new_score": 0.9655172413793104
+    },
+    "gen-siblings": {
+      "gold_class": "genuine_callback",
+      "old_matched_word": "sister",
+      "old_score": 1.0,
+      "new_matched_turn_idx": 0,
+      "new_detection_reasons": [
+        "content_words"
+      ],
+      "new_trigram_similarity": 0.0,
+      "new_score": 1.0
+    },
+    "gen-landlord": {
+      "gold_class": "genuine_callback",
+      "old_matched_word": "kitchen",
+      "old_score": 1.0,
+      "new_matched_turn_idx": 0,
+      "new_detection_reasons": [
+        "content_words"
+      ],
+      "new_trigram_similarity": 0.0,
+      "new_score": 1.0
+    },
+    "gen-gym": {
+      "gold_class": "genuine_callback",
+      "old_matched_word": "treadmills",
+      "old_score": 1.0,
+      "new_matched_turn_idx": 0,
+      "new_detection_reasons": [
+        "content_words"
+      ],
+      "new_trigram_similarity": 0.0,
+      "new_score": 1.0
+    },
+    "gen-printer": {
+      "gold_class": "genuine_callback",
+      "old_matched_word": "printer",
+      "old_score": 1.0,
+      "new_matched_turn_idx": 0,
+      "new_detection_reasons": [
+        "content_words"
+      ],
+      "new_trigram_similarity": 0.0,
+      "new_score": 1.0
+    },
+    "gen-umbrella": {
+      "gold_class": "genuine_callback",
+      "old_matched_word": "station",
+      "old_score": 1.0,
+      "new_matched_turn_idx": 0,
+      "new_detection_reasons": [
+        "content_words"
+      ],
+      "new_trigram_similarity": 0.0,
+      "new_score": 1.0
+    },
+    "gen-microwave": {
+      "gold_class": "genuine_callback",
+      "old_matched_word": "coworker",
+      "old_score": 1.0,
+      "new_matched_turn_idx": 0,
+      "new_detection_reasons": [
+        "content_words"
+      ],
+      "new_trigram_similarity": 0.034482758620689655,
+      "new_score": 0.9655172413793104
+    },
+    "triv-coffee": {
+      "gold_class": "trivial_paraphrase",
+      "old_matched_word": "coffee",
+      "old_score": 1.0,
+      "new_matched_turn_idx": 0,
+      "new_detection_reasons": [
+        "content_words"
+      ],
+      "new_trigram_similarity": 0.631578947368421,
+      "new_score": 0.368421052631579
+    },
+    "triv-neighbor": {
+      "gold_class": "trivial_paraphrase",
+      "old_matched_word": "night",
+      "old_score": 1.0,
+      "new_matched_turn_idx": 0,
+      "new_detection_reasons": [
+        "content_words"
+      ],
+      "new_trigram_similarity": 0.6,
+      "new_score": 0.4
+    },
+    "triv-siblings": {
+      "gold_class": "trivial_paraphrase",
+      "old_matched_word": "brother",
+      "old_score": 1.0,
+      "new_matched_turn_idx": 0,
+      "new_detection_reasons": [
+        "content_words"
+      ],
+      "new_trigram_similarity": 0.6842105263157895,
+      "new_score": 0.3157894736842105
+    },
+    "triv-landlord": {
+      "gold_class": "trivial_paraphrase",
+      "old_matched_word": "leaky",
+      "old_score": 1.0,
+      "new_matched_turn_idx": 0,
+      "new_detection_reasons": [
+        "content_words"
+      ],
+      "new_trigram_similarity": 0.5714285714285714,
+      "new_score": 0.4285714285714286
+    },
+    "triv-gym": {
+      "gold_class": "trivial_paraphrase",
+      "old_matched_word": "treadmill",
+      "old_score": 1.0,
+      "new_matched_turn_idx": 0,
+      "new_detection_reasons": [
+        "content_words"
+      ],
+      "new_trigram_similarity": 0.8666666666666667,
+      "new_score": 0.0
+    },
+    "triv-printer": {
+      "gold_class": "trivial_paraphrase",
+      "old_matched_word": "printer",
+      "old_score": 1.0,
+      "new_matched_turn_idx": 0,
+      "new_detection_reasons": [
+        "content_words"
+      ],
+      "new_trigram_similarity": 0.5625,
+      "new_score": 0.4375
+    },
+    "triv-umbrella": {
+      "gold_class": "trivial_paraphrase",
+      "old_matched_word": "station",
+      "old_score": 1.0,
+      "new_matched_turn_idx": 0,
+      "new_detection_reasons": [
+        "content_words"
+      ],
+      "new_trigram_similarity": 0.625,
+      "new_score": 0.375
+    },
+    "triv-microwave": {
+      "gold_class": "trivial_paraphrase",
+      "old_matched_word": "coworker",
+      "old_score": 1.0,
+      "new_matched_turn_idx": 0,
+      "new_detection_reasons": [
+        "content_words"
+      ],
+      "new_trigram_similarity": 0.5882352941176471,
+      "new_score": 0.4117647058823529
+    },
+    "coin-coffee": {
+      "gold_class": "coincidental_word_reuse",
+      "old_matched_word": "espresso",
+      "old_score": 1.0,
+      "new_matched_turn_idx": null,
+      "new_detection_reasons": [],
+      "new_trigram_similarity": null,
+      "new_score": 0.0
+    },
+    "coin-neighbor": {
+      "gold_class": "coincidental_word_reuse",
+      "old_matched_word": "garden",
+      "old_score": 1.0,
+      "new_matched_turn_idx": null,
+      "new_detection_reasons": [],
+      "new_trigram_similarity": null,
+      "new_score": 0.0
+    },
+    "coin-siblings": {
+      "gold_class": "coincidental_word_reuse",
+      "old_matched_word": "casserole",
+      "old_score": 1.0,
+      "new_matched_turn_idx": null,
+      "new_detection_reasons": [],
+      "new_trigram_similarity": null,
+      "new_score": 0.0
+    },
+    "coin-landlord": {
+      "gold_class": "coincidental_word_reuse",
+      "old_matched_word": "kitchen",
+      "old_score": 1.0,
+      "new_matched_turn_idx": null,
+      "new_detection_reasons": [],
+      "new_trigram_similarity": null,
+      "new_score": 0.0
+    },
+    "coin-gym": {
+      "gold_class": "coincidental_word_reuse",
+      "old_matched_word": "machines",
+      "old_score": 1.0,
+      "new_matched_turn_idx": null,
+      "new_detection_reasons": [],
+      "new_trigram_similarity": null,
+      "new_score": 0.0
+    },
+    "coin-printer": {
+      "gold_class": "coincidental_word_reuse",
+      "old_matched_word": "client",
+      "old_score": 1.0,
+      "new_matched_turn_idx": null,
+      "new_detection_reasons": [],
+      "new_trigram_similarity": null,
+      "new_score": 0.0
+    },
+    "coin-umbrella": {
+      "gold_class": "coincidental_word_reuse",
+      "old_matched_word": "station",
+      "old_score": 1.0,
+      "new_matched_turn_idx": null,
+      "new_detection_reasons": [],
+      "new_trigram_similarity": null,
+      "new_score": 0.0
+    },
+    "coin-microwave": {
+      "gold_class": "coincidental_word_reuse",
+      "old_matched_word": "coworker",
+      "old_score": 1.0,
+      "new_matched_turn_idx": null,
+      "new_detection_reasons": [],
+      "new_trigram_similarity": null,
+      "new_score": 0.0
+    },
+    "verb-coffee": {
+      "gold_class": "verbatim_repeat",
+      "old_matched_word": "decaf",
+      "old_score": 1.0,
+      "new_matched_turn_idx": 0,
+      "new_detection_reasons": [
+        "content_words"
+      ],
+      "new_trigram_similarity": 1.0,
+      "new_score": 0.0
+    },
+    "verb-neighbor": {
+      "gold_class": "verbatim_repeat",
+      "old_matched_word": "golden",
+      "old_score": 1.0,
+      "new_matched_turn_idx": 0,
+      "new_detection_reasons": [
+        "content_words"
+      ],
+      "new_trigram_similarity": 1.0,
+      "new_score": 0.0
+    },
+    "verb-siblings": {
+      "gold_class": "verbatim_repeat",
+      "old_matched_word": "famous",
+      "old_score": 1.0,
+      "new_matched_turn_idx": 0,
+      "new_detection_reasons": [
+        "content_words"
+      ],
+      "new_trigram_similarity": 1.0,
+      "new_score": 0.0
+    },
+    "verb-landlord": {
+      "gold_class": "verbatim_repeat",
+      "old_matched_word": "leaky",
+      "old_score": 1.0,
+      "new_matched_turn_idx": 0,
+      "new_detection_reasons": [
+        "content_words"
+      ],
+      "new_trigram_similarity": 1.0,
+      "new_score": 0.0
+    },
+    "verb-gym": {
+      "gold_class": "verbatim_repeat",
+      "old_matched_word": "treadmill",
+      "old_score": 1.0,
+      "new_matched_turn_idx": 0,
+      "new_detection_reasons": [
+        "content_words"
+      ],
+      "new_trigram_similarity": 1.0,
+      "new_score": 0.0
+    },
+    "verb-printer": {
+      "gold_class": "verbatim_repeat",
+      "old_matched_word": "printer",
+      "old_score": 1.0,
+      "new_matched_turn_idx": 0,
+      "new_detection_reasons": [
+        "content_words"
+      ],
+      "new_trigram_similarity": 1.0,
+      "new_score": 0.0
+    },
+    "verb-umbrella": {
+      "gold_class": "verbatim_repeat",
+      "old_matched_word": "soaked",
+      "old_score": 1.0,
+      "new_matched_turn_idx": 0,
+      "new_detection_reasons": [
+        "content_words"
+      ],
+      "new_trigram_similarity": 1.0,
+      "new_score": 0.0
+    },
+    "verb-microwave": {
+      "gold_class": "verbatim_repeat",
+      "old_matched_word": "coworker",
+      "old_score": 1.0,
+      "new_matched_turn_idx": 0,
+      "new_detection_reasons": [
+        "content_words"
+      ],
+      "new_trigram_similarity": 1.0,
+      "new_score": 0.0
+    },
+    "none-coffee": {
+      "gold_class": "no_callback",
+      "old_matched_word": null,
+      "old_score": 0.0,
+      "new_matched_turn_idx": null,
+      "new_detection_reasons": [],
+      "new_trigram_similarity": null,
+      "new_score": 0.0
+    },
+    "none-neighbor": {
+      "gold_class": "no_callback",
+      "old_matched_word": null,
+      "old_score": 0.0,
+      "new_matched_turn_idx": null,
+      "new_detection_reasons": [],
+      "new_trigram_similarity": null,
+      "new_score": 0.0
+    },
+    "none-siblings": {
+      "gold_class": "no_callback",
+      "old_matched_word": null,
+      "old_score": 0.0,
+      "new_matched_turn_idx": null,
+      "new_detection_reasons": [],
+      "new_trigram_similarity": null,
+      "new_score": 0.0
+    },
+    "none-landlord": {
+      "gold_class": "no_callback",
+      "old_matched_word": null,
+      "old_score": 0.0,
+      "new_matched_turn_idx": null,
+      "new_detection_reasons": [],
+      "new_trigram_similarity": null,
+      "new_score": 0.0
+    },
+    "none-gym": {
+      "gold_class": "no_callback",
+      "old_matched_word": null,
+      "old_score": 0.0,
+      "new_matched_turn_idx": null,
+      "new_detection_reasons": [],
+      "new_trigram_similarity": null,
+      "new_score": 0.0
+    },
+    "none-printer": {
+      "gold_class": "no_callback",
+      "old_matched_word": null,
+      "old_score": 0.0,
+      "new_matched_turn_idx": null,
+      "new_detection_reasons": [],
+      "new_trigram_similarity": null,
+      "new_score": 0.0
+    },
+    "none-umbrella": {
+      "gold_class": "no_callback",
+      "old_matched_word": null,
+      "old_score": 0.0,
+      "new_matched_turn_idx": null,
+      "new_detection_reasons": [],
+      "new_trigram_similarity": null,
+      "new_score": 0.0
+    },
+    "none-microwave": {
+      "gold_class": "no_callback",
+      "old_matched_word": null,
+      "old_score": 0.0,
+      "new_matched_turn_idx": null,
+      "new_detection_reasons": [],
+      "new_trigram_similarity": null,
+      "new_score": 0.0
+    }
+  }
+}
