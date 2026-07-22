@@ -1271,3 +1271,51 @@ a stale-pycache artifact; 775 repo-wide now green.
 [LEARN] instrument-design: Judge-structure fixes cannot rescue judge-capability gaps.
 Mistake: expected separate focused judge calls (violation vs benignity) to eliminate the halo effect and single-guess embedding distance to proxy surprisal — both structural fixes to what turned out to be capability limits of the haiku instrument.
 Correction: validate the INSTRUMENT on the component task (can this judge rate violation independent of funniness at all?) before designing structure around it; structure multiplies instrument quality, it does not create it.
+
+---
+
+## EXP-015 — semantic step-size trajectories over the cascade pilot (2026-07-22, pre-registered BEFORE analysis)
+
+**Direction context:** first build of the 2026-07-22 refresh (STATE.md):
+cascade 2.0 — upgrade the cascade from topic-set arithmetic to
+embedding-space TRAJECTORY analysis, porting the Motta et al. (ICLR
+2026) semantic-navigation formalism (step-size/velocity, acceleration,
+entropy, distance-to-centroid) from human fluency data to LLM cascade
+production — an application their own paper names as future work;
+novelty double-verified (their statement + our RQ6 search trail).
+Also closes THEORY-MAP §5's self-documented weakness
+(cluster_switch_stats understates patch structure).
+
+**Hypothesis (one sentence):** models whose cascade trajectories take
+larger semantic steps (better patch-departure, in MVT terms) survive
+longer under accumulating rejection.
+
+**Instrument (exact, per the EXP-012 lesson):** all-MiniLM-L6-v2
+embeddings of each turn's raw v2 topic label (the pilot's authoritative
+instrument), unit-normalized; per-run step-size series = cosine
+distance between consecutive topic embeddings; per-model mean
+step-size, trajectory entropy, mean distance-to-centroid; data =
+experiment-runs/2026-07-17-cascade-pilot (12 models, frozen). Zero new
+API calls.
+
+**Predictions (registered blind):**
+- Headline: Spearman ρ(mean step-size, censored degradation depth)
+  across the 12 models ≈ **+0.50** (exp-015-stepsize-survival).
+- Secondary (directional, no calibration row): grok shows the LOWEST
+  trajectory entropy in the roster (fixed repertoire = confined walk);
+  the oscillation guard (step-size high but entropy low) fires for no
+  current model but is implemented and tested — the registered gaming
+  vector.
+
+Result: _(pending)_
+
+**Queued from the same research pass (not yet registered):** EXP-016
+callback-as-transformation (detect_callback currently rewards VERBATIM
+reuse — bag-of-words, no transformation requirement, the mirror image
+of the reskin bug; fix = gate on callback, score by transformation
+distance, EXP-005-style fixture with genuine/coincidental/trivial/none
+classes); EXP-017 audience-adaptation vs an adaptive-rejector persona
+(highest strategic novelty — rejection-only preference learning has no
+literature precedent; needs its own rejector validation cycle first);
+EXP-018 aptitude/unreliability decomposition for humor consistency
+(port of arXiv:2505.06120 — gives teeth to the RLVR-damage claim).
