@@ -1319,3 +1319,54 @@ classes); EXP-017 audience-adaptation vs an adaptive-rejector persona
 literature precedent; needs its own rejector validation cycle first);
 EXP-018 aptitude/unreliability decomposition for humor consistency
 (port of arXiv:2505.06120 — gives teeth to the RLVR-damage claim).
+
+---
+
+## EXP-014b — multi-sample incongruity gate (2026-07-22, pre-registered BEFORE run)
+
+**Context (expectation-violation research pass, both agents' reports in
+transcript):** Sam's "on-purpose hallucination" framing formalizes as
+Bayesian surprise — S = KL(posterior‖prior) over interpretations
+(Itti & Baldi) — with the Kao/Trott constraint intact: surprise GATES,
+never scales. The hallucination-vs-joke signature (spike-then-resolve
+vs spike-without-resolve) is ALREADY partially confirmed in EXP-014's
+own data: gate-1 fires near-equally for real_joke and
+setup_nonsequitur; gate-2 separates them at 0.000 for non-sequiturs.
+The gap — real_joke's 0.389 vs 0.65 — was diagnosed as single-guess
+sampling noise (repeat consistency 0.556).
+
+**Hypothesis (one sentence):** averaging K=5 cold and K=5 primed
+predictor guesses (centroid-based distances) removes the diagnosed
+noise without changing the gate's structure.
+
+**Design:** identical fixture, bars, prompts, thresholds, and
+provider (claude:haiku + all-MiniLM-L6-v2) as EXP-014; the ONLY change
+is K=1 → K=5 per condition with centroid distances (cold-dispersion
+reported as a diagnostic). ~11 calls/item vs 3 — cost stated. Runner:
+extend validate_incongruity_gate.py with --k-samples.
+
+**Predictions (registered blind):** repeat_consistency(real_joke)
+0.556 → **0.82** (exp-014b-consistency); real_joke both-gates pass
+0.389 → **0.60** (exp-014b-passrate). Vague-probe bar must STAY ≤0.25
+(averaging must not soften the anti-gaming property — the risk to
+watch).
+
+Result: _(pending)_
+
+**Queued as EXP-019 (registered design, blocked on policy-model
+choice):** the policy-native pivot surprisal-resolution differential —
+ΔS = −log P_θ(pivot|setup) + log P_θ(pivot|setup+twist-cue) computed
+EXACTLY from the RL policy's own logits (one extra forward pass, full
+vocabulary, zero sampling noise, zero API calls). The real Tier A.
+Requires plumbing reward terms into policy logits (an architecture
+extension to the Callable contract) and a chosen local policy model
+(TRANSFER-PLAN's Qwen3-8B). External-API Tier A is FALSIFIED (6-call
+probe): echo+logprobs rejected outright by deepseek
+("echo should not be used with logprobs"), prefix-mode returns no
+logprobs for prefix text, instructed-regurgitation returns all-0.0
+logprobs (obedience, not expectation) — scoring foreign fixed text
+under these providers is dead; policy-own-rollout scoring is free.
+
+[LEARN] provider-instrumentation: External chat APIs cannot score a given text's conditional logprob — only their own generations'.
+Mistake: THEORY-MAP §12.2 left "real logprobs via API" as the assumed Tier-A upgrade path without a pre-probe.
+Correction: echo+logprobs is rejected, prefix text is never scored, and instructed regurgitation yields logprob 0.0 (obedience signal); true surprisal is only free for a locally-loaded model scoring its own tokens — judge-side and policy-side surprisal are architecturally different problems and must be designed separately.
