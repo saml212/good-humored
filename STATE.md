@@ -76,11 +76,32 @@ Consequences, all codified:
    (Gandhi 2601.04436). Certification = pure inference vs NYCC's 292M
    votes; FIRST NODE EXPERIMENT, merged with the model screen (every
    candidate screened as policy AND audience).
-2. NYCC quantile RM demoted to optional reference implementation in a
-   pluggable taste slot — buyers plug in their own models/preference
-   data; our IP is the environment around the slot.
+2. CORRECTED 2026-07-30 (Sam): the trained emulator is BACK as a full
+   layer — trained on EVERY legally-usable funniness dataset (inventory
+   agent dispatched), quantile head, UWO/WARM ensembling. Sam's point
+   was never "no emulator" — it was "not ONLY an NYCC emulator." The
+   layered taste stack is: reaction-logprob (zero-training, EXP-023) +
+   multi-dataset emulator + verifiable gates — three semi-independent
+   signals so the decoupling monitor has real cross-checks. The
+   pluggable slot survives as the BUYER-facing interface; we ship the
+   reference layers.
 3. Joke-fixture instrument work STOPS. Conversational reward terms
-   continue (EXP-016c NLI callbacks; timing term to be spec'd).
+   continue (EXP-016c NLI callbacks; timing term to be spec'd) PLUS
+   two new builds from Sam's 2026-07-30 spec:
+   - **Familiar/novel embedding BAND term**: reply must be anchored to
+     the conversation's embedding neighborhood (familiar = the
+     comprehensibility half, currently a crude heuristic) while
+     clearing the certified novelty floors (expectation-breaking).
+     Necessary-condition band, NOT a funniness rating — distinct from
+     what EXP-019/020/021 falsified.
+   - **Banter env v2 — provocation scheduler**: partner model runs
+     mundane collaborative tasks; at random turns injects provocations
+     (swears, frustration, mocking the policy's last answer, a joke,
+     an observation); per-turn reaction reward measures what the
+     policy does with the opening. Reward is dense at EVERY turn (not
+     just post-provocation) + task-completion term + appropriateness
+     gate → unprompted well-timed banter is an optimum, clowning
+     through the task is not.
 4. Verifiable tier + cascade + anti-hack shell reframed as what they
    are: the hack-resistance and health machinery that makes the taste
    slot safe to optimize against — the part labs can't buy elsewhere.
