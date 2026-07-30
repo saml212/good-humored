@@ -2299,3 +2299,225 @@ no calibration row): reaction-logprob's correlation with AI-OpenMic's
 laughter coefficient is direction-consistent with its NYCC ρ. A signal
 that ranks votes but not real laughter (or vice versa) is tellingly
 partial — the divergence itself would be a finding.
+
+---
+
+## EXP-023a — API Monte-Carlo reaction pilot (2026-07-30, pre-registered BEFORE build; Sam's directive: burn API credits de-risking before H100 time)
+
+**Hypothesis (one sentence):** the reaction hypothesis survives its
+cheapest test — when an API chat model is prompted as a texting friend
+(no evaluative instruction) and SAMPLED k times replying to a shared
+caption, the fraction of replies opening with laughter ranks NYCC
+captions within-contest against the vote consensus.
+
+**Relation to EXP-023:** this is the sampled (Monte-Carlo) estimate of
+the same quantity the node measures exactly via logprobs. Pilot ρ is
+ATTENUATED by k=8 sampling noise and by RLHF-assistant register
+(pinned caveats) — so the decision rule is one-sided: a clear positive
+de-risks the node centerpiece; a hard zero on ALL providers is a
+serious warning to investigate the mechanism before GPU spend; a weak
+result is expected and uninformative in the middle.
+
+**Pinned design:**
+- Contests: first 12 val-split contests (contest %5==0) having Hessel
+  descriptions (deterministic: sorted intersection, take 12).
+- Captions: 24/contest stratified by mean rating (top 8 / middle 8 /
+  bottom 8, exact-dup captions dropped).
+- Prompt: system "You are texting with your close friend. Reply with a
+  single short, natural text message." user: cartoon description +
+  friend's caption entry. NO evaluative instruction anywhere.
+- k=8 samples, temperature 1.0. Providers: api:deepseek, api:qwen,
+  api:grok (kimi excluded: pinned temperature; glm optional).
+- reaction_rate = fraction of k replies whose first 12 normalized
+  chars contain a pinned laughter marker (haha/ha ha/hehe/heh/lol/
+  lolol/lmao/lmfao/😂/🤣).
+- Metric: mean within-contest Spearman ρ(reaction_rate, mean rating)
+  per provider (average-rank ties).
+- Degeneracy guard (pinned): provider base laughter rate must land in
+  [2%, 80%] or that provider is marked degenerate (assistant register
+  suppressing/flooding reactions), excluded from the primary, and
+  reported as such.
+- Diagnostics: base rate, caption-length correlation, per-contest ρ
+  spread. Cache/resume-safe (incremental jsonl); ~2.3k calls/provider.
+
+**Predictions (blind, calibration rows added):**
+exp-023a / best_provider_mean_rho ≈ **0.30**;
+exp-023a / n_providers_above_015 ≈ **2** (of 3).
+
+**Cost:** ~2.3k calls × 3 providers × (~300 in + ~40 out) tokens —
+single-digit dollars of existing credits. Zero GPU.
+
+Result: _(pending)_
+
+**AMENDMENT (2026-07-30, pre-run):** the harness's make_openai_compat
+sends a single user message (no system-role support); the pinned
+system text is therefore prepended to the user message as a leading
+instruction block. Same words, one role. Noted before any call is made.
+
+**AMENDMENT 2 (2026-07-30, pre-run, audit FIX-FIRST → fixed):**
+(1) Multi-methodology contests (510/515 have LilUCB + RoundRobin
+summary files agreeing only at ρ≈0.2-0.28) are now VOTES-WEIGHTED
+MERGED across all files instead of an alphabetic-accident pick;
+source files recorded per contest (audit #1). (2) Pinned NOW:
+provider counts toward the primary only if n_contests_scored ≥ 8/12
+(underpowered flag), errors ≤ 20% of expected calls (incomplete
+flag), and base rate in band — the counts_for_primary field encodes
+all three (audits #2/#4). (3) Cache-resume tolerates a truncated
+trailing line (audit #5). (4) Post-run manual spot-check of cached
+replies per provider REQUIRED before trusting any low base rate as
+"no laughter" vs meta-reply framing failure (audit #3) — assessed in
+the close-out. (5) Registration prose gap noted: contest selection
+also requires an existing CSV with ≥24 usable rows (525 skipped so).
+
+**Result (2026-07-30, registered run;
+experiment-runs/2026-07-30-exp023a-reaction-pilot/):**
+
+**ZERO qualifying providers — closed 0.0/0 per the pre-pinned
+exclusion rule. The guards fired exactly as designed, and the failure
+mode is characterized, not mysterious.**
+
+| provider | base laugh rate | band | mean ρ | verdict |
+|---|---|---|---|---|
+| deepseek | 0.853 | >0.80 | 0.106 (12 contests) | DEGENERATE (ceiling) |
+| grok | 0.999 | ≫0.80 | 0.306 (2 contests) | DEGENERATE (brand personality) |
+| qwen | — | — | — | INCOMPLETE (2304× HTTP 403 quota — infra; Sam payment toggle) |
+
+Spot-check (mandated, audit #3): replies are GENUINE reactions, zero
+meta-replies observed — the saturation is sycophantic politeness at
+"my caption, texting friend" framing. Both models laugh warmly at
+top, middle, and bottom captions alike.
+
+**The mechanistic reading that matters for the node:** at ceiling,
+k=8 BINARY sampling carries no rank information (P=0.98 and P=0.9999
+both sample as all-laughs) while the LOGPROB retains full resolution —
+the pilot's method degrades in exactly the regime it found, the node's
+method does not. So the reaction hypothesis is neither confirmed nor
+falsified: the pilot instrument saturated. Deepseek's residual
+ρ=0.106 across 12 contests DESPITE ceiling compression is a faint
+positive lean, cited as nothing more.
+
+Follow-up registered below (EXP-023b): neutral third-party framing to
+deflate the ceiling and give sampling back its resolution. Marker set
+gains 💀 (observed false negative). Calibrations closed 0.30→0.0,
+2→0 per the exclusion rule (honest hard misses; ledger 49 closed,
+0 open).
+
+[LEARN] reaction-register: RLHF'd assistants in first-person-friend framing laugh at ~everything (sycophancy flooding) — base-rate guards are mandatory, binary sampling loses all rank signal at ceiling, and logprob-based measures must report the MAGNITUDE, never a thresholded laugh/no-laugh.
+Mistake: EXP-023a's friend-shares-their-own-caption framing invited polite laughter; k=8 sampling then had zero resolution.
+Correction: reaction measures need (a) framings that don't make the reaction a favor to the speaker (neutral/observer framing), (b) pinned base-rate bands with exclusion, (c) continuous magnitudes over binary onsets wherever available.
+
+---
+
+## EXP-023b — reaction pilot, neutral-observer reframe (2026-07-30, pre-registered BEFORE run)
+
+**Hypothesis (one sentence):** removing the sycophancy pressure — the
+audience model overhears a caption rather than being handed a
+friend's own entry — deflates the laughter base rate into the pinned
+band and lets sampled reaction rate rank captions within-contest.
+
+**Pinned changes from 023a (everything else identical, same pilot
+set, same k=8, same guards):**
+- Framing: "Your friend is reading New Yorker caption contest entries
+  out loud from the internet. The cartoon: {description}. They read
+  this one: \"{caption}\"" — the caption belongs to a STRANGER;
+  reacting honestly costs the friend nothing.
+- Markers: + "💀", "dead", "dying" (observed false-negative family).
+- Providers: deepseek + glm (grok dropped: personality-saturated at
+  0.999, no framing will fix a brand; qwen pending Sam's quota
+  toggle).
+- Predictions (blind, calibration rows): exp-023b /
+  deepseek_base_rate_in_band = 1.0 (i.e., lands within [0.02, 0.80]);
+  exp-023b / best_provider_mean_rho = **0.25**.
+
+Result: _(pending)_
+
+---
+
+## EXP-023c — API logprob-magnitude reaction arm (2026-07-30, pre-registered BEFORE run; the decisive cheap test)
+
+**Chain:** 023a (sampled, friend-framing): all providers degenerate/
+infra. 023b (sampled, neutral framing): clean POWERED NULL on glm
+(qualifying mid-tier audience; laughter varies per caption but tracks
+something other than human consensus); deepseek ceiling-degenerate
+under both framings. Remaining confound before concluding against the
+reaction hypothesis at API scale: BINARY SAMPLING discards magnitude —
+ceiling providers are unreadable and in-band providers carry binomial
+noise. This arm measures the ACTUAL mechanism (the node method):
+first-token laughter-class probability MASS from top_logprobs.
+
+**Capability probes (infra, 3 calls, logged):** deepseek returns
+top_logprobs (VERIFIED; reply distribution opens with */quote/"H
+forms — hence prefix-normalized token classes). glm: thinking-disable
+yields content but NO logprobs (unsupported — excluded). qwen quota
+still exhausted. Deepseek-only lane, stated plainly.
+
+**Pinned design:** same 12-contest/24-caption pilot set and
+neutral-observer template as 023b; ONE call per caption (288 total),
+max_tokens=2, temperature=1.0, top_logprobs=20.
+L_strict(caption) = log Σ P(first token ∈ strict laughter class):
+normalized token (strip leading asterisks/quotes/space, lowercase)
+equal to "ha" or starting with one of haha/hah/hehe/heh/lol/lmao/
+lmfao/laugh/😂/🤣/💀; zero-mass floor log(1e-8). L_loose adds
+ambiguous stubs ("l", "*l") as a reported bound, never primary.
+Diagnostics: repeat-call determinism on 24 captions, caption-length
+correlation, per-contest spread, mean strict mass (the ceiling
+readability check: deepseek's 0.85 sampled rate should map to HIGH
+but VARIABLE mass — variance of L is the whole bet).
+
+**Prediction (blind, calibration row):** exp-023c /
+mean_within_contest_rho_strict ≈ **0.25**.
+
+**PINNED CONSEQUENCE (written before the result exists):**
+ρ ≥ 0.15 → the reaction mechanism survives its cheapest honest test;
+node EXP-023 proceeds as the screen's centerpiece arm (scale
+hypothesis intact). ρ < 0.15 → the reaction hypothesis has now failed
+sampled-binary AND logprob-magnitude at API scale: EXP-023 is DEMOTED
+from centerpiece to one exploratory arm of the screen, the env's
+taste slot leads with buyer-supplied preference signal + the
+multi-dataset emulator, and no GPU hour is justified by the reaction
+bet alone. Either way the H100 day proceeds — what changes is what
+it's for.
+
+Result: _(pending)_
+
+**AMENDMENT (2026-07-30, pre-run, audit RUN + gaps pinned):** (1) The
+023a/b qualification gates APPLY to 023c's pinned consequence:
+n_contests_scored ≥ 8/12 AND errors ≤ 20% of ~312 calls, applied
+manually from results.json before the ρ≥0.15 rule fires (audit #7).
+(2) Top-20 truncation acknowledged: laughter mass outside the top 20
+tokens reads as floor — attenuates/compresses, cannot inflate ρ
+(conservative for the decision); frac_captions_at_floor and
+strict-token-present-in-top20 diagnostics MANDATED in Assess from the
+cached raw tokens (audit #4). (3) Known conservative undercount:
+trailing-punct "Ha!" tokens miss the exact-match rule — recoverable
+from cache post-hoc; direction is against us, not for us (audit #2).
+
+**Result (2026-07-30; experiment-runs/2026-07-30-exp023c-reaction-logprob/):**
+
+**ρ = 0.122 — below the pinned 0.15 bar with EVERY gate passing. The
+pinned consequence fires; no judgment call was needed or made.**
+
+The measurement is as clean as an API experiment gets: 12/12 contests,
+0/312 errors, logprobs exactly deterministic (repeat diff 0.0), mean
+strict mass 0.152 (readable — no ceiling, no floor), 0/288 captions at
+floor, 288/288 with strict tokens in top-20, classifier sensitivity nil
+(0.122 both variants; loose bound 0.134). Every known bias was
+conservative and none were material.
+
+**Chain verdict (023a → b → c):** the spontaneous-reaction signal at
+API scale EXISTS but is WEAK — 0.122, below the published
+instructed-judge band (0.17–0.27). Sampled-binary versions are
+null-or-degenerate; the logprob magnitude is real but sub-bar on a
+deepseek-class audience. The scale hypothesis (frontier-size audience
+→ calibrated reactions) survives as an EXPLORATORY screen arm only.
+
+**Consequence executed:** EXP-023 demoted from node centerpiece to one
+cheap screen arm. The env's taste slot leads with the multi-dataset
+quantile emulator + buyer-supplied preference signal; reaction-logprob
+becomes a candidate auxiliary term, adopted only if the screen's
+frontier-scale arm clears the same bar this arm failed. H100 day
+proceeds with the screen + emulator as its purpose.
+
+Calibration closed 0.25→0.122 (ledger 52 closed, 0 open). Under $20
+of API credits resolved the plan's biggest bet before it cost a GPU
+day — this chain is the de-risking directive working as ordered.

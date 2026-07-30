@@ -69,13 +69,16 @@ The deliverable is a **sellable RL environment** that makes frontier
 models better at CONVERSATIONAL humor (banter, wit-in-reply, callbacks,
 timing) — not a paper, not a joke generator, not an RM product.
 Consequences, all codified:
-1. **Taste signal = audience-reaction logprob** (EXP-023, registered):
-   a frozen model's SPONTANEOUS laughter-class reaction probability —
-   mathematical, per-turn dense, no judge, no trained RM. Novelty
-   verified (strategy-doc §8); thesis has adjacent-domain proof
-   (Gandhi 2601.04436). Certification = pure inference vs NYCC's 292M
-   votes; FIRST NODE EXPERIMENT, merged with the model screen (every
-   candidate screened as policy AND audience).
+1. **Taste signal — RESOLVED BY EVIDENCE (2026-07-30, EXP-023a/b/c
+   chain, <$20 of API credits):** the reaction-logprob signal EXISTS
+   but is WEAK at API scale (deepseek logprob arm: rho=0.122 on a
+   maximally clean measurement, below the pinned 0.15 bar; sampled
+   arms null-or-degenerate; full chain in EXPERIMENT_LOG). Pinned
+   consequence executed: reaction measurement DEMOTED to an
+   exploratory screen arm (the frontier-scale hypothesis is a cheap
+   long shot, carried not led). The taste slot leads with the
+   MULTI-DATASET QUANTILE EMULATOR + buyer-supplied preference
+   signal. The verifiable gates and anti-hack shell are unchanged.
 2. CORRECTED 2026-07-30 (Sam): the trained emulator is BACK as a full
    layer — trained on EVERY legally-usable funniness dataset (inventory
    agent dispatched), quantile head, UWO/WARM ensembling. Sam's point

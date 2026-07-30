@@ -1,0 +1,170 @@
+{
+  "k": 8,
+  "n_contests": 12,
+  "markers": [
+    "haha",
+    "ha ha",
+    "hehe",
+    "heh",
+    "lol",
+    "lolol",
+    "lmao",
+    "lmfao",
+    "dead",
+    "dying",
+    "\ud83d\ude02",
+    "\ud83e\udd23",
+    "\ud83d\udc80"
+  ],
+  "providers": {
+    "deepseek": {
+      "provider": "deepseek",
+      "mean_rho": 0.046997923931539426,
+      "counts_for_primary": false,
+      "n_contests_scored": 12,
+      "n_degenerate_contests": 0,
+      "base_laughter_rate": 0.8446180555555556,
+      "degenerate": true,
+      "underpowered": false,
+      "incomplete": false,
+      "errors": 0,
+      "per_contest": [
+        {
+          "contest_id": 510,
+          "rho": -0.2643287022959628,
+          "n_captions": 24
+        },
+        {
+          "contest_id": 515,
+          "rho": -0.18736801094458932,
+          "n_captions": 24
+        },
+        {
+          "contest_id": 520,
+          "rho": 0.13444725829523216,
+          "n_captions": 24
+        },
+        {
+          "contest_id": 530,
+          "rho": -0.1135021901624259,
+          "n_captions": 24
+        },
+        {
+          "contest_id": 535,
+          "rho": 0.28661753697726233,
+          "n_captions": 24
+        },
+        {
+          "contest_id": 540,
+          "rho": 0.46760026151008044,
+          "n_captions": 24
+        },
+        {
+          "contest_id": 545,
+          "rho": 0.23416095205588885,
+          "n_captions": 24
+        },
+        {
+          "contest_id": 550,
+          "rho": -0.3051883849669385,
+          "n_captions": 24
+        },
+        {
+          "contest_id": 555,
+          "rho": -0.010628479932994412,
+          "n_captions": 24
+        },
+        {
+          "contest_id": 560,
+          "rho": -0.044996408681514284,
+          "n_captions": 24
+        },
+        {
+          "contest_id": 565,
+          "rho": 0.05072510935797164,
+          "n_captions": 24
+        },
+        {
+          "contest_id": 570,
+          "rho": 0.3164361459664629,
+          "n_captions": 24
+        }
+      ]
+    },
+    "glm": {
+      "provider": "glm",
+      "mean_rho": -0.0537836083672035,
+      "counts_for_primary": true,
+      "n_contests_scored": 12,
+      "n_degenerate_contests": 0,
+      "base_laughter_rate": 0.4192708333333333,
+      "degenerate": false,
+      "underpowered": false,
+      "incomplete": false,
+      "errors": 0,
+      "per_contest": [
+        {
+          "contest_id": 510,
+          "rho": -0.2324773849476179,
+          "n_captions": 24
+        },
+        {
+          "contest_id": 515,
+          "rho": -0.183749322358801,
+          "n_captions": 24
+        },
+        {
+          "contest_id": 520,
+          "rho": -0.043442827674124274,
+          "n_captions": 24
+        },
+        {
+          "contest_id": 530,
+          "rho": -0.2996823956442832,
+          "n_captions": 24
+        },
+        {
+          "contest_id": 535,
+          "rho": 0.18298979220810258,
+          "n_captions": 24
+        },
+        {
+          "contest_id": 540,
+          "rho": -0.05548273374439241,
+          "n_captions": 24
+        },
+        {
+          "contest_id": 545,
+          "rho": 0.20363215947251317,
+          "n_captions": 24
+        },
+        {
+          "contest_id": 550,
+          "rho": 0.19381057527113768,
+          "n_captions": 24
+        },
+        {
+          "contest_id": 555,
+          "rho": -0.4237634368014762,
+          "n_captions": 24
+        },
+        {
+          "contest_id": 560,
+          "rho": 0.2487156843313466,
+          "n_captions": 24
+        },
+        {
+          "contest_id": 565,
+          "rho": -0.11829073080291103,
+          "n_captions": 24
+        },
+        {
+          "contest_id": 570,
+          "rho": -0.11766267971593605,
+          "n_captions": 24
+        }
+      ]
+    }
+  },
+  "wall_seconds": 3184.8
+}

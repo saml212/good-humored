@@ -1,0 +1,241 @@
+{
+  "k": 8,
+  "n_contests": 12,
+  "markers": [
+    "haha",
+    "ha ha",
+    "hehe",
+    "heh",
+    "lol",
+    "lolol",
+    "lmao",
+    "lmfao",
+    "\ud83d\ude02",
+    "\ud83e\udd23"
+  ],
+  "providers": {
+    "deepseek": {
+      "provider": "deepseek",
+      "mean_rho": 0.10608682538789306,
+      "counts_for_primary": false,
+      "n_contests_scored": 12,
+      "n_degenerate_contests": 0,
+      "base_laughter_rate": 0.8528645833333334,
+      "degenerate": true,
+      "underpowered": false,
+      "incomplete": false,
+      "errors": 0,
+      "per_contest": [
+        {
+          "contest_id": 510,
+          "rho": -0.3365137416734888,
+          "n_captions": 24
+        },
+        {
+          "contest_id": 515,
+          "rho": -0.14455321027088253,
+          "n_captions": 24
+        },
+        {
+          "contest_id": 520,
+          "rho": 0.21289634471404342,
+          "n_captions": 24
+        },
+        {
+          "contest_id": 530,
+          "rho": 0.23473363081701362,
+          "n_captions": 24
+        },
+        {
+          "contest_id": 535,
+          "rho": 0.2979122765521049,
+          "n_captions": 24
+        },
+        {
+          "contest_id": 540,
+          "rho": 0.2888221326532283,
+          "n_captions": 24
+        },
+        {
+          "contest_id": 545,
+          "rho": 0.051817117485273484,
+          "n_captions": 24
+        },
+        {
+          "contest_id": 550,
+          "rho": 0.17499565846263615,
+          "n_captions": 24
+        },
+        {
+          "contest_id": 555,
+          "rho": 0.0554511355241334,
+          "n_captions": 24
+        },
+        {
+          "contest_id": 560,
+          "rho": 0.003938360857310254,
+          "n_captions": 24
+        },
+        {
+          "contest_id": 565,
+          "rho": 0.3426670145574403,
+          "n_captions": 24
+        },
+        {
+          "contest_id": 570,
+          "rho": 0.09087518497590417,
+          "n_captions": 24
+        }
+      ]
+    },
+    "qwen": {
+      "provider": "qwen",
+      "mean_rho": null,
+      "counts_for_primary": false,
+      "n_contests_scored": 0,
+      "n_degenerate_contests": 12,
+      "base_laughter_rate": 0.0,
+      "degenerate": true,
+      "underpowered": true,
+      "incomplete": true,
+      "errors": 2304,
+      "per_contest": [
+        {
+          "contest_id": 510,
+          "rho": null,
+          "n_captions": 0
+        },
+        {
+          "contest_id": 515,
+          "rho": null,
+          "n_captions": 0
+        },
+        {
+          "contest_id": 520,
+          "rho": null,
+          "n_captions": 0
+        },
+        {
+          "contest_id": 530,
+          "rho": null,
+          "n_captions": 0
+        },
+        {
+          "contest_id": 535,
+          "rho": null,
+          "n_captions": 0
+        },
+        {
+          "contest_id": 540,
+          "rho": null,
+          "n_captions": 0
+        },
+        {
+          "contest_id": 545,
+          "rho": null,
+          "n_captions": 0
+        },
+        {
+          "contest_id": 550,
+          "rho": null,
+          "n_captions": 0
+        },
+        {
+          "contest_id": 555,
+          "rho": null,
+          "n_captions": 0
+        },
+        {
+          "contest_id": 560,
+          "rho": null,
+          "n_captions": 0
+        },
+        {
+          "contest_id": 565,
+          "rho": null,
+          "n_captions": 0
+        },
+        {
+          "contest_id": 570,
+          "rho": null,
+          "n_captions": 0
+        }
+      ]
+    },
+    "grok": {
+      "provider": "grok",
+      "mean_rho": 0.306153584609845,
+      "counts_for_primary": false,
+      "n_contests_scored": 2,
+      "n_degenerate_contests": 10,
+      "base_laughter_rate": 0.9986979166666666,
+      "degenerate": true,
+      "underpowered": true,
+      "incomplete": false,
+      "errors": 0,
+      "per_contest": [
+        {
+          "contest_id": 510,
+          "rho": null,
+          "n_captions": 24
+        },
+        {
+          "contest_id": 515,
+          "rho": null,
+          "n_captions": 24
+        },
+        {
+          "contest_id": 520,
+          "rho": null,
+          "n_captions": 24
+        },
+        {
+          "contest_id": 530,
+          "rho": null,
+          "n_captions": 24
+        },
+        {
+          "contest_id": 535,
+          "rho": null,
+          "n_captions": 24
+        },
+        {
+          "contest_id": 540,
+          "rho": null,
+          "n_captions": 24
+        },
+        {
+          "contest_id": 545,
+          "rho": 0.25029552644578595,
+          "n_captions": 24
+        },
+        {
+          "contest_id": 550,
+          "rho": null,
+          "n_captions": 24
+        },
+        {
+          "contest_id": 555,
+          "rho": 0.3620116427739041,
+          "n_captions": 24
+        },
+        {
+          "contest_id": 560,
+          "rho": null,
+          "n_captions": 24
+        },
+        {
+          "contest_id": 565,
+          "rho": null,
+          "n_captions": 24
+        },
+        {
+          "contest_id": 570,
+          "rho": null,
+          "n_captions": 24
+        }
+      ]
+    }
+  },
+  "wall_seconds": 1554.8
+}
