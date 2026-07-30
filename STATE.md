@@ -1,6 +1,10 @@
 # STATE
 
-_Last updated: 2026-07-29 (strategy codified; Phase A execution started)_
+_Last updated: 2026-07-29 EOD (Phase A closed: 7 registered runs in one
+day, all honestly closed; **H100-READY** — see docs/RL-STACK-AND-SELECTION.md
+§4.7 runbook; S2 demoted to report-only per pre-registered fallback,
+screen decides on S1/S3/S4 + cost; blocking items are all Sam-side:
+gated-repo click-throughs, node disk size, SSH)_
 
 ## STRATEGY CODIFIED (2026-07-24/29 — Sam approved "go do it")
 
@@ -190,6 +194,18 @@ Honest misses recorded: EXP-006b (−0.100 vs −0.015, informative),
 EXP-007b (manipulation failed — qwen endpoint ignores temperature).
 
 ## Decisions for Sam (nothing blocks on my side)
+
+0. **New 2026-07-29 (H100 prep):** (a) click-accept gated HF repo
+   licenses in the browser for the node's token (DeepSeek-V4-Flash +
+   sgl-project FP8 repack, GLM-4.5-Air; verify Qwen3-235B) — zero
+   same-day fix if missed; (b) node disk size / big volume for the
+   ~700-900GB download budget; (c) **NYCC ratings license call**: the
+   Zhang crowd-ratings (the RM training signal) are CC-BY-NC-4.0 —
+   non-commercial — vs the project's CC-BY bar; Hessel corpus is clean
+   CC-BY. Same decision class as the Oogiri call: fine for research
+   paper, needs a call before anything commercial touches an RM
+   trained on it. Data staged on SSD either way
+   (~/Experiments/good-humored-data/raw/nycc-full → SSD).
 
 1. **Native Anthropic + OpenAI API keys** → the $5 wrapper ablation
    (the single score-moving experiment per the hostile review).

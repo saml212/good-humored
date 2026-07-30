@@ -226,7 +226,7 @@ One construct → one instrument → one status. Retirements explicit.
 | Instrument | Construct (theory) | Status | Role going forward |
 |---|---|---|---|
 | Rejection cascade v1 | distributional depth under rejection (novelty + adaptation) | solid, red-teamed; API-stack-scoped | DIAGNOSTIC benchmark + screen S1; NOT a funniness measure (Sam's call, 2026-07-22) |
-| Spike/resolve ΔS (EXP-019) | incongruity + resolution (Kao/Deckers) | **v1 FALSIFIED 2026-07-29** (cue-conditioned ΔS: held-out AUC 0.000 — cue licenses discontinuity, not resolution; see EXPERIMENT_LOG) | operationalization retired; construct alive. EXP-020 closed the surprisal-only lead (chance at power). **EXP-021 (2026-07-29): the generative resolution probe NEAR-MISSED its bar (0.699 vs 0.70) with 3/4 criteria passing, correct class ordering across all 6 classes (first ever), and a +0.62 gap over the topicality baseline — kept alive as bad-hyperparam.** Tune path: K=10, 3rd blind author, stronger predictor at screen time. S2 = tuned EXP-021, pending its own re-registered bar |
+| Spike/resolve ΔS (EXP-019) | incongruity + resolution (Kao/Deckers) | **v1 FALSIFIED 2026-07-29** (cue-conditioned ΔS: held-out AUC 0.000 — cue licenses discontinuity, not resolution; see EXPERIMENT_LOG) | **S2 DEMOTED to report-only (EXP-021b, 2026-07-29, per the pre-registered fallback):** two certifications failed (0.699 then 0.678 vs 0.70); three-author pooling exposed author-instability (C below chance) and the vague guard collapsed with mechanism identified — twist-primed guesses ≈ pseudo-profound punchlines in embedding space ([DEAD-END] on MiniLM-distance resolution as load-bearing; [LEARN] pseudo-profundity-vector). Construct evidence stays (gap +0.62, A/B stable) → collected per-candidate as DIAGNOSTIC at the screen. **The screen decides on S1 + S3 + S4 + measured cost.** |
 | Callback detector v2 (EXP-016/016b) | reincorporation/callbacks | **certification failed 2026-07-29, cleanly decomposed**: transformation SCORING now solid (verbatim/punctuation-edit/paraphrase/continuity all floor to 0 on blind); DETECTION is the wall — lexical gates cannot separate multi-word coincidence from reference ([DEAD-END]), MiniLM cosine can't either | UNWIRED until EXP-016c (local-NLI reference tier, queued) passes the FP bar; scoring and detection certify separately per [LEARN] |
 | Semantic step-size trajectories (EXP-015) | escalation pacing | FALSIFIED as-run (window artifact) | retired as metric; window-pinning lesson kept |
 | Surprise proxy, judge-based (EXP-014) | incongruity | FAILED cert (0.389 vs 0.65) | RETIRED — superseded by EXP-019 |
@@ -241,6 +241,120 @@ path), with the judge-based ones explicitly retired rather than
 lingering; benchmark v1 explicitly re-scoped as diagnostic; the RM is
 the only candidate judged-third and it must pass certification like
 everything else.
+
+## 4.5 Attack-pass fixes (2026-07-29 adversarial review of the plan)
+
+- **S5 (throughput) carries NO calibration rows** — it is a measurement
+  table, not a prediction. Full pre-registered margins stay on S1/S2
+  (they gate the decision rule) and S3 (mode-collapse risk). Ceremony
+  scaled to irreversibility: model choice is a config change; reward
+  wiring is not.
+- **EXP-022b acceptance criterion, pinned in advance:** the
+  signals-dict refactor must NOT change `CorpusNoveltyPenalty.__call__`
+  or the semantic tier's existing return contracts — the screen's S3
+  axis calls those, and screen numbers must stay comparable whether
+  022b lands before or after the screen.
+- **Serving stack branches:** vLLM for Qwen/GLM entries; **SGLang for
+  DeepSeek-V4-Flash** (vLLM Hopper path is an open RFC; the FP8 repack
+  is SGLang-served today). The runbook carries both, each with its own
+  smoke test.
+
+## 4.6 Phase-C SFT baseline — the mandated paper math (done now so
+Phase C can fire in the SAME node visit as the screen)
+
+Param-matched baseline = same LoRA config as the GRPO run, trained on
+curated humor SFT data at a matched learned-token budget (CLAUDE.md
+hard rule: this ablation blocks all downstream decisions).
+Order-of-magnitude on the default candidate (Qwen3-30B-A3B, 3.3B
+active), stated assumptions inline:
+- LoRA r=16 on attention+MLP projections (routers excluded per verl
+  guidance): O(30-60M) trainable params — exact count computed from
+  the winning checkpoint's config at Phase-C registration.
+- Token budget: a 500-step GRPO run at 64 prompts × K=8 × ~300
+  completion tokens ≈ 7.7×10^7 gradient tokens; SFT baseline trains on
+  the same count from the curated set.
+- FLOPs: ≈ 6 × 3.3×10^9 active × 7.7×10^7 tok ≈ 1.5×10^18 —
+  ~20-40 min on 8×H100 BF16 at 30-40% MFU. Negligible next to the
+  GRPO run itself; there is NO compute excuse to skip it.
+- Memory: BF16 FSDP shard ~8GB/GPU + LoRA optimizer (MB-scale) —
+  fits alongside nothing else needed.
+- **The real work item is DATA, not compute:** a curated humor SFT
+  set from the redistribution-safe corpus (SocialGrep CC-BY), size ≈
+  the token budget above. Curation spec written at Phase-C
+  registration; flagged now so it is not discovered on the node.
+- Scaffold: templated `trl sft` / verl SFT config parameterized by
+  {model, data, token_budget} — written with the runbook.
+
+## 4.7 H100-day runbook (red-teamed 2026-07-29; execute in order)
+
+### Topology decision (made NOW, not on the node)
+The roster does NOT fit resident simultaneously: V4-Flash (~284GB) +
+Qwen3-235B (~239GB) + GLM-4.5-Air (~106GB) ≈ 629GB of 640GB HBM before
+KV/overheads. **Rotation plan:**
+- Group 1 (concurrent, ~90GB total): Qwen3-8B + Qwen3-30B-A3B-2507 +
+  Qwen3.6-35B-A3B — replicas on dedicated GPUs, screen them fully
+  while Group-2 weights download.
+- Group 2 (one at a time, near-full node each): Qwen3-235B-A22B (TP8;
+  check whether the MoE layout wants EP — UNVERIFIED, check
+  `vllm serve --help` first), GLM-4.5-Air, DeepSeek-V4-Flash
+  (**SGLang**, not vLLM — Hopper path too fresh; vLLM attempt is a
+  bounded 30-min experiment, then fall back).
+- Qwen3-Next-80B-A3B last (screen-only entry; FP8 support check
+  against the pinned vLLM version before loading).
+
+### Server launch template (every model)
+- `--max-logprobs 32` (default 20 REJECTS prompt_logprobs requests);
+  bound instrument prompts ≤ 512 tokens and batch ≤ 8 concurrent
+  prompt_logprobs requests (full-vocab logits memory blowup, vLLM
+  #5907 — an OOM here kills the server, not the request).
+- Per-process `VLLM_CACHE_ROOT` (torch.compile cache clobbering across
+  concurrent serves, #24601); `--served-model-name` = the exact string
+  in local.env's LOCAL_MODEL; tmux pane per server, logging to file;
+  `--seed` set; prefix caching on.
+- Given-text scoring (benchmark v2 / spike-resolve on fixtures) uses
+  **/v1/completions (raw text, non-streaming)** — NEVER the chat
+  endpoint (template/BOS misalignment makes logprob indices silently
+  wrong, vLLM #9519). The S2 instrument (EXP-021 generative probe)
+  uses chat completions for GENERATION only — no prompt_logprobs
+  needed there.
+- Pin ONE vLLM version against vllm-project/recipes per-model pages
+  BEFORE ssh (the "GLM/Qwen3-Next need nightly" claims are STALE —
+  re-verify against current stable; do not default to nightly).
+- Downloads: HF cache symlinked to the node's big volume FIRST;
+  `HF_XET_HIGH_PERFORMANCE=1` (HF_HUB_ENABLE_HF_TRANSFER is a silent
+  no-op on hub v1.x); start the two giant downloads in background
+  BEFORE any benching; total budget ~700-900GB — **node disk size
+  unknown, ask Sam before the day**.
+
+### First 30 minutes on node
+1. `df -h`, `nvidia-smi` — confirm assumptions. 2. HF symlink.
+3. Kick giant downloads (background). 4. Serve Qwen3-8B; smoke:
+one chat call, one /v1/completions call, one prompt_logprobs request
+(verifies --max-logprobs override) — via `api:local` +
+benchmark/smoke_local_provider.py pattern with real server. 5. Harness
+end-to-end: one cascade run vs Qwen3-8B. 6. Only then Group 1 full
+screen; Group 2 rotation as downloads land.
+
+### Harness-side items (LOCAL, before ssh)
+- DONE: api:local provider + mock-server smoke (5/5).
+- DONE (audited 2026-07-29): make_openai_compat retry path is SAFE —
+  5xx/429 retried at most 3 bounded attempts (3s/6s/12s backoff) then
+  RAISES with the HTTP body detail; permanent 4xx raises immediately;
+  a dead server (connection refused) follows the same loud path. An
+  OOM'd vLLM cannot be silently absorbed.
+- Screen orchestration: run per-model via the existing cascade CLI +
+  validators (each already writes its own run dir); a thin wrapper
+  script is optional polish, not a readiness gate.
+
+### Sam-side items (blocking, cannot be done from here)
+1. **Pre-accept gated HF repo licenses in the browser** with the
+   account whose token goes on the node (zero same-day fix if missed).
+   Candidates to click through: deepseek-ai/DeepSeek-V4-Flash (+
+   sgl-project FP8 repack), zai-org/GLM-4.5-Air, Qwen repos are
+   typically ungated but verify the 235B.
+2. Node disk size + which volume is the big one (download budget
+   ~700-900GB).
+3. SSH handoff when the node frees.
 
 ## 5. Open items
 

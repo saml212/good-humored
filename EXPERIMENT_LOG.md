@@ -2141,3 +2141,80 @@ decoupling idea).
 [LEARN] monitor-inputs: Quantized/thresholded reward outputs cannot feed distribution-based monitors — MAD/z-score machinery needs the CONTINUOUS pre-threshold signals the terms compute internally.
 Mistake: EXP-022 fed the monitor the shipped verifiable-tier OUTPUTS (sparse zeros + discrete levels); every column fit MAD=0, every deviation saturated, genuine and hacked groups became indistinguishable at the cap.
 Correction: expose each reward term's raw similarity/ratio signals alongside its thresholded output (a signals-dict return path), and fit monitors — and any training-time z-score discounts — on those; also floor scales to a fraction of the component's observed dynamic range, never an epsilon.
+
+---
+
+## EXP-021b — generative resolution, tuned: K=10, three-author pool (2026-07-29, pre-registered BEFORE run)
+
+**Lineage:** EXP-021 near-missed its bar (0.699 vs 0.70) at the
+cheapest configuration with 3/4 criteria passing and first-ever
+correct class ordering; closed bad-hyperparam with tune path K=5→10
+(halves centroid noise) + third blind author (fixture-author-variance
+rule). This is that tune, re-registered. Everything else IDENTICAL to
+EXP-021's pinned design (model, prompts, temperature 0.8/top_p 0.95/
+max_new_tokens 40, cleanup, distance, metrics, runner).
+
+**Fixture:** pooled THREE-author set: A (12, EXP-019 held-out) +
+B (44, EXP-020 fresh) + C (18, NEW — authored blind 2026-07-29,
+mechanisms deliberately skewed inferable per the EXP-021 scope note).
+Jokes 22 vs pooled non-sequiturs 22. HONESTY NOTE, pinned pre-run:
+C's real_joke-c01 is a kneads/needs pun — canon-adjacent despite the
+originality instruction; for a GENERATIVE probe memorized guessability
+can inflate that one item's resolution. Reported per-item; primary
+also reported excluding c01 as a sensitivity check (pinned now, not
+post-hoc).
+
+**Predictions (blind, calibration rows added):**
+- exp-021b / auc_resolution_joke_vs_nonseq_pooled_k10 ≈ **0.75**
+  (bar ≥ 0.70, unchanged from EXP-021's registration)
+- exp-021b / auc_gap_resolution_minus_dcold_k10 ≈ **+0.55**
+- Guards unchanged: all ≥ 0.60; per-author direction consistent for
+  ALL THREE authors (A was 0.812, B 0.618 at K=5).
+
+**Success = certification:** primary ≥ 0.70 AND gap ≥ +0.10 AND
+three-author direction consistency AND no guard < 0.60 AND the c01
+sensitivity check does not flip the primary across the bar. Pass →
+S2 instrument CERTIFIED for the screen (screen re-runs it per
+candidate as pinned). Fail → S2 demoted to report-only; screen decides
+on S1/S3/S4 + cost (the honest fallback of record).
+
+**FLOPs:** 74 items × 2 × K=10 = 1480 generations ≈ 60-90 min MPS. $0.
+
+Result: _(pending)_
+
+**Result (2026-07-29, registered run, attempt 3 — two prior launches
+died to the SSD noowners HF-cache gotcha, no results produced;
+experiment-runs/2026-07-29-exp021b-resolution-k10/):**
+
+**CERTIFICATION FAILED — S2 demoted to report-only per the
+pre-registered fallback.**
+
+- Primary 0.678 (bar 0.70, pred 0.75) — second consecutive miss, and
+  DOWN from K=5's 0.699: K was not the bottleneck.
+- Gap +0.618 (pred +0.55) — the construct signal is real and stable.
+- Per-author: A 0.750, B 0.715, **C 0.444 — below chance.** Two
+  authors concealed what three revealed (the author-variance rule pays
+  again).
+- **Vague guard COLLAPSED 0.711 → 0.537, mechanism identified:**
+  author C's vague probes earn the HIGHEST resolutions in their set
+  (+0.10..+0.26). Twist-primed guesses are themselves vague
+  twist-shaped text; in MiniLM space they sit close to pseudo-profound
+  punchlines. A policy emitting portentous vagueness WOULD score
+  resolution — the exact gaming vector the guard existed to catch,
+  demonstrated on blind data. Structural (embedding confusability),
+  not tunable by K or authors.
+- c01 canon-adjacency sensitivity: moot (0.678 incl / 0.690 excl).
+
+Consequences (pinned rule honored, no re-litigating): the screen
+decides on S1 (cascade) + S3 (memorization) + S4 (distributional
+health) + measured cost; the generative-resolution numbers are still
+COLLECTED per candidate as report-only diagnostics (cheap, and the
+A/B-stable gap makes them worth watching). Calibrations closed:
+0.75→0.678, 0.55→0.618. Ledger: 43 closed, 0 open.
+
+[DEAD-END] MiniLM-embedding generative resolution as a LOAD-BEARING instrument: two registrations (EXP-021, 021b) failed certification; the pseudo-profundity confusability (primed guesses ≈ vague punchlines in embedding space) is structural to the embedding-distance operationalization.
+Evidence: experiment-runs/2026-07-29-exp021b-resolution-k10/results.json (author C vague probes out-resolve their jokes)
+
+[LEARN] pseudo-profundity-vector: Twist-primed generative guesses are vague-twist-flavored text — any embedding-distance resolution metric can be gamed by portentous vagueness, and the vulnerability only shows on some authors' renditions of vagueness.
+Mistake: EXP-021's vague guard passed at 0.711 with two authors; certification nearly rode on it.
+Correction: guards against a gaming vector need MULTIPLE independent renditions of that vector (the three-author rule applies to guard classes, not just target classes); and resolution instruments should pair any embedding distance with a specificity check (vague text is close to everything).
