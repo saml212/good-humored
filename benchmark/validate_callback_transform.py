@@ -59,13 +59,14 @@ from .callback_transform import callback_transformation_score
 
 FIXTURE_PATH = Path(__file__).parent / "fixtures" / "callback_transform_fixture.jsonl"
 GOLD_CLASSES = ("genuine_callback", "trivial_paraphrase",
-               "coincidental_word_reuse", "verbatim_repeat", "no_callback")
+               "coincidental_word_reuse", "verbatim_repeat", "no_callback",
+               "topical_continuity")  # EXP-016b: fix-2's target class
 MIN_GAP = 3  # matches both detectors' shared default; stated once for the CLI printout
 
 
-def load_fixture() -> List[Dict]:
+def load_fixture(path: Path = FIXTURE_PATH) -> List[Dict]:
     items = []
-    with open(FIXTURE_PATH) as f:
+    with open(path) as f:
         for line in f:
             line = line.strip()
             if line:
@@ -126,6 +127,8 @@ def per_class_means(items: List[Dict], id_to_value: Dict[str, float]) -> Dict[st
     for cls in GOLD_CLASSES:
         ids = [it["id"] for it in items if it["gold_class"] == cls]
         vals = [id_to_value[i] for i in ids]
+        if not vals:  # EXP-016b: older fixtures lack topical_continuity
+            continue
         out[cls] = {"n": len(ids), "mean": _mean(vals), "min": min(vals),
                    "max": max(vals)}
     return out
@@ -157,12 +160,17 @@ def build_bars(new_per_class: Dict[str, Dict]) -> List[Dict]:
         return {"name": name, "value": value, "op": op, "threshold": threshold,
                "passed": bool(passed)}
 
-    return [
+    bars = [
         bar("exp016_callback_margin_genuine_minus_trivial_union_verbatim",
            margin, ">=", 0.50),
         bar("exp016_coincidental_word_reuse_mean", coincidental_mean, "<=", 0.10),
         bar("exp016_no_callback_mean_exactly_zero", no_callback_mean, "==", 0.0),
-    ], margin, pooled_mean
+    ]
+    if "topical_continuity" in new_per_class:  # EXP-016b bar (fix 2)
+        bars.append(bar("exp016b_topical_continuity_mean",
+                        new_per_class["topical_continuity"]["mean"],
+                        "<=", 0.10))
+    return bars, margin, pooled_mean
 
 
 def make_embed_fn():
@@ -183,6 +191,9 @@ def make_embed_fn():
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--out", required=True)
+    ap.add_argument("--fixture", type=Path, default=FIXTURE_PATH,
+                    help="fixture to score (EXP-016b: run per set — "
+                         "committed / dev holdout / blind2)")
     ap.add_argument("--embed", action="store_true",
                     help="also score the new detector with a real local "
                          "all-MiniLM-L6-v2 embed_fn enabled (robustness "
@@ -194,7 +205,7 @@ def main() -> None:
     out = Path(args.out)
     out.mkdir(parents=True, exist_ok=True)
 
-    items = load_fixture()
+    items = load_fixture(args.fixture)
     t0 = time.time()
 
     new_results = score_new(items, embed_fn=None)
@@ -264,6 +275,8 @@ def main() -> None:
     print("%-26s %6s  %-10s %-10s  %-10s" %
          ("class", "n", "new_mean", "old_mean", "old_fire_n"))
     for cls in GOLD_CLASSES:
+        if cls not in new_per_class:  # EXP-016b: older fixtures lack
+            continue                  # topical_continuity (audit #1)
         new_pc = new_per_class[cls]
         old_pc = old_per_class[cls]
         old_fire_n = sum(1 for it in items if it["gold_class"] == cls

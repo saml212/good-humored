@@ -1,0 +1,433 @@
+{
+  "experiment": "EXP-016-callback-transform-validation",
+  "run_stamp": "20260729T163252",
+  "n_items": 24,
+  "min_gap": 3,
+  "wall_seconds": 9.335,
+  "embed_mode_run": true,
+  "new_per_class": {
+    "genuine_callback": {
+      "n": 4,
+      "mean": 0.6079656862745098,
+      "min": 0.0,
+      "max": 0.875
+    },
+    "trivial_paraphrase": {
+      "n": 4,
+      "mean": 0.33333333333333337,
+      "min": 0.0,
+      "max": 0.5
+    },
+    "coincidental_word_reuse": {
+      "n": 4,
+      "mean": 0.6208791208791209,
+      "min": 0.0,
+      "max": 0.8571428571428572
+    },
+    "verbatim_repeat": {
+      "n": 4,
+      "mean": 0.0,
+      "min": 0.0,
+      "max": 0.0
+    },
+    "no_callback": {
+      "n": 4,
+      "mean": 0.0,
+      "min": 0.0,
+      "max": 0.0
+    },
+    "topical_continuity": {
+      "n": 4,
+      "mean": 0.0,
+      "min": 0.0,
+      "max": 0.0
+    }
+  },
+  "old_per_class": {
+    "genuine_callback": {
+      "n": 4,
+      "mean": 1.0,
+      "min": 1.0,
+      "max": 1.0
+    },
+    "trivial_paraphrase": {
+      "n": 4,
+      "mean": 1.0,
+      "min": 1.0,
+      "max": 1.0
+    },
+    "coincidental_word_reuse": {
+      "n": 4,
+      "mean": 1.0,
+      "min": 1.0,
+      "max": 1.0
+    },
+    "verbatim_repeat": {
+      "n": 4,
+      "mean": 1.0,
+      "min": 1.0,
+      "max": 1.0
+    },
+    "no_callback": {
+      "n": 4,
+      "mean": 0.0,
+      "min": 0.0,
+      "max": 0.0
+    },
+    "topical_continuity": {
+      "n": 4,
+      "mean": 0.25,
+      "min": 0.0,
+      "max": 1.0
+    }
+  },
+  "margin_genuine_minus_trivial_union_verbatim": 0.44129901960784307,
+  "predicted_margin_registered": 0.5,
+  "pooled_trivial_verbatim_mean": 0.16666666666666669,
+  "bars": [
+    {
+      "name": "exp016_callback_margin_genuine_minus_trivial_union_verbatim",
+      "value": 0.44129901960784307,
+      "op": ">=",
+      "threshold": 0.5,
+      "passed": false
+    },
+    {
+      "name": "exp016_coincidental_word_reuse_mean",
+      "value": 0.6208791208791209,
+      "op": "<=",
+      "threshold": 0.1,
+      "passed": false
+    },
+    {
+      "name": "exp016_no_callback_mean_exactly_zero",
+      "value": 0.0,
+      "op": "==",
+      "threshold": 0.0,
+      "passed": true
+    },
+    {
+      "name": "exp016b_topical_continuity_mean",
+      "value": 0.0,
+      "op": "<=",
+      "threshold": 0.1,
+      "passed": true
+    }
+  ],
+  "all_bars_pass": false,
+  "embed_mode_per_class": {
+    "genuine_callback": {
+      "n": 4,
+      "mean": 0.8387349170437406,
+      "min": 0.7333333333333334,
+      "max": 0.9230769230769231
+    },
+    "trivial_paraphrase": {
+      "n": 4,
+      "mean": 0.33333333333333337,
+      "min": 0.0,
+      "max": 0.5
+    },
+    "coincidental_word_reuse": {
+      "n": 4,
+      "mean": 0.8516483516483517,
+      "min": 0.7692307692307692,
+      "max": 0.9230769230769231
+    },
+    "verbatim_repeat": {
+      "n": 4,
+      "mean": 0.0,
+      "min": 0.0,
+      "max": 0.0
+    },
+    "no_callback": {
+      "n": 4,
+      "mean": 0.0,
+      "min": 0.0,
+      "max": 0.0
+    },
+    "topical_continuity": {
+      "n": 4,
+      "mean": 0.475,
+      "min": 0.0,
+      "max": 1.0
+    }
+  },
+  "embed_mode_bars": [
+    {
+      "name": "exp016_callback_margin_genuine_minus_trivial_union_verbatim",
+      "value": 0.6720682503770739,
+      "op": ">=",
+      "threshold": 0.5,
+      "passed": true
+    },
+    {
+      "name": "exp016_coincidental_word_reuse_mean",
+      "value": 0.8516483516483517,
+      "op": "<=",
+      "threshold": 0.1,
+      "passed": false
+    },
+    {
+      "name": "exp016_no_callback_mean_exactly_zero",
+      "value": 0.0,
+      "op": "==",
+      "threshold": 0.0,
+      "passed": true
+    },
+    {
+      "name": "exp016b_topical_continuity_mean",
+      "value": 0.475,
+      "op": "<=",
+      "threshold": 0.1,
+      "passed": false
+    }
+  ],
+  "embed_mode_all_bars_pass": false,
+  "old_vs_new": {
+    "genuine_callback-b01": {
+      "gold_class": "genuine_callback",
+      "old_matched_word": "chair",
+      "old_score": 1.0,
+      "new_matched_turn_idx": null,
+      "new_detection_reasons": [],
+      "new_trigram_similarity": null,
+      "new_score": 0.0
+    },
+    "genuine_callback-b02": {
+      "gold_class": "genuine_callback",
+      "old_matched_word": "smoke",
+      "old_score": 1.0,
+      "new_matched_turn_idx": 0,
+      "new_detection_reasons": [
+        "content_words"
+      ],
+      "new_trigram_similarity": 0.06451612903225806,
+      "new_score": 0.8235294117647058
+    },
+    "genuine_callback-b03": {
+      "gold_class": "genuine_callback",
+      "old_matched_word": "finally",
+      "old_score": 1.0,
+      "new_matched_turn_idx": 0,
+      "new_detection_reasons": [
+        "content_words"
+      ],
+      "new_trigram_similarity": 0.0,
+      "new_score": 0.7333333333333334
+    },
+    "genuine_callback-b04": {
+      "gold_class": "genuine_callback",
+      "old_matched_word": "company",
+      "old_score": 1.0,
+      "new_matched_turn_idx": 0,
+      "new_detection_reasons": [
+        "content_words"
+      ],
+      "new_trigram_similarity": 0.030303030303030304,
+      "new_score": 0.875
+    },
+    "coincidental_word_reuse-b01": {
+      "gold_class": "coincidental_word_reuse",
+      "old_matched_word": "downtown",
+      "old_score": 1.0,
+      "new_matched_turn_idx": 0,
+      "new_detection_reasons": [
+        "content_words"
+      ],
+      "new_trigram_similarity": 0.0,
+      "new_score": 0.8571428571428572
+    },
+    "coincidental_word_reuse-b02": {
+      "gold_class": "coincidental_word_reuse",
+      "old_matched_word": "garage",
+      "old_score": 1.0,
+      "new_matched_turn_idx": 0,
+      "new_detection_reasons": [
+        "content_words"
+      ],
+      "new_trigram_similarity": 0.0,
+      "new_score": 0.7692307692307692
+    },
+    "coincidental_word_reuse-b03": {
+      "gold_class": "coincidental_word_reuse",
+      "old_matched_word": "coffee",
+      "old_score": 1.0,
+      "new_matched_turn_idx": 0,
+      "new_detection_reasons": [
+        "content_words"
+      ],
+      "new_trigram_similarity": 0.0,
+      "new_score": 0.8571428571428572
+    },
+    "coincidental_word_reuse-b04": {
+      "gold_class": "coincidental_word_reuse",
+      "old_matched_word": "pharmacy",
+      "old_score": 1.0,
+      "new_matched_turn_idx": null,
+      "new_detection_reasons": [],
+      "new_trigram_similarity": null,
+      "new_score": 0.0
+    },
+    "trivial_paraphrase-b01": {
+      "gold_class": "trivial_paraphrase",
+      "old_matched_word": "think",
+      "old_score": 1.0,
+      "new_matched_turn_idx": 0,
+      "new_detection_reasons": [
+        "content_words"
+      ],
+      "new_trigram_similarity": 0.25925925925925924,
+      "new_score": 0.0
+    },
+    "trivial_paraphrase-b02": {
+      "gold_class": "trivial_paraphrase",
+      "old_matched_word": "client",
+      "old_score": 1.0,
+      "new_matched_turn_idx": 0,
+      "new_detection_reasons": [
+        "content_words"
+      ],
+      "new_trigram_similarity": 0.037037037037037035,
+      "new_score": 0.5
+    },
+    "trivial_paraphrase-b03": {
+      "gold_class": "trivial_paraphrase",
+      "old_matched_word": "script",
+      "old_score": 1.0,
+      "new_matched_turn_idx": 0,
+      "new_detection_reasons": [
+        "content_words"
+      ],
+      "new_trigram_similarity": 0.21052631578947367,
+      "new_score": 0.5
+    },
+    "trivial_paraphrase-b04": {
+      "gold_class": "trivial_paraphrase",
+      "old_matched_word": "shortfall",
+      "old_score": 1.0,
+      "new_matched_turn_idx": 0,
+      "new_detection_reasons": [
+        "content_words"
+      ],
+      "new_trigram_similarity": 0.36363636363636365,
+      "new_score": 0.33333333333333337
+    },
+    "verbatim_repeat-b01": {
+      "gold_class": "verbatim_repeat",
+      "old_matched_word": "today",
+      "old_score": 1.0,
+      "new_matched_turn_idx": 0,
+      "new_detection_reasons": [
+        "content_words"
+      ],
+      "new_trigram_similarity": 1.0,
+      "new_score": 0.0
+    },
+    "verbatim_repeat-b02": {
+      "gold_class": "verbatim_repeat",
+      "old_matched_word": "ramen",
+      "old_score": 1.0,
+      "new_matched_turn_idx": 0,
+      "new_detection_reasons": [
+        "content_words"
+      ],
+      "new_trigram_similarity": 1.0,
+      "new_score": 0.0
+    },
+    "verbatim_repeat-b03": {
+      "gold_class": "verbatim_repeat",
+      "old_matched_word": "calendar",
+      "old_score": 1.0,
+      "new_matched_turn_idx": 0,
+      "new_detection_reasons": [
+        "content_words"
+      ],
+      "new_trigram_similarity": 1.0,
+      "new_score": 0.0
+    },
+    "verbatim_repeat-b04": {
+      "gold_class": "verbatim_repeat",
+      "old_matched_word": "catering",
+      "old_score": 1.0,
+      "new_matched_turn_idx": 0,
+      "new_detection_reasons": [
+        "content_words"
+      ],
+      "new_trigram_similarity": 1.0,
+      "new_score": 0.0
+    },
+    "topical_continuity-b01": {
+      "gold_class": "topical_continuity",
+      "old_matched_word": null,
+      "old_score": 0.0,
+      "new_matched_turn_idx": null,
+      "new_detection_reasons": [],
+      "new_trigram_similarity": null,
+      "new_score": 0.0
+    },
+    "topical_continuity-b02": {
+      "gold_class": "topical_continuity",
+      "old_matched_word": "client",
+      "old_score": 1.0,
+      "new_matched_turn_idx": null,
+      "new_detection_reasons": [],
+      "new_trigram_similarity": null,
+      "new_score": 0.0
+    },
+    "topical_continuity-b03": {
+      "gold_class": "topical_continuity",
+      "old_matched_word": null,
+      "old_score": 0.0,
+      "new_matched_turn_idx": null,
+      "new_detection_reasons": [],
+      "new_trigram_similarity": null,
+      "new_score": 0.0
+    },
+    "topical_continuity-b04": {
+      "gold_class": "topical_continuity",
+      "old_matched_word": null,
+      "old_score": 0.0,
+      "new_matched_turn_idx": null,
+      "new_detection_reasons": [],
+      "new_trigram_similarity": null,
+      "new_score": 0.0
+    },
+    "no_callback-b01": {
+      "gold_class": "no_callback",
+      "old_matched_word": null,
+      "old_score": 0.0,
+      "new_matched_turn_idx": null,
+      "new_detection_reasons": [],
+      "new_trigram_similarity": null,
+      "new_score": 0.0
+    },
+    "no_callback-b02": {
+      "gold_class": "no_callback",
+      "old_matched_word": null,
+      "old_score": 0.0,
+      "new_matched_turn_idx": null,
+      "new_detection_reasons": [],
+      "new_trigram_similarity": null,
+      "new_score": 0.0
+    },
+    "no_callback-b03": {
+      "gold_class": "no_callback",
+      "old_matched_word": null,
+      "old_score": 0.0,
+      "new_matched_turn_idx": null,
+      "new_detection_reasons": [],
+      "new_trigram_similarity": null,
+      "new_score": 0.0
+    },
+    "no_callback-b04": {
+      "gold_class": "no_callback",
+      "old_matched_word": null,
+      "old_score": 0.0,
+      "new_matched_turn_idx": null,
+      "new_detection_reasons": [],
+      "new_trigram_similarity": null,
+      "new_score": 0.0
+    }
+  }
+}

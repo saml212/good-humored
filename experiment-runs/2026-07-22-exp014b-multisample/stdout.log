@@ -1,0 +1,23 @@
+/private/tmp/claude-501/-Users-samuellarson-Experiments-good-humored/3ca763fc-95e0-4888-9f25-f23d72582abe/scratchpad/exp015-venv/lib/python3.9/site-packages/urllib3/__init__.py:35: NotOpenSSLWarning: urllib3 v2 only supports OpenSSL 1.1.1+, currently the 'ssl' module is compiled with 'LibreSSL 2.8.3'. See: https://github.com/urllib3/urllib3/issues/3020
+  warnings.warn(
+Traceback (most recent call last):
+  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/runpy.py", line 197, in _run_module_as_main
+    return _run_code(code, main_globals, None,
+  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/runpy.py", line 87, in _run_code
+    exec(code, run_globals)
+  File "/Users/samuellarson/Experiments/good-humored/env/validate_incongruity_gate.py", line 832, in <module>
+    main()
+  File "/Users/samuellarson/Experiments/good-humored/env/validate_incongruity_gate.py", line 653, in main
+    result = run_validation_k(items, complete, cache, args.max_calls,
+  File "/Users/samuellarson/Experiments/good-humored/env/validate_incongruity_gate.py", line 436, in run_validation_k
+    result = score_repeat_k(item, r, budgeted, cache, stats,
+  File "/Users/samuellarson/Experiments/good-humored/env/validate_incongruity_gate.py", line 358, in score_repeat_k
+    sample_predictor(PREDICT_PRIMED_PROMPT.format(setup=setup)))
+  File "/Users/samuellarson/Experiments/good-humored/env/validate_incongruity_gate.py", line 205, in predictor
+    raw = complete(prompt)
+  File "/Users/samuellarson/Experiments/good-humored/env/validate_incongruity_gate.py", line 153, in wrapped
+    return complete(prompt)
+  File "/Users/samuellarson/Experiments/good-humored/benchmark/providers.py", line 74, in complete
+    raise last_err
+RuntimeError: claude -p rc=1: You've hit your monthly spend limit · raise it at claude.ai/settings/usage?from=cc_cli_limit_message
+command: python3 -m env.validate_incongruity_gate --judge claude:haiku --repeats 3 --retries 1 --max-calls 1500 --k-samples 5 --out experiment-runs/2026-07-22-exp014b-multisample

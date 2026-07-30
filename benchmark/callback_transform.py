@@ -135,15 +135,22 @@ design (see `benchmark/fixtures/callback_transform_fixture.jsonl`'s
 construction notes); demanding 3+ would also reject genuine short
 callbacks that reuse only two words of a longer earlier turn."""
 
-DEFAULT_EMBED_SIM_FLOOR = 0.6
+DEFAULT_EMBED_SIM_FLOOR = 0.35
 """Cosine-similarity floor for the OPTIONAL embedding OR-branch of the
 detection gate (only consulted when a caller supplies `embed_fn` — see
-module docstring). Calibrated by an empirical spot-check against real
-`all-MiniLM-L6-v2` embeddings (this project's standard embedding
-instrument — `benchmark/label_space.py`, `env/semantic_novelty.py`,
-`env/incongruity_gate.py` all use it) over short, casual
-conversational one-liners of the kind this fixture is built from, NOT a
-literature value:
+module docstring). EXP-016b RECALIBRATION (fix 3): the original 0.6 sat
+ABOVE the measured genuine-coreference band (0.31-0.48), so the branch
+could never catch its target case. 0.35 sits above the measured
+unrelated/coincidental band's top (0.32) and inside the genuine band —
+it catches upper-band genuine zero-lexical-overlap coreference while
+staying out of the bulk of the unrelated range. The band overlap at
+0.31-0.32 is real (see the honest finding below); the additional
+EXP-016b freshness guard in `find_callback_match` (embedding fires only
+when the ORIGIN's similarity exceeds every INTERVENING turn's) is what
+keeps topical-continuity noise from exploiting the lowered floor.
+Original spot-check data (real `all-MiniLM-L6-v2`, this project's
+standard embedding instrument) over short casual conversational
+one-liners, NOT a literature value:
 
     genuinely unrelated topics:                  cosine ~0.06 - 0.32
     coincidental single-shared-word, diff topic: cosine ~0.06 - 0.17
@@ -160,22 +167,32 @@ over (this project's own documentation habit — see e.g.
 sentence embeddings do NOT cleanly separate genuine same-referent
 coreference from topically-unrelated short conversational turns in this
 length/register regime — the two ranges overlap (0.31-0.48 vs 0.06-0.32,
-with no clean gap). 0.6 is chosen ABOVE both observed ranges specifically
-so this OR-branch, when enabled, cannot fire on any of the unrelated/
-coincidental examples measured — a conservative floor that accepts
-missing some genuine zero-lexical-overlap coreference callbacks (a false
-negative, the safe-direction failure for a BONUS term) rather than risk
-a false-positive callback bonus on topical noise. Every fixture item in
-this module's own validation run is decidable via the content-word gate
-alone (see `DEFAULT_MIN_SHARED_CONTENT_WORDS`'s docstring) — this floor
-is a real, implemented, unit-tested OR-path (see
-`benchmark/tests/test_callback_transform.py`'s fake-embedding-vector
-cases) but is NOT the deciding mechanism for any committed fixture item,
-precisely because it is not (yet) validated to be reliable at
-distinguishing the harder zero-overlap case. Treat this as a documented,
-conservative placeholder pending a dedicated calibration pass (the same
-status `env/semantic_novelty.py`'s `DEFAULT_THRESHOLD` had before its own
-EXP-009/EXP-011 sweeps), not a validated operating point."""
+with no clean gap). The 0.31-0.32 overlap zone means a floor of 0.35
+still admits the TOP of the unrelated band in principle; the branch
+therefore remains OFF by default (`embed_fn=None`) and its EXP-016b
+validation numbers are reported as a diagnostic, not a certified
+operating point."""
+
+WORDSET_FLOOR = 0.7
+"""EXP-016b fix 1. Content-word-set Jaccard similarity at or above which
+the transformation score is forced to EXACTLY 0, alongside (OR) the
+trigram `VERBATIM_FLOOR`. Closes the two escapes EXP-016's blind
+held-out set quantified: (a) the CORRELATED DEAD ZONE — clause-reorder
+paraphrase destroys trigrams (sim drops below both this module's old
+floor AND SelfRepetitionPenalty's 0.5 threshold) but preserves the word
+multiset, so a word-set similarity catches exactly what trigrams lose to
+reordering; (b) the HYPHEN ESCAPE — a punctuation-level edit fuses/
+splits `norm()` tokens and collapsed trigram similarity to 0.35 on a
+functionally verbatim repeat, but `_wordset_words` splits hyphens before
+tokenizing, so the punctuation-edit variant measures ~1.0 here and
+floors. 0.7 (below the trigram floor's 0.8): a reorder-only or
+punctuation-edit repeat shares essentially ALL content words (Jaccard
+near 1.0); genuine transformed callbacks reuse 2-3 words of an earlier
+turn while ADDING new material (measured band well under 0.5); 0.7
+splits those with margin on both sides. Synonym-heavy paraphrase
+(3+ content words swapped) can still land between the floors and earn
+partial credit — recorded as the residual known gap, now shrunk by the
+score's `1 - max(trigram, wordset)` basis (EXP-016b registration)."""
 
 VERBATIM_FLOOR = 0.8
 """Trigram-Jaccard similarity at or above which the transformation score
@@ -227,6 +244,25 @@ def _gate_content_words(text: str) -> set:
     transformation-score half of this module (trigram similarity) does
     NOT use this function; it scores the full, unfiltered text."""
     return _content_words(text) - _FALSE_POSITIVE_WORDS
+
+
+def _wordset_words(text: str) -> set:
+    """Content-word set for the WORDSET similarity (EXP-016b fix 1):
+    `_gate_content_words` over HYPHEN-SPLIT text, so `chaos-loving` and
+    `chaos loving` produce the same tokens — the punctuation-edit
+    verbatim escape (`norm()` fuses hyphenated words into one token,
+    shifting every trigram) does not exist at the word-set level."""
+    return _gate_content_words(text.replace("-", " "))
+
+
+def wordset_jaccard(text_a: str, text_b: str) -> float:
+    """Jaccard similarity of the two texts' hyphen-safe content-word
+    sets. 0.0 when either side has no content words (nothing to compare
+    — the safe direction for a floor test that ZEROES scores)."""
+    a, b = _wordset_words(text_a), _wordset_words(text_b)
+    if not a or not b:
+        return 0.0
+    return len(a & b) / len(a | b)
 
 
 def _dot(a: Sequence[float], b: Sequence[float]) -> float:
@@ -321,15 +357,33 @@ def find_callback_match(
 
     for j in sorted(candidates, reverse=True):  # nearest first
         shared = current_words & _gate_content_words(turns[j])
+        # EXP-016b fix 2 (intervening-exclusion, ported from
+        # detect_callback's documented guard): a shared word that also
+        # appears in ANY intervening turn never left the conversation —
+        # that is topical continuity, not a callback. Only FRESH words
+        # (absent from every turn between origin and current) count.
+        intervening_words: set = set()
+        for k in range(j + 1, current_turn_idx):
+            intervening_words |= _gate_content_words(turns[k])
+        fresh = shared - intervening_words
         reasons = []
-        if len(shared) >= min_shared_content_words:
+        if len(fresh) >= min_shared_content_words:
             reasons.append("content_words")
         sim = embed_sims[j] if embed_sims is not None else None
         if sim is not None and sim >= embed_sim_floor:
-            reasons.append("embedding")
+            # EXP-016b fix 3 (freshness guard, the embedding analogue of
+            # fix 2): the origin must be MORE similar to the current turn
+            # than every intervening turn is — otherwise the "match" is
+            # just the ongoing topic, which the lowered 0.35 floor would
+            # otherwise admit.
+            max_intervening_sim = max(
+                (_dot(vectors[current_turn_idx], vectors[k])
+                 for k in range(j + 1, current_turn_idx)), default=float("-inf"))
+            if sim > max_intervening_sim:
+                reasons.append("embedding")
         if reasons:
             return {"matched_turn_idx": j, "detection_reasons": reasons,
-                    "shared_content_words": sorted(shared), "embed_similarity": sim}
+                    "shared_content_words": sorted(fresh), "embed_similarity": sim}
 
     return no_match
 
@@ -342,6 +396,7 @@ def callback_transformation_score(
     embed_fn: Optional[Callable[[Sequence[str]], Sequence[Sequence[float]]]] = None,
     embed_sim_floor: float = DEFAULT_EMBED_SIM_FLOOR,
     verbatim_floor: float = VERBATIM_FLOOR,
+    wordset_floor: float = WORDSET_FLOOR,
     ngram: int = DEFAULT_NGRAM,
 ) -> Dict:
     """Detection gate (`find_callback_match`) THEN transformation score.
@@ -368,14 +423,25 @@ def callback_transformation_score(
         embed_fn=embed_fn, embed_sim_floor=embed_sim_floor)
 
     if match["matched_turn_idx"] is None:
-        return {**match, "trigram_similarity": None, "score": 0.0}
+        return {**match, "trigram_similarity": None,
+                "wordset_similarity": None, "score": 0.0}
 
     current_trigrams = trigrams(turns[current_turn_idx])
     matched_trigrams = trigrams(turns[match["matched_turn_idx"]])
-    sim = trigram_jaccard(current_trigrams, matched_trigrams)
-    score = 0.0 if sim >= verbatim_floor else (1.0 - sim)
+    tri_sim = trigram_jaccard(current_trigrams, matched_trigrams)
+    ws_sim = wordset_jaccard(turns[current_turn_idx],
+                             turns[match["matched_turn_idx"]])
+    # EXP-016b fix 1: transformation must be novel in BOTH sequence
+    # (trigrams) and vocabulary (word set) — `1 - max(...)` scores
+    # against whichever axis the reuse hides in, and either floor
+    # zeroes the score outright (verbatim/reorder/punctuation-edit).
+    if tri_sim >= verbatim_floor or ws_sim >= wordset_floor:
+        score = 0.0
+    else:
+        score = 1.0 - max(tri_sim, ws_sim)
 
-    return {**match, "trigram_similarity": sim, "score": score}
+    return {**match, "trigram_similarity": tri_sim,
+            "wordset_similarity": ws_sim, "score": score}
 
 
 # --------------------------------------------------------- reward-term stub
@@ -443,6 +509,7 @@ class CallbackTransformationReward:
         embed_fn: Optional[Callable[[Sequence[str]], Sequence[Sequence[float]]]] = None,
         embed_sim_floor: float = DEFAULT_EMBED_SIM_FLOOR,
         verbatim_floor: float = VERBATIM_FLOOR,
+        wordset_floor: float = WORDSET_FLOOR,
     ):
         if weight < 0:
             raise ValueError(
@@ -458,6 +525,7 @@ class CallbackTransformationReward:
         self.embed_fn = embed_fn
         self.embed_sim_floor = embed_sim_floor
         self.verbatim_floor = verbatim_floor
+        self.wordset_floor = wordset_floor
 
     def __call__(self, turns: List[str], current_turn_idx: int) -> float:
         """`weight * transformation_score`, `0.0` if the detection gate
@@ -467,5 +535,6 @@ class CallbackTransformationReward:
             turns, current_turn_idx, min_gap=self.min_gap,
             min_shared_content_words=self.min_shared_content_words,
             embed_fn=self.embed_fn, embed_sim_floor=self.embed_sim_floor,
-            verbatim_floor=self.verbatim_floor)
+            verbatim_floor=self.verbatim_floor,
+            wordset_floor=self.wordset_floor)
         return self.weight * result["score"]

@@ -1,6 +1,63 @@
 # STATE
 
-_Last updated: 2026-07-22 (direction refresh from Sam)_
+_Last updated: 2026-07-29 (strategy codified; Phase A execution started)_
+
+## STRATEGY CODIFIED (2026-07-24/29 — Sam approved "go do it")
+
+Full detail: `docs/RL-STACK-AND-SELECTION.md` (requirements, verified
+package matrix, empirical selection protocol, instrument cleanup) +
+`docs/RESEARCH-2026-07-23-strategy-pass.md` §5.5 (model landscape).
+The decisions:
+- **Stack:** verl (GRPO training — only framework clearing all four
+  pillars: multi-turn rollouts, group-visible rewards, full MoE
+  stabilizer set incl. R3 router replay + the only clean FP8-rollout
+  path, colocate on one node) + TRL (`trl reward` for the NYCC
+  quantile RM only) + verifiers/prime-rl (env prototyping, benchmark
+  harness; contingency trainer if the screen picks a dense model) +
+  vLLM/SGLang (serving + prompt_logprobs instruments). ms-swift out
+  (LoRA+MoE sync broken, #6670); OpenRLHF out (no group hook).
+- **Model: chosen by pre-registered screen, not priors.** Slate:
+  Qwen3-30B-A3B-2507 (default, 1× sampling), Qwen3.6-35B-A3B,
+  Qwen3-235B-A22B-2507 (7×, colocate-trainable per revised ceiling),
+  GLM-4.5-Air, DeepSeek-V4-Flash (284B-A13B MIT — screen + RM-backbone
+  candidate; QLoRA-only training path unverified), Qwen3-Next-80B-A3B
+  (screen-only, verl#4907), Qwen3-8B (control). Third-party creative
+  benchmarks carry ZERO decision weight (Sam, 2026-07-24). Decision
+  rule: cheapest-to-sample wins unless bigger beats pre-stated margins.
+- **Compute: 8×H100 node exists (Sam's), currently busy on other
+  work; SSH not yet shared — blocks ONLY the screen and later phases.**
+  Colocate mode = whole node samples, then whole node trains.
+- **Universal gap confirmed at source level (July 2026): no framework
+  ships any diversity-preserving/anti-mode-collapse GRPO mechanism.**
+  Our hand-rolled machinery in verl's reward manager IS contribution
+  gap #3.
+- **Phases:** A (now, local, $0): EXP-019 spike/resolve instrument
+  (**RUN 2026-07-29: FALSIFIED as operationalized** — cue-conditioned
+  ΔS inverted on blind held-out, AUC 0.000) and EXP-020 same day
+  (**surprisal-only lead CLOSED at chance, 0.507 powered
+  replication**; conditional surprisal has no resolution axis —
+  theory-consistent double falsification; fixture-author-variance
+  [LEARN]). **EXP-021 generative resolution probe RUN same day:
+  NEAR-MISS kept alive** (0.699 vs 0.70 bar, 3/4 criteria pass,
+  first-ever correct class ordering across all 6 classes, +0.62 gap
+  over topicality baseline; bad-hyperparam — tune K=10 + 3rd blind
+  author, re-register before any reward wiring). EXP-016b RUN same
+  day: certification failed 2/4 blind bars, decomposed — scoring half
+  SOLID (verbatim/paraphrase/continuity floor correctly), detection
+  half hit the lexical wall ([DEAD-END]: coincidence vs reference
+  needs a semantic tier → EXP-016c queued, local NLI). EXP-022
+  hack-monitor v0 RUN same day: UNINFORMATIVE — quantized reward
+  outputs degenerate MAD-z monitors ([LEARN] monitor-inputs: monitors
+  AND training-time z-discounts must tap continuous pre-threshold
+  signals → EXP-022b queued; also third confirmation of the trigram
+  paraphrase blind spot, on blind data). Remaining Phase A: EXP-016c,
+  EXP-022b, EXP-021 tune, reward consolidation. B (node): model
+  screen + throughput bench + NYCC
+  quantile RM v0 + BoN Gao-curve audit. C: env assembly (verl) +
+  param-matched SFT baseline. D: GRPO + three-instrument eval +
+  reverse-transfer.
+- Kimi K3 ruled out for training (2.8T, no fit; always-on reasoning);
+  DeepSeek V3.x/V4-Pro out (size); details in §5.5.
 
 ## DIRECTION REFRESH (Sam, 2026-07-22 — supersedes emphasis, not architecture)
 

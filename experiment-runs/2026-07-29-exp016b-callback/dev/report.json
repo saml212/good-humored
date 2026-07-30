@@ -1,0 +1,259 @@
+{
+  "experiment": "EXP-016-callback-transform-validation",
+  "run_stamp": "20260729T163225",
+  "n_items": 15,
+  "min_gap": 3,
+  "wall_seconds": 0.001,
+  "embed_mode_run": false,
+  "new_per_class": {
+    "genuine_callback": {
+      "n": 3,
+      "mean": 0.852559205500382,
+      "min": 0.8181818181818181,
+      "max": 0.8823529411764706
+    },
+    "trivial_paraphrase": {
+      "n": 3,
+      "mean": 0.3212121212121212,
+      "min": 0.0,
+      "max": 0.6
+    },
+    "coincidental_word_reuse": {
+      "n": 3,
+      "mean": 0.25,
+      "min": 0.0,
+      "max": 0.75
+    },
+    "verbatim_repeat": {
+      "n": 3,
+      "mean": 0.0,
+      "min": 0.0,
+      "max": 0.0
+    },
+    "no_callback": {
+      "n": 3,
+      "mean": 0.0,
+      "min": 0.0,
+      "max": 0.0
+    }
+  },
+  "old_per_class": {
+    "genuine_callback": {
+      "n": 3,
+      "mean": 1.0,
+      "min": 1.0,
+      "max": 1.0
+    },
+    "trivial_paraphrase": {
+      "n": 3,
+      "mean": 1.0,
+      "min": 1.0,
+      "max": 1.0
+    },
+    "coincidental_word_reuse": {
+      "n": 3,
+      "mean": 1.0,
+      "min": 1.0,
+      "max": 1.0
+    },
+    "verbatim_repeat": {
+      "n": 3,
+      "mean": 1.0,
+      "min": 1.0,
+      "max": 1.0
+    },
+    "no_callback": {
+      "n": 3,
+      "mean": 0.0,
+      "min": 0.0,
+      "max": 0.0
+    }
+  },
+  "margin_genuine_minus_trivial_union_verbatim": 0.6919531448943214,
+  "predicted_margin_registered": 0.5,
+  "pooled_trivial_verbatim_mean": 0.1606060606060606,
+  "bars": [
+    {
+      "name": "exp016_callback_margin_genuine_minus_trivial_union_verbatim",
+      "value": 0.6919531448943214,
+      "op": ">=",
+      "threshold": 0.5,
+      "passed": true
+    },
+    {
+      "name": "exp016_coincidental_word_reuse_mean",
+      "value": 0.25,
+      "op": "<=",
+      "threshold": 0.1,
+      "passed": false
+    },
+    {
+      "name": "exp016_no_callback_mean_exactly_zero",
+      "value": 0.0,
+      "op": "==",
+      "threshold": 0.0,
+      "passed": true
+    }
+  ],
+  "all_bars_pass": false,
+  "embed_mode_per_class": null,
+  "embed_mode_bars": null,
+  "embed_mode_all_bars_pass": null,
+  "old_vs_new": {
+    "gen2-meatball": {
+      "gold_class": "genuine_callback",
+      "old_matched_word": "meatball",
+      "old_score": 1.0,
+      "new_matched_turn_idx": 0,
+      "new_detection_reasons": [
+        "content_words"
+      ],
+      "new_trigram_similarity": 0.0,
+      "new_score": 0.8181818181818181
+    },
+    "gen2-mailbox": {
+      "gold_class": "genuine_callback",
+      "old_matched_word": "mailbox",
+      "old_score": 1.0,
+      "new_matched_turn_idx": 0,
+      "new_detection_reasons": [
+        "content_words"
+      ],
+      "new_trigram_similarity": 0.0,
+      "new_score": 0.8571428571428572
+    },
+    "gen2-thermostat": {
+      "gold_class": "genuine_callback",
+      "old_matched_word": "thermostat",
+      "old_score": 1.0,
+      "new_matched_turn_idx": 0,
+      "new_detection_reasons": [
+        "content_words"
+      ],
+      "new_trigram_similarity": 0.0,
+      "new_score": 0.8823529411764706
+    },
+    "triv2-carkeys": {
+      "gold_class": "trivial_paraphrase",
+      "old_matched_word": "grocery",
+      "old_score": 1.0,
+      "new_matched_turn_idx": 0,
+      "new_detection_reasons": [
+        "content_words"
+      ],
+      "new_trigram_similarity": 0.3076923076923077,
+      "new_score": 0.0
+    },
+    "triv2-dishwasher": {
+      "gold_class": "trivial_paraphrase",
+      "old_matched_word": "guests",
+      "old_score": 1.0,
+      "new_matched_turn_idx": 0,
+      "new_detection_reasons": [
+        "content_words"
+      ],
+      "new_trigram_similarity": 0.2631578947368421,
+      "new_score": 0.36363636363636365
+    },
+    "triv2-flight": {
+      "gold_class": "trivial_paraphrase",
+      "old_matched_word": "flight",
+      "old_score": 1.0,
+      "new_matched_turn_idx": 0,
+      "new_detection_reasons": [
+        "content_words"
+      ],
+      "new_trigram_similarity": 0.10714285714285714,
+      "new_score": 0.6
+    },
+    "coin2-garage": {
+      "gold_class": "coincidental_word_reuse",
+      "old_matched_word": "garage",
+      "old_score": 1.0,
+      "new_matched_turn_idx": null,
+      "new_detection_reasons": [],
+      "new_trigram_similarity": null,
+      "new_score": 0.0
+    },
+    "coin2-signal": {
+      "gold_class": "coincidental_word_reuse",
+      "old_matched_word": "signal",
+      "old_score": 1.0,
+      "new_matched_turn_idx": null,
+      "new_detection_reasons": [],
+      "new_trigram_similarity": null,
+      "new_score": 0.0
+    },
+    "coin2-highway": {
+      "gold_class": "coincidental_word_reuse",
+      "old_matched_word": "again",
+      "old_score": 1.0,
+      "new_matched_turn_idx": 0,
+      "new_detection_reasons": [
+        "content_words"
+      ],
+      "new_trigram_similarity": 0.0,
+      "new_score": 0.75
+    },
+    "verb2-catplanter": {
+      "gold_class": "verbatim_repeat",
+      "old_matched_word": "single",
+      "old_score": 1.0,
+      "new_matched_turn_idx": 0,
+      "new_detection_reasons": [
+        "content_words"
+      ],
+      "new_trigram_similarity": 1.0,
+      "new_score": 0.0
+    },
+    "verb2-furniture": {
+      "gold_class": "verbatim_repeat",
+      "old_matched_word": "basis",
+      "old_score": 1.0,
+      "new_matched_turn_idx": 0,
+      "new_detection_reasons": [
+        "content_words"
+      ],
+      "new_trigram_similarity": 0.65,
+      "new_score": 0.0
+    },
+    "verb2-dentist": {
+      "gold_class": "verbatim_repeat",
+      "old_matched_word": "three",
+      "old_score": 1.0,
+      "new_matched_turn_idx": 0,
+      "new_detection_reasons": [
+        "content_words"
+      ],
+      "new_trigram_similarity": 1.0,
+      "new_score": 0.0
+    },
+    "none2-lights": {
+      "gold_class": "no_callback",
+      "old_matched_word": null,
+      "old_score": 0.0,
+      "new_matched_turn_idx": null,
+      "new_detection_reasons": [],
+      "new_trigram_similarity": null,
+      "new_score": 0.0
+    },
+    "none2-catplanter": {
+      "gold_class": "no_callback",
+      "old_matched_word": null,
+      "old_score": 0.0,
+      "new_matched_turn_idx": null,
+      "new_detection_reasons": [],
+      "new_trigram_similarity": null,
+      "new_score": 0.0
+    },
+    "none2-thermostat": {
+      "gold_class": "no_callback",
+      "old_matched_word": null,
+      "old_score": 0.0,
+      "new_matched_turn_idx": null,
+      "new_detection_reasons": [],
+      "new_trigram_similarity": null,
+      "new_score": 0.0
+    }
+  }
+}

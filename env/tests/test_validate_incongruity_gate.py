@@ -1,11 +1,18 @@
-"""Unit tests for env/validate_incongruity_gate.py (EXP-014) -- fake
-predictor/embed_fn callables and small synthetic fixtures only, NO
+"""Unit tests for env/validate_incongruity_gate.py (EXP-014 / EXP-014b) --
+fake predictor/embed_fn callables and small synthetic fixtures only, NO
 network/CLI calls and NO real sentence_transformers/torch dependency.
 Mirrors env/tests/test_validate_bvt_gate.py's shape (fake scripted/lookup
 calls, cache resume/miss-then-hit, budget-guard raises-before-exceeding)
 and env/tests/test_incongruity_gate.py's `_v`/fake-embed_fn convention
 (unit vectors chosen so cosine similarity to a fixed reference is exactly
 a caller-picked number, avoiding hand trig).
+
+EXP-014b (--k-samples multi-sample centroid gating) additions live in the
+"K-SAMPLING" section near the end of this file: sample_idx cache-key
+independence, hand-computable centroid/dispersion math on orthogonal fake
+embeddings, k_samples==1 bit-identical delegation to the untouched
+score_repeat/run_validation, PredictorEmpty propagation, and budget
+interaction at k_samples>1.
 Run: python3 -m unittest discover -s env/tests -v
 """
 
@@ -20,13 +27,15 @@ from unittest import mock
 from benchmark.relabel import LabelCache
 from env.validate_incongruity_gate import (BudgetExceeded, PredictorEmpty,
                                            REPEAT_CONSISTENCY_CLASS,
-                                           build_bars, class_gate_rates,
-                                           load_fixture,
+                                           _centroid_and_dispersion,
+                                           build_bars, class_dispersion_stats,
+                                           class_gate_rates, load_fixture,
                                            make_budgeted_complete,
                                            make_hybrid_predictor,
                                            pooled_gate1_rate,
                                            repeat_consistency, run_validation,
-                                           score_repeat)
+                                           run_validation_k, score_repeat,
+                                           score_repeat_k)
 
 
 def _item(id_, gold_class, setup, punchline):
@@ -483,6 +492,364 @@ class TestLoadFixture(unittest.TestCase):
             with mock.patch("env.validate_incongruity_gate.FIXTURE", p):
                 with self.assertRaises(ValueError):
                     load_fixture()
+
+
+# =====================================================================
+# K-SAMPLING (EXP-014b, --k-samples) -- centroid-based multi-sample gating.
+# See env/validate_incongruity_gate.py's module docstring for the FLAGGED
+# design decision (runner-only; env/incongruity_gate.py is untouched).
+# =====================================================================
+
+
+class TestMakeHybridPredictorSampleIdx(unittest.TestCase):
+    """sample_idx (new, optional, default None) must (a) reproduce the
+    legacy cache-key format byte-for-byte when omitted/None, and (b) give
+    every distinct sample index its OWN independent cache slot so K
+    parallel draws for the same (item, repeat) never collide."""
+
+    def test_default_sample_idx_matches_legacy_key_format(self):
+        from env.incongruity_gate import PREDICT_COLD_PROMPT
+        item = _item("i1", "real_joke", "setup text", "punch text")
+
+        def _must_not_be_called(prompt):
+            raise AssertionError("a cache hit was expected, not a real call")
+
+        with tempfile.TemporaryDirectory() as td:
+            cache_path = Path(td) / "c.jsonl"
+            cache1 = LabelCache(cache_path)
+            legacy = make_hybrid_predictor(item, 0, make_scripted_complete(["legacy reply"]),
+                                           cache1, {}, retries=1)
+            legacy(PREDICT_COLD_PROMPT.format(setup=item["setup"]))
+            cache1.close()
+
+            # Re-opening the same cache file and querying with sample_idx
+            # explicitly None must hit the SAME key the legacy (pre
+            # -EXP-014b) 6-positional-arg call wrote.
+            cache2 = LabelCache(cache_path)
+            explicit_none = make_hybrid_predictor(item, 0, _must_not_be_called,
+                                                  cache2, {}, retries=1,
+                                                  sample_idx=None)
+            reply = explicit_none(PREDICT_COLD_PROMPT.format(setup=item["setup"]))
+            self.assertEqual(reply, "legacy reply")
+            cache2.close()
+
+    def test_distinct_sample_idx_gets_independent_cache_slots(self):
+        from env.incongruity_gate import PREDICT_COLD_PROMPT
+        item = _item("i1", "real_joke", "setup text", "punch text")
+        with tempfile.TemporaryDirectory() as td:
+            cache = LabelCache(Path(td) / "c.jsonl")
+            complete = make_scripted_complete(["reply k0", "reply k1"])
+            p0 = make_hybrid_predictor(item, 0, complete, cache, {}, retries=1, sample_idx=0)
+            p1 = make_hybrid_predictor(item, 0, complete, cache, {}, retries=1, sample_idx=1)
+            r0 = p0(PREDICT_COLD_PROMPT.format(setup=item["setup"]))
+            r1 = p1(PREDICT_COLD_PROMPT.format(setup=item["setup"]))
+            self.assertEqual((r0, r1), ("reply k0", "reply k1"))
+            cache.close()
+
+    def test_sample_idx_zero_does_not_collide_with_default_none_slot(self):
+        # sample_idx=0 must be a genuinely NEW call, not a silent hit on
+        # whatever a bare (sample_idx=None) call for this item/repeat
+        # already cached -- otherwise the first K-sample draw would
+        # secretly steal EXP-014's original single-guess cache entry.
+        from env.incongruity_gate import PREDICT_COLD_PROMPT
+        item = _item("i1", "real_joke", "setup text", "punch text")
+        with tempfile.TemporaryDirectory() as td:
+            cache = LabelCache(Path(td) / "c.jsonl")
+            complete = make_scripted_complete(["default reply", "sample0 reply"])
+            p_none = make_hybrid_predictor(item, 0, complete, cache, {}, retries=1)
+            p0 = make_hybrid_predictor(item, 0, complete, cache, {}, retries=1, sample_idx=0)
+            r_none = p_none(PREDICT_COLD_PROMPT.format(setup=item["setup"]))
+            r0 = p0(PREDICT_COLD_PROMPT.format(setup=item["setup"]))
+            self.assertEqual(r_none, "default reply")
+            self.assertEqual(r0, "sample0 reply")
+            cache.close()
+
+
+class TestCentroidAndDispersion(unittest.TestCase):
+    """_centroid_and_dispersion hand-computed on orthogonal fake unit
+    vectors -- no sentence_transformers/torch dependency."""
+
+    def test_two_orthogonal_vectors_hand_computed(self):
+        import numpy as np
+        vecs = np.array([[1.0, 0.0], [0.0, 1.0]])
+        centroid, dispersion = _centroid_and_dispersion(vecs)
+        expected_norm = math.sqrt(0.5)  # ||mean((1,0),(0,1))|| = ||(.5,.5)||
+        self.assertAlmostEqual(dispersion, 1.0 - expected_norm, places=6)
+        self.assertAlmostEqual(float(centroid[0]), 0.5 / expected_norm, places=6)
+        self.assertAlmostEqual(float(centroid[1]), 0.5 / expected_norm, places=6)
+        self.assertAlmostEqual(float(np.linalg.norm(centroid)), 1.0, places=6)
+
+    def test_identical_vectors_zero_dispersion(self):
+        import numpy as np
+        vecs = np.array([[1.0, 0.0], [1.0, 0.0], [1.0, 0.0]])
+        centroid, dispersion = _centroid_and_dispersion(vecs)
+        self.assertAlmostEqual(dispersion, 0.0, places=6)
+        self.assertAlmostEqual(float(centroid[0]), 1.0, places=6)
+        self.assertAlmostEqual(float(centroid[1]), 0.0, places=6)
+
+    def test_antipodal_vectors_degenerate_case_does_not_raise(self):
+        import numpy as np
+        vecs = np.array([[1.0, 0.0], [-1.0, 0.0]])
+        centroid, dispersion = _centroid_and_dispersion(vecs)  # must not raise
+        self.assertAlmostEqual(dispersion, 1.0, places=6)  # maximal dispersion
+        self.assertAlmostEqual(float(centroid[0]), 0.0, places=6)
+        self.assertAlmostEqual(float(centroid[1]), 0.0, places=6)
+
+
+class TestScoreRepeatKGateMath(unittest.TestCase):
+    """score_repeat_k's k_samples>1 path, hand-computed end-to-end."""
+
+    def test_identical_k_guesses_both_gates_pass_zero_dispersion(self):
+        # All K=3 cold guesses and all K=3 primed guesses are the SAME
+        # text (a deterministic/collapsed predictor) -- dispersion must
+        # be exactly 0 for both conditions, and the centroid reduces to
+        # the single repeated vector, so the gate math matches a plain
+        # single-guess computation.
+        item = _item("i1", "real_joke", "setup", "punch")
+        vector_map = {"cold reply": _v(0.0), "primed reply": _v(0.95),
+                      "punch": (1.0, 0.0)}
+        embed_fn = make_vector_embed_fn(vector_map)
+        complete = lambda p: "cold reply" if "UNSURPRISING" in p else "primed reply"  # noqa: E731
+        with tempfile.TemporaryDirectory() as td:
+            cache = LabelCache(Path(td) / "c.jsonl")
+            result = score_repeat_k(item, 0, complete, cache, {}, retries=1,
+                                    embed_fn=embed_fn, surprise_threshold=0.5,
+                                    drop_threshold=0.15, k_samples=3)
+            cache.close()
+        self.assertAlmostEqual(result["d_cold"], 1.0, places=6)
+        self.assertAlmostEqual(result["d_primed"], 0.05, places=6)
+        self.assertTrue(result["gate_1"])
+        self.assertTrue(result["gate_2"])
+        self.assertTrue(result["passes"])
+        self.assertFalse(result["unparseable"])
+        self.assertAlmostEqual(result["cold_dispersion"], 0.0, places=6)
+        self.assertAlmostEqual(result["primed_dispersion"], 0.0, places=6)
+        self.assertEqual(result["n_unique_cold"], 1)
+        self.assertEqual(result["n_unique_primed"], 1)
+
+    def test_two_distinct_cold_guesses_hand_computed_dispersion_and_distance(self):
+        # cold guesses genuinely disagree (orthogonal embeddings) --
+        # centroid distance and dispersion both come out to the same
+        # hand-computable 1-sqrt(0.5) here (a property of this specific
+        # setup, where the punchline sits on the reference axis -- NOT a
+        # general identity between distance and dispersion). Primed
+        # guesses are identical (zero dispersion), for contrast in one
+        # integration test.
+        item = _item("i1", "real_joke", "setup", "punch")
+        vector_map = {"cold A": (1.0, 0.0), "cold B": (0.0, 1.0),
+                      "primed reply": _v(0.95), "punch": (1.0, 0.0)}
+        embed_fn = make_vector_embed_fn(vector_map)
+        # call order inside score_repeat_k is [cold_k0, primed_k0, cold_k1,
+        # primed_k1] -- one predictor per sample index, cold then primed.
+        complete = make_scripted_complete(["cold A", "primed reply",
+                                           "cold B", "primed reply"])
+        with tempfile.TemporaryDirectory() as td:
+            cache = LabelCache(Path(td) / "c.jsonl")
+            result = score_repeat_k(item, 0, complete, cache, {}, retries=1,
+                                    embed_fn=embed_fn, surprise_threshold=0.5,
+                                    drop_threshold=0.15, k_samples=2)
+            cache.close()
+        expected = 1.0 - math.sqrt(0.5)
+        self.assertAlmostEqual(result["d_cold"], expected, places=6)
+        self.assertAlmostEqual(result["cold_dispersion"], expected, places=6)
+        self.assertAlmostEqual(result["d_primed"], 0.05, places=6)
+        self.assertAlmostEqual(result["primed_dispersion"], 0.0, places=6)
+        self.assertFalse(result["gate_1"])  # 0.293 < 0.5 surprise_threshold
+        self.assertFalse(result["passes"])
+        self.assertEqual(result["n_unique_cold"], 2)
+        self.assertEqual(result["n_unique_primed"], 1)
+
+    def test_no_split_short_circuits_before_any_k_sample_call(self):
+        item = _item("i1", "real_joke", "", "")
+        item["text"] = " "  # bypass load_fixture's own validation, as
+        # test_score_repeat.py's own equivalent test does
+
+        def _must_not_be_called(prompt):
+            raise AssertionError("cold/primed must never be reached")
+
+        with tempfile.TemporaryDirectory() as td:
+            cache = LabelCache(Path(td) / "c.jsonl")
+            result = score_repeat_k(item, 0, _must_not_be_called, cache, {},
+                                    retries=1, embed_fn=lambda ts: [(1.0, 0.0)] * len(ts),
+                                    surprise_threshold=0.5, drop_threshold=0.15,
+                                    k_samples=3)
+            cache.close()
+        self.assertTrue(result["unparseable"])
+        self.assertIsNone(result["cold_dispersion"])
+
+    def test_empty_response_among_k_marks_whole_repeat_unparseable(self):
+        item = _item("i1", "real_joke", "setup", "punchline")
+        # cold_k0 ok, primed_k0 ok, cold_k1 empty even after one retry.
+        complete = make_scripted_complete(["cold0", "primed0", "", ""])
+        embed_fn = lambda ts: [(1.0, 0.0)] * len(ts)  # noqa: E731
+        with tempfile.TemporaryDirectory() as td:
+            cache = LabelCache(Path(td) / "c.jsonl")
+            result = score_repeat_k(item, 0, complete, cache, {}, retries=1,
+                                    embed_fn=embed_fn, surprise_threshold=0.5,
+                                    drop_threshold=0.15, k_samples=2)
+            cache.close()
+        self.assertTrue(result["unparseable"])
+        self.assertIsNone(result["gate_1"])
+        self.assertIsNone(result["cold_dispersion"])
+
+    def test_k_samples_below_one_raises(self):
+        item = _item("i1", "real_joke", "setup", "punch")
+        with tempfile.TemporaryDirectory() as td:
+            cache = LabelCache(Path(td) / "c.jsonl")
+            with self.assertRaises(ValueError):
+                score_repeat_k(item, 0, lambda p: "x", cache, {}, retries=1,
+                              embed_fn=lambda ts: [(1.0, 0.0)] * len(ts),
+                              surprise_threshold=0.5, drop_threshold=0.15,
+                              k_samples=0)
+            cache.close()
+
+
+class TestScoreRepeatKOneMatchesScoreRepeat(unittest.TestCase):
+    """k_samples=1 must delegate BYTE-FOR-BYTE to the untouched
+    score_repeat -- the concrete claim behind this addendum's "k=1
+    backward-compat bit-identical" requirement."""
+
+    def test_k_samples_one_delegates_bit_identically(self):
+        item = _item("i1", "real_joke", "setup", "punchline")
+        vecs = {"cold reply": _v(0.0), "primed reply": _v(0.9),
+               "punchline": (1.0, 0.0)}
+        embed_fn = make_vector_embed_fn(vecs)
+
+        with tempfile.TemporaryDirectory() as td1:
+            cache1 = LabelCache(Path(td1) / "c.jsonl")
+            complete1 = make_scripted_complete(["cold reply", "primed reply"])
+            legacy = score_repeat(item, 0, complete1, cache1, {}, retries=1,
+                                  embed_fn=embed_fn, surprise_threshold=0.5,
+                                  drop_threshold=0.15)
+            cache1.close()
+
+        with tempfile.TemporaryDirectory() as td2:
+            cache2 = LabelCache(Path(td2) / "c.jsonl")
+            complete2 = make_scripted_complete(["cold reply", "primed reply"])
+            via_k = score_repeat_k(item, 0, complete2, cache2, {}, retries=1,
+                                   embed_fn=embed_fn, surprise_threshold=0.5,
+                                   drop_threshold=0.15, k_samples=1)
+            cache2.close()
+
+        for key in ("d_cold", "d_primed", "gate_1", "gate_2", "passes", "unparseable"):
+            self.assertEqual(legacy[key], via_k[key], msg=key)
+        self.assertIsNone(via_k["cold_dispersion"])
+        self.assertIsNone(via_k["primed_dispersion"])
+        self.assertIsNone(via_k["n_unique_cold"])
+        self.assertIsNone(via_k["n_unique_primed"])
+
+
+class TestRunValidationKOneMatchesRunValidation(unittest.TestCase):
+    """run_validation_k(k_samples=1) must match run_validation's own
+    per-item results and call/cache-hit counts exactly, over multiple
+    items and repeats (not just a single score_repeat call)."""
+
+    def _items(self):
+        return [_item("a", "real_joke", "setup a", "punch a"),
+               _item("b", "boring_expected", "setup b", "punch b")]
+
+    def _embed(self, ts):
+        return [(1.0, 0.0)] * len(ts)
+
+    def test_k_samples_one_matches_run_validation_exactly(self):
+        responses = ["c0a", "p0a", "c1a", "p1a", "c0b", "p0b", "c1b", "p1b"]
+        with tempfile.TemporaryDirectory() as td1:
+            cache1 = LabelCache(Path(td1) / "c.jsonl")
+            legacy = run_validation(self._items(), make_scripted_complete(list(responses)),
+                                    cache1, max_calls=100, repeats=2, retries=1,
+                                    embed_fn=self._embed, surprise_threshold=0.5,
+                                    drop_threshold=0.15)
+            cache1.close()
+        with tempfile.TemporaryDirectory() as td2:
+            cache2 = LabelCache(Path(td2) / "c.jsonl")
+            via_k = run_validation_k(self._items(), make_scripted_complete(list(responses)),
+                                     cache2, max_calls=100, repeats=2, retries=1,
+                                     embed_fn=self._embed, surprise_threshold=0.5,
+                                     drop_threshold=0.15, k_samples=1)
+            cache2.close()
+
+        self.assertEqual(legacy["stats"]["calls"], via_k["stats"]["calls"])
+        self.assertEqual(legacy["stats"]["calls"], 8)
+        self.assertEqual(legacy["budget_exhausted"], via_k["budget_exhausted"])
+        for iid in ("a", "b"):
+            self.assertEqual(len(legacy["per_item"][iid]), len(via_k["per_item"][iid]))
+            for legacy_r, k_r in zip(legacy["per_item"][iid], via_k["per_item"][iid]):
+                for key in ("d_cold", "d_primed", "gate_1", "gate_2", "passes", "unparseable"):
+                    self.assertEqual(legacy_r[key], k_r[key], msg=(iid, key))
+
+
+class TestRunValidationKBudget(unittest.TestCase):
+    """Budget guard must account for k_samples>1's real cost (2*k_samples
+    calls per repeat), not the k=1 assumption of 2 calls per repeat."""
+
+    def test_budget_stop_with_k_samples_two_drops_incomplete_work(self):
+        # k_samples=2 costs 2*2=4 real calls per repeat (cold_k0, primed_k0,
+        # cold_k1, primed_k1). max_calls=4 covers exactly item "a" repeat 0
+        # and nothing more -- repeat 1 and item "b" must not run.
+        items = [_item("a", "real_joke", "setup a", "punch a"),
+                _item("b", "boring_expected", "setup b", "punch b")]
+        complete = make_scripted_complete(["c0", "p0", "c1", "p1"])
+        embed_fn = lambda ts: [(1.0, 0.0)] * len(ts)  # noqa: E731
+        with tempfile.TemporaryDirectory() as td:
+            cache = LabelCache(Path(td) / "c.jsonl")
+            result = run_validation_k(items, complete, cache, max_calls=4,
+                                      repeats=2, retries=1, embed_fn=embed_fn,
+                                      surprise_threshold=0.5, drop_threshold=0.15,
+                                      k_samples=2)
+            cache.close()
+        self.assertTrue(result["budget_exhausted"])
+        self.assertEqual(len(result["per_item"]["a"]), 1)
+        self.assertNotIn("b", result["per_item"])
+        self.assertEqual(result["stats"]["calls"], 4)
+
+    def test_resumed_k_sampled_run_serves_everything_from_cache(self):
+        items = [_item("a", "real_joke", "setup a", "punch a")]
+        embed_fn = lambda ts: [(1.0, 0.0)] * len(ts)  # noqa: E731
+        responses = ["c0", "p0", "c1", "p1"]
+        with tempfile.TemporaryDirectory() as td:
+            cache_path = Path(td) / "c.jsonl"
+            cache1 = LabelCache(cache_path)
+            run_validation_k(items, make_scripted_complete(list(responses)), cache1,
+                             max_calls=100, repeats=1, retries=1, embed_fn=embed_fn,
+                             surprise_threshold=0.5, drop_threshold=0.15, k_samples=2)
+            cache1.close()
+
+            cache2 = LabelCache(cache_path)
+
+            def _must_not_be_called(prompt):
+                raise AssertionError("resumed k-sampled run re-spent a cached call")
+
+            result = run_validation_k(items, _must_not_be_called, cache2,
+                                      max_calls=100, repeats=1, retries=1,
+                                      embed_fn=embed_fn, surprise_threshold=0.5,
+                                      drop_threshold=0.15, k_samples=2)
+            cache2.close()
+        self.assertEqual(result["stats"]["calls"], 0)
+        self.assertEqual(result["stats"]["cache_hits"], 4)
+
+
+class TestClassDispersionStats(unittest.TestCase):
+    def test_pooled_mean_excludes_unparseable_and_k1_none(self):
+        items = [_item("a", "real_joke", "s", "p"), _item("b", "real_joke", "s2", "p2")]
+        per_item = {
+            "a": [{"unparseable": False, "cold_dispersion": 0.2, "primed_dispersion": 0.1,
+                  "n_unique_cold": 3, "n_unique_primed": 2},
+                 {"unparseable": True, "cold_dispersion": None, "primed_dispersion": None,
+                  "n_unique_cold": None, "n_unique_primed": None}],
+            "b": [{"unparseable": False, "cold_dispersion": 0.4, "primed_dispersion": 0.3,
+                  "n_unique_cold": 5, "n_unique_primed": 4}],
+        }
+        stats = class_dispersion_stats(items, per_item, "real_joke")
+        self.assertEqual(stats["n_observations"], 2)
+        self.assertAlmostEqual(stats["mean_cold_dispersion"], 0.3)
+        self.assertAlmostEqual(stats["mean_primed_dispersion"], 0.2)
+        self.assertAlmostEqual(stats["mean_n_unique_cold"], 4.0)
+        self.assertAlmostEqual(stats["mean_n_unique_primed"], 3.0)
+
+    def test_no_observations_is_none(self):
+        stats = class_dispersion_stats([], {}, "real_joke")
+        self.assertIsNone(stats["mean_cold_dispersion"])
+        self.assertIsNone(stats["mean_n_unique_cold"])
 
 
 if __name__ == "__main__":

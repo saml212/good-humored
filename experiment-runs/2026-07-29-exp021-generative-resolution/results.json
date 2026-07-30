@@ -1,0 +1,1634 @@
+{
+  "model": "Qwen/Qwen3-4B-Instruct-2507",
+  "device": "mps",
+  "dtype": "float16",
+  "k": 5,
+  "temperature": 0.8,
+  "top_p": 0.95,
+  "max_new_tokens": 40,
+  "fixtures": "env/tests/fixtures/pivot_differential_heldout.jsonl,env/tests/fixtures/surprisal_novel_fixture.jsonl",
+  "per_item": [
+    {
+      "id": "real_joke-h01",
+      "gold_class": "real_joke",
+      "author": "A",
+      "d_cold": 0.577368393071956,
+      "d_primed": 0.5904063033725174,
+      "resolution": -0.01303791030056145,
+      "overlap_primed_max": 0.3333333333333333,
+      "cold_dispersion": 0.15156487279557881,
+      "primed_dispersion": 0.25525694705495794,
+      "n_cold": 5,
+      "n_primed": 5,
+      "n_suspicious": 0,
+      "guesses_cold": [
+        "He campaigned on the promise to \"fix the broken neighborhood wiring\" while also improving community safety and access to reliable power.",
+        "He focused on improving access to reliable electricity for all residents.",
+        "He focused on improving access to affordable energy for all residents.",
+        "He focused on improving access to affordable electricity for all residents.",
+        "He campaigned on the promise to cut utility costs for homeowners."
+      ],
+      "guesses_primed": [
+        "He wanted to \"wire\" the community, but everyone just said, \"No, we don\u2019t want to be connected!",
+        "He ran on a platform of \"no wires, just votes!\" \u2014 because he was the only one who truly understood the current situation.",
+        "He promised to \"flip the switch\" on corruption\u2014turns out, he just flipped the wrong breaker.",
+        "His platform? \"I'll fix everything\u2014like the wiring in your home, or the corruption in city government!",
+        "He wanted to \"wire\" the community, but instead ended up getting himself \"shorted\" in the race."
+      ]
+    },
+    {
+      "id": "real_joke-h02",
+      "gold_class": "real_joke",
+      "author": "A",
+      "d_cold": 0.6669296269952882,
+      "d_primed": 0.42781916580515067,
+      "resolution": 0.23911046119013757,
+      "overlap_primed_max": 0.2857142857142857,
+      "cold_dispersion": 0.02908213571635354,
+      "primed_dispersion": 0.08851023883142876,
+      "n_cold": 5,
+      "n_primed": 5,
+      "n_suspicious": 0,
+      "guesses_cold": [
+        "She passed the recipe down to her youngest granddaughter, who now makes it every holiday season.",
+        "She passed the recipe down to her eldest granddaughter, who now makes it every holiday season.",
+        "She passed the recipe down to her daughter, who then shared it with her grandchildren.",
+        "She passed the recipe down to her youngest granddaughter, who now makes it for family gatherings every holiday season.",
+        "She passed the recipe down to her eldest granddaughter, who now makes it for family gatherings every winter."
+      ],
+      "guesses_primed": [
+        "The twist? She called it \"Secret\" because she never told anyone\u2014she just kept it in the pantry, and it was always *spicy* with a side of \"no one knew.",
+        "The twist? She called it \"secret\" because she never shared it\u2014she just used it in her *chili* for thirty years, and the real secret was that she never *added*",
+        "The twist? She never shared it with anyone\u2014she just posted it online as a \"secret recipe\" for a viral TikTok challenge.",
+        "The twist? She called it \"secret\" because she never told anyone\u2014she just kept it in the pantry, and the only ingredient was \"a lot of patience.",
+        "The twist is that the \"secret\" was just a spice blend she kept in her apron pocket\u2014everyone else just didn't know about it until now."
+      ]
+    },
+    {
+      "id": "real_joke-h03",
+      "gold_class": "real_joke",
+      "author": "A",
+      "d_cold": 0.6303858831278291,
+      "d_primed": 0.4500086084465992,
+      "resolution": 0.18037727468122988,
+      "overlap_primed_max": 0.0,
+      "cold_dispersion": 0.18746134754567428,
+      "primed_dispersion": 0.2513783111525398,
+      "n_cold": 5,
+      "n_primed": 5,
+      "n_suspicious": 0,
+      "guesses_cold": [
+        "After the session, I felt more energized and noticed I could do a few more reps than before.",
+        "He started by demonstrating a few basic stretches and exercises to help me warm up.",
+        "After the session, I felt more energized and noticed I could do a few more reps than before.",
+        "After the session, I felt more energized and noticed I could do a few more reps than before.",
+        "He started by demonstrating a few basic stretches and warm-up exercises."
+      ],
+      "guesses_primed": [
+        "But I already had a session yesterday\u2014so I guess it's just turning back the clock on my *fitness*... not my *age*.",
+        "He just turned back the clock\u2014but only for the session; my fitness is still stuck in the 1990s.",
+        "He just showed me how to use the treadmill\u2014backwards.",
+        "But I already had a session yesterday\u2014so he just turned back my clock by one day.",
+        "But I was already past my prime\u2014my clock was already running backward."
+      ]
+    },
+    {
+      "id": "real_joke-h04",
+      "gold_class": "real_joke",
+      "author": "A",
+      "d_cold": 0.8578294852150246,
+      "d_primed": 0.683465248863254,
+      "resolution": 0.17436423635177056,
+      "overlap_primed_max": 0.0,
+      "cold_dispersion": 0.039659077616357764,
+      "primed_dispersion": 0.09298481716833377,
+      "n_cold": 5,
+      "n_primed": 5,
+      "n_suspicious": 0,
+      "guesses_cold": [
+        "The station hired a new meteorologist to take over the forecasts.",
+        "The station hired a new meteorologist to take over the forecasts.",
+        "The station hired a new meteorologist to take over the forecasts.",
+        "The station hired a new meteorologist to take over the forecasts.",
+        "The station hired a new meteorologist to replace her."
+      ],
+      "guesses_primed": [
+        "The meteorologist was fired for being too accurate\u2014she\u2019d been predicting rain every day, and it had finally stopped.",
+        "The station actually fired the wrong forecast\u2014because they\u2019d been predicting rain for ten days straight, and the meteorologist was wrong about the *weather*, not the *job*.",
+        "The meteorologist was fired for being wrong\u2014turns out, she was the only one who could predict the weather *before* it happened.",
+        "The meteorologist was fired for being \"too accurate\" \u2014 she predicted a 10-day rainstorm, and it actually rained for exactly 10 days in a row.",
+        "The forecast was always wrong\u2014she was just the weather, not the meteorologist."
+      ]
+    },
+    {
+      "id": "setup_nonsequitur-h01",
+      "gold_class": "setup_nonsequitur",
+      "author": "A",
+      "d_cold": 1.0612869066474595,
+      "d_primed": 1.095303692244068,
+      "resolution": -0.03401678559660848,
+      "overlap_primed_max": 0.0,
+      "cold_dispersion": 0.06800071143767009,
+      "primed_dispersion": 0.22802818170840924,
+      "n_cold": 5,
+      "n_primed": 5,
+      "n_suspicious": 0,
+      "guesses_cold": [
+        "The salesman introduced himself and asked if he could stay for the night to rest before continuing his journey.",
+        "The salesman introduced himself and asked if the farmer would like to meet him again the next day to discuss selling supplies.",
+        "The salesman introduced himself and asked if he could stay for the night to rest before continuing his journey.",
+        "The salesman introduced himself and asked if he could stay for the night to rest before continuing his journey.",
+        "The salesman introduced himself and asked if he could stay for the night to rest before continuing his journey."
+      ],
+      "guesses_primed": [
+        "He said, \"I'm here to sell you insurance\u2014against getting lost in the woods!",
+        "The salesman said, \"I'm here to sell you my new line of farm equipment\u2014but I only accept payment in stories.",
+        "The salesman said, \"I'm here to sell you my map,\" and the farmer replied, \"I already have one\u2014of my loneliness.",
+        "The salesman said, \"I sell vacuum cleaners,\" and the farmer replied, \"Great! I've been looking for someone to clean up my mess\u2014my house is full of empty bottles and unopened",
+        "The salesman said, \"I sell home insurance\u2014don't worry, I'm not going to charge you for the cows."
+      ]
+    },
+    {
+      "id": "setup_nonsequitur-h02",
+      "gold_class": "setup_nonsequitur",
+      "author": "A",
+      "d_cold": 1.0162086674723645,
+      "d_primed": 1.017305506035059,
+      "resolution": -0.001096838562694602,
+      "overlap_primed_max": 0.0,
+      "cold_dispersion": 0.28844526323674297,
+      "primed_dispersion": 0.14116138474286943,
+      "n_cold": 5,
+      "n_primed": 5,
+      "n_suspicious": 0,
+      "guesses_cold": [
+        "They consulted the shared calendar to see who had the next available shift.",
+        "They both reached into the fridge at the same time and pulled out the same expired milk.",
+        "They decided to flip a coin to decide who had to clean it.",
+        "They both reached into the refrigerator to check the contents, and realized they had been using the same expired milk for weeks.",
+        "They both agreed to take turns cleaning the refrigerator every other week."
+      ],
+      "guesses_primed": [
+        "The refrigerator had a \"clean-out\" button on its side\u2014so it was clearly built for us to press, not just open.",
+        "The refrigerator had a \"cleaner\" built in \u2014 it was just a self-cleaning appliance, and neither of them had to do anything!",
+        "The refrigerator had a \"clean out\" button\u2014so they both pressed it, and now it's on vacation.",
+        "The refrigerator has a \"turn\" \u2014 it's been on vacation!",
+        "The refrigerator had a \"clean-out\" policy\u2014everyone\u2019s turn comes when it\u2019s empty."
+      ]
+    },
+    {
+      "id": "setup_nonsequitur-h03",
+      "gold_class": "setup_nonsequitur",
+      "author": "A",
+      "d_cold": 0.9953866442252142,
+      "d_primed": 1.005620663246547,
+      "resolution": -0.010234019021332807,
+      "overlap_primed_max": 0.0,
+      "cold_dispersion": 0.12048771472113243,
+      "primed_dispersion": 0.13634240608684867,
+      "n_cold": 5,
+      "n_primed": 5,
+      "n_suspicious": 0,
+      "guesses_cold": [
+        "He glanced at his watch again, sighing slightly as the ceremony was still a few minutes away.",
+        "He glanced at his watch again, slightly nervous, as the officiant finally arrived.",
+        "He glanced at his watch again, sighing slightly as the ceremony was still a few minutes away.",
+        "He glanced at his watch again as the officiant finally announced the ceremony was about to begin.",
+        "He glanced at his watch again, sighing slightly as the time dragged on."
+      ],
+      "guesses_primed": [
+        "The wedding was delayed because the groom was checking the watch to make sure the priest didn't start the ceremony without him.",
+        "He was waiting for the groom to be ready\u2014because the wedding was *groom*ed to start!",
+        "He was nervously checking his watch because he was afraid he\u2019d miss the wedding\u2014only to realize it was his own wedding to a watch.",
+        "He was waiting for the wedding to start so he could finally clock in.",
+        "He was checking the watch because he was nervous about being late for his own wedding\u2014turns out, he\u2019d already married himself in a previous ceremony."
+      ]
+    },
+    {
+      "id": "setup_nonsequitur-h04",
+      "gold_class": "setup_nonsequitur",
+      "author": "A",
+      "d_cold": 0.9266984578651696,
+      "d_primed": 0.9010779187133807,
+      "resolution": 0.025620539151788857,
+      "overlap_primed_max": 0.16666666666666666,
+      "cold_dispersion": -2.220446049250313e-16,
+      "primed_dispersion": 0.14115610451681374,
+      "n_cold": 5,
+      "n_primed": 5,
+      "n_suspicious": 0,
+      "guesses_cold": [
+        "He pressed the button for the 10th floor.",
+        "He pressed the button for the 10th floor.",
+        "He pressed the button for the 10th floor.",
+        "He pressed the button for the 10th floor.",
+        "He pressed the button for the 10th floor."
+      ],
+      "guesses_primed": [
+        "He\u2019s not eating the pizzas\u2014he\u2019s a pizza delivery guy, and the boxes are stacked because he\u2019s delivering to the top floor!",
+        "He\u2019s not eating the pizza\u2014he\u2019s a pizza delivery man, and the boxes are stacked because he\u2019s \u201con a delivery run to the sky.",
+        "He\u2019s not eating the pizza\u2014he\u2019s a delivery guy, and the \u201cenormous\u201d boxes are actually just his regular delivery size!",
+        "He\u2019s not eating the pizza\u2014he\u2019s a pizza delivery guy, and the \"enormous\" boxes are just his way of saying \"I\u2019m late.",
+        "He\u2019s not a man\u2014he\u2019s a *cheese* man. \ud83e\uddc0"
+      ]
+    },
+    {
+      "id": "boring_expected-h01",
+      "gold_class": "boring_expected",
+      "author": "A",
+      "d_cold": 0.37079604592646465,
+      "d_primed": 0.2063305496689698,
+      "resolution": 0.16446549625749485,
+      "overlap_primed_max": 1.0,
+      "cold_dispersion": 0.07982000790078311,
+      "primed_dispersion": 0.14263363788311573,
+      "n_cold": 5,
+      "n_primed": 5,
+      "n_suspicious": 0,
+      "guesses_cold": [
+        "She got out of bed and started getting ready for work.",
+        "She got out of bed and made her morning coffee before heading to the office.",
+        "She got out of bed and made her morning coffee before heading to the office.",
+        "She got out of bed and started getting ready for the meeting.",
+        "She got out of bed and made her coffee before heading to the office."
+      ],
+      "guesses_primed": [
+        "But she slept in until nine\u2014turns out, her alarm was set for \"seven\" in the morning, not \"seven a.m.\" in the morning!",
+        "But she always slept in until nine\u2014so she was actually late for a meeting at *bedtime*.",
+        "But she always slept in, so the meeting was actually at 7 p.m.\u2014the \"early\" meeting was just her mistake, not the alarm.",
+        "But she always forgets to set it for seven\u2014she sets it for \"seven\" because she's a morning person, not because she's a seven!",
+        "But she always forgets to turn it off\u2014so she\u2019s actually just setting the alarm for seven to remind herself to go to bed at seven!"
+      ]
+    },
+    {
+      "id": "boring_expected-h02",
+      "gold_class": "boring_expected",
+      "author": "A",
+      "d_cold": 0.2608035805188651,
+      "d_primed": 0.4571637874514295,
+      "resolution": -0.1963602069325644,
+      "overlap_primed_max": 0.25,
+      "cold_dispersion": 0.12723589974497024,
+      "primed_dispersion": 0.16326893125717892,
+      "n_cold": 5,
+      "n_primed": 5,
+      "n_suspicious": 0,
+      "guesses_cold": [
+        "He found a frozen pizza and decided to cook it.",
+        "He found a few leftovers in the fridge and decided to heat them up with a side of salad.",
+        "He found a few leftovers in the fridge and decided to heat them up with a side of salad.",
+        "He found a few leftover pasta and a bag of frozen vegetables, so he decided to make a simple pasta dish.",
+        "He found a few leftover vegetables and a frozen pizza, so he decided to make a simple pasta dish."
+      ],
+      "guesses_primed": [
+        "He found a sandwich\u2014turns out, it was a \"cold\" one.",
+        "But the fridge was empty\u2014except for a single, very hungry-looking cat sitting on top of the cheese.",
+        "But the fridge was empty\u2014except for a single note that read, \"Sorry, I'm on a diet of jokes.",
+        "But the fridge was empty\u2014except for a single note that read, \"Dinner is on me. Just don\u2019t eat the toaster.",
+        "But the fridge was empty\u2014except for a single note that read, \"Sorry, I'm not the dinner."
+      ]
+    },
+    {
+      "id": "vague_abstract_gaming_probe-h01",
+      "gold_class": "vague_abstract_gaming_probe",
+      "author": "A",
+      "d_cold": 0.8897197029166339,
+      "d_primed": 0.9762290351482883,
+      "resolution": -0.08650933223165436,
+      "overlap_primed_max": 0.0,
+      "cold_dispersion": 0.12372630495115447,
+      "primed_dispersion": 0.14109590199575647,
+      "n_cold": 5,
+      "n_primed": 5,
+      "n_suspicious": 0,
+      "guesses_cold": [
+        "He set the nets aside on the dock, then sat down on the wooden bench to rest.",
+        "He tied the nets securely to the bow of the boat as the sun dipped below the horizon.",
+        "He tied the nets securely to the boat's rail and sat down by the edge of the shore, watching the sun dip below the water.",
+        "He tied the nets neatly on the boat's side and began unloading the catch onto the dock.",
+        "He set the nets aside on the dock, leaning back in his chair as the sun dipped below the horizon."
+      ],
+      "guesses_primed": [
+        "He was fishing for a friend\u2014turns out, the \"last time\" was because the friend had already been caught in the net.",
+        "He\u2019d been fishing for decades\u2014finally caught the last one: \"a fish named 'shore'!",
+        "He didn\u2019t catch anything\u2014just a few old fish bones from his own net.",
+        "He\u2019d been fishing for decades\u2014finally caught the last one: *a fish named \"Old Man.\"*",
+        "He\u2019d been fishing for years\u2014but today, he finally caught a *net*!"
+      ]
+    },
+    {
+      "id": "vague_abstract_gaming_probe-h02",
+      "gold_class": "vague_abstract_gaming_probe",
+      "author": "A",
+      "d_cold": 0.9304715122336676,
+      "d_primed": 0.8367209340060784,
+      "resolution": 0.09375057822758925,
+      "overlap_primed_max": 0.0,
+      "cold_dispersion": 0.20214288879155456,
+      "primed_dispersion": 0.12104488361085841,
+      "n_cold": 5,
+      "n_primed": 5,
+      "n_suspicious": 0,
+      "guesses_cold": [
+        "Over the next few weeks, a tiny green shoot broke through the soil and began to grow.",
+        "Over the next few weeks, a small green sprout pushed through the cracks, growing taller with each passing day.",
+        "Over the next few weeks, a small green shoot pushed through the cracked soil, growing toward the sunlight.",
+        "Over the next few weeks, a small green sprout pushed through the cracked soil, reaching toward the sunlight.",
+        "She watered it gently every morning."
+      ],
+      "guesses_primed": [
+        "The seed grew into a tiny, perfect \"grandma\" \u2014 because it was a \"grandma seed.",
+        "The seed grew into a tiny, perfectly normal plant\u2014except it was actually a \"seed\" from a joke, and the real twist was that the girl had just planted a *punchline*",
+        "The seed grew into a tiny, perfectly normal plant\u2014just like a \"seed\" of a joke, because it was the only one in the garden.",
+        "The seed grew into a very tall, very polite, and very *grand* tree.",
+        "The seed grew into a tiny, perfectly formed \"grandma\" \u2014 because it was a \"grandma\" seed!"
+      ]
+    },
+    {
+      "id": "real_joke-f01",
+      "gold_class": "real_joke",
+      "author": "B",
+      "d_cold": 0.8383701408190877,
+      "d_primed": 0.6874869007450738,
+      "resolution": 0.15088324007401388,
+      "overlap_primed_max": 0.0,
+      "cold_dispersion": 0.10312890286745233,
+      "primed_dispersion": 0.16923357198996483,
+      "n_cold": 5,
+      "n_primed": 5,
+      "n_suspicious": 0,
+      "guesses_cold": [
+        "Instead, they discussed the latest observations from the James Webb Space Telescope.",
+        "Instead, they discussed the latest observations from the James Webb Space Telescope.",
+        "Instead, they discussed the latest observations from the James Webb Space Telescope.",
+        "They simply agreed to focus on the visible stars for the rest of the evening.",
+        "Instead, they discussed the latest observations from the James Webb Space Telescope."
+      ],
+      "guesses_primed": [
+        "Because they were both afraid of the dark hole!",
+        "Because they were both convinced the other was just a \"hole\" in their understanding!",
+        "Because he knew the stargazer was just a \"hole\" in the argument!",
+        "Because they were afraid he\u2019d \u201cpull a black hole\u201d and never let go.",
+        "Because he didn't want to \"hole up\" with someone who didn't understand the science!"
+      ]
+    },
+    {
+      "id": "real_joke-f02",
+      "gold_class": "real_joke",
+      "author": "B",
+      "d_cold": 0.85994245901811,
+      "d_primed": 0.5779143307694035,
+      "resolution": 0.2820281282487065,
+      "overlap_primed_max": 0.16666666666666666,
+      "cold_dispersion": 0.09275811943477659,
+      "primed_dispersion": 0.19380780349818666,
+      "n_cold": 5,
+      "n_primed": 5,
+      "n_suspicious": 0,
+      "guesses_cold": [
+        "In the second week, he began to familiarize himself with the department responsibilities and key team members.",
+        "In the second week, he began asking questions to colleagues to better understand their roles and responsibilities.",
+        "In the second week, he began reaching out to colleagues to clarify roles and responsibilities.",
+        "In the second week, he began reaching out to colleagues to ask questions and learn more about their roles.",
+        "In the second week, he began reaching out to colleagues to learn more about their roles and responsibilities."
+      ],
+      "guesses_primed": [
+        "So when he finally asked to be promoted, he was told, \"Sorry, we don\u2019t have any positions above you \u2014 you\u2019re at the bottom of the org chart!",
+        "So when the manager asked, \"How did you do with the org chart?\" the intern replied, \"Perfectly\u2014now I know who to report to!",
+        "So when the manager asked, \"Did you understand the org chart?\" the intern replied, \"Yes \u2014 I now know exactly where everyone is *in* the hierarchy, but I still don\u2019t know",
+        "So when the boss asked, \"Who do I report to?\" the intern replied, \"You don't \u2014 you're the top of the chart!",
+        "So when he finally got promoted, he realized he was now in a position to \"chart\" the company's future\u2014just like his boss had always said."
+      ]
+    },
+    {
+      "id": "real_joke-f03",
+      "gold_class": "real_joke",
+      "author": "B",
+      "d_cold": 0.5811061546849412,
+      "d_primed": 0.5721355920911415,
+      "resolution": 0.008970562593799691,
+      "overlap_primed_max": 0.0,
+      "cold_dispersion": 0.022787990764703326,
+      "primed_dispersion": 0.10469982521430454,
+      "n_cold": 5,
+      "n_primed": 5,
+      "n_suspicious": 0,
+      "guesses_cold": [
+        "So everyone packed up their gear and headed to the locker room to get ready.",
+        "So everyone packed up their gear and headed to the locker room to get ready.",
+        "So everyone packed their gear and headed to the locker room for the final preparations.",
+        "So everyone packed up their gear and headed to the locker room.",
+        "So everyone packed up their gear and headed to the locker room to prepare for the game."
+      ],
+      "guesses_primed": [
+        "So they could leave everything on the field\u2014because the game was \"field day\"!",
+        "So they could have something to leave when they left.",
+        "So they could leave everything on the field\u2014because the game was *field* day!",
+        "So they could have something to leave *on* the field when they finally leave.",
+        "So they could have something to leave when they left."
+      ]
+    },
+    {
+      "id": "real_joke-f04",
+      "gold_class": "real_joke",
+      "author": "B",
+      "d_cold": 0.9293986833980092,
+      "d_primed": 0.8207522624587346,
+      "resolution": 0.10864642093927468,
+      "overlap_primed_max": 0.0,
+      "cold_dispersion": 0.10008854138469811,
+      "primed_dispersion": 0.08401621011616031,
+      "n_cold": 5,
+      "n_primed": 5,
+      "n_suspicious": 0,
+      "guesses_cold": [
+        "The forecast for the next day will likely remain sunny.",
+        "The forecast then updated to include a chance of scattered clouds and a few showers for the coming days.",
+        "The forecast then updated to include a chance of scattered clouds for the next day.",
+        "The forecast then updated to include a chance of scattered clouds and a cool breeze later in the week.",
+        "The forecast for the next day will likely remain sunny, as the weather pattern has been consistent."
+      ],
+      "guesses_primed": [
+        "But the forecast was actually just \"three straight days of sunshine\" \u2014 not three days of sunny weather, but three days of sun *on* the forecast! \ud83d\ude04",
+        "But the forecast was actually correct\u2014just not for the sun, it was sunny in the forecast office! \ud83c\udf1e",
+        "But it turned out to be a sunny prediction\u2014because the forecast was sunny for three days, not three days of sunshine!",
+        "But it was actually just three days of sun\u2014no, wait, *sun* as in \"sunny\" and not \"sunny\" as in \"sunny-side up\"\u2014he misread",
+        "But the forecast was actually just predicting \"sunshine\" \u2014 like, three days of sunshine for the sun itself!"
+      ]
+    },
+    {
+      "id": "real_joke-f05",
+      "gold_class": "real_joke",
+      "author": "B",
+      "d_cold": 0.542998245388152,
+      "d_primed": 0.6240913194962432,
+      "resolution": -0.08109307410809119,
+      "overlap_primed_max": 0.0,
+      "cold_dispersion": 0.09553509058040269,
+      "primed_dispersion": 0.050604386724925954,
+      "n_cold": 5,
+      "n_primed": 5,
+      "n_suspicious": 0,
+      "guesses_cold": [
+        "The patron slowly lowered his voice, noticing the librarian's concerned expression.",
+        "The patron slowly lowered his voice, noticing the librarian's concerned expression.",
+        "The patron lowered his voice, slightly embarrassed, and continued reading quietly.",
+        "The patron lowered his voice, noting the librarian's polite but firm tone.",
+        "The patron lowered his voice, noticeably quieter now."
+      ],
+      "guesses_primed": [
+        "Because the patron was reading a book titled \"How to Whisper.",
+        "Because the patron was reading a book titled \"How to Whisper Without Being Heard.",
+        "Because the patron was reading a book titled \"How to Be Quiet.",
+        "Because the patron was reading a book on \"quiet library rules\"\u2014it was a *loud* book.",
+        "Because the patron was reading a book titled \"How to Be Quiet."
+      ]
+    },
+    {
+      "id": "real_joke-f06",
+      "gold_class": "real_joke",
+      "author": "B",
+      "d_cold": 0.6971830702189143,
+      "d_primed": 0.6184550087649231,
+      "resolution": 0.07872806145399125,
+      "overlap_primed_max": 0.0,
+      "cold_dispersion": 0.11527916273154423,
+      "primed_dispersion": 0.1354583586294334,
+      "n_cold": 5,
+      "n_primed": 5,
+      "n_suspicious": 0,
+      "guesses_cold": [
+        "After defining a chair as a piece of furniture designed to be sat on, the professor moved on to discuss how this definition applies across different cultures and historical periods.",
+        "After defining what a chair is, the professor moved on to discuss how this definition applies to everyday objects in the classroom.",
+        "Then he moved on to discuss how this definition applies to everyday objects in the classroom.",
+        "After defining a chair as a piece of furniture designed to be sat on, the professor moved on to discuss how this definition applies to different cultural and historical contexts.",
+        "After defining a chair as a piece of furniture with a seat and backrest designed for sitting, the professor moved on to discuss how this definition varies across cultures and historical periods."
+      ],
+      "guesses_primed": [
+        "So, in the end, he defined a chair as \"a piece of furniture that can be sat on\"\u2014and the class realized they'd been sitting in one the whole time.",
+        "A chair is just a piece of furniture\u2014until you sit on it and realize it's really a person who's been sitting there all along.",
+        "So, a chair is just a piece of furniture\u2014unless you're sitting on it, then it's a \"seat\" of wisdom.",
+        "So, when he finally asked, \"What is a chair?\" the student replied, \"A chair is a thing you sit on\u2014unless it's a *chair* that's actually a *chair",
+        "So, a chair is just a piece of furniture\u2014unless it's a *chair* in the philosophy department, where it's also a *seat* for a very long lecture."
+      ]
+    },
+    {
+      "id": "real_joke-f07",
+      "gold_class": "real_joke",
+      "author": "B",
+      "d_cold": 0.74493362319563,
+      "d_primed": 0.5156902883947683,
+      "resolution": 0.22924333480086168,
+      "overlap_primed_max": 0.0,
+      "cold_dispersion": 0.0491816607246671,
+      "primed_dispersion": 0.1473429538381977,
+      "n_cold": 5,
+      "n_primed": 5,
+      "n_suspicious": 0,
+      "guesses_cold": [
+        "The baker started providing detailed feedback and step-by-step instructions to help the employee improve.",
+        "The baker began providing step-by-step guidance to help the employee improve the process.",
+        "The baker started providing step-by-step training to help the employee avoid the mistake.",
+        "The baker started providing detailed feedback and step-by-step instructions to help the employee improve.",
+        "The baker started providing detailed feedback and step-by-step instructions to help the employee improve."
+      ],
+      "guesses_primed": [
+        "The baker realized the mistake was in the recipe\u2014everyone else was baking the wrong thing!",
+        "Because the mistake was always baking a \"soda\" cake\u2014everyone else just called it \"soda\" by mistake!",
+        "The baker realized the mistake was in the recipe\u2014because \"the same mistake\" was actually \"the same cake.",
+        "The baker refused to fire the employee because they were the only one who could make the \"crust\" of the bread\u2014every time.",
+        "The baker realized the mistake was in the recipe\u2014turns out, \"the same mistake\" was just the recipe for a famous pastry!"
+      ]
+    },
+    {
+      "id": "real_joke-f08",
+      "gold_class": "real_joke",
+      "author": "B",
+      "d_cold": 0.6305236964132146,
+      "d_primed": 0.60346386243659,
+      "resolution": 0.027059833976624592,
+      "overlap_primed_max": 0.0,
+      "cold_dispersion": 0.1992289916840843,
+      "primed_dispersion": 0.16697272750290953,
+      "n_cold": 5,
+      "n_primed": 5,
+      "n_suspicious": 0,
+      "guesses_cold": [
+        "He continued to climb the mountain each season, gradually building endurance and refining his techniques.",
+        "When the mountain climber finally reached the summit, they took a moment to rest and enjoy the view.",
+        "He finally climbed the mountain.",
+        "He continued to climb, gradually tackling more difficult routes and building endurance over time.",
+        "On the day of the climb, he woke early, checked the weather, and began the ascent."
+      ],
+      "guesses_primed": [
+        "But when he finally reached the summit, he realized he'd been climbing the wrong mountain all along\u2014he was just a \"mountain\" climber, not a \"mountain\" climber.",
+        "But despite all that preparation, he still couldn't climb the mountain\u2014because he was just a climber, not a climber of mountains.",
+        "But he still can't climb a mountain because he's too afraid of the *altitude* of his own expectations.",
+        "But he still never learned how to pack a lunch.",
+        "But despite all that training, he still couldn\u2019t climb the mountain\u2014because he was only ever climbing *up* the mountain, not *into* the summit."
+      ]
+    },
+    {
+      "id": "real_joke-f09",
+      "gold_class": "real_joke",
+      "author": "B",
+      "d_cold": 0.9389941016911462,
+      "d_primed": 0.8307226565094303,
+      "resolution": 0.10827144518171583,
+      "overlap_primed_max": 0.0,
+      "cold_dispersion": 0.14666374463844994,
+      "primed_dispersion": 0.1939802018357089,
+      "n_cold": 5,
+      "n_primed": 5,
+      "n_suspicious": 0,
+      "guesses_cold": [
+        "You have to keep casting until the right person bites.",
+        "You have to stay patient, keep casting, and trust that the right person will eventually come to you.",
+        "You have to stay patient, keep casting, and trust that the right person will come up when you're ready.",
+        "You have to be patient, use the right approach, and keep trying until the right match comes in.",
+        "You have to stay patient, keep casting, and sometimes the right bait isn't obvious until you're ready to try it."
+      ],
+      "guesses_primed": [
+        "So, the catch is always in the \"fish\" \u2014 you just have to learn to love the net.",
+        "So, you don\u2019t need a fishing license\u2014just a good excuse to say \"I\u2019m not ready\" and walk away.",
+        "So, you don\u2019t catch the fish\u2014you just catch the *fishing*!",
+        "So, the catch is always in the net\u2014because you never really know if you're fishing for a partner or just a really bad pun.",
+        "So, when you finally catch someone, you're not just \"pulling them in\"\u2014you're just \"hooked\"!"
+      ]
+    },
+    {
+      "id": "real_joke-f10",
+      "gold_class": "real_joke",
+      "author": "B",
+      "d_cold": 0.6497623043333446,
+      "d_primed": 0.7475492301082265,
+      "resolution": -0.0977869257748819,
+      "overlap_primed_max": 0.0,
+      "cold_dispersion": 0.11537264630921813,
+      "primed_dispersion": 0.06597970387783836,
+      "n_cold": 5,
+      "n_primed": 5,
+      "n_suspicious": 0,
+      "guesses_cold": [
+        "The driver started noticing the turns more carefully and began to follow the directions more closely.",
+        "The driver started noticing the GPS recalculating whenever they missed a turn, so they began checking their route more carefully to avoid missing turns.",
+        "The driver started noticing the GPS recalculating whenever they missed a turn, so they began double-checking the route before making each decision.",
+        "The driver started noting the missed turns and adjusting the route manually.",
+        "The driver started paying closer attention to the road signs and began avoiding missed turns by adjusting their route in real time."
+      ],
+      "guesses_primed": [
+        "Because it was always \"lost in translation\" \u2014 like a bad map! \ud83d\ude97\ud83d\uddfa\ufe0f\ud83d\ude04",
+        "Because it was always \"lost in translation\" \u2014 it just didn't get the turn right.",
+        "Because it was always \"lost in translation\" \u2014 it just couldn't find the right route!",
+        "Because it was always \"lost in translation\" \u2014 just like the driver!",
+        "Because it was always \"lost in translation\" \u2014 it just couldn't read the road signs!"
+      ]
+    },
+    {
+      "id": "real_joke-f11",
+      "gold_class": "real_joke",
+      "author": "B",
+      "d_cold": 0.6308643568431465,
+      "d_primed": 0.5609738434192392,
+      "resolution": 0.06989051342390729,
+      "overlap_primed_max": 0.5,
+      "cold_dispersion": 0.0874009575670198,
+      "primed_dispersion": 0.0698946997536007,
+      "n_cold": 5,
+      "n_primed": 5,
+      "n_suspicious": 0,
+      "guesses_cold": [
+        "The students began to submit riddles one by one, trying to outthink the teacher.",
+        "The students began to submit their riddles one by one.",
+        "The students began to submit riddles one by one, hoping to earn the extra credit.",
+        "The students began to whisper and pass around riddles they had heard before.",
+        "The students began to submit riddles one by one, hoping to earn the extra credit."
+      ],
+      "guesses_primed": [
+        "The riddle was \"What has keys but can't open locks?\" and the answer was \"a keyboard\"\u2014but the teacher already knew that, so she gave extra credit to the student who said,",
+        "The teacher didn't realize she'd been stumped by the riddle she herself had written\u2014because it was just \"extra credit for anyone who could stump her.",
+        "The riddle was \"What has keys but can't open locks?\" and the answer was \"a keyboard\"\u2014but the teacher realized she\u2019d just given extra credit to the student who\u2019d already known the",
+        "The riddle was \"What has keys but can't open locks?\" and the answer was \"a keyboard\"\u2014but the teacher just realized she forgot to give extra credit to the student who said \"a",
+        "The riddle was \"What has keys but can't open locks?\" and the answer was \"a keyboard\"\u2014but the teacher actually meant \"a student who stumps me\" and the extra credit was"
+      ]
+    },
+    {
+      "id": "real_joke-f12",
+      "gold_class": "real_joke",
+      "author": "B",
+      "d_cold": 0.5442523707672835,
+      "d_primed": 0.45017900964623825,
+      "resolution": 0.09407336112104525,
+      "overlap_primed_max": 0.0,
+      "cold_dispersion": 0.016746553000916854,
+      "primed_dispersion": 0.08906270920464132,
+      "n_cold": 5,
+      "n_primed": 5,
+      "n_suspicious": 0,
+      "guesses_cold": [
+        "The therapist begins to reference the dog's notes during discussions, occasionally using them to highlight patterns in the client's behavior.",
+        "The therapist begins to reference the dog's notes during discussions, occasionally using them to highlight patterns in the client's behavior.",
+        "The therapist begins to reference the dog's notes during sessions to reinforce consistency and provide additional context on the client's progress.",
+        "The therapist begins to reference the dog's notes during sessions to supplement discussion and track progress.",
+        "The therapist begins to reference the dog's notes during discussions, occasionally using them to highlight patterns in the client's behavior."
+      ],
+      "guesses_primed": [
+        "The therapist finally realized the dog wasn't taking notes\u2014\u5b83 was just taking *paws* off the session! \ud83d\udc3e",
+        "The therapist's dog started attending every session and taking detailed notes\u2014because it\u2019s a *paw-sitive* development!",
+        "The therapist's dog is actually a certified canine psychologist\u2014because it\u2019s always taking notes and giving \"tail\" advice.",
+        "The therapist's dog started attending every session and taking detailed notes\u2014because it's a *paw-sitive* sign of progress! \ud83d\udc3e",
+        "The therapist finally realized the dog wasn't taking notes\u2014 it was just *dog-earing* the session log!"
+      ]
+    },
+    {
+      "id": "nonseq_fluent-f01",
+      "gold_class": "nonseq_fluent",
+      "author": "B",
+      "d_cold": 0.9060042408573908,
+      "d_primed": 0.8410290288017451,
+      "resolution": 0.06497521205564571,
+      "overlap_primed_max": 0.0,
+      "cold_dispersion": 0.0,
+      "primed_dispersion": 0.09952120023636438,
+      "n_cold": 5,
+      "n_primed": 5,
+      "n_suspicious": 0,
+      "guesses_cold": [
+        "The clerk asked, \"What kind of screw are you looking for?",
+        "The clerk asked, \"What kind of screw are you looking for?",
+        "The clerk asked, \"What kind of screw are you looking for?",
+        "The clerk asked, \"What kind of screw are you looking for?",
+        "The clerk asked, \"What kind of screw are you looking for?"
+      ],
+      "guesses_primed": [
+        "The clerk said, \"We don't sell screws here\u2014we sell *screwdrivers*!",
+        "The clerk said, \"We don't carry that kind of screw\u2014we only sell *nails*.",
+        "The clerk said, \"We don't sell screws here \u2014 we sell *screwdrivers*!",
+        "The clerk asked, \"Which kind of screw are you looking for?\" The man replied, \"The ones that hold things together.\" The clerk said, \"Oh, you want a *common* screw",
+        "The clerk said, \"We don't carry that kind of screw\u2014we only sell 'self-threading' ones!"
+      ]
+    },
+    {
+      "id": "nonseq_fluent-f02",
+      "gold_class": "nonseq_fluent",
+      "author": "B",
+      "d_cold": 1.1308508446714602,
+      "d_primed": 1.1406344426031132,
+      "resolution": -0.009783597931652954,
+      "overlap_primed_max": 0.0,
+      "cold_dispersion": 0.07855103597998483,
+      "primed_dispersion": 0.07064642522520972,
+      "n_cold": 5,
+      "n_primed": 5,
+      "n_suspicious": 0,
+      "guesses_cold": [
+        "The magician then performed a classic card trick, dealing cards from a standard deck and revealing the predicted number.",
+        "The magician then performed a routine involving a deck of cards and a few simple illusions.",
+        "The magician then performed a classic card trick using a standard deck of cards.",
+        "The magician then performed a classic card trick, pulling a red ace from his hat and showing it to the audience.",
+        "The magician then performed a routine involving a deck of cards and a few simple illusions."
+      ],
+      "guesses_primed": [
+        "The trick? He just pulled a rabbit out of his hat\u2014but it was actually a very convincing hat stand.",
+        "The trick? He just pulled a rabbit out of his hat\u2014but it was actually a very confused squirrel wearing a tiny magician's hat.",
+        "The trick? He just pulled a rabbit out of his hat\u2014but it was actually a very expensive, very old, and very confused-looking hat.",
+        "The trick? He just pulled a rabbit out of his hat\u2014only it was a very confused-looking magician in a different hat.",
+        "The trick? He just pulled a rabbit out of his hat\u2014turns out, it was always a very good actor."
+      ]
+    },
+    {
+      "id": "nonseq_fluent-f03",
+      "gold_class": "nonseq_fluent",
+      "author": "B",
+      "d_cold": 0.8770277608733386,
+      "d_primed": 0.8722720590858289,
+      "resolution": 0.004755701787509614,
+      "overlap_primed_max": 0.0,
+      "cold_dispersion": 0.18908623204771838,
+      "primed_dispersion": 0.0859184188866831,
+      "n_cold": 5,
+      "n_primed": 5,
+      "n_suspicious": 0,
+      "guesses_cold": [
+        "They consulted the shared list of who brought donuts last week to determine whose turn it was.",
+        "They referred back to the original rule that said the person who arrived first each day got to choose.",
+        "They decided to flip a coin to decide who had to bring the donuts next.",
+        "They checked the shared calendar to see who had been assigned the donut duty for the week.",
+        "They consulted the shared calendar to see who had been assigned the donut duty earlier in the week."
+      ],
+      "guesses_primed": [
+        "The donuts were already brought \u2014 it was their turn to *eat* them.",
+        "The donuts were already brought\u2014because \"we\" brought them, not \"who\"!",
+        "The donuts were already brought\u2014because \"we\" brought them, and \"we\" means \"the donut machine.",
+        "The donuts were already brought\u2014because \"turn\" is a doughnut-shaped word!",
+        "The donuts were already brought\u2014someone just forgot to eat them."
+      ]
+    },
+    {
+      "id": "nonseq_fluent-f04",
+      "gold_class": "nonseq_fluent",
+      "author": "B",
+      "d_cold": 1.0373260131500672,
+      "d_primed": 0.9571518009851558,
+      "resolution": 0.08017421216491138,
+      "overlap_primed_max": 0.0,
+      "cold_dispersion": 0.07484842086678437,
+      "primed_dispersion": 0.20015469490011473,
+      "n_cold": 5,
+      "n_primed": 5,
+      "n_suspicious": 0,
+      "guesses_cold": [
+        "He introduced himself by saying, \"Hi, I'm Alex, I'm new to the team and I'm looking forward to getting to know everyone.",
+        "He smiled and said, \"Hi, I'm Alex, I just started here this week.",
+        "He introduced himself by saying, \"Hi, I'm Alex, I'm new to the team and I'm looking forward to getting to know everyone.",
+        "He simply said, \"Hi, I'm Alex, I'm new to the team and I'm looking forward to getting to know everyone.",
+        "He introduced himself by saying, \"Hi, I'm Alex, I'm new to the team and I'll be working in operations."
+      ],
+      "guesses_primed": [
+        "So I just introduced myself\u2014my name's John, and I'm the new employee... but I wasn't sure how to say \"I'm the new employee\" without sounding like a typo.",
+        "So I just introduced myself\u2014my name's Dave, and I'm the new employee who's really good at taking notes.",
+        "So I introduced myself by saying, \"My name is John \u2014 I'm not a fan of the 'J' sound, but I'm here to bring the 'John' to the team!",
+        "So I just introduced myself\u2014my name is \"New,\" and I'm here to bring fresh ideas!",
+        "So I just introduced myself\u2014my name\u2019s *John*, and I\u2019m the new *joke* in the office!"
+      ]
+    },
+    {
+      "id": "nonseq_fluent-f05",
+      "gold_class": "nonseq_fluent",
+      "author": "B",
+      "d_cold": 0.926327142078098,
+      "d_primed": 0.9823031947416029,
+      "resolution": -0.055976052663504916,
+      "overlap_primed_max": 0.0,
+      "cold_dispersion": 0.05612983452306428,
+      "primed_dispersion": 0.1369219832808819,
+      "n_cold": 5,
+      "n_primed": 5,
+      "n_suspicious": 0,
+      "guesses_cold": [
+        "The vet examined the cat, checked its vaccinations, and provided some advice on diet and grooming.",
+        "The vet examined the cat, checked its weight, and recommended a routine vaccination schedule.",
+        "The vet examined the cat, checked its weight, and recommended a routine vaccination and a follow-up appointment in six months.",
+        "The vet examined the cat, checked its weight, and recommended a routine vaccination and flea prevention.",
+        "The vet examined the cat, checked its weight, and administered a routine vaccination."
+      ],
+      "guesses_primed": [
+        "The vet said, \"Your cat is in great health\u2014just like your last two cats!\" (Pun: \"cats\" as in felines, and \"cats\" as in the plural of",
+        "The vet says, \"Your cat's blood work is perfect\u2014just like your last year's tax return!",
+        "The vet said, \"Your cat is in great health\u2014just like your last one!\" (Pun: \"cat\" as in \"cat\" and \"cat\" as in \"cat\" \u2014",
+        "The vet says, \"Your cat is in great health\u2014no signs of fleas, ticks, or *paw-sitive* issues!",
+        "The vet says, \"Your cat is in great health\u2014just like your last annual checkup, which was for a *cat*\u2014I mean, *cat*!"
+      ]
+    },
+    {
+      "id": "nonseq_fluent-f06",
+      "gold_class": "nonseq_fluent",
+      "author": "B",
+      "d_cold": 1.000334014962596,
+      "d_primed": 1.0177713587388986,
+      "resolution": -0.01743734377630246,
+      "overlap_primed_max": 0.0,
+      "cold_dispersion": 0.19630444461691784,
+      "primed_dispersion": 0.25691725482643096,
+      "n_cold": 5,
+      "n_primed": 5,
+      "n_suspicious": 0,
+      "guesses_cold": [
+        "He then began to tell the audience a joke.",
+        "Then he began his routine.",
+        "Then he began to tell the audience a short, funny story about a misplaced umbrella.",
+        "He then began to deliver his opening remarks to the audience.",
+        "He then began to deliver his opening remarks to the audience."
+      ],
+      "guesses_primed": [
+        "The microphone stand was actually a stand-up comic's new job\u2014because he\u2019s been \"standing\" for the audience all night.",
+        "Because he was having a \"stand-up\" moment.",
+        "Because he was having trouble finding the right *note*!",
+        "Because he was \"fine-tuning\" his act\u2014just like a tuning fork!",
+        "The microphone stand was actually a stand-up comic\u2019s new career move\u2014\u201cI\u2019ve been standing on the stage for years, but now I\u2019m finally *on* the stand!"
+      ]
+    },
+    {
+      "id": "nonseq_fluent-f07",
+      "gold_class": "nonseq_fluent",
+      "author": "B",
+      "d_cold": 0.9057757686426889,
+      "d_primed": 0.83974940681045,
+      "resolution": 0.06602636183223898,
+      "overlap_primed_max": 0.0,
+      "cold_dispersion": 0.20314937108521836,
+      "primed_dispersion": 0.15909538023467903,
+      "n_cold": 5,
+      "n_primed": 5,
+      "n_suspicious": 0,
+      "guesses_cold": [
+        "He whispered, \"I'm sorry, sir, but there's been a mistake with your order.",
+        "He looked at the table, then back at the cook, and quietly said, \"The kitchen is closed.",
+        "He whispered, \"I'm sorry, but there's been a mistake\u2014your order was misplaced.",
+        "He quietly asked if the table had been booked for a large group.",
+        "He whispered, \"I'm sorry, but there's been a mistake with your order."
+      ],
+      "guesses_primed": [
+        "The waiter said, \"I'm sorry, but I can't serve you anymore\u2014I'm on a strict diet!\" (referring to \"diet\" as in food, but the twist is that he",
+        "The waiter said, \"I'm sorry, but I can't serve you anymore\u2014my uniform is already on fire!",
+        "The waiter said, \"I'm so sorry, but we've run out of ice \u2014 the drink is *hot*!",
+        "The waiter said, \"I'm sorry, but I can't serve you anymore\u2014my hat's on fire!\" (a pun on \"I can't serve you\" and \"hat's on fire",
+        "The waiter said, \"I'm sorry, but I can't serve you anymore\u2014I'm out of tips!\" (because he was actually a robot and \"tips\" were just a programming error)."
+      ]
+    },
+    {
+      "id": "nonseq_fluent-f08",
+      "gold_class": "nonseq_fluent",
+      "author": "B",
+      "d_cold": 0.9479288703817016,
+      "d_primed": 0.9271134094407202,
+      "resolution": 0.020815460940981412,
+      "overlap_primed_max": 0.0,
+      "cold_dispersion": 0.046624101713360046,
+      "primed_dispersion": 0.15429138117203348,
+      "n_cold": 5,
+      "n_primed": 5,
+      "n_suspicious": 0,
+      "guesses_cold": [
+        "The salesman introduced himself and asked if they had any business to transact.",
+        "The salesman introduced himself and asked if they had any orders for goods to deliver.",
+        "The salesman introduced himself and asked if they had any business to discuss.",
+        "The salesman introduced himself and asked if they had any business to discuss.",
+        "The salesman introduced himself and asked if they had any business to discuss."
+      ],
+      "guesses_primed": [
+        "He's just trying to sell me his suitcase\u2014turns out it's full of \"traveling\" stories!",
+        "The suitcase was full of empty bottles\u2014because he\u2019s a \"salesman\" of bottled water!",
+        "The suitcase was full of sales \u2014 it was just a big, empty one!",
+        "He\u2019s just a \"salesman\" \u2014 not a \"suitcase\" man!",
+        "The suitcase was full of \"sales\" \u2014 it was just a storage unit for his empty promises."
+      ]
+    },
+    {
+      "id": "nonseq_fluent-f09",
+      "gold_class": "nonseq_fluent",
+      "author": "B",
+      "d_cold": 0.876696510338967,
+      "d_primed": 0.7139889778128246,
+      "resolution": 0.16270753252614245,
+      "overlap_primed_max": 0.0,
+      "cold_dispersion": 0.0,
+      "primed_dispersion": 0.02814618235571271,
+      "n_cold": 5,
+      "n_primed": 5,
+      "n_suspicious": 0,
+      "guesses_cold": [
+        "No one had finished it yet.",
+        "No one had finished it yet.",
+        "No one had finished it yet.",
+        "No one had finished it yet.",
+        "No one had finished it yet."
+      ],
+      "guesses_primed": [
+        "No one had finished it\u2014everyone just copied from the homework of the person who had the same name as the teacher.",
+        "No one had finished it\u2014everyone just copied from the homework of the person sitting next to them.",
+        "No one had finished it\u2014everyone just copied from the homework of the person sitting next to them.",
+        "No one had finished it\u2014everyone just copied from the homework of the person who came in late.",
+        "No one had finished it\u2014everyone just copied from the homework of the person sitting next to them!"
+      ]
+    },
+    {
+      "id": "nonseq_fluent-f10",
+      "gold_class": "nonseq_fluent",
+      "author": "B",
+      "d_cold": 0.7063123945270602,
+      "d_primed": 0.6153080369907187,
+      "resolution": 0.0910043575363415,
+      "overlap_primed_max": 0.2,
+      "cold_dispersion": 0.0020849877433483767,
+      "primed_dispersion": 0.1961844765663227,
+      "n_cold": 5,
+      "n_primed": 5,
+      "n_suspicious": 0,
+      "guesses_cold": [
+        "They packed their gear, set up campsite, and spent the evening cooking dinner and sharing stories by the fire.",
+        "They packed their gear, set up campsite, and spent the evening cooking dinner and sharing stories by the fire.",
+        "They packed their gear, set up campsite, and spent the evening cooking dinner and sharing stories by the fire.",
+        "They packed their gear, set up campsite, and spent the evening cooking dinner and sharing stories by the fire.",
+        "They packed their gear, set up campsite, and spent the evening cooking dinner and telling stories by the fire."
+      ],
+      "guesses_primed": [
+        "They brought tents, but the real \"camping\" part was just them trying to figure out who owned the sleeping bag that kept getting used by everyone.",
+        "They brought a map, but it was just a \"camping\" for the first time\u2014everyone got lost in the *plot*!",
+        "They brought marshmallows, but the real campfire was their friendship\u2014because the \"first time\" turned out to be the first time they'd all been camping together as a group.",
+        "They brought flashlights\u2014but the real \"campfire\" was the one from the movie they all forgot to turn off.",
+        "They brought tents, but the real \"camping\" was just them trying to keep their phones charged to avoid the \"wilderness\" of not having Wi-Fi."
+      ]
+    },
+    {
+      "id": "nonseq_fluent-f11",
+      "gold_class": "nonseq_fluent",
+      "author": "B",
+      "d_cold": 0.8959166373561662,
+      "d_primed": 0.8175349019404057,
+      "resolution": 0.07838173541576055,
+      "overlap_primed_max": 0.14285714285714285,
+      "cold_dispersion": 0.04993709819128402,
+      "primed_dispersion": 0.2149925722111922,
+      "n_cold": 5,
+      "n_primed": 5,
+      "n_suspicious": 0,
+      "guesses_cold": [
+        "The team gathered in the conference room to discuss the urgent issues and assign immediate actions.",
+        "The team gathered in the conference room to discuss the urgent issues and review the action items.",
+        "The team gathered in the conference room to discuss the urgent issues and review the next steps.",
+        "The team gathered in the conference room to discuss the urgent project issues and review the next steps.",
+        "The team gathered in the conference room to discuss the urgent issues and assign immediate actions."
+      ],
+      "guesses_primed": [
+        "The team realized they\u2019d all been scheduled for a \"mandatory meeting\" \u2014 which meant they\u2019d all be late for their actual jobs.",
+        "The team realized they were all supposed to be on vacation\u2014because the meeting was scheduled for \"Monday morning,\" not \"Monday.",
+        "The team realized they'd all been working on the same project all week\u2014just different versions of the same presentation.",
+        "The team was supposed to discuss the emergency\u2014turns out, the only emergency was the manager's forgotten coffee.",
+        "The team realized they\u2019d all been scheduled for the same meeting\u2014every Monday morning."
+      ]
+    },
+    {
+      "id": "nonseq_fluent-f12",
+      "gold_class": "nonseq_fluent",
+      "author": "B",
+      "d_cold": 1.0685642679225917,
+      "d_primed": 0.9223828893365985,
+      "resolution": 0.14618137858599323,
+      "overlap_primed_max": 0.0,
+      "cold_dispersion": 0.1958672741788563,
+      "primed_dispersion": 0.20803495261469993,
+      "n_cold": 5,
+      "n_primed": 5,
+      "n_suspicious": 0,
+      "guesses_cold": [
+        "She smiled and whispered, \"And that's why we always listen to the stories our grandparents tell.",
+        "She gently tucked them in and whispered, \"Now close your eyes and dream of flying dragons.",
+        "She smiled and gently tucked them in, saying, \"Now close your eyes and imagine you're in a happy forest with twinkling stars above.",
+        "The children listened quietly, their eyes wide with imagination as the grandmother gently continued the tale.",
+        "The children listened quietly, their eyes wide with imagination as the grandmother continued to weave the tale with a soft voice."
+      ],
+      "guesses_primed": [
+        "Because I heard the story was a little \"grand\" \u2014 turns out, it was just a really big *grandpa* tale!",
+        "Because she was telling a *grand* story\u2014turns out, she was just a *grandmother* with a big imagination!",
+        "Because she was telling a *bedtime* story\u2014she couldn\u2019t *break* the rules of the plot! \ud83d\ude04",
+        "The grandchildren all fell asleep, and the grandmother realized she had told the story\u2026 to her own reflection in the mirror.",
+        "The grandchildren all fell asleep, and the grandmother realized she had just told them a story about a sleeping bear\u2014because she was the one who had been telling them the story all along."
+      ]
+    },
+    {
+      "id": "nonseq_rareword-f01",
+      "gold_class": "nonseq_rareword",
+      "author": "B",
+      "d_cold": 0.9765818827546104,
+      "d_primed": 1.0192628811540214,
+      "resolution": -0.042680998399410974,
+      "overlap_primed_max": 0.0,
+      "cold_dispersion": 0.1758695628180153,
+      "primed_dispersion": 0.042082422655948484,
+      "n_cold": 5,
+      "n_primed": 5,
+      "n_suspicious": 0,
+      "guesses_cold": [
+        "So, I brought a joke that\u2019s actually just a really bad pun on a common phrase.",
+        "So, I brought a joke that's actually just a pun on \"unlike anything you've heard before.",
+        "So, I brought a joke that's completely original\u2014like, it's never been told before, even in a dream.",
+        "So, I brought a joke that's actually been told a million times before\u2014just in a different way.",
+        "So, I brought a joke that's been in my head for years\u2014about a man who invented a new kind of sandwich."
+      ],
+      "guesses_primed": [
+        "It was just a regular joke\u2014nothing unusual at all.",
+        "It's just a regular joke\u2014nothing special.",
+        "It's just a regular joke\u2014nothing unusual at all.",
+        "It was just a regular joke\u2014nothing special.",
+        "It's just a regular joke\u2014nothing unusual at all."
+      ]
+    },
+    {
+      "id": "nonseq_rareword-f02",
+      "gold_class": "nonseq_rareword",
+      "author": "B",
+      "d_cold": 1.010335187624673,
+      "d_primed": 0.8596398868562506,
+      "resolution": 0.1506953007684223,
+      "overlap_primed_max": 0.0,
+      "cold_dispersion": 0.1271468223601238,
+      "primed_dispersion": 0.2458950987188287,
+      "n_cold": 5,
+      "n_primed": 5,
+      "n_suspicious": 0,
+      "guesses_cold": [
+        "The guests celebrated the birthday by eating cake and playing games.",
+        "The guests applauded and the magician thanked them for the celebration.",
+        "The guests cheered and the magician thanked them for the celebration.",
+        "The guests applauded and the magician thanked them for enjoying the surprise.",
+        "The guests cheered and thanked the magician for the fun trick."
+      ],
+      "guesses_primed": [
+        "But it was actually just a very fluffy bunny who had been hiding in the hat all along\u2014because \"rabbit\" was just a pun on \"rabbity\"!",
+        "But it was actually just a very large carrot.",
+        "But it was just a very long hat.",
+        "But it was just a white chocolate rabbit\u2014everyone thought it was a real rabbit, but it was actually a treat!",
+        "The rabbit was actually just a very good magician's assistant\u2014because he was *already* in the hat all along!"
+      ]
+    },
+    {
+      "id": "nonseq_rareword-f03",
+      "gold_class": "nonseq_rareword",
+      "author": "B",
+      "d_cold": 0.8877952454506721,
+      "d_primed": 0.8574644666170489,
+      "resolution": 0.03033077883362323,
+      "overlap_primed_max": 0.0,
+      "cold_dispersion": 0.10929345548811054,
+      "primed_dispersion": 0.08474934660756339,
+      "n_cold": 5,
+      "n_primed": 5,
+      "n_suspicious": 0,
+      "guesses_cold": [
+        "The manager explained that the fridge is cleaned and restocked daily as part of the office maintenance routine.",
+        "The office fridge was always empty because the team regularly uses it to store and share drinks and snacks.",
+        "The manager mentioned that the fridge is cleaned and restocked every morning as part of the office routine.",
+        "The manager explained that the fridge was regularly cleaned and restocked at the end of each week.",
+        "The manager explained that the fridge was regularly restocked at the end of each day by the kitchen staff."
+      ],
+      "guesses_primed": [
+        "Because the fridge was \"cold\" and only the employees who knew the password could open it\u2014everyone else just left their drinks in the break room.",
+        "Because the fridge was a \"cool\" employee\u2014always keeping things well below the surface! \ud83c\udf55\u2744\ufe0f",
+        "Because the fridge was always \"cooling\" the staff's expectations\u2014everyone just assumed it was empty, but it was actually just a really good job at keeping things cold!",
+        "Because the fridge was always \"cooling\" the employees' expectations!",
+        "Because the fridge was always \"cold\" \u2014 it just had a habit of emptying itself!"
+      ]
+    },
+    {
+      "id": "nonseq_rareword-f04",
+      "gold_class": "nonseq_rareword",
+      "author": "B",
+      "d_cold": 0.9296917105864007,
+      "d_primed": 0.9924246951695695,
+      "resolution": -0.0627329845831689,
+      "overlap_primed_max": 0.0,
+      "cold_dispersion": 0.08235088071693852,
+      "primed_dispersion": 0.061878786730212965,
+      "n_cold": 5,
+      "n_primed": 5,
+      "n_suspicious": 0,
+      "guesses_cold": [
+        "They eventually agreed to cook a meal together to settle the debate.",
+        "They finally decided to have a cooking contest to settle the argument.",
+        "They eventually decided to cook a meal together to settle the dispute.",
+        "They finally agreed to have a cooking contest that evening to settle the matter.",
+        "They eventually decided to cook a meal together to settle the argument."
+      ],
+      "guesses_primed": [
+        "The older brother said, \"I'm the better cook,\" and the younger one replied, \"No, I'm the better cook\u2014because I'm the one who *bakes* the bread!",
+        "The younger brother said, \"I\u2019m the better cook,\" and the older brother replied, \"No, I\u2019m the better cook \u2014 I\u2019m the one who *cooks* the argument!",
+        "The older brother said, \"I'm the better cook,\" and the younger brother replied, \"No, you're just the one who knows how to *burn* the food!",
+        "The older brother said, \"I'm the better cook,\" and the younger brother replied, \"No, you're just better at arguing!",
+        "The younger brother said, \"I'm the better cook,\" and the older brother replied, \"No, you're just better at arguing."
+      ]
+    },
+    {
+      "id": "nonseq_rareword-f05",
+      "gold_class": "nonseq_rareword",
+      "author": "B",
+      "d_cold": 0.9705192250180439,
+      "d_primed": 0.9708139258269657,
+      "resolution": -0.0002947008089217995,
+      "overlap_primed_max": 0.0,
+      "cold_dispersion": 0.28487186684003196,
+      "primed_dispersion": 0.2199833066375275,
+      "n_cold": 5,
+      "n_primed": 5,
+      "n_suspicious": 0,
+      "guesses_cold": [
+        "I ordered it, and it turned out to be delicious.",
+        "I'll try it, just to see what it's like.",
+        "I tried it, and it was actually quite good.",
+        "I ordered it, and it turned out to be quite good.",
+        "I\u2019ll have the truffle-infused soup, please."
+      ],
+      "guesses_primed": [
+        "The strangest item? \"Fish\" \u2014 it's actually a dish called \"FISH\" that comes with a side of seaweed and a warning: \"Do not eat if you're allergic to",
+        "The stranger item was \"strawberry shortcake\" \u2014 it\u2019s just a dessert, not a menu error!",
+        "The \"strangest item\" was actually just a side of pickled onions \u2014 a classic, not a mystery!",
+        "The strangest item? \"Fish out of water\" \u2014 it\u2019s just a dish made from fish and water, obviously.",
+        "The strangest item? \"Fish\" \u2014 it's actually a *fish* that only lives in a fish bowl."
+      ]
+    },
+    {
+      "id": "nonseq_rareword-f06",
+      "gold_class": "nonseq_rareword",
+      "author": "B",
+      "d_cold": 0.7421263800280515,
+      "d_primed": 0.748772393099886,
+      "resolution": -0.0066460130718344335,
+      "overlap_primed_max": 0.0,
+      "cold_dispersion": 0.10792581251217612,
+      "primed_dispersion": 0.09197348850776868,
+      "n_cold": 5,
+      "n_primed": 5,
+      "n_suspicious": 0,
+      "guesses_cold": [
+        "The workout involved a combination of high-intensity interval training and functional movements designed to improve strength and endurance.",
+        "The workout involved a mix of high-intensity interval training and functional movements designed to improve both strength and flexibility.",
+        "The workout began with a 10-minute warm-up involving dynamic stretching and bodyweight exercises.",
+        "The workout began with a 10-minute warm-up of dynamic stretching and mobility exercises.",
+        "The workout began with a 10-minute warm-up of dynamic stretching and mobility exercises."
+      ],
+      "guesses_primed": [
+        "It was just a regular workout\u2014just with a lot of leg lifts and a lot of promise.",
+        "It was just a standard workout\u2014except it was \"unlike any\" because it came with a *free* class on how to pronounce \"fitness.",
+        "It was just a regular workout\u2014just with a lot of stretching and a lot of \"unlike any before.",
+        "It was just a regular workout\u2014just with a lot of stretching and no actual exercise.",
+        "It was just a regular workout\u2014just with a lot of stretching and no actual exercise."
+      ]
+    },
+    {
+      "id": "nonseq_rareword-f07",
+      "gold_class": "nonseq_rareword",
+      "author": "B",
+      "d_cold": 0.9076210043981081,
+      "d_primed": 1.0303397126557456,
+      "resolution": -0.12271870825763753,
+      "overlap_primed_max": 0.0,
+      "cold_dispersion": 0.033979472531729574,
+      "primed_dispersion": 0.2396071192216649,
+      "n_cold": 5,
+      "n_primed": 5,
+      "n_suspicious": 0,
+      "guesses_cold": [
+        "The patient sat in the chair while the dentist examined their teeth and explained the treatment plan.",
+        "The patient sat in the chair while the dentist examined their teeth and explained the treatment plan.",
+        "The patient sat in the chair and waited as the dentist began examining their teeth.",
+        "The patient sat in the chair while the dentist began examining their teeth.",
+        "The patient sat in the chair while the dentist examined their teeth and explained the treatment plan."
+      ],
+      "guesses_primed": [
+        "Because I'm a dentist\u2014my \"appointment\" is just a long wait for the drill to stop making noise!",
+        "So I\u2019ll be sure to bring a book\u2014because I\u2019ve heard the drill is \u201ca little bit of everything.",
+        "Because I'm a \"tooth\" - and I'm going to be \"crowned\" in a bit!",
+        "Because I\u2019m a \"tooth\" for the job! \ud83d\ude04",
+        "Because I\u2019m a dental hygienist\u2014my job is to keep your teeth *clean* and your bills *toothsome*!"
+      ]
+    },
+    {
+      "id": "nonseq_rareword-f08",
+      "gold_class": "nonseq_rareword",
+      "author": "B",
+      "d_cold": 0.6357832164484613,
+      "d_primed": 0.7317295552475124,
+      "resolution": -0.09594633879905112,
+      "overlap_primed_max": 0.0,
+      "cold_dispersion": 0.06407375572652023,
+      "primed_dispersion": 0.1295275610450463,
+      "n_cold": 5,
+      "n_primed": 5,
+      "n_suspicious": 0,
+      "guesses_cold": [
+        "The temperature dropped slightly, and a soft breeze picked up as the first stars appeared in the sky.",
+        "The temperature dropped, and a light rain began to fall.",
+        "The temperature dropped slightly, and a soft breeze picked up as the first stars appeared in the sky.",
+        "The temperature dropped, and a gentle breeze picked up as the first stars appeared in the sky.",
+        "The temperature dropped, and a light breeze picked up as the first stars appeared in the sky."
+      ],
+      "guesses_primed": [
+        "They thought it was night, but it was just the campsite's new \"dark mode\" setting.",
+        "The sky began to darken... because it was finally time to start the campfire! \ud83c\udf32\ud83d\udd25",
+        "The sky began to darken... because it was finally time to light the campfire!",
+        "The sky began to darken... because it was finally time to light the campfire! \ud83c\udf32\ud83d\udd25",
+        "The sky began to darken... because it was nighttime, and they\u2019d just realized they\u2019d forgotten their headlamps."
+      ]
+    },
+    {
+      "id": "boring_expected-f01",
+      "gold_class": "boring_expected",
+      "author": "B",
+      "d_cold": 0.366445916081212,
+      "d_primed": 0.5568370821756687,
+      "resolution": -0.19039116609445672,
+      "overlap_primed_max": 0.0,
+      "cold_dispersion": 0.1690126290000555,
+      "primed_dispersion": 0.1823468227420187,
+      "n_cold": 5,
+      "n_primed": 5,
+      "n_suspicious": 0,
+      "guesses_cold": [
+        "She pulled out a bag of frozen broccoli and a container of marinara sauce.",
+        "She pulled out a container of spaghetti and a bottle of marinara sauce.",
+        "She pulled out a few ingredients from the crisper drawer.",
+        "She pulled out a tomato, a few cucumbers, and a bag of spinach.",
+        "She pulled out a few vegetables and a chicken breast to start cooking."
+      ],
+      "guesses_primed": [
+        "She found a frozen pizza and realized it was \"frozen\" because it was in the freezer, not the fridge.",
+        "She found a sandwich\u2014turns out it was a \"cold cut\" in the fridge, but actually a \"cold\" customer who had been waiting for her to open it.",
+        "She found a single egg\u2014and realized it was a \"hard\" boiled one, not a \"hard\" decision.",
+        "She found a sandwich\u2014turns out, it was a \"cold cut\" from the freezer section.",
+        "She found a single egg\u2014and realized it was a \"hard boil\" on the counter, not in the fridge."
+      ]
+    },
+    {
+      "id": "boring_expected-f02",
+      "gold_class": "boring_expected",
+      "author": "B",
+      "d_cold": 0.3246897801644619,
+      "d_primed": 0.4153001009541136,
+      "resolution": -0.0906103207896517,
+      "overlap_primed_max": 1.0,
+      "cold_dispersion": 0.11147433148954096,
+      "primed_dispersion": 0.15999172719270444,
+      "n_cold": 5,
+      "n_primed": 5,
+      "n_suspicious": 0,
+      "guesses_cold": [
+        "He got up at 7:03 and quickly made his morning coffee.",
+        "He got up at 7:03 and drove to work.",
+        "He got up at 7:03 and rushed to catch the bus.",
+        "He got up at seven and drove to work as usual.",
+        "He got up at 7:05 and hurried to catch the bus."
+      ],
+      "guesses_primed": [
+        "But seven is also the number of days in a week\u2014so he was late because he forgot to set it for *Monday*.",
+        "But he was always late anyway\u2014so he just set it for seven to make sure he didn't miss the *seven* o'clock news.",
+        "But he was late because he set it for \"seven\" \u2014 not \"7 a.m.\" \u2014 and his clock said \"7 p.m.\"!",
+        "But he was already late because he set the alarm for seven, and seven is the number of the hour, not the time\u2014so he was late because he didn\u2019t realize the alarm was set for",
+        "But seven is also a type of pizza."
+      ]
+    },
+    {
+      "id": "boring_expected-f03",
+      "gold_class": "boring_expected",
+      "author": "B",
+      "d_cold": 0.3236657665945124,
+      "d_primed": 0.39673398369332846,
+      "resolution": -0.07306821709881606,
+      "overlap_primed_max": 0.0,
+      "cold_dispersion": 0.013298150965375077,
+      "primed_dispersion": 0.07352604668453784,
+      "n_cold": 5,
+      "n_primed": 5,
+      "n_suspicious": 0,
+      "guesses_cold": [
+        "After waiting for a while, the school bus finally arrived and the children boarded it.",
+        "After waiting for a while, the school bus finally arrived and the children boarded it.",
+        "After waiting for a while, the school bus finally arrived and the children boarded it.",
+        "After waiting for a while, the school bus finally arrived and the children got on board.",
+        "After waiting for a while, the school bus finally arrived and the children got on board."
+      ],
+      "guesses_primed": [
+        "The bus didn't come\u2014it was a \"bus\" stop, not a \"bus\" ride!",
+        "The bus never came because it was a \"school\" bus\u2014only for kids who were already in school!",
+        "The bus never came\u2014turns out, it was a \"school\" bus, and they were waiting for the *school* to arrive!",
+        "The bus never came\u2014because it was a *school* bus, and they were all waiting for the *school* to start!",
+        "The bus never came\u2014turns out, it was a \"school\" bus, and they were waiting for a *school* of fish!"
+      ]
+    },
+    {
+      "id": "boring_expected-f04",
+      "gold_class": "boring_expected",
+      "author": "B",
+      "d_cold": 0.25742194081799097,
+      "d_primed": 0.4379384820157267,
+      "resolution": -0.18051654119773575,
+      "overlap_primed_max": 0.3333333333333333,
+      "cold_dispersion": 0.09394408787811634,
+      "primed_dispersion": 0.13423433180232797,
+      "n_cold": 5,
+      "n_primed": 5,
+      "n_suspicious": 0,
+      "guesses_cold": [
+        "She walked to the bus stop holding the umbrella over her head.",
+        "She walked to the store, holding the umbrella above her head.",
+        "She walked to the bus stop under the umbrella.",
+        "She walked to the office, holding the umbrella above her head.",
+        "She walked to the bus stop holding the umbrella above her head."
+      ],
+      "guesses_primed": [
+        "But she forgot to take the dog\u2014because it was already under the umbrella!",
+        "But she left the house *with* the umbrella\u2014she was planning to go *under* the rain!",
+        "But she left the house *before* the rain started\u2014she was just making sure the umbrella wasn\u2019t too wet!",
+        "But she left the house without a hat\u2014because she was already \"under\" the umbrella!",
+        "But she forgot to bring the house keys\u2014so she had to go back in and get them, which meant the rain had already soaked the entire house."
+      ]
+    },
+    {
+      "id": "boring_expected-f05",
+      "gold_class": "boring_expected",
+      "author": "B",
+      "d_cold": 0.09690075808238097,
+      "d_primed": 0.25941345420216,
+      "resolution": -0.16251269611977903,
+      "overlap_primed_max": 0.6,
+      "cold_dispersion": 0.057613920426125495,
+      "primed_dispersion": 0.18253785147030027,
+      "n_cold": 5,
+      "n_primed": 5,
+      "n_suspicious": 0,
+      "guesses_cold": [
+        "He opened the fridge and poured himself a glass of water.",
+        "He opened the fridge and poured himself a glass of water.",
+        "He poured himself a glass of water from the tap.",
+        "He poured himself a glass of water from the tap.",
+        "He poured himself a glass of water from the tap."
+      ],
+      "guesses_primed": [
+        "He drank water from the sink\u2014turns out, the \"kitchen\" was actually a vending machine.",
+        "He poured the water into the glass... and realized it was just a glass of ice.",
+        "He drank a glass of water\u2014turns out, he\u2019d been running in a \"wet\" suit all along.",
+        "He drank a glass of water\u2014then realized he\u2019d been running in circles around the kitchen all along.",
+        "He poured the water into the glass, but the fridge was empty\u2014turns out, he was running a \"dry run\" for his job interview."
+      ]
+    },
+    {
+      "id": "boring_expected-f06",
+      "gold_class": "boring_expected",
+      "author": "B",
+      "d_cold": 0.46382494953323194,
+      "d_primed": 0.4142507919990609,
+      "resolution": 0.04957415753417105,
+      "overlap_primed_max": 0.5,
+      "cold_dispersion": 0.11476075372666512,
+      "primed_dispersion": 0.09244106676922632,
+      "n_cold": 5,
+      "n_primed": 5,
+      "n_suspicious": 0,
+      "guesses_cold": [
+        "The cashier double-checked the total to make sure it matched the day's sales report.",
+        "The cashier double-checked the total to make sure it matched the receipt before locking the register.",
+        "The cashier double-checked the total to make sure it matched the day's sales before handing the money over to the manager.",
+        "The cashier added up the total and handed the money to the manager for deposit.",
+        "The cashier added the total to the daily sales report and handed the money to the manager."
+      ],
+      "guesses_primed": [
+        "The cashier counted the money... and realized it was all just change from the \"register\" \u2014 because the store had been closed for a week.",
+        "The store was closing, so the cashier began counting the register\u2014turns out, it was a \"register\" for a new game show called *Countdown*.",
+        "The cashier counted the money... and realized it was all just change from the \"register\" of the store's name.",
+        "The cashier counted the money... and realized it was all in \"register\" (as in, the register was empty).",
+        "The cashier counted the money... and realized it was all just change from the last customer's purchase."
+      ]
+    },
+    {
+      "id": "vague_abstract_gaming_probe-f01",
+      "gold_class": "vague_abstract_gaming_probe",
+      "author": "B",
+      "d_cold": 0.6152808827915689,
+      "d_primed": 0.6187109091944285,
+      "resolution": -0.0034300264028596095,
+      "overlap_primed_max": 0.0,
+      "cold_dispersion": 0.13522233186823393,
+      "primed_dispersion": 0.12444144304787755,
+      "n_cold": 5,
+      "n_primed": 5,
+      "n_suspicious": 0,
+      "guesses_cold": [
+        "By the time the sun set, the clock was running correctly again.",
+        "By the time the sun set, the clock was running accurately again.",
+        "The clock began to tick regularly, and the old man smiled as he placed it back on the shelf.",
+        "By the time the sun dipped below the horizon, the clock was running correctly again.",
+        "By the time the sun dipped below the horizon, the clock was running accurately once more."
+      ],
+      "guesses_primed": [
+        "The clock now always shows the correct time\u2014because it's been set to \"old man\" mode.",
+        "The clock started working perfectly\u2014because it was already set to \"old man\" time.",
+        "The clock started working perfectly\u2014because it was always running *backwards*.",
+        "The clock was already broken because it had been running backwards all along.",
+        "The clock was already fixed\u2014because it was a \"time\" piece, not a \"time\" machine!"
+      ]
+    },
+    {
+      "id": "vague_abstract_gaming_probe-f02",
+      "gold_class": "vague_abstract_gaming_probe",
+      "author": "B",
+      "d_cold": 0.6340810884284687,
+      "d_primed": 0.6495547430991693,
+      "resolution": -0.01547365467070061,
+      "overlap_primed_max": 0.0,
+      "cold_dispersion": 0.08880591267662533,
+      "primed_dispersion": 0.1455597440347345,
+      "n_cold": 5,
+      "n_primed": 5,
+      "n_suspicious": 0,
+      "guesses_cold": [
+        "She opened it to the first page, where her handwriting matched the faded pencil drawings of the house she grew up in.",
+        "She opened it to find her handwriting, faded but legible, describing the simple joys of her childhood.",
+        "She opened it to the first page, where her handwriting from age six still smelled of crayon dust and summer rain.",
+        "She opened it to the first page, where her handwriting from age six still clearly described her favorite toys and the pet bunny that lived in the backyard.",
+        "She opened it to the first page, where her handwriting from age six still filled the margins with vivid drawings and simple memories."
+      ],
+      "guesses_primed": [
+        "The diary was actually just a collection of grocery lists from her teenage years.",
+        "The diary wasn't hers\u2014it was written by her cat, who's been secretly running the household since she was five.",
+        "She found her childhood diary tucked inside a box in the attic\u2014turns out it was just a *diary* of her pet hamster, who had been secretly keeping a journal of the family",
+        "She wrote it all in \"diary\" form\u2014turns out, she was just documenting her life in a *diary* of *dairy* products!",
+        "The diary was actually just a collection of grocery lists from her mom's cooking club."
+      ]
+    },
+    {
+      "id": "vague_abstract_gaming_probe-f03",
+      "gold_class": "vague_abstract_gaming_probe",
+      "author": "B",
+      "d_cold": 0.963187016211284,
+      "d_primed": 0.7536008383042179,
+      "resolution": 0.20958617790706613,
+      "overlap_primed_max": 0.0,
+      "cold_dispersion": 0.054006296297605984,
+      "primed_dispersion": 0.1767195432997021,
+      "n_cold": 5,
+      "n_primed": 5,
+      "n_suspicious": 0,
+      "guesses_cold": [
+        "The team began receiving user feedback and started addressing bugs and feature requests in the next release cycle.",
+        "The team begins to focus on gathering user feedback and planning the next feature updates.",
+        "The team begins to focus on gathering user feedback and planning the next product updates.",
+        "The team now focuses on gathering user feedback and planning the next feature updates.",
+        "The team begins to focus on gathering user feedback and planning the next feature updates."
+      ],
+      "guesses_primed": [
+        "But it took us eighteen months to ship... because we were always waiting for the \"perfect\" moment to deploy. \ud83d\ude80",
+        "But we only shipped it because we finally realized the product was just a glorified website for a parking app.",
+        "But it took eighteen months to ship because we were all waiting for the \"beta\" version to finally go live\u2014turns out, \"beta\" was just the name of the project manager.",
+        "But it took us eighteen months to ship\u2014because we were always \"in beta.",
+        "But it took us eighteen months to ship... because we were always \"in beta."
+      ]
+    },
+    {
+      "id": "vague_abstract_gaming_probe-f04",
+      "gold_class": "vague_abstract_gaming_probe",
+      "author": "B",
+      "d_cold": 0.5873980590688888,
+      "d_primed": 0.6831702412237859,
+      "resolution": -0.09577218215489713,
+      "overlap_primed_max": 0.0,
+      "cold_dispersion": 0.12205753082622013,
+      "primed_dispersion": 0.32815442762515695,
+      "n_cold": 5,
+      "n_primed": 5,
+      "n_suspicious": 0,
+      "guesses_cold": [
+        "He stopped by the old neighborhood diner, where the owner recognized him and welcomed him back with a smile.",
+        "He visited his old neighborhood, recognized several faces from his childhood, and stopped by the corner store where the owner still remembered him.",
+        "He visited his old neighborhood, stopped by the diner where he used to work, and saw several people he recognized from his youth.",
+        "He visited his old neighborhood, stopped by the corner store where he used to buy soda, and saw a few familiar faces.",
+        "He visited his old neighborhood, stopped by the diner where he used to work, and found that the owner had retired."
+      ],
+      "guesses_primed": [
+        "I didn't realize my hometown had a \"10-year reunion\" \u2014 I just thought I'd be home for a visit.",
+        "He realized he\u2019d been living in the \"small town\" of his childhood\u2014turns out, it was just a neighborhood in a bigger city he\u2019d never noticed.",
+        "I didn't realize my hometown had a \"new\" post office\u2014turns out, it's just a rebranded used bookstore.",
+        "I didn't realize my hometown had a new mayor\u2014turns out, it was just me, pretending to be someone else.",
+        "I finally got to see my parents\u2014turns out, they\u2019d been waiting for me to come back so they could finally say, 'Welcome home, son\u2014your *old* house is now"
+      ]
+    },
+    {
+      "id": "vague_abstract_gaming_probe-f05",
+      "gold_class": "vague_abstract_gaming_probe",
+      "author": "B",
+      "d_cold": 0.8064930780162896,
+      "d_primed": 0.7625891465918825,
+      "resolution": 0.04390393142440707,
+      "overlap_primed_max": 0.0,
+      "cold_dispersion": 0.10719107399460812,
+      "primed_dispersion": 0.18055873026415348,
+      "n_cold": 5,
+      "n_primed": 5,
+      "n_suspicious": 0,
+      "guesses_cold": [
+        "She then double-checked the calculations to ensure accuracy.",
+        "Then she double-checked the calculations to make sure everything was accurate.",
+        "She then double-checked the calculations to make sure there were no errors.",
+        "She then double-checked the calculations to ensure accuracy before finalizing the report.",
+        "He then reviewed the results one final time to ensure accuracy before sending the report to the lab manager."
+      ],
+      "guesses_primed": [
+        "The data showed a 99.9% confidence interval\u2014so he concluded, \"I'm certain it's not a typo!\" (because \"99.9%\" sounds like \"I'm",
+        "The data showed a 99.9% confidence interval\u2014so he submitted it with a 1% chance of being wrong... which was actually a 1% chance of being right!",
+        "The data showed a 99.9% confidence interval\u2014so he was 100% sure it was a typo.",
+        "The data showed that the experiment had been running for 10 years\u2014because the scientist had been looking at it for 10 years, one more time.",
+        "The data showed a 99.9% confidence interval\u2014so he submitted it with a 100% certainty, because \"it was statistically significant."
+      ]
+    },
+    {
+      "id": "vague_abstract_gaming_probe-f06",
+      "gold_class": "vague_abstract_gaming_probe",
+      "author": "B",
+      "d_cold": 0.8248717454352041,
+      "d_primed": 0.7568728402250593,
+      "resolution": 0.06799890521014484,
+      "overlap_primed_max": 0.0,
+      "cold_dispersion": 0.2589438847154111,
+      "primed_dispersion": 0.07250500049218278,
+      "n_cold": 5,
+      "n_primed": 5,
+      "n_suspicious": 0,
+      "guesses_cold": [
+        "They slowly stood up and walked out of the cemetery together, the sun setting behind them.",
+        "They quietly reached for their coffee mugs, still warm from earlier, and took slow sips.",
+        "They slowly began to gather their things, still lingering in the quiet.",
+        "They slowly stood up and began to walk toward the car parked at the edge of the property.",
+        "They slowly reached for their coffee mugs, still warm from earlier, and took small sips."
+      ],
+      "guesses_primed": [
+        "They\u2019d been best friends since high school\u2014until the funeral, when they realized they\u2019d both forgotten to bring their own flowers.",
+        "They\u2019d been best friends for 20 years, but neither of them had realized they\u2019d been talking about the same funeral all along.",
+        "They\u2019d been best friends for 20 years\u2014until the funeral. Now they\u2019re both 20 years older.",
+        "They'd been best friends for 30 years\u2014until the funeral, when they realized neither of them had ever actually seen the other die.",
+        "They\u2019d been best friends for 30 years\u2014until the funeral, when they realized they\u2019d both been dead all along."
+      ]
+    }
+  ],
+  "summary": {
+    "n_items": 56,
+    "class_means": {
+      "real_joke": {
+        "d_cold": 0.7075526621988174,
+        "d_primed": 0.6100696019579709,
+        "resolution": 0.09748306024084649,
+        "overlap_primed_max": 0.08035714285714285
+      },
+      "setup_nonsequitur": {
+        "d_cold": 0.9998951690525519,
+        "d_primed": 1.0048269450597638,
+        "resolution": -0.004931776007211758,
+        "overlap_primed_max": 0.041666666666666664
+      },
+      "boring_expected": {
+        "d_cold": 0.30806859221488997,
+        "d_primed": 0.39299602902005726,
+        "resolution": -0.08492743680516722,
+        "overlap_primed_max": 0.4604166666666667
+      },
+      "vague_abstract_gaming_probe": {
+        "d_cold": 0.7814378856377507,
+        "d_primed": 0.7546810859741138,
+        "resolution": 0.02675679966363695,
+        "overlap_primed_max": 0.0
+      },
+      "nonseq_fluent": {
+        "d_cold": 0.9399220388135107,
+        "d_primed": 0.8872699589406717,
+        "resolution": 0.05265207987283871,
+        "overlap_primed_max": 0.02857142857142857
+      },
+      "nonseq_rareword": {
+        "d_cold": 0.8825567315386276,
+        "d_primed": 0.901305939578375,
+        "resolution": -0.018749208039747403,
+        "overlap_primed_max": 0.0
+      }
+    },
+    "auc_resolution_joke_vs_nonseq_pooled": 0.69921875,
+    "auc_dcold_joke_vs_nonseq_pooled": 0.078125,
+    "auc_gap_resolution_minus_dcold": 0.62109375,
+    "auc_resolution_joke_vs_nonseq_author_A": 0.8125,
+    "auc_resolution_joke_vs_nonseq_author_B": 0.6180555555555556,
+    "auc_resolution_joke_vs_boring_expected": 0.8515625,
+    "auc_dcold_joke_vs_boring_expected": 1.0,
+    "auc_resolution_joke_vs_vague_abstract_gaming_probe": 0.7109375,
+    "auc_dcold_joke_vs_vague_abstract_gaming_probe": 0.359375,
+    "auc_resolution_joke_vs_nonseq_rareword": 0.796875,
+    "auc_dcold_joke_vs_nonseq_rareword": 0.15625,
+    "n_suspicious_guesses": 0
+  },
+  "wall_seconds": 1540.5
+}

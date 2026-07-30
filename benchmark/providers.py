@@ -267,6 +267,21 @@ _OPENAI_COMPAT_REGISTRY: Dict[str, Dict[str, Optional[str]]] = {
     # minimax skipped: API shape diverges from OpenAI-compat enough that
     # it isn't a trivial registry entry (see benchmark/smoke_providers.py
     # run notes for the observed failure mode).
+    "local": {
+        # A vLLM/SGLang OpenAI-compatible server (the Phase-B screen runs
+        # the cascade against candidates served on the GPU node; smoke
+        # test: benchmark/smoke_local_provider.py). ALL THREE connection
+        # facts live in local.env because the served model changes per
+        # screen candidate: LOCAL_API_KEY (any string — vLLM's server
+        # accepts anything unless launched with --api-key),
+        # LOCAL_BASE_URL (e.g. http://localhost:8000/v1), LOCAL_MODEL
+        # (must equal the served model id byte-for-byte; vLLM 404s on
+        # mismatch). model=None + model_var is the same read-from-env
+        # pattern base_url_var established.
+        "env_file": "local.env", "key_var": "LOCAL_API_KEY",
+        "base_url": None, "base_url_var": "LOCAL_BASE_URL",
+        "model": None, "model_var": "LOCAL_MODEL",
+    },
 }
 
 
@@ -335,6 +350,12 @@ def make_openai_compat(provider_name: str, timeout_s: int = 120,
             % (env_path, spec["base_url_var"], provider_name))
 
     model = spec["model"]
+    if model is None:  # read-from-env pattern, same as base_url_var
+        model = env.get(spec.get("model_var") or "")
+    if not model:
+        raise RuntimeError(
+            "%s has no %s set for api:%s"
+            % (env_path, spec.get("model_var"), provider_name))
     url = base_url.rstrip("/") + "/chat/completions"
 
     def complete(prompt: str) -> str:

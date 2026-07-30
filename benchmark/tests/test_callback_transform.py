@@ -290,7 +290,9 @@ class TestCallbackTransformationScore(unittest.TestCase):
         self.assertEqual(r["matched_turn_idx"], 0)
         self.assertAlmostEqual(r["trigram_similarity"], sim, places=9)
         self.assertLess(sim, VERBATIM_FLOOR)
-        self.assertAlmostEqual(r["score"], 1.0 - sim, places=9)
+        # EXP-016b basis: 1 - max(trigram, wordset)
+        expected = 1.0 - max(sim, r["wordset_similarity"])
+        self.assertAlmostEqual(r["score"], expected, places=9)
         self.assertGreater(r["score"], 0.7)
 
     def test_verbatim_floor_boundary_exactly_0_8_scores_zero(self):
@@ -322,7 +324,9 @@ class TestCallbackTransformationScore(unittest.TestCase):
         turns = [turn0, "f1", "f2", "f3", turn4]
         r = callback_transformation_score(turns, 4)
         self.assertEqual(r["matched_turn_idx"], 0)
-        self.assertAlmostEqual(r["score"], 1.0 - sim, places=9)
+        # EXP-016b basis: 1 - max(trigram, wordset); ws here is 5/11 < 0.7
+        expected = 1.0 - max(sim, r["wordset_similarity"])
+        self.assertAlmostEqual(r["score"], expected, places=9)
         self.assertGreater(r["score"], 0.0)
 
     def test_custom_verbatim_floor_is_respected(self):
@@ -389,8 +393,10 @@ class TestFixtureIntegrity(unittest.TestCase):
         items = load_fixture()
         from collections import Counter
         counts = Counter(it["gold_class"] for it in items)
-        self.assertEqual(set(counts), set(GOLD_CLASSES))
-        for cls in GOLD_CLASSES:
+        # EXP-016b: GOLD_CLASSES gained topical_continuity, which the
+        # COMMITTED fixture predates -- subset, not equality.
+        self.assertTrue(set(counts) <= set(GOLD_CLASSES))
+        for cls in sorted(counts):
             self.assertEqual(counts[cls], 8, cls)
 
     def test_unique_ids(self):
@@ -442,3 +448,74 @@ class TestFixtureRegisteredBars(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class TestExp016bFixes(unittest.TestCase):
+    """The three EXP-016b fixes (EXPERIMENT_LOG.md registration)."""
+
+    def test_fix1_clause_reorder_paraphrase_floors_to_zero(self):
+        turn0 = "My landlord finally repaired the broken elevator in our building yesterday."
+        turn4 = "The broken elevator in our building finally got repaired by my landlord yesterday."
+        turns = [turn0, "f1", "f2", "f3", turn4]
+        r = callback_transformation_score(turns, 4)
+        self.assertEqual(r["matched_turn_idx"], 0)
+        self.assertGreaterEqual(r["wordset_similarity"], 0.7)
+        self.assertEqual(r["score"], 0.0)
+
+    def test_fix1_hyphen_edit_verbatim_floors_to_zero(self):
+        turn0 = "That chaos-loving barista remixed my whole coffee order into an experimental smoothie."
+        turn4 = "That chaos loving barista remixed my whole coffee order into an experimental smoothie."
+        turns = [turn0, "f1", "f2", "f3", turn4]
+        r = callback_transformation_score(turns, 4)
+        self.assertEqual(r["matched_turn_idx"], 0)
+        self.assertEqual(r["score"], 0.0)
+
+    def test_fix2_topical_continuity_never_gates(self):
+        turns = [
+            "The quarterly budget meeting ran three hours over schedule today.",
+            "Honestly the budget meeting agenda had forty slides of spreadsheets.",
+            "Everyone left the budget meeting needing a very long coffee break.",
+            "Apparently another budget meeting is already scheduled for Friday.",
+            "I heard the budget meeting might become a weekly standing tradition.",
+        ]
+        r = callback_transformation_score(turns, 4)
+        self.assertIsNone(r["matched_turn_idx"])
+        self.assertEqual(r["score"], 0.0)
+
+    def test_fix2_fresh_words_still_gate_genuine_callback(self):
+        turns = [
+            "My phone autocorrected 'meeting' to 'meatball' in the department email.",
+            "Traffic downtown was rough because of a stalled delivery truck.",
+            "The library extended exam-season hours which is a relief.",
+            "I found a decent weeknight recipe for quick stir fry.",
+            "Update: the meatball now chairs the department hiring committee.",
+        ]
+        r = callback_transformation_score(turns, 4)
+        self.assertEqual(r["matched_turn_idx"], 0)
+        self.assertIn("content_words", r["detection_reasons"])
+        self.assertGreater(r["score"], 0.5)
+
+    def test_fix3_embedding_freshness_guard_blocks_ongoing_topic(self):
+        # Fake embeddings: current turn similar to origin (~0.87, above
+        # floor) but MORE similar to intervening 'mid' (~0.998) -> the
+        # freshness guard blocks the match.
+        vecs = {
+            "origin": [1.0, 0.0, 0.0],
+            "mid": [0.86, 0.51, 0.0],
+            "cur": [0.87, 0.49, 0.0],
+        }
+
+        def embed(texts):
+            out = []
+            for t in texts:
+                out.append(vecs.get(t, [0.0, 0.0, 1.0]))
+            return out
+
+        turns = ["origin", "pad1", "pad2", "mid", "cur"]
+        r = find_callback_match(turns, 4, embed_fn=embed, embed_sim_floor=0.35)
+        # origin sim ~0.87 >= floor, but 'mid' sim is higher -> blocked;
+        # 'mid' itself is within min_gap so not a candidate.
+        self.assertIsNone(r["matched_turn_idx"])
+
+    def test_fix3_default_floor_is_recalibrated(self):
+        self.assertEqual(DEFAULT_EMBED_SIM_FLOOR, 0.35)
