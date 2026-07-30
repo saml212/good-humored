@@ -269,3 +269,30 @@ naively on any of the human-rating datasets above will absorb some
 combination of these; see `psychology.md` §7 for how the disagreement/
 subjective-annotation literature suggests handling this (model the
 distribution of raters, don't collapse to a single "gold" label).
+
+## 2026-07-30 emulator-corpus inventory (full agent report in session; essentials here)
+
+**Commercial-safe (license VERIFIED):** NYCC-Hessel (pairwise, staged),
+SocialGrep 1M (staged), **AI-OpenMic** (continuous 0-4 humor coefficient
+from NORMALIZED LAUGHTER DURATION, CC-BY-SA, ~50MB text), **AMI Meeting
+Corpus** (100hrs natural dialogue w/ laughter timing, CC-BY-4.0,
+annotation-only ~1GB). Research-only: NYCC-Zhang votes (NC), Oogiri-GO,
+HaHackathon (CodaLab-gated, no license found), rJokes (Reddit ToS),
+Humicroedit (CORRECTION: license unknown, not CC-BY), UR-FUNNY (TED
+NC-ND), StandUp4AI (on-demand research). Blocked: Oogiri-Master,
+Naughtyformer (no license), MHD (best conversational find — Big Bang
+laugh-track binary in multi-turn context — license unverified).
+
+**Confirmed negative (= our market gap):** no English, license-clear,
+funniness-RATED dataset embedded in sustained multi-turn dialogue
+exists anywhere. MHD closest (license-blocked); M2H2 right shape,
+Hindi. The banter environment fills a hole the data cannot.
+
+**Key find for EXP-023:** AI-OpenMic + AMI are REAL-laughter ground
+truth (not votes), commercial-safe — a second, independent,
+non-NC certification set for the reaction-logprob signal.
+
+Staging: top-6 plan ≈ 2-7GB total; nycc.py/oogiri.py/local_corpus.py
+loaders already cover 3 of 6; new loaders needed for NYCC-Zhang,
+AI-OpenMic, AMI (laughter-duration→score normalization decision
+pinned at loader-build time).

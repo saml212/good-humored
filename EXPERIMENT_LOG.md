@@ -2288,3 +2288,14 @@ taste slot ships buyer-supplied-only.
 hours on the node, interleaved with the policy screen (same servers).
 
 Result: _(pending — first node experiment)_
+
+**AMENDMENT to EXP-023 (2026-07-30, pre-run, from the dataset
+inventory):** SECOND certification set added, pre-registered before
+any scoring: AI-OpenMic's laughter-duration humor coefficient
+(continuous 0-4, commercial-safe CC-BY-SA) and, if staging permits,
+AMI laughter presence — REAL measured laughter rather than votes, and
+free of the NYCC-Zhang NC restriction. Prediction (blind, directional,
+no calibration row): reaction-logprob's correlation with AI-OpenMic's
+laughter coefficient is direction-consistent with its NYCC ρ. A signal
+that ranks votes but not real laughter (or vice versa) is tellingly
+partial — the divergence itself would be a finding.
