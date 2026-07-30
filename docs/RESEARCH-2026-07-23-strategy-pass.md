@@ -231,3 +231,30 @@ OpenEnv (Meta; env packaging only, no training). TRL CLI covers
 `trl grpo` (+ `--reward_funcs`) and `trl reward` (RM training).
 pufferlib / stable-baselines3: classic-RL only, not relevant to LLM
 policies. Catalog sweep 2026-07-23: nothing further relevant to pull.
+
+## 8. Reaction-logprob reward — novelty pass (2026-07-30, adversarial)
+
+Exact mechanism NOT found: frozen-LM spontaneous laughter-class
+reaction logprob as RL reward. Recurring delta vs all near-misses:
+behavioral/trained-classifier signal vs frozen model's own
+spontaneous-continuation logprob. Key citations (VERIFIED):
+- Jaques 2019 (1907.00456) — counts REAL "ha" strings from humans as
+  reward; the behavioral ancestor.
+- RLUF, Meta (2505.14946) — TRAINED P[Love] classifier on production
+  reactions; closest analog; +28% love reactions live.
+- ZYN (2308.06385) — frozen-LM "Yes"-logit reward, but INSTRUCTED
+  judge (the category we escape).
+- **Gandhi 2026 (2601.04436) — the thesis, demonstrated adjacent:
+  LLM-judge reward hacks (judge score up, real-human likelihood down);
+  Logprob-RL robust and best on all evals.** Cite, don't re-claim.
+  Counterpoint on universality: 2606.19336 (discriminative Turing
+  judge beats naive logprob in ITS setup).
+- CrowdScore (2212.11214) — humor eval via INSTRUCTED persona voting
+  (our contrast); 2502.20356 — persona prompts had "minimal impact"
+  on NYCC subgroup matching, finetuning worked (82.4%).
+- Hessel 2209.06293 anchors: pick-the-winner zero-shot GPT-4+CoT
+  66.2%, 5-shot 73.3%, human crowd 83.7% — all prompted
+  classification; NO zero-training logprob statistic vs vote ranking
+  found (OPEN — re-check narrowly before compute, fast-moving space).
+- Persona-conditioned REACTION simulation (vs preference/rating):
+  open across every persona+humor paper checked.

@@ -2218,3 +2218,73 @@ Evidence: experiment-runs/2026-07-29-exp021b-resolution-k10/results.json (author
 [LEARN] pseudo-profundity-vector: Twist-primed generative guesses are vague-twist-flavored text — any embedding-distance resolution metric can be gamed by portentous vagueness, and the vulnerability only shows on some authors' renditions of vagueness.
 Mistake: EXP-021's vague guard passed at 0.711 with two authors; certification nearly rode on it.
 Correction: guards against a gaming vector need MULTIPLE independent renditions of that vector (the three-author rule applies to guard classes, not just target classes); and resolution instruments should pair any embedding distance with a specificity check (vague text is close to everything).
+
+---
+
+## EXP-023 — audience-reaction logprob vs 292M votes (registered 2026-07-30; FIRST NODE EXPERIMENT, blocked only on SSH)
+
+**Direction refresh (Sam, 2026-07-30, codified):** deliverable is a
+SELLABLE RL ENVIRONMENT for conversational humor, not a paper; no RM
+as product; joke-fixture instrument work stops. The taste signal must
+be mathematical and reaction-shaped ("we'll banter at it and see what
+it says back" — made into the reward).
+
+**Hypothesis (one sentence):** a large frozen model's SPONTANEOUS
+laughter-reaction logprob — the probability its reply to a shared
+caption opens with a laughter-class token, in a natural chat
+transcript, with NO evaluative instruction — ranks NYCC captions
+within-contest in agreement with the 292M-vote human consensus, far
+above the instructed-judge floor (haiku rating ρ=0.056; published
+judge band 0.17–0.27), and calibration improves with audience scale.
+
+**Novelty (verified pass, strategy-doc §8):** exact mechanism absent;
+ancestors are behavioral (Jaques 2019 counts real "ha") or trained
+classifiers (Meta RLUF P[Love]); thesis demonstrated adjacent (Gandhi
+2601.04436: judge rewards hack, logprob rewards robust — cited, not
+claimed). Open: persona-conditioned reaction simulation; zero-training
+signal certified on NYCC. Narrow re-check of those two components
+scheduled immediately pre-compute (fast-moving space).
+
+**Pinned design:**
+- Measure: M(caption) = log Σ_s P_audience(reply begins with s |
+  transcript), s ∈ pinned laughter-class string set (haha/lol/lmao/
+  😂-family; exact set + tokenizer handling frozen in the runner
+  before first scoring). Transcript template: friend messages the
+  cartoon's DESCRIPTION (Hessel corpus field — text-only validity
+  caveat pinned: humans saw the image) + the caption; audience reply
+  begins. No instruction to evaluate anything, anywhere.
+- Within-contest Spearman ρ vs mean vote rating; val split (77
+  contests, by-contest split already staged); stratified ≤64
+  captions/contest (top/mid/bottom by rating).
+- **Head-to-head, same model, same items (the in-domain Gandhi
+  test):** instructed 1–10 rating vs spontaneous reaction logprob.
+  If spontaneous ≫ instructed on the SAME audience, the mechanism
+  claim is self-contained.
+- Audiences: the full slate (this REPLACES screen-S2; each candidate
+  is screened as policy AND audience in the same served session).
+- Diagnostics: caption-length confound (corr of M with token count);
+  contrast variant M − M(neutral-ack class); mismatched-contest
+  control (caption scored under wrong cartoon description should
+  drop); persona-conditioned variant on a 5-contest subsample
+  (exploratory only).
+- Serving: /v1/completions raw-text with logprobs per the runbook;
+  bounded prompt lengths; NC-licensed votes used for internal
+  certification only (Sam decision pending for anything commercial).
+
+**Predictions (blind, calibration rows added):**
+- exp-023 / mean_within_contest_spearman (largest audience) ≈ **0.40**
+- exp-023 / scale_delta_rho (largest − Qwen3-8B) ≈ **+0.15**
+- Directional: spontaneous > instructed on the same model; length
+  confound |r| < 0.2.
+
+**Bars (pinned):** ρ ≥ 0.30 → taste signal CERTIFIED for the env's
+reaction-reward slot (group-relative use). 0.15 ≤ ρ < 0.30 →
+group-relative-only zone: usable for GRPO ranking iff within-group
+(K-sibling) pairwise accuracy ≥ 0.65 on a held-out contest set;
+otherwise not load-bearing. ρ < 0.15 → falsified, say so, and the
+taste slot ships buyer-supplied-only.
+
+**FLOPs:** pure inference, ~77 × 64 × slate × ~300-token templates —
+hours on the node, interleaved with the policy screen (same servers).
+
+Result: _(pending — first node experiment)_

@@ -1,6 +1,6 @@
 # STATE
 
-_Last updated: 2026-07-29 EOD (Phase A closed: 7 registered runs in one
+_Last updated: 2026-07-29 EOD (Phase A closed: 6 registered runs in one
 day, all honestly closed; **H100-READY** — see docs/RL-STACK-AND-SELECTION.md
 §4.7 runbook; S2 demoted to report-only per pre-registered fallback,
 screen decides on S1/S3/S4 + cost; blocking items are all Sam-side:
@@ -62,6 +62,33 @@ The decisions:
   reverse-transfer.
 - Kimi K3 ruled out for training (2.8T, no fit; always-on reasoning);
   DeepSeek V3.x/V4-Pro out (size); details in §5.5.
+
+## DIRECTION REFRESH #2 (Sam, 2026-07-30 — PRODUCT-FIRST, supersedes the paper framing)
+
+The deliverable is a **sellable RL environment** that makes frontier
+models better at CONVERSATIONAL humor (banter, wit-in-reply, callbacks,
+timing) — not a paper, not a joke generator, not an RM product.
+Consequences, all codified:
+1. **Taste signal = audience-reaction logprob** (EXP-023, registered):
+   a frozen model's SPONTANEOUS laughter-class reaction probability —
+   mathematical, per-turn dense, no judge, no trained RM. Novelty
+   verified (strategy-doc §8); thesis has adjacent-domain proof
+   (Gandhi 2601.04436). Certification = pure inference vs NYCC's 292M
+   votes; FIRST NODE EXPERIMENT, merged with the model screen (every
+   candidate screened as policy AND audience).
+2. NYCC quantile RM demoted to optional reference implementation in a
+   pluggable taste slot — buyers plug in their own models/preference
+   data; our IP is the environment around the slot.
+3. Joke-fixture instrument work STOPS. Conversational reward terms
+   continue (EXP-016c NLI callbacks; timing term to be spec'd).
+4. Verifiable tier + cascade + anti-hack shell reframed as what they
+   are: the hack-resistance and health machinery that makes the taste
+   slot safe to optimize against — the part labs can't buy elsewhere.
+5. Demo replaces paper as Phase-D deliverable: pre/post conversations
+   under banter (Sam evals by talking to it), plus guardrail numbers
+   and the falsification audit trail as the diligence appendix.
+6. This week's six honest falsifications = the anti-hacking receipts
+   for the buyer's red team, not sunk cost.
 
 ## DIRECTION REFRESH (Sam, 2026-07-22 — supersedes emphasis, not architecture)
 
