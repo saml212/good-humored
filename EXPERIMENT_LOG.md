@@ -2655,3 +2655,18 @@ CODIFIED: partner quality gates env value more than policy quality —
 the env ships with a strong partner (30B+), policies can be anything.
 Transcripts remain dogfood-only per registration. v0.1 rerun on the
 30B follows immediately.
+
+**BANTER v0.1 on qwen3-30b-a3b (2026-08-06, 200 sessions):** 0/200
+verbatim-echo sessions (the dogfood pathology ELIMINATED by the
+directive-first + anti-echo fixes), 0 errors, 4,000 turns in 59.5s.
+And the register finding reversed at 30B scale: with a NEUTRAL policy
+prompt, sessions show unprompted collaborative bits — a
+supply-closet task escalated into a rubber-chicken/glow-sock
+discovery, a "Project: Silent Sock Rebellion" notebook, "the sock has
+seen things," a shrine with "Do Not Disturb (Socks Only)," and a
+sock-cult manifesto — i.e., ESCALATION, TRANSFORMED CALLBACKS
+(the sock recurs reframed every few turns), YES-AND cooperation, and
+unprompted wit: every construct in the 2026-07-30 spec, emerging in
+the environment, measurable by the certified gates. This is the demo
+material class. Transcripts remain unscored pending the scoring pass;
+the qualitative read is recorded as a read, not a metric.
