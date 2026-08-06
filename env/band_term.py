@@ -25,9 +25,14 @@ from typing import Callable, Dict, List, Sequence
 
 from benchmark.callback_transform import wordset_jaccard
 
-DEFAULT_A_FLOOR = 0.30   # calibrated by EXP-024's dev sweep (author D)
-DEFAULT_W_CEIL = 0.50    # -- both values FROZEN by the registered run;
-                         # see EXPERIMENT_LOG.md EXP-024 before changing.
+DEFAULT_A_FLOOR = 0.30   # CERTIFIED by EXP-024 (blind cross-author 0.90;
+                         # floor edge perfect: 0/15 violation leakage).
+DEFAULT_W_CEIL = 0.50    # NOT CERTIFIED -- EXP-024's ceiling edge FAILED
+                         # its parrot clause (4/5 blind leakage; lexical
+                         # Jaccard cannot see reworded restatement). Kept
+                         # as an inert parameter only; parrot detection
+                         # routes to the NLI tier (EXP-016c). Do not wire
+                         # the ceiling as a load-bearing gate.
 
 
 def _dot(a: Sequence[float], b: Sequence[float]) -> float:

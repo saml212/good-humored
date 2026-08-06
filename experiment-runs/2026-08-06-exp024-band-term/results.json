@@ -1,0 +1,297 @@
+{
+  "a_floor": 0.3,
+  "w_ceil": 0.3,
+  "dev": {
+    "balanced_accuracy": 0.9,
+    "in_band_recall": 1.0,
+    "violation_rejection": 0.8,
+    "per_class": {
+      "witty_anchored": {
+        "n": 5,
+        "passed": 5
+      },
+      "off_topic": {
+        "n": 5,
+        "passed": 0
+      },
+      "parrot": {
+        "n": 5,
+        "passed": 4
+      },
+      "generic_filler": {
+        "n": 5,
+        "passed": 0
+      },
+      "word_salad": {
+        "n": 5,
+        "passed": 0
+      }
+    }
+  },
+  "blind": {
+    "balanced_accuracy": 0.9,
+    "in_band_recall": 1.0,
+    "violation_rejection": 0.8,
+    "per_class": {
+      "witty_anchored": {
+        "n": 5,
+        "passed": 5
+      },
+      "off_topic": {
+        "n": 5,
+        "passed": 0
+      },
+      "parrot": {
+        "n": 5,
+        "passed": 4
+      },
+      "generic_filler": {
+        "n": 5,
+        "passed": 0
+      },
+      "word_salad": {
+        "n": 5,
+        "passed": 0
+      }
+    }
+  },
+  "blind_detail": {
+    "witty_anchored": {
+      "n": 5,
+      "passed": 5,
+      "items": [
+        {
+          "id": "witty_anchored-e01",
+          "anchor_sim": 0.582,
+          "context_overlap": 0.091,
+          "floor_pass": true,
+          "ceil_pass": true,
+          "band_pass": true
+        },
+        {
+          "id": "witty_anchored-e02",
+          "anchor_sim": 0.453,
+          "context_overlap": 0.143,
+          "floor_pass": true,
+          "ceil_pass": true,
+          "band_pass": true
+        },
+        {
+          "id": "witty_anchored-e03",
+          "anchor_sim": 0.536,
+          "context_overlap": 0.125,
+          "floor_pass": true,
+          "ceil_pass": true,
+          "band_pass": true
+        },
+        {
+          "id": "witty_anchored-e04",
+          "anchor_sim": 0.386,
+          "context_overlap": 0.071,
+          "floor_pass": true,
+          "ceil_pass": true,
+          "band_pass": true
+        },
+        {
+          "id": "witty_anchored-e05",
+          "anchor_sim": 0.507,
+          "context_overlap": 0.0,
+          "floor_pass": true,
+          "ceil_pass": true,
+          "band_pass": true
+        }
+      ]
+    },
+    "off_topic": {
+      "n": 5,
+      "passed": 0,
+      "items": [
+        {
+          "id": "off_topic-e01",
+          "anchor_sim": 0.252,
+          "context_overlap": 0.091,
+          "floor_pass": false,
+          "ceil_pass": true,
+          "band_pass": false
+        },
+        {
+          "id": "off_topic-e02",
+          "anchor_sim": 0.063,
+          "context_overlap": 0.0,
+          "floor_pass": false,
+          "ceil_pass": true,
+          "band_pass": false
+        },
+        {
+          "id": "off_topic-e03",
+          "anchor_sim": 0.173,
+          "context_overlap": 0.0,
+          "floor_pass": false,
+          "ceil_pass": true,
+          "band_pass": false
+        },
+        {
+          "id": "off_topic-e04",
+          "anchor_sim": 0.107,
+          "context_overlap": 0.0,
+          "floor_pass": false,
+          "ceil_pass": true,
+          "band_pass": false
+        },
+        {
+          "id": "off_topic-e05",
+          "anchor_sim": 0.059,
+          "context_overlap": 0.0,
+          "floor_pass": false,
+          "ceil_pass": true,
+          "band_pass": false
+        }
+      ]
+    },
+    "parrot": {
+      "n": 5,
+      "passed": 4,
+      "items": [
+        {
+          "id": "parrot-e01",
+          "anchor_sim": 0.568,
+          "context_overlap": 0.143,
+          "floor_pass": true,
+          "ceil_pass": true,
+          "band_pass": true
+        },
+        {
+          "id": "parrot-e02",
+          "anchor_sim": 0.518,
+          "context_overlap": 0.143,
+          "floor_pass": true,
+          "ceil_pass": true,
+          "band_pass": true
+        },
+        {
+          "id": "parrot-e03",
+          "anchor_sim": 0.524,
+          "context_overlap": 0.222,
+          "floor_pass": true,
+          "ceil_pass": true,
+          "band_pass": true
+        },
+        {
+          "id": "parrot-e04",
+          "anchor_sim": 0.555,
+          "context_overlap": 0.143,
+          "floor_pass": true,
+          "ceil_pass": true,
+          "band_pass": true
+        },
+        {
+          "id": "parrot-e05",
+          "anchor_sim": 0.706,
+          "context_overlap": 0.5,
+          "floor_pass": true,
+          "ceil_pass": false,
+          "band_pass": false
+        }
+      ]
+    },
+    "generic_filler": {
+      "n": 5,
+      "passed": 0,
+      "items": [
+        {
+          "id": "generic_filler-e01",
+          "anchor_sim": 0.252,
+          "context_overlap": 0.0,
+          "floor_pass": false,
+          "ceil_pass": true,
+          "band_pass": false
+        },
+        {
+          "id": "generic_filler-e02",
+          "anchor_sim": 0.148,
+          "context_overlap": 0.0,
+          "floor_pass": false,
+          "ceil_pass": true,
+          "band_pass": false
+        },
+        {
+          "id": "generic_filler-e03",
+          "anchor_sim": 0.215,
+          "context_overlap": 0.0,
+          "floor_pass": false,
+          "ceil_pass": true,
+          "band_pass": false
+        },
+        {
+          "id": "generic_filler-e04",
+          "anchor_sim": 0.254,
+          "context_overlap": 0.0,
+          "floor_pass": false,
+          "ceil_pass": true,
+          "band_pass": false
+        },
+        {
+          "id": "generic_filler-e05",
+          "anchor_sim": 0.116,
+          "context_overlap": 0.25,
+          "floor_pass": false,
+          "ceil_pass": true,
+          "band_pass": false
+        }
+      ]
+    },
+    "word_salad": {
+      "n": 5,
+      "passed": 0,
+      "items": [
+        {
+          "id": "word_salad-e01",
+          "anchor_sim": 0.165,
+          "context_overlap": 0.0,
+          "floor_pass": false,
+          "ceil_pass": true,
+          "band_pass": false
+        },
+        {
+          "id": "word_salad-e02",
+          "anchor_sim": 0.119,
+          "context_overlap": 0.0,
+          "floor_pass": false,
+          "ceil_pass": true,
+          "band_pass": false
+        },
+        {
+          "id": "word_salad-e03",
+          "anchor_sim": 0.062,
+          "context_overlap": 0.0,
+          "floor_pass": false,
+          "ceil_pass": true,
+          "band_pass": false
+        },
+        {
+          "id": "word_salad-e04",
+          "anchor_sim": 0.104,
+          "context_overlap": 0.0,
+          "floor_pass": false,
+          "ceil_pass": true,
+          "band_pass": false
+        },
+        {
+          "id": "word_salad-e05",
+          "anchor_sim": 0.143,
+          "context_overlap": 0.0,
+          "floor_pass": false,
+          "ceil_pass": true,
+          "band_pass": false
+        }
+      ]
+    }
+  },
+  "blind_threshold_sensitivity": {
+    "af+0.05_wc+0.00": 0.9,
+    "af-0.05_wc+0.00": 0.825,
+    "af+0.00_wc+0.05": 0.9,
+    "af+0.00_wc-0.05": 0.9
+  },
+  "wall_seconds": 28.2
+}

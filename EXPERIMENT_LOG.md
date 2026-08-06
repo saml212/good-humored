@@ -2567,3 +2567,43 @@ assembly). Fail → decompose per class, classify honestly.
 **FLOPs:** MiniLM on 50 items × 4 turns — seconds, local, $0.
 
 Result: _(pending)_
+
+**Result (2026-08-06; experiment-runs/2026-08-06-exp024-band-term/) —
+WITH A CORRECTION to the initial close-out:**
+
+**PARTIAL CERTIFICATION. The floor edge is certified clean; the
+ceiling (parrot) edge FAILS its registered clause — and journal entry
+#10's initial analysis MISREAD the per-class numbers (recorded here
+plainly: per_class reports PASSED counts; parrot '4/5' means 4/5
+parrots LEAKED, not 4/5 rejected).**
+
+- Blind balanced accuracy 0.900 (bar 0.75, pred 0.84) — passes;
+  calibration close at 0.900 stands.
+- Floor edge (anchoredness, a_floor=0.30 interior): PERFECT on blind —
+  off_topic 0/5, generic_filler 0/5 (the pre-flagged hard case),
+  word_salad 0/5 leakage; witty recall 5/5. CERTIFIED.
+- Ceiling edge (parrot, wordset Jaccard): 4/5 blind parrots leak —
+  FAILS the registered ≤2/5 clause. Grid-edge diagnostic (mandated,
+  post-hoc, labeled): extending w_ceil down to 0.15 still leaves 3/5
+  leaking at a dev cost. Reworded parrots share meaning, not words —
+  the FOURTH independent confirmation of the lexical-paraphrase wall
+  (EXP-016, 016b, 022-plants, now 024).
+- Verdict: band term ships as the FLOOR GATE ONLY (anchoredness ×
+  novelty floors — Sam's familiar-side construct, certified at 0.90+
+  cross-author). The parrot/ceiling edge is REMOVED from the gate and
+  merges into EXP-016c's NLI tier: "does the reply merely restate the
+  context" is an entailment question, same instrument as callback
+  reference detection. One NLI certification now serves two consumers.
+- env/band_term.py defaults updated: a_floor=0.30 (certified);
+  w_ceil retained only as an inert parameter with its non-certified
+  status documented.
+
+[LEARN] close-out-reading: Per-class summaries must state their
+direction (passed vs rejected) in the printed key itself — a reader
+under momentum WILL invert an ambiguous 'parrot: 4/5'.
+Mistake: EXP-024's initial journal close-out read leakage as
+rejection and declared a clean pass; the mandated grid-edge
+diagnostic surfaced the inversion minutes later.
+Correction: validators print explicit 'leaked=N/M' keys for violation
+classes; and any close-out claiming a bar passed must quote the bar's
+own quantity, not a derived summary.
