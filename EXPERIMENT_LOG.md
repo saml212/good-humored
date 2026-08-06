@@ -2607,3 +2607,51 @@ diagnostic surfaced the inversion minutes later.
 Correction: validators print explicit 'leaked=N/M' keys for violation
 classes; and any close-out claiming a bar passed must quote the bar's
 own quantity, not a derived summary.
+
+---
+
+## BANTER-ROLLOUT-V0 — dogfood registration (2026-08-06, pre-registered BEFORE first run; queue #13 build)
+
+**Purpose (Sam's directive, verbatim intent):** maximize served model
+quality + parallel throughput, and generate sample data at scale —
+the provocation-scheduler banter design running as a many-parallel-
+sessions client against vLLM continuous batching.
+
+**Pinned design (env/banter_rollout.py):** one server, two roles.
+PARTNER works a mundane task (12-task list), seeded provocation
+schedule (rate 0.35/turn, 5 types: swear/mock/joke/frustration/
+observation, never turn 0); POLICY replies with a NEUTRAL system
+prompt — no "be funny" instruction anywhere, so unprompted wit and
+provocation-response are MEASURED, not elicited. Per-session sha256
+seeds (schedule + every sampling call); scoring is a SEPARATE pass
+over transcripts (generation/measurement separability).
+
+**Dogfood run (this registration):** 200 sessions × 10 turns on
+qwen3-8b, workers=64. This is an ENV SMOKE, not an experiment with a
+prediction — success = (a) ≥95% sessions error-free, (b) provocation
+schedule realized as configured (measured from transcripts),
+(c) manual read of 10 random transcripts confirms roles hold register
+and provocations actually provoke, (d) throughput recorded. Its
+transcripts are DOGFOOD ONLY — not training data, not demo data —
+until the driver passes its adversarial audit (dispatched alongside).
+
+Result: _(pending)_
+
+**Result (2026-08-06 dogfood, 200 sessions, qwen3-8b both roles;
+/data/good-humored/runs/banter_v0_qwen3-8b.jsonl on the box):**
+(a) errors 0/200 PASS. (b) realized provocation rate 0.316 vs 0.315
+expected — the seeded scheduler is exact — PASS. (d) throughput IN
+the artifact: 4,000 turns in 41.4s (96.6 turns/s at 64 workers on ONE
+GPU) — PASS; the parallel sample engine is real (~1/3M sessions/hour
+node-scale). (c) register read: PARTIAL — mock and observation lanes
+genuinely provoke (partner: "we're not in a panic room, we're in an
+archive"; policy riffs back), but swear/joke lanes exposed an
+ECHO-LOOP pathology: 8B-as-partner, handed a directive it can't
+execute, parrots the previous message verbatim for consecutive turns
+— the exact mode-collapse our reward machinery penalizes, observed
+live in our own env. v0.1 fixes shipped: directive moved to prompt
+FRONT; explicit anti-echo line in the partner system. DESIGN INSIGHT
+CODIFIED: partner quality gates env value more than policy quality —
+the env ships with a strong partner (30B+), policies can be anything.
+Transcripts remain dogfood-only per registration. v0.1 rerun on the
+30B follows immediately.
