@@ -2521,3 +2521,49 @@ proceeds with the screen + emulator as its purpose.
 Calibration closed 0.25→0.122 (ledger 52 closed, 0 open). Under $20
 of API credits resolved the plan's biggest bet before it cost a GPU
 day — this chain is the de-risking directive working as ordered.
+
+---
+
+## EXP-024 — familiar/novel embedding BAND term (2026-08-06, pre-registered BEFORE fixtures are read)
+
+**Sam's construct (2026-07-30 spec):** a reply must be FAMILIAR enough
+to land — anchored to the conversation — and NOVEL enough to break
+expectation. Necessary-condition GATE, not a funniness rating
+(explicitly distinct from the falsified EXP-019/020/021 rating
+claims).
+
+**Pinned design:**
+- band_pass(context, reply) = (anchor_sim ≥ A_floor) AND
+  (context_overlap < W_ceil), where anchor_sim = max cosine
+  (all-MiniLM-L6-v2) between the reply and each context turn, and
+  context_overlap = max hyphen-safe content-word Jaccard vs each
+  context turn (the EXP-016b-certified wordset machinery, reused).
+  Floor edge rejects off_topic / generic_filler / word_salad;
+  ceiling edge rejects parrot.
+- Fixtures: TWO blind authors (D: dev, E: certification), 25 items
+  each, 5 classes × 5 — witty_anchored (in-band) vs off_topic /
+  parrot / generic_filler / word_salad. Author-variance rule applied
+  from the start this time.
+- Thresholds (A_floor, W_ceil) swept ONLY on author D; author E
+  scored ONCE with dev-chosen thresholds. Primary = author-E balanced
+  accuracy (witty_anchored = positive class).
+- Diagnostics: per-class pass rates both authors, threshold
+  sensitivity (does a ±0.05 shift flip the verdict), MiniLM sim
+  distributions per class.
+
+**Predictions (blind, calibration row):** exp-024 /
+blind_balanced_accuracy ≈ **0.84** (bar ≥ 0.75). Directional: floor
+edge catches ≥ 4/5 of each of off_topic+salad; parrot ceiling catches
+≥ 3/5 parrots (wordset on short replies is coarse — known); filler is
+the hard case (may embed near chat-register centroid — if filler
+passes the floor, that is the finding, and the fix direction is a
+content-word minimum, noted now).
+
+**Success:** blind balanced accuracy ≥ 0.75 AND no violation class
+with >2/5 leakage → band term certified as a GATE for the banter env
+reward stack (wired multiplicatively, weight decided at env
+assembly). Fail → decompose per class, classify honestly.
+
+**FLOPs:** MiniLM on 50 items × 4 turns — seconds, local, $0.
+
+Result: _(pending)_
