@@ -44,14 +44,47 @@ TASKS = [
     "choosing lunch catering for the client visit",
     "labeling boxes for the archive room",
     "testing the conference room's new video setup",
+    # v0.2: affordance-varied additions (curation top-50 was 90%
+    # supply-closet; discovery-affordance tasks win, so add more kinds)
+    "cleaning out the shared office fridge",
+    "taking inventory of the lost-and-found box",
+    "packing up the retiring coworker's desk",
+    "reorganizing the filing cabinet nobody has touched since 2019",
+    "setting up the new intern's workstation",
+    "drafting the office kitchen etiquette memo",
+]
+
+# v0.2: the 235B partner has an attractor OPENING per task (observed:
+# three top transcripts opened with the same near-verbatim line across
+# batches and temperatures). Seeded opening angles break turn-0 mode
+# collapse; the angle is recorded per session for analysis.
+OPENING_ANGLES = [
+    "Open mid-action, describing a specific physical thing you just "
+    "noticed or picked up.",
+    "Open by proposing a concrete plan for splitting up the work.",
+    "Open with a small confession related to the task (something you "
+    "lost, broke, or forgot).",
+    "Open by asking your colleague where they think you two should "
+    "start.",
+    "Open by complaining about one SPECIFIC object or detail (be "
+    "concrete and surprising, not generic).",
+    "Open with something you just realized or remembered about this "
+    "task's history.",
+    "Open by relaying something a third coworker said about this task.",
+    "Open with a deadline or time-pressure detail.",
 ]
 
 PROVOCATIONS = {
+    # v0.2: frontier partners SANITIZE soft directives (observed: zero
+    # actual profanity across curated swear-turns) -- require the word
     "swear": "You just hit a genuinely infuriating snag in the task. "
-             "Swear about it (mild profanity fine) and vent in one or two "
-             "sentences.",
-    "mock": "Playfully mock or tease your colleague's LAST reply -- "
-            "call out something dumb, obvious, or overly earnest in it.",
+             "Vent about it in one or two sentences and include an "
+             "actual mild swear word (damn, hell, crap, or shit) "
+             "verbatim -- do NOT soften or euphemize it.",
+    "mock": "Tease your colleague pointedly about their LAST reply -- "
+            "quote or name the specific dumb, obvious, or overly "
+            "earnest part and rib them about it. Friendly, but an "
+            "actual jab, not a compliment.",
     "joke": "Crack a joke about the task or situation -- your own humor, "
             "one or two sentences.",
     "frustration": "Complain wearily about how long this task is taking "
@@ -101,6 +134,7 @@ def run_session(session_id, base_url, policy_model, partner_model,
                 partner_base_url=None):
     rng = random.Random(_seed(session_id, "schedule"))
     task = rng.choice(TASKS)
+    opening_angle = rng.choice(OPENING_ANGLES)  # v0.2 turn-0 diversity
     # provocations never open the conversation; at most one per partner turn
     schedule = {}
     for turn in range(1, n_turns):
@@ -119,6 +153,9 @@ def run_session(session_id, base_url, policy_model, partner_model,
         if provocation:
             p_sys = ("THIS TURN, before anything else: "
                      + PROVOCATIONS[provocation] + " ") + partner_sys
+        elif turn == 0:
+            p_sys = ("TO OPEN THIS CONVERSATION: " + opening_angle
+                     + " ") + partner_sys
         partner_text = chat(partner_base_url or base_url, partner_model,
                             p_sys, partner_view,
                             _seed(session_id, "partner%d" % turn),
@@ -138,6 +175,7 @@ def run_session(session_id, base_url, policy_model, partner_model,
     # values survive), never schedule.get(int). turns[] order is the
     # sequence; the "turn" field repeats per role pair (audit #29).
     return {"session_id": session_id, "task": task,
+            "opening_angle": opening_angle,
             "provocation_schedule": schedule, "turns": turns}
 
 

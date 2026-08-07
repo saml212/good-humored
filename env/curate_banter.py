@@ -89,16 +89,34 @@ def main():
             }
     sessions.sort(key=lambda s: -s["curation_score"])
     top = sessions[:TOP_K]
+    top_by_task = {}
+    for s in sessions:
+        top_by_task.setdefault(s["task"], s)  # first hit = best (sorted)
+    slim = lambda s: {k: s[k] for k in ("batch", "session_id", "task",
+                                        "config", "curation_score",
+                                        "floor_pass_rate",
+                                        "max_self_repetition",
+                                        "mean_reaction_L")}
     Path(args.out_master).write_text(json.dumps(
         {"n_sessions_scored": len(sessions), "n_batches": len(batch_stats),
          "batch_stats": batch_stats,
-         "top": [{k: s[k] for k in ("batch", "session_id", "task", "config",
-                                    "curation_score", "floor_pass_rate",
-                                    "max_self_repetition", "mean_reaction_L")}
-                 for s in top]}, indent=2))
+         "top": [slim(s) for s in top],
+         "top_by_task": {t: slim(s) for t, s in top_by_task.items()}},
+        indent=2))
 
+    # human-read file: cap 2 per task -- an uncapped top-N collapses to
+    # one high-affordance task's trajectory family (observed: 9/10
+    # supply-closet), and the read must sample the env's breadth
+    picked, per_task = [], {}
+    for s in sessions:
+        if per_task.get(s["task"], 0) >= 2:
+            continue
+        picked.append(s)
+        per_task[s["task"]] = per_task.get(s["task"], 0) + 1
+        if len(picked) == 5:
+            break
     blocks = []
-    for s in top[:5]:
+    for s in picked:
         rec = full_transcript(s["batch"], s["session_id"],
                               args.transcripts_dir)
         if rec:

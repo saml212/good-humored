@@ -2727,3 +2727,41 @@ Mistake: "MiniLM pre-downloaded" was reported fixed but never landed
 in the box HF cache; the scorer stayed dead for hours.
 Correction: the fix is proven by the failing command succeeding, not
 by the fix command running.
+
+## BANTER v0.2 — iterate-cycle revision (2026-08-07, predictions pinned BEFORE the next read)
+
+**Evidence in (72 scored batches, N=500/cell, 36k sessions):**
+provocation-rate monotone — P=0.5 beats 0.35 beats 0.25 on mean
+curation AND audience reaction in BOTH policy lanes (30B: 0.979/0.949/
+0.939; GLM tracks the same ordering); temperature: no clear effect.
+Human read of top-5: real wit present (escalation, transformed
+callbacks, running gags) BUT (a) turn-0 mode collapse — identical
+partner opening line for the same task across batches and temps,
+(b) top-10 was 9/10 supply-closet (selection monoculture), (c) swear
+compliance measured at 17.1% (542/3165 directed turns).
+
+**Changes (all in `env/banter_rollout.py` v0.2 + keepers):**
+1. Seeded OPENING_ANGLES (8 angles, turn-0 partner directive,
+   recorded per session) — breaks the opening attractor.
+2. `swear` directive requires a verbatim mild swear word; `mock`
+   sharpened to demand a specific jab.
+3. +6 affordance-varied tasks (fridge, lost-and-found, retiring desk,
+   2019 filing cabinet, intern setup, kitchen memo).
+4. Rotation: P=0.25 RETIRED, PROVS now {0.50, 0.35, 0.65} (incumbent /
+   control / trend probe).
+5. Curation: top-5 human-read file capped at 2 sessions/task;
+   `top_by_task` view added to the master.
+
+**Pinned predictions (checked next cycle, over v0.2 batches only):**
+- Swear compliance ≥60% (from 17.1%). If <40%, the 235B partner is
+  judged prompt-resistant here and the swear provocation moves to a
+  different partner or gets a compliance filter.
+- Supply-closet share of the modal opening trigram drops to <20% of
+  its sessions (from ~replayed-verbatim).
+- P=0.65 cell: if the monotone continues (curation > P=0.5 cell), keep
+  climbing next cycle; if it reverses, 0.5 is the plateau and the
+  sweep closes.
+
+Keeper restarted 04:5x; in-flight pre-v0.2 batch files lack
+run_summary and are skipped by the scorer. GPUs verified 8/8 ~100%
+after restart.

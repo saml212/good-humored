@@ -12,7 +12,10 @@ cd $GH/repo || exit 1
 i=$(ls $GH/runs/banter_stream_*.jsonl 2>/dev/null | sed 's/.*_0*\([0-9]*\)\.jsonl/\1/' | sort -n | tail -1)
 i=${i:-0}
 TEMPS=(1.0 0.9 1.1)
-PROVS=(0.35 0.25 0.50)
+# v0.2 rotation: P=0.25 retired (lost on curation AND reaction in both
+# policy lanes, 72-batch table 2026-08-07); 0.50 = incumbent best,
+# 0.35 = control, 0.65 = probe of the monotone trend's continuation
+PROVS=(0.50 0.35 0.65)
 while [ ! -f $GH/STOP_LANES ]; do
   i=$((i+1))
   T="${TEMPS[$((i % 3))]}"

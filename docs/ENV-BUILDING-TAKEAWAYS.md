@@ -60,32 +60,55 @@ Newest lessons appended at the bottom of each section.
     bad-to-good instead of clustering at strong-model quality — reward
     models trained only on strong outputs never see the failure modes
     they exist to catch.
+12. **Turn-0 mode collapse is real: engineer opening diversity.** The
+    235B partner produced a near-verbatim identical opening line for
+    the same task across batches AND temperatures ("Ugh, this box of
+    old cables is a nightmare—" 3/3 in the top-5 read). Temperature
+    does not buy first-turn diversity; a seeded opening-angle directive
+    does. Check the FIRST turn of your rollouts, not just the middles.
+13. **Measure directive compliance; never assume it.** The `swear`
+    directive yielded actual profanity in only 17.1% of directed turns
+    (542/3165, measured 2026-08-07) — the provocation *schedule* said
+    one thing, the *data* did another. Any env whose conditions are
+    prompt-induced needs a compliance metric per condition, or its
+    condition labels are fiction.
+14. **Uncapped top-N curation collapses to one trajectory family.**
+    9/10 top curated sessions were the same high-affordance task
+    (supply closet), partly riding one replayed opening. Diversity
+    caps (max-per-task) in the human-read artifact, and a per-task
+    top view in the master, or your "best of" is a monoculture — the
+    selection-level twin of the mode-collapse failure this project
+    exists to avoid.
 
 ## Operations (the part that actually loses the most time)
 
-12. **Watchers must alert on failure AND success.** A success-only grep
+15. **Watchers must alert on failure AND success.** A success-only grep
     watcher wedged silently when the scorer crashed, contributing to
     7.5 idle GPU-hours. Silence must be impossible to confuse with
     progress.
-13. **Expensive hardware needs box-side keeper loops, not agent-side
+16. **Expensive hardware needs box-side keeper loops, not agent-side
     attention.** Turn-gated agent attention cannot guarantee
     utilization. The fix that worked: perpetual keeper scripts in tmux
     (generate → score → curate, each its own keeper), stoppable by one
     flag file, with the agent reduced to a periodic consumer/iterator.
     GPUs went from a 7.5h idle gap to sustained 8/8 at 100%.
-14. **Rotate configs inside the keeper; don't resample one point
+17. **Rotate configs inside the keeper; don't resample one point
     forever.** Perpetual generation at a single (temperature,
     provocation-rate, model) point buys redundancy, not information.
     The keeper cycles a config grid and the curation table aggregates
     per-config stats — env defaults get chosen by table, not vibes.
-15. **Utilization holes hide in alternation.** Rotating two policy
+    It paid off in one night: 72 rotated batches (N=500/cell) showed
+    provocation 0.5 > 0.35 > 0.25 on BOTH curation and audience
+    reaction in BOTH policy lanes, temperature no clear effect; the
+    losing cell was retired and its slot probes 0.65.
+18. **Utilization holes hide in alternation.** Rotating two policy
     models through ONE lane left each model's GPU idle half the time;
     running both lanes concurrently against the shared partner closed
     it. Check per-GPU utilization after every topology change.
-16. **Failure markers, not retries-forever.** The score keeper writes a
+19. **Failure markers, not retries-forever.** The score keeper writes a
     `.failed` marker for a batch that crashes scoring — loud in the
     log, but the loop never wedges on one bad batch.
-17. **Verify "fixed" infrastructure actually landed.** A pre-download
+20. **Verify "fixed" infrastructure actually landed.** A pre-download
     "fix" for the missing embedding model never reached the box cache;
     the scorer stayed dead for hours while its log path didn't even
     exist. After any remote fix: re-run the failing thing, don't trust
@@ -93,13 +116,13 @@ Newest lessons appended at the bottom of each section.
 
 ## Discipline machinery that paid for itself
 
-18. **Pre-registration + pinned consequences + blind calibration rows**
+21. **Pre-registration + pinned consequences + blind calibration rows**
     (~52 closed) is why six falsifications were accepted instead of
     argued with. The paperwork is the product insurance.
-19. **Adversarial pre-run audits catch real bugs** (multi-methodology
+22. **Adversarial pre-run audits catch real bugs** (multi-methodology
     contest-file merge, firewall divergence, cap truncation — all
     caught before running). The implementer must not review their own
     work.
-20. **Close-out readings need explicit denominators.** "4/5" was
+23. **Close-out readings need explicit denominators.** "4/5" was
     misread as rejected when it meant leaked; validators now print
     `leaked=N/M`. Ambiguous summaries corrupt downstream decisions.
