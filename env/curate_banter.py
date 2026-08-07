@@ -71,6 +71,20 @@ def agreement_rate(batch_sessions):
     return round(h / n, 3) if n else 0
 
 
+_ASTERISK = re.compile(r"\*[^*]{3,80}\*")
+
+
+def asterisk_rate(batch_sessions):
+    """RP stage-direction register health (policy turns)."""
+    n = h = 0
+    for s in batch_sessions:
+        for t in s.get("per_turn", []):
+            n += 1
+            if _ASTERISK.search(t["text"]):
+                h += 1
+    return round(h / n, 4) if n else 0
+
+
 def load_batch(scored_path, transcripts_dir):
     """Scored sessions + the generation config from the twin .jsonl."""
     data = json.loads(Path(scored_path).read_text())
@@ -144,6 +158,7 @@ def main():
                     sum(s["mean_reaction_L"] for s in batch) / n, 3),
                 "motifs": motif_stats(batch),
                 "policy_agreement_rate": agreement_rate(batch),
+                "policy_asterisk_rate": asterisk_rate(batch),
             }
     sessions.sort(key=lambda s: -s["curation_score"])
     top = sessions[:TOP_K]
@@ -164,10 +179,17 @@ def main():
 
     # human-read file: cap 2 per task -- an uncapped top-N collapses to
     # one high-affordance task's trajectory family (observed: 9/10
-    # supply-closet), and the read must sample the env's breadth
+    # supply-closet), and the read must sample the env's breadth.
+    # Contrast-lane sessions are EXCLUDED: with 50x the sample count,
+    # tail-luck under the multiplicative gate metric beat typical
+    # strong-model sessions (an 8B session topped the table while
+    # reading clearly worse) -- the lane is negative training
+    # contrast, not demo material, and demo shortlists are lane-scoped
     recent.sort(key=lambda s: -s["curation_score"])
     picked, per_task = [], {}
     for s in recent:
+        if s["batch"].startswith("contrast"):
+            continue
         if per_task.get(s["task"], 0) >= 2:
             continue
         picked.append(s)

@@ -183,3 +183,16 @@ Newest lessons appended at the bottom of each section.
     distribution (here -0.07 to -0.13). Cross-version score
     comparisons are invalid by default; human-read artifacts and
     leaderboards must draw from a recent same-version window.
+32. **Unequal sample sizes poison cross-population selection.** The
+    weak-model contrast lane (50x the batches) landed a tail-luck
+    session at #1 on the demo shortlist, above transcripts any human
+    ranks higher. Selection across populations with different n
+    finds the big population's outliers, not the best population's
+    typical excellence. Scope shortlists per lane; compare lanes by
+    distribution, never by shared top-N.
+33. **Provocation density is an anti-sycophancy dial.** Agreement-
+    opener rate falls monotonically as provocation rate rises (both
+    strong models, all cells) — scheduled provocations force the
+    policy out of yes-and register. Conversational envs can TUNE how
+    much social risk the data demands; that dial is part of the env
+    spec, not an accident of sampling.

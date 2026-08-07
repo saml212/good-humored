@@ -2881,3 +2881,34 @@ stronger instruction-tuned models — RLHF sycophancy as conversational
 risk-aversion. DOCTRINE: not prompt-fixed. The neutral policy prompt
 exists so the env EXPOSES this attractor; moving it is RL training's
 job and part of the product's measurable-improvement story.
+
+## BANTER cycle 5: anti-sycophancy dial, tail-luck contamination, report card v1 (2026-08-07)
+
+**Agreement × provocation (v0.3.1 cells): provocation density
+SUPPRESSES the agreement attractor monotonically in both strong
+models** (GLM 0.285→0.272→0.264, 30B 0.303→0.293→0.279 across P=0.5/
+0.65/0.8). The provocation scheduler is an anti-sycophancy pressure
+dial on the data distribution — env-design finding, product-relevant
+(the env can tune how much conversational risk the data demands).
+Nuance: the 8B's LOW agreement (0.208) is incoherence, not
+discipline — agreement-opener rate is a RANGE metric; both extremes
+are pathologies.
+
+**Human read caught metric contamination: an 8B contrast session
+topped the shortlist (1.647) while reading clearly worse than the
+GLM raccoon transcript below it (1.583).** Mechanism: 110 contrast
+batches × 500 sessions gives the multiplicative gate metric a 50×
+sample to find lucky tails in (hyper-anchored style also gives the
+8B the highest floor_pass, 0.976 — the floor is a necessary
+condition, not quality, now visible in one table). FIX: the
+human-read shortlist is LANE-SCOPED (contrast excluded — it is
+negative training contrast, not demo material); master keeps all
+lanes for training-data honesty.
+
+**Consolidation shipped: env/report_card.py** — pivots batch_stats
+into the per-(model, P) characterization table: curation, floor,
+reaction (diagnostic), trigram diversity, agreement, asterisk
+register. First card generated (runs/report_card.json). This is the
+buyer-facing artifact and the pre/post-RL delta scaffold. Register
+health now a standing batch metric: 30B holding ~2.3% under v0.3.1,
+GLM ~0.1%.
