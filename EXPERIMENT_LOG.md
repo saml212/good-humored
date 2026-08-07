@@ -2912,3 +2912,32 @@ register. First card generated (runs/report_card.json). This is the
 buyer-facing artifact and the pre/post-RL delta scaffold. Register
 health now a standing batch metric: 30B holding ~2.3% under v0.3.1,
 GLM ~0.1%.
+
+## BANTER cycle 6: provocation-type yields, per-model temperature, v0.4 (2026-08-07)
+
+**Provocation-type ranking (v0.3.1 scored, ~210k policy turns,
+IDENTICAL ordering in both lanes):** mock > joke > frustration >
+observation > swear on downstream reaction (post-mock −11.4/−12.7 vs
+post-none −14.7/−15.0 — a ~2+ logit spread). Being TEASED elicits
+the best comebacks; riposte turns run slightly less anchored (0.441
+vs 0.465), consistent with wit-as-expectation-breaking. Honest note:
+swear — the type we spent two cycles making compliant — is the
+LOWEST-yield elicitor. Compliance ≠ productivity. Read corroborates
+(best material rides mock/joke chains).
+**v0.4:** mild seeded type weights {mock .28, joke .24, frustration/
+observation/swear .16 each}; all five types retained (the env must
+keep measuring the full provocation space; this is a data-mix
+decision, not a reward change). PINNED: mean provoked-turn reaction
+rises under v0.4; per-type yields stay ~stable; read quality holds.
+
+**Temperature RESOLVED — model-specific:** GLM improves at T=1.1 on
+all four metrics (cur 0.966/tridiv 0.859/agree 0.267/react −13.71 vs
+T=0.9 baseline); the 30B is flat on everything. GLM lane now rotates
+{1.0, 1.1, 1.2}. PINNED: T=1.2 keeps the trend AND the read shows no
+incoherence (floor drop >0.02 or read breakdown = cap at 1.1).
+
+**Read:** best class yet (GLM T=1.1 filing-cabinet: the laminated-fax
+setup pays off eight turns later in the plaque-lamination callback;
+"a filing optimist — 'This'll make sense someday!' Spoiler: It did
+not."). Minor world-grounding wobble noted (policy dated itself
+"2023"), not actionable. GPU1-idle false alarm: inter-batch gap.

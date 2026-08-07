@@ -196,3 +196,16 @@ Newest lessons appended at the bottom of each section.
     policy out of yes-and register. Conversational envs can TUNE how
     much social risk the data demands; that dial is part of the env
     spec, not an accident of sampling.
+34. **Provocation types have wildly different wit yields — and
+    compliance is not productivity.** Mock/tease provocations elicit
+    the best ripostes (2+ logits of audience reaction over
+    unprovoked turns, identical ordering across models); swear — the
+    type that took two cycles of compliance engineering — is the
+    weakest elicitor. Rank your elicitors by downstream yield before
+    polishing their execution. Weight the mix, but never drop types:
+    the env must keep measuring the full space.
+35. **Sampling-parameter response is model-specific; sweep per model.**
+    Temperature moved every metric for one model (GLM, monotone to
+    1.1) and nothing for the other (30B, flat at n=14/cell). A global
+    temperature decision would have been wrong for one of them in
+    whichever direction it went.

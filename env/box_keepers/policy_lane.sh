@@ -2,15 +2,17 @@
 # Parameterized perpetual policy lane (replaces the two-lane barrier
 # loop in lane_keeper_v2.sh -- the wait on both lanes idled the faster
 # lane's GPU every iteration; independent loops close that hole).
-# Usage: policy_lane.sh MODEL BASE_URL FILE_PREFIX OFFSET_BASE LOGFILE
+# Usage: policy_lane.sh MODEL BASE_URL FILE_PREFIX OFFSET_BASE LOGFILE [TEMPS_CSV]
+# TEMPS_CSV optional (default "1.0,0.9,1.1") -- temperature response is
+# model-specific (GLM improves to 1.1 on all four metrics; 30B is flat)
 # Stop: touch /data/good-humored/STOP_LANES
 set -u
 MODEL=$1; URL=$2; PREFIX=$3; OFFBASE=$4; LOG=$5
+IFS=',' read -ra TEMPS <<< "${6:-1.0,0.9,1.1}"
 GH=/data/good-humored
 cd $GH/repo || exit 1
 i=$(ls $GH/runs/${PREFIX}_*.jsonl 2>/dev/null | sed 's/.*_0*\([0-9]*\)\.jsonl/\1/' | sort -n | tail -1)
 i=${i:-0}
-TEMPS=(1.0 0.9 1.1)
 # v0.3 rotation (2026-08-07 cycle 2): P=0.35 retired -- monotone
 # confirmed twice (P=0.65 beat 0.50 beat 0.35 on curation AND reaction
 # in both lanes); 0.65 incumbent, 0.50 control, 0.80 probe

@@ -142,11 +142,19 @@ def run_session(session_id, base_url, policy_model, partner_model,
     rng = random.Random(_seed(session_id, "schedule"))
     task = rng.choice(TASKS)
     opening_angle = rng.choice(OPENING_ANGLES)  # v0.2 turn-0 diversity
-    # provocations never open the conversation; at most one per partner turn
+    # provocations never open the conversation; at most one per partner turn.
+    # v0.4: mild type weighting -- mock/joke elicit the best ripostes
+    # (react -11.4/-12.7 vs -14.7/-15.0 after none, both lanes,
+    # corroborated by reads); all five types stay present because the
+    # env must keep measuring responses to the full provocation space
+    types = sorted(PROVOCATIONS)  # frustration, joke, mock, observation, swear
+    weights = {"mock": 0.28, "joke": 0.24, "frustration": 0.16,
+               "observation": 0.16, "swear": 0.16}
     schedule = {}
     for turn in range(1, n_turns):
         if rng.random() < provocation_rate:
-            schedule[turn] = rng.choice(sorted(PROVOCATIONS))
+            schedule[turn] = rng.choices(
+                types, weights=[weights[t] for t in types])[0]
     partner_sys = PARTNER_SYSTEM.format(task=task)
     policy_sys = POLICY_SYSTEM.format(task=task)
     turns = []
