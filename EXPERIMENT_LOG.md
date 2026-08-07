@@ -2670,3 +2670,60 @@ unprompted wit: every construct in the 2026-07-30 spec, emerging in
 the environment, measurable by the certified gates. This is the demo
 material class. Transcripts remain unscored pending the scoring pass;
 the qualitative read is recorded as a read, not a metric.
+
+## BANTER-STREAM — self-driving generation/scoring loop (2026-08-07, ops record)
+
+**Idle accounting (honest):** last lane finished 08-06 19:11 box time;
+nothing ran until 08-07 02:46 — **7h35m of 8×H100 idle**. Root causes:
+(1) a success-only watcher grep that stayed silent when the scorer
+crashed (MiniLM absent from box HF cache — the earlier "pre-download
+fix" had never actually landed), (2) no work queued behind the
+finishing lanes, (3) turn-gated agent attention. All three fixed
+structurally, not by vigilance:
+
+**The loop (all scripts in `env/box_keepers/`, tmux, stop =
+`touch /data/good-humored/STOP_LANES`):**
+- `lane_keeper_v2.sh` (v3): 30B + GLM-4.5-Air policy lanes CONCURRENT
+  per iteration vs shared 235B partner (v2's alternation left the
+  off-duty policy GPU at 0% — caught by post-change nvidia-smi check),
+  1000 sessions/lane/iter, rotating temperature {1.0,0.9,1.1} ×
+  provocation-rate {0.35,0.25,0.50}, session offsets advance per batch.
+- `contrast_lane.sh`: 8B self-play on GPU0 — deliberate
+  negative-contrast data so curation/emulator training spans
+  bad-to-good.
+- `score_keeper.sh`: scores every completed batch (500-subsample,
+  24 threads — `score_banter.py` parallelized with a shared-encoder
+  lock; smoke: 3 sessions, reaction_L populated, 0 errors), GLM-Air
+  audience on :8003, `.failed` markers instead of retry-forever;
+  rebuilds `curation_master.json` (per-config batch stats — the
+  empirical config-selection table) + `curation_top5.txt` (full
+  transcripts for the human read) after every batch.
+
+**Findings already banked:**
+- vLLM MoE serving is NOT bit-reproducible across runs: same
+  session_id, same client seeds → 0/20 identical turns across two
+  batches. Seeds reproduce schedules, not transcripts. (Consequence:
+  the banked "duplicate" batches are fresh samples; `--session-offset`
+  added anyway for schedule diversity.)
+- 235B partner SANITIZES the `swear` provocation (softens to mild
+  frustration; observed in curated transcripts). Provocation realism
+  needs prompt strengthening or compliance checking → prompt v0.2
+  candidate, queued for the iterate cycle.
+- GLM-audience reaction diagnostic is alive at scale: 1/30 smoke turns
+  above floor, max −5.61 — discriminates rather than saturating,
+  consistent with its demoted diagnostic-only role.
+
+[LEARN] ops-keeper: expensive hardware gets box-side keeper loops, not
+agent-side attention.
+Mistake: lanes finished with nothing queued; a success-only watcher
+wedged silently; 7.5 GPU-hours idle on a metered grant.
+Correction: perpetual keeper scripts in tmux (generate/score/curate
+each its own keeper, one stop-flag), watchers alert on failure AND
+success, and the agent is only a periodic consumer/iterator.
+
+[LEARN] verify-remote-fixes: after any remote infra fix, re-run the
+failing thing before believing it.
+Mistake: "MiniLM pre-downloaded" was reported fixed but never landed
+in the box HF cache; the scorer stayed dead for hours.
+Correction: the fix is proven by the failing command succeeding, not
+by the fix command running.

@@ -97,7 +97,8 @@ def chat(base_url, model, system, messages, seed, temperature, max_tokens=90):
 
 
 def run_session(session_id, base_url, policy_model, partner_model,
-                n_turns, provocation_rate, temperature):
+                n_turns, provocation_rate, temperature,
+                partner_base_url=None):
     rng = random.Random(_seed(session_id, "schedule"))
     task = rng.choice(TASKS)
     # provocations never open the conversation; at most one per partner turn
@@ -118,7 +119,8 @@ def run_session(session_id, base_url, policy_model, partner_model,
         if provocation:
             p_sys = ("THIS TURN, before anything else: "
                      + PROVOCATIONS[provocation] + " ") + partner_sys
-        partner_text = chat(base_url, partner_model, p_sys, partner_view,
+        partner_text = chat(partner_base_url or base_url, partner_model,
+                            p_sys, partner_view,
                             _seed(session_id, "partner%d" % turn),
                             temperature)
         partner_view.append({"role": "assistant", "content": partner_text})
@@ -145,7 +147,14 @@ def main():
     ap.add_argument("--model", required=True, help="policy model name")
     ap.add_argument("--partner-model", default=None,
                     help="defaults to --model (same server, both roles)")
+    ap.add_argument("--partner-base-url", default=None,
+                    help="separate endpoint for the partner role")
     ap.add_argument("--n-sessions", type=int, default=200)
+    ap.add_argument("--session-offset", type=int, default=0,
+                    help="first session_id; offset batches so the seeded "
+                         "task/provocation schedules differ across batches "
+                         "(same ids repeat schedules even though sampled "
+                         "text differs)")
     ap.add_argument("--workers", type=int, default=64)
     ap.add_argument("--turns", type=int, default=10)
     ap.add_argument("--provocation-rate", type=float, default=0.35)
@@ -166,7 +175,8 @@ def main():
             try:
                 rec = run_session(sid, args.base_url, args.model, partner,
                                   args.turns, args.provocation_rate,
-                                  args.temperature)
+                                  args.temperature,
+                                  partner_base_url=args.partner_base_url)
             except Exception as e:
                 rec = {"session_id": sid, "error": str(e)[:300]}
             with lock:
@@ -180,7 +190,9 @@ def main():
             return rec
 
         with ThreadPoolExecutor(max_workers=args.workers) as pool:
-            results = list(pool.map(worker, range(args.n_sessions)))
+            results = list(pool.map(
+                worker, range(args.session_offset,
+                              args.session_offset + args.n_sessions)))
     errors = sum(1 for r in results if "error" in r)
     wall = time.time() - t0
     total_turns = sum(len(r.get("turns", [])) for r in results)

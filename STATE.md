@@ -1,10 +1,34 @@
 # STATE
 
-_Last updated: 2026-07-29 EOD (Phase A closed: 6 registered runs in one
-day, all honestly closed; **H100-READY** — see docs/RL-STACK-AND-SELECTION.md
-§4.7 runbook; S2 demoted to report-only per pre-registered fallback,
-screen decides on S1/S3/S4 + cost; blocking items are all Sam-side:
-gated-repo click-throughs, node disk size, SSH)_
+_Last updated: 2026-08-07 (self-driving box loop LIVE)_
+
+## NOW RUNNING (box: youthful-indigo-turkey, 8×H100, all GPUs 100%)
+
+Perpetual generate→score→curate loop, fully box-side (survives agent
+absence — the 7.5h-idle failure mode is closed by construction):
+- **Serving:** 8B :8001 (GPU0), 30B-A3B :8002 (GPU1), GLM-4.5-Air fp8
+  TP2 :8003 (GPU2-3), 235B-A22B TP4 :8004 (GPU4-7).
+- **gh_lane_keeper** (`env/box_keepers/lane_keeper_v2.sh`, v3 logic):
+  30B AND GLM policy lanes concurrent vs shared 235B partner, 1000
+  sessions/lane/iter, rotating temp {1.0,0.9,1.1} × provocation
+  {0.35,0.25,0.50}, session offsets advancing. ~20k sessions banked
+  by 04:00 and growing ~2k/8min.
+- **gh_contrast_lane**: 8B self-play negative-contrast data (curation
+  distribution must span bad-to-good for emulator training).
+- **gh_score_keeper**: certified gates + GLM-audience reaction
+  diagnostic over every completed batch (500-subsample), rebuilds
+  `runs/curation_master.json` (per-config table — env defaults get
+  picked empirically from this) + `runs/curation_top5.txt` (full
+  transcripts, human read is the quality bar).
+- **Stop all:** `touch /data/good-humored/STOP_LANES`.
+- Agent-side: 2h iterate-cycle cron (health, read curation, revise
+  prompts, codify takeaways → `docs/ENV-BUILDING-TAKEAWAYS.md`).
+- **Open iterate finding:** 235B partner sanitizes `swear`
+  provocations → prompt v0.2 candidate. Reaction diagnostic confirmed
+  alive at GLM scale (discriminates, mostly-floor as expected).
+
+_Previous header (2026-07-29): Phase A closed, H100-READY, S2 demoted
+to report-only; superseded by the loop above actually running._
 
 ## STRATEGY CODIFIED (2026-07-24/29 — Sam approved "go do it")
 
