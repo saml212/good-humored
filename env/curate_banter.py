@@ -85,6 +85,27 @@ def asterisk_rate(batch_sessions):
     return round(h / n, 4) if n else 0
 
 
+# CJK leakage: GLM policy emits mixed-language turns, strongly
+# temperature-correlated (0.06% at T=0.9 -> 1.13% at T=1.2, measured
+# 2026-08-07) -- a hard product defect for an English banter dataset,
+# invisible to every other metric and too rare for reads to catch
+_CJK = re.compile(r"[一-鿿぀-ヿ가-힯]")
+
+
+def cjk_rate(batch_sessions):
+    n = h = 0
+    for s in batch_sessions:
+        for t in s.get("per_turn", []):
+            n += 1
+            if _CJK.search(t["text"]):
+                h += 1
+    return round(h / n, 4) if n else 0
+
+
+def session_has_cjk(s):
+    return any(_CJK.search(t["text"]) for t in s.get("per_turn", []))
+
+
 def load_batch(scored_path, transcripts_dir):
     """Scored sessions + the generation config from the twin .jsonl."""
     data = json.loads(Path(scored_path).read_text())
@@ -137,9 +158,23 @@ def main():
     sessions, batch_stats = [], {}
     # prompt revisions shift the curation scale (v0.3.1 register fix
     # moved it -0.07..-0.13), so the human-read file draws from the
-    # most RECENT batches only; the all-time master keeps everything
+    # most RECENT batches only — last 20 PER POLICY LANE by batch
+    # number, not global mtime: the contrast lane scores 3-4x faster,
+    # and a global-mtime window silently went 40/40 contrast, which
+    # the lane-scoped shortlist then excluded entirely (empty read
+    # file). The all-time master keeps everything.
     paths = sorted(glob.glob(args.scored_glob))
-    recent_paths = set(sorted(paths, key=lambda p: Path(p).stat().st_mtime)[-40:])
+    by_prefix = {}
+    for p in paths:
+        name = Path(p).name
+        if name.startswith("contrast"):
+            continue
+        pref = name.split("_stream")[0]
+        by_prefix.setdefault(pref, []).append(p)
+    recent_paths = set()
+    for pref, plist in by_prefix.items():
+        plist.sort(key=lambda p: int(Path(p).name.split("_")[-1].split(".")[0]))
+        recent_paths.update(plist[-20:])
     recent = []
     for path in paths:
         batch = load_batch(path, args.transcripts_dir)
@@ -159,6 +194,7 @@ def main():
                 "motifs": motif_stats(batch),
                 "policy_agreement_rate": agreement_rate(batch),
                 "policy_asterisk_rate": asterisk_rate(batch),
+                "policy_cjk_rate": cjk_rate(batch),
             }
     sessions.sort(key=lambda s: -s["curation_score"])
     top = sessions[:TOP_K]
@@ -189,6 +225,8 @@ def main():
     picked, per_task = [], {}
     for s in recent:
         if s["batch"].startswith("contrast"):
+            continue
+        if session_has_cjk(s):  # language defect: never demo material
             continue
         if per_task.get(s["task"], 0) >= 2:
             continue

@@ -21,7 +21,10 @@ while [ ! -f $GH/STOP_LANES ]; do
   # their batch forever
   find $GH/runs -maxdepth 1 -name "*.scored.json.lock" -mmin +90 -exec rmdir {} + 2>/dev/null
   FILES=$(ls $GH/runs/banter_stream_*.jsonl $GH/runs/glm_stream_*.jsonl $GH/runs/contrast_stream_*.jsonl 2>/dev/null)
-  [ "$ORDER" = "desc" ] && FILES=$(echo "$FILES" | sort -r)
+  # desc instance: POLICY lanes newest-first, contrast last -- the
+  # contrast lane generates 3-4x faster and otherwise monopolizes the
+  # fresh end while the batches that feed the read/card wait
+  [ "$ORDER" = "desc" ] && FILES=$( { ls $GH/runs/banter_stream_*.jsonl $GH/runs/glm_stream_*.jsonl 2>/dev/null | sort -r; ls $GH/runs/contrast_stream_*.jsonl 2>/dev/null | sort -r; } )
   for f in $FILES; do
     [ -e "$f" ] || continue
     out="${f%.jsonl}.scored.json"

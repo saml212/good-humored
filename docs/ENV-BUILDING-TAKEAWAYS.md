@@ -228,3 +228,19 @@ Newest lessons appended at the bottom of each section.
     when producers outnumber consumers; the health check must compare
     produced-vs-consumed counts, and consumers must scale (lock-claim
     + second instance) rather than assume one worker suffices.
+39. **Reads cannot catch sub-percent defects; instrument every
+    defect class the moment a read discovers one instance.** A
+    single CJK-leaked turn in one transcript led to a counter that
+    exposed a 20x temperature-correlated defect gradient (1.1% at
+    the top temp) and reversed a closed decision. The read's job is
+    DISCOVERY of defect classes; only counters establish prevalence
+    — and closed decisions must stay reversible when a new class
+    gets instrumented, because pinned guards only ever cover the
+    failure modes known at pin time.
+40. **Unequal-rate populations break every selection layer they
+    touch.** The fast contrast lane first polluted the top-N (cycle
+    5), then silently emptied the recency window (global mtime went
+    40/40 contrast). When one population produces 3-4x faster, every
+    window, quota, and queue in the pipeline needs explicit
+    per-population handling — audit them all at once, not as each
+    one breaks.

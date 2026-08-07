@@ -3024,3 +3024,30 @@ darker than motor oil, pitch it"). METRIC CAVEAT recorded: agreement-
 opener rate overcounts agreeable-but-CONTRIBUTING turns (read shows
 agreement openers followed by substantive additions) — interpret as
 an upper bound on pure sycophancy.
+
+## BANTER cycle 10: recency-window bug, T=1.2 REVERSED on new evidence (2026-08-07)
+
+**Ops bug (second member of the unequal-rate class):** the read
+file went EMPTY — the global-mtime recency window was 40/40 contrast
+batches (contrast scores 3-4x faster), which the lane-scoped
+shortlist then excluded entirely. Fix: per-lane windows (last 20
+policy batches by number) + the desc scorer now prioritizes policy
+lanes over contrast. Backlog draining (106 → 84).
+
+**T=1.2 KEEP decision REVERSED — new instrument, new evidence:** the
+read caught a CJK-leaked turn ("without惦记ing this"); measurement
+shows GLM-policy CJK leakage is strongly temperature-correlated:
+0.058% (T=0.9) → 0.142% (1.0) → 0.328% (1.1) → 1.133% (T=1.2) —
+20x, ≈1 in 9 sessions blemished at 1.2. The cycle-7 guard (floor +
+two-transcript read) was structurally blind to a ~1% defect. GLM
+rotation now {1.0, 1.1}; policy_cjk_rate added as a standing batch
+metric; curation shortlist hard-excludes CJK-blemished sessions at
+every temperature (language defects are never demo material).
+Honest accounting: the reversal is legitimate — pinned guards cover
+KNOWN failure modes; closed decisions stay reversible when a new
+defect class gets instrumented. Qwen lanes measure 0.01-0.04%
+(negligible); the 235B partner is clean everywhere.
+
+**Read (pre-reversal top):** still strong ("Call Bob about the
+thing" mystery; the zombie plant "following Bob's example and
+refusing to retire") — callback ecology healthy in v0.4 material.
