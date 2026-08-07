@@ -1,28 +1,40 @@
 # Compiled Rules
 
 _Auto-generated from `~/.claude/memory/memory.db`. Do not edit by hand._
-_Last compiled: 2026-07-26T00:04:29Z_
+_Last compiled: 2026-08-07T04:00:08Z_
 
 ## Repo-local: good-humored
 
 ### experiment-validity
 
-- **A nested `claude -p` call inherits the project's CLAUDE.md and hooks from its cwd — any LLM-as-instrument (rejector, judge) invoked via CLI must run from a neutral empty directory.** _(×4)_
+- **A nested `claude -p` call inherits the project's CLAUDE.md and hooks from its cwd — any LLM-as-instrument (rejector, judge) invoked via CLI must run from a neutral empty directory.** _(×5)_
   - *Mistake:* The rejector smoke test replied "OK. I've read the context" — it had loaded this repo's research docs, including the benchmark spec it was supposed to be a blind instrument for.
   - *Correction:* `providers.make_claude_cli` now creates a `tempfile.mkdtemp` neutral cwd per provider; verified the same call from neutral cwd returns a clean "OK".
 
+### fixture-composition
+
+- **Logprob-based humor instruments require ORIGINAL fixture jokes — classic puns are memorized by 2026 models and score UNDER-surprising (committed real_joke s_cold below nonsequitur).**
+  - *Mistake:* EXP-014's fixture (classic-adjacent puns) was reused unexamined for a logprob instrument; it was built for a judge+embedding instrument where memorization didn't bias scores.
+  - *Correction:* any fixture feeding a logprob instrument gets a memorization screen first (the committed/held-out contrast IS that screen: surprisal AUC 0.52 memorized vs 1.00 original under chat); compose fixtures fresh, never from the dad-joke canon.
+
 ### instrument-design
 
-- **A closed labeling vocabulary cannot solve long-tail coverage; its catch-all merges distinct rare topics and manufactures repeats.** _(×2)_
+- **A closed labeling vocabulary cannot solve long-tail coverage; its catch-all merges distinct rare topics and manufactures repeats.** _(×3)_
   - *Mistake:* v4's first design kept v3's closed-vocabulary + `other` catch-all shape and proposed a ≤5% catch-all field bar that was arithmetically unreachable — the <4-occurrence long tail alone is 13.6% of wild turns, and best-case coverage measured ≈17–20%.
   - *Correction:* Two-tier labeling — canonical vocabulary entry when covered, free *specific* noun when not (never a category word) — keeps head-consistency without tail-merging; free-tier jitter splits rather than merges, which is the conservative direction for collapse claims. Gate on fixture invariance plus real-wild-text hypernym probes; report escape rate as a metric, never gate on catch-all.
 
+### probe-translation
+
+- **A generative probe ("guess under instruction X, measure distance to actual") and a conditional probe ("P(actual|X prepended)") are DIFFERENT instruments — translating one to the other silently changes the construct.**
+  - *Mistake:* EXP-019 assumed EXP-014's primed-guess structure survives translation to prepended-cue conditional logprobs.
+  - *Correction:* when porting a probe across measurement modes, re-derive what the new math actually conditions on; a twist-cue prepension measures discontinuity-licensing, not resolution.
+
 ### provider-design
 
-- **A `temperature=None`-vs-`0.0`-vs-unset distinction must be checked with `is not None`, never truthiness, when a numeric sampling parameter can legitimately be zero.** _(×3)_
+- **A `temperature=None`-vs-`0.0`-vs-unset distinction must be checked with `is not None`, never truthiness, when a numeric sampling parameter can legitimately be zero.** _(×4)_
   - *Mistake:* `if temperature:` would silently drop an explicit greedy-decoding request (0.0) and misreport it as provider default.
   - *Correction:* gate optional numeric request fields on `is not None`; unit-test that 0.0 is not treated as omit.
-- **Reasoning models (kimi-k2.5, glm-4.5-air) burn small max_tokens budgets entirely on reasoning_content and return empty content with finish_reason=length.** _(×3)_
+- **Reasoning models (kimi-k2.5, glm-4.5-air) burn small max_tokens budgets entirely on reasoning_content and return empty content with finish_reason=length.** _(×4)_
   - *Mistake:* a 400-token cap that works for standard chat models produced 100% empty-response failure on kimi and 50% on glm at cascade prompt lengths — looking like an API outage when it's actually a token-budget starvation.
   - *Correction:* probe `message` keys and `finish_reason` on any new OpenAI-compatible provider before batch runs; reasoning models need max_tokens ≥ ~2k or thinking disabled; make max_tokens a per-provider registry field.
 
@@ -809,7 +821,7 @@ The three toolchains are genuinely parallel — no preference stated anywhere. T
 
 Our "RLVR damages multi-turn conversation" publication hook **has no clean primary source**. Laban et al.'s 39% multi-turn drop is model-agnostic, not RL-causal; the causal chain is currently assembled from adjacent diversity-collapse papers, and one paper even shows reward-shaped RL *improving* multi-turn reliability. This is an upgrade in disguise: EXP-018 turns our citation into our contribution — *we* test the causal link.
 
-[LEARN] claim-hygiene: The "RLVR damages multi-turn conversation" hook lacks a clean primary source.**
+[LEARN] claim-hygiene: The "RLVR damages multi-turn conversation" hook lacks a clean primary source.** _(×2)_
   - *Mistake:* CLAUDE.md and the pitch treat RLVR-causes-conversational-damage as documented; the research pass found Laban et al. (2505.06120) is model-agnostic and no citable RLVR-causal paper exists.
   - *Correction:* cite Laban for the phenomenon + pass@k crossover (2504.13837) for RLVR distribution-narrowing, and frame the causal link as EXP-018's hypothesis — our test, not our citation.
 

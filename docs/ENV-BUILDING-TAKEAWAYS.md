@@ -101,10 +101,14 @@ Newest lessons appended at the bottom of each section.
     provocation 0.5 > 0.35 > 0.25 on BOTH curation and audience
     reaction in BOTH policy lanes, temperature no clear effect; the
     losing cell was retired and its slot probes 0.65.
-18. **Utilization holes hide in alternation.** Rotating two policy
-    models through ONE lane left each model's GPU idle half the time;
-    running both lanes concurrently against the shared partner closed
-    it. Check per-GPU utilization after every topology change.
+18. **Utilization holes hide in alternation — and in barriers.**
+    Rotating two policy models through ONE lane left each model's GPU
+    idle half the time; then the fix (both lanes in one loop with a
+    `wait`) idled the FASTER lane's GPU every iteration while the
+    slower finished. Two instances, one class: any synchronization
+    point between unequal workloads is an idle generator. Fully
+    independent loops per lane; check per-GPU utilization after every
+    topology change.
 19. **Failure markers, not retries-forever.** The score keeper writes a
     `.failed` marker for a batch that crashes scoring — loud in the
     log, but the loop never wedges on one bad batch.
@@ -126,3 +130,16 @@ Newest lessons appended at the bottom of each section.
 23. **Close-out readings need explicit denominators.** "4/5" was
     misread as rejected when it meant leaked; validators now print
     `leaked=N/M`. Ambiguous summaries corrupt downstream decisions.
+24. **Cross-session repetition needs its own instrument.** Per-session
+    self-repetition scored clean while "Bermuda Triangle," the
+    haunted-office register, and "time capsule" recurred across
+    sessions and models — the documented 25-template regurgitation
+    failure mode at motif level. Pool n-grams across a batch's policy
+    turns (distinct-trigram ratio + top content bigrams) and track it
+    per config; within-session metrics structurally cannot see it.
+25. **Close predictions on schedule, against pre-named data.** All
+    three v0.2 predictions (swear >=60%: hit at 64.2%; opening trigram
+    <20%: hit at 5.1%; P=0.65 continues-or-plateaus: continued)
+    resolved in one cycle because they named their thresholds AND
+    their evaluation data (v0.2 batches only) in advance — no
+    room to grade on the curve afterward.

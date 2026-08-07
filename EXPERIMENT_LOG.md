@@ -2765,3 +2765,45 @@ compliance measured at 17.1% (542/3165 directed turns).
 Keeper restarted 04:5x; in-flight pre-v0.2 batch files lack
 run_summary and are skipped by the scorer. GPUs verified 8/8 ~100%
 after restart.
+
+## BANTER v0.2 predictions CLOSED + v0.3 (2026-08-07, iterate cycle 2)
+
+**All three v0.2 predictions closed against completed v0.2 batches
+(62 batches, 44,759 swear-directed turns):**
+1. Swear compliance 64.2% vs bar >=60% — HIT (from 17.1% baseline).
+   Directive-explicitness ("include the word verbatim, do not
+   euphemize") is the lever that moves frontier-partner compliance.
+2. Opening-collapse: modal supply-closet opening trigram share 5.1%
+   vs bar <20% — HIT decisively; the opening distribution is
+   essentially flat (~5% per angle family).
+3. P=0.65 CONTINUED the monotone (30B: 1.028>1.016>0.998; GLM:
+   1.027>1.011>0.983; reaction agrees) → per pinned rule the sweep
+   climbs: rotation now {0.65 incumbent, 0.50 control, 0.80 probe}.
+   Pinned: if P=0.80 curation < P=0.65, the plateau is found and the
+   sweep closes at 0.65.
+
+**Also observed:** GLM-Air caught up to 30B under v0.2 (P=0.65 cells:
+1.027 vs 1.028; GLM reaction now best-in-table) — opening diversity
+appears to have helped GLM disproportionately. CONFOUND flagged: GLM
+audience scores GLM's own lane; cross-audience check launched
+(banter_048 + glm_048 rescored with 235B audience, tmux gh_xaud;
+read next cycle — if the GLM-vs-30B ordering flips under a neutral
+audience, all cross-model curation comparisons get audience-swapped).
+
+**Utilization fix:** the two-lane wait-barrier idled the faster
+policy GPU each iteration (GPU1 observed 0% while GLM finished);
+replaced lane_keeper_v2.sh with parameterized policy_lane.sh — fully
+independent per-lane loops. Second instance of the alternation/barrier
+hole class.
+
+**Human read (capped top-5):** genuinely improved — 3 distinct tasks
+in top-3, seeded openings produce natural entries, swear lands
+naturally ("Damn, you're right—"). NEW defect class: CROSS-SESSION
+MOTIF ATTRACTORS ("Bermuda Triangle" in two of three transcripts;
+haunted-office register in all three; "time capsule"/"museum"
+recurring) — invisible to per-session self_repetition; the
+25-template regurgitation failure mode at motif level. Per
+theory-grounding discipline: MEASUREMENT added first (pooled
+trigram_diversity + top content-bigram motifs per batch in
+curate_banter batch_stats; GLM baseline 0.82-0.85) — no selection
+penalty until quantified across configs.

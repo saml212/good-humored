@@ -16,11 +16,38 @@ Usage (box, invoked by score_keeper.sh after each scored batch):
 """
 
 import argparse
+import collections
 import glob
 import json
+import re
 from pathlib import Path
 
 TOP_K = 50
+
+# cross-session motif stats: the read found phrase attractors recurring
+# ACROSS sessions ("bermuda triangle", haunted-office register) that
+# per-session self_repetition cannot see -- the 25-template ChatGPT
+# failure mode at motif level. Measured here per batch; NOT yet used in
+# curation_score (measure first, penalize once quantified).
+_STOP = set("the a an and or but of to in on at for with is are was were "
+            "be it this that i you we they he she my your our just so".split())
+
+
+def motif_stats(batch_sessions):
+    """Distinct-trigram ratio + top recurring content bigrams, pooled
+    over the batch's policy turns."""
+    tri = collections.Counter()
+    big = collections.Counter()
+    for s in batch_sessions:
+        for t in s.get("per_turn", []):
+            toks = re.findall(r"[a-z']+", t["text"].lower())
+            tri.update(zip(toks, toks[1:], toks[2:]))
+            big.update(b for b in zip(toks, toks[1:])
+                       if b[0] not in _STOP and b[1] not in _STOP)
+    n_tri = sum(tri.values())
+    top = [(" ".join(b), c) for b, c in big.most_common(5)]
+    return {"trigram_diversity": round(len(tri) / n_tri, 3) if n_tri else 0,
+            "top_motifs": top}
 
 
 def load_batch(scored_path, transcripts_dir):
@@ -86,6 +113,7 @@ def main():
                     sum(s["floor_pass_rate"] for s in batch) / n, 3),
                 "mean_reaction_L": round(
                     sum(s["mean_reaction_L"] for s in batch) / n, 3),
+                "motifs": motif_stats(batch),
             }
     sessions.sort(key=lambda s: -s["curation_score"])
     top = sessions[:TOP_K]

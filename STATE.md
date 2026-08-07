@@ -8,11 +8,12 @@ Perpetual generate→score→curate loop, fully box-side (survives agent
 absence — the 7.5h-idle failure mode is closed by construction):
 - **Serving:** 8B :8001 (GPU0), 30B-A3B :8002 (GPU1), GLM-4.5-Air fp8
   TP2 :8003 (GPU2-3), 235B-A22B TP4 :8004 (GPU4-7).
-- **gh_lane_keeper** (`env/box_keepers/lane_keeper_v2.sh`, v3 logic):
-  30B AND GLM policy lanes concurrent vs shared 235B partner, 1000
-  sessions/lane/iter, rotating temp {1.0,0.9,1.1} × provocation
-  {0.35,0.25,0.50}, session offsets advancing. ~20k sessions banked
-  by 04:00 and growing ~2k/8min.
+- **gh_lane_30b / gh_lane_glm** (`env/box_keepers/policy_lane.sh`):
+  independent per-lane loops (the barrier version idled the faster
+  GPU), 30B and GLM-Air vs shared 235B partner, 1000 sessions/batch,
+  rotating temp {1.0,0.9,1.1} × provocation {0.65,0.50,0.80} (v0.3:
+  P=0.25 and 0.35 retired empirically; monotone confirmed twice).
+  70k+ sessions scored across 140 batches and climbing.
 - **gh_contrast_lane**: 8B self-play negative-contrast data (curation
   distribution must span bad-to-good for emulator training).
 - **gh_score_keeper**: certified gates + GLM-audience reaction
@@ -23,9 +24,12 @@ absence — the 7.5h-idle failure mode is closed by construction):
 - **Stop all:** `touch /data/good-humored/STOP_LANES`.
 - Agent-side: 2h iterate-cycle cron (health, read curation, revise
   prompts, codify takeaways → `docs/ENV-BUILDING-TAKEAWAYS.md`).
-- **Open iterate finding:** 235B partner sanitizes `swear`
-  provocations → prompt v0.2 candidate. Reaction diagnostic confirmed
-  alive at GLM scale (discriminates, mostly-floor as expected).
+- **v0.2 closed 3/3 predictions** (swear 17.1%→64.2%; opening
+  collapse killed, modal share 5.1%; P monotone continues → 0.80
+  probe). Open: GLM-audience self-preference confound (gh_xaud
+  cross-audience rescore running); cross-session motif attractors
+  now measured per batch (trigram_diversity in batch_stats), penalty
+  deferred until quantified.
 
 _Previous header (2026-07-29): Phase A closed, H100-READY, S2 demoted
 to report-only; superseded by the loop above actually running._
