@@ -222,3 +222,9 @@ Newest lessons appended at the bottom of each section.
     demos rot and overclaim; a generated pack regenerates after
     training on identical machinery, making the pre/post delta — the
     actual product claim — reproducible on demand.
+38. **Monitor throughput ratios, not just liveness.** Every keeper
+    was alive and every health check green while the scorer fell 106
+    batches behind a 3-lane generator. Pipelines diverge silently
+    when producers outnumber consumers; the health check must compare
+    produced-vs-consumed counts, and consumers must scale (lock-claim
+    + second instance) rather than assume one worker suffices.

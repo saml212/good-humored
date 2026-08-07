@@ -2998,3 +2998,29 @@ continuity, passive-aggressive agenda-item closer. Honest note: the
 agreement attractor is visible even in top material ("Totally
 agree"/"Absolutely"/"Perfect" openers) — which sharpens the pitch:
 the card quantifies the attractor at 0.25 and RL's job is the delta.
+
+## BANTER cycle 9: scorer backlog fixed, training-readiness inventory (2026-08-07)
+
+**Ops: the scorer was silently falling behind** — 648 generated vs
+542 scored (~106-batch backlog, growing: generation is 3 lanes wide,
+scoring was single-file). Liveness checks all passed while the
+throughput RATIO diverged. Fix: score_keeper now claims batches via
+mkdir locks; a SECOND instance drains newest-first; stale locks
+(>90 min) swept each pass so a killed keeper can't silently orphan a
+batch. Both instances verified scoring concurrently.
+
+**Training-readiness inventory (for the pending go):** local
+~/Experiments/good-humored-data/ holds the 1.2M license-split
+memorized-joke NOVELTY corpus + raw NYCC (nycc-full) + MANIFEST; the
+BOX holds no corpora at all — the go needs a small rsync of RM data
+(NYCC votes etc.) before emulator training. Firewall reminder:
+NYCC-Zhang is research_only; the commercial-product emulator variant
+trains only on the commercial-safe bucket unless Sam rules otherwise.
+
+**Read:** kitchen-etiquette memo (a v0.2 task addition) produces top
+material — co-writing a funny artifact embeds the wit IN the task
+("warm, forgotten mug — sounds like a sad indie band"; "if it's
+darker than motor oil, pitch it"). METRIC CAVEAT recorded: agreement-
+opener rate overcounts agreeable-but-CONTRIBUTING turns (read shows
+agreement openers followed by substantive additions) — interpret as
+an upper bound on pure sycophancy.
