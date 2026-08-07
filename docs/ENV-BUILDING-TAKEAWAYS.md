@@ -216,3 +216,9 @@ Newest lessons appended at the bottom of each section.
     retained (provocation mix). An always-running optimization loop
     with no closure rule will happily tune knobs forever while the
     first-order lever (training on the banked data) waits.
+37. **Generate the pitch from the pipeline, never hand-assemble it.**
+    The demo pack (framing + characterization card + curated
+    transcripts) is one command over live run data. Hand-picked
+    demos rot and overclaim; a generated pack regenerates after
+    training on identical machinery, making the pre/post delta — the
+    actual product claim — reproducible on demand.

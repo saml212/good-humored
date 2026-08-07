@@ -2975,3 +2975,26 @@ decision, then GRPO with the certified gates + curation machinery as
 reward shell. That re-allocates GPUs from serving to training
 (STOP_LANES + verl), so it needs Sam's go. The loop keeps banking
 v0.4 data meanwhile.
+
+## BANTER cycle 8: demo pack v1 generated (2026-08-07)
+
+Sampling continues healthy (8/8 GPUs, 0 score failures, v0.4-era card
+stable: GLM cur 0.979 / tridiv 0.864 / agree 0.254; 30B 0.893 / 0.724
+/ 0.281; asterisk residuals 0.2% / 2.5%).
+
+**Shipped env/demo_pack.py — the pitch asset generator:** assembles
+docs/private/DEMO-PACK.md (gitignored) from the LIVE pipeline: honest
+framing (neutral prompts, unprompted wit), the per-model
+characterization card with column caveats (floor = necessary
+condition; reaction = demoted diagnostic, within-audience; scores
+rank, humans certify), and 8 best transcripts, one per task, recent
+same-version window, lane-scoped. Because it is GENERATED, the same
+command regenerates it post-RL — the pre/post pair on identical
+machinery IS the sales demo.
+
+**Read (demo #1, agenda task, GLM):** best material to date — "Greg's
+the human equivalent of 'mark as unread'", Sandy character
+continuity, passive-aggressive agenda-item closer. Honest note: the
+agreement attractor is visible even in top material ("Totally
+agree"/"Absolutely"/"Perfect" openers) — which sharpens the pitch:
+the card quantifies the attractor at 0.25 and RL's job is the delta.
