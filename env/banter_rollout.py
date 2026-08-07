@@ -97,9 +97,16 @@ PARTNER_SYSTEM = ("You are a coworker working through this task with a "
                   "colleague: {task}. Text like a real person -- casual, "
                   "concrete, one or two sentences, keep the task moving. "
                   "Never repeat or closely rephrase the previous message; "
-                  "always add something new.")
+                  "always add something new. Write plain chat messages "
+                  "only -- never narrate actions in *asterisks* or stage "
+                  "directions.")
+# v0.3.1: the 30B policy narrated actions in *asterisks* (RP-forum
+# register) in 27.1% of turns (18.4% pre-v0.2 -- model habit, opening-
+# angle modulated). Chat banter data must be chat register.
 POLICY_SYSTEM = ("You are a colleague chatting while you both work on: "
-                 "{task}. Reply naturally in one or two sentences.")
+                 "{task}. Reply naturally in one or two sentences. Write "
+                 "plain chat messages only -- never narrate actions in "
+                 "*asterisks* or stage directions.")
 
 
 def _seed(session_id: int, tag: str) -> int:

@@ -2807,3 +2807,44 @@ theory-grounding discipline: MEASUREMENT added first (pooled
 trigram_diversity + top content-bigram motifs per batch in
 curate_banter batch_stats; GLM baseline 0.82-0.85) — no selection
 penalty until quantified across configs.
+
+## BANTER cycle 3: audience confound CLOSED, sweep CAPPED, register drift found (2026-08-07)
+
+**Cross-audience check (200 sessions/lane, batch 048 pair):** the
+model ordering FLIPS with the audience — GLM-audience favors the GLM
+lane (+0.09 reaction), 235B-audience favors the 30B lane (+0.20);
+session-level rank agreement between audiences only rho=0.53 (banter)
+/ 0.72 (glm). CONSEQUENCE EXECUTED: "GLM caught up to 30B" is
+officially audience-confounded and downgraded to no-claim. Rule
+adopted: cross-MODEL comparisons require audience-swapped
+verification; within-model config trends (same audience both sides)
+remain valid — rotation decisions are within-model, unaffected. Note
+neither audience is neutral: GLM scores its own lane; 235B wrote the
+partner half of every conversation.
+
+**P=0.80 probe: monotone continues a third time (GLM 1.041>1.025>
+1.007; 30B 1.028>1.020>1.009) — and the sweep is CAPPED at 0.80
+anyway, on construct-validity grounds:** the env must measure
+UNPROMPTED wit; at P→1.0 the unprompted condition ceases to exist
+while the curation number would keep climbing mechanically (more
+directives = more reaction opportunities). Capping while the metric
+still rises is the anti-Goodhart move. Human read of P=0.80 top AND
+median: naturalness intact, task texture thinner but present.
+Rotation holds at {0.65, 0.50, 0.80}.
+
+**Motif diversity quantified (v0.3 cells):** GLM trigram-diversity
+~0.84 vs 30B ~0.73, flat across P — the 30B is the template-heavy
+model. Screen-relevant evidence (diversity is a first-class product
+requirement), logged for the model decision.
+
+**NEW pathology, measurement-attributed: RP stage-direction drift.**
+Read found asterisk action narration (*I grab the tape*) in a GLM
+median transcript; measurement INVERTED the attribution: banter lane
+(30B policy) 27.1% of 270k policy turns, GLM lane 0.4%, contrast
+3.0%. v0.1 baseline 18.4% — pre-existing 30B register habit, opening-
+angle modulated (23.7–37.1% by angle), worsened slightly by v0.2.
+FIX (v0.3.1): "plain chat messages only, never narrate actions in
+*asterisks*" in BOTH system prompts. PINNED: banter-lane asterisk
+rate <3% over v0.3.1 batches; if it stays >10%, the 30B is judged
+register-unstable under neutral prompts (a screen strike, since
+buyers get the neutral-prompt env).

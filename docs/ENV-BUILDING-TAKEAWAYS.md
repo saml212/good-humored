@@ -143,3 +143,23 @@ Newest lessons appended at the bottom of each section.
     resolved in one cycle because they named their thresholds AND
     their evaluation data (v0.2 batches only) in advance — no
     room to grade on the curve afterward.
+26. **The read finds phenomena; only measurement assigns blame.** A
+    stage-direction register drift (*asterisk action narration*)
+    surfaced in ONE read transcript from the GLM lane — measurement
+    showed the GLM lane at 0.4% and the OTHER lane at 27.1%. A
+    single-transcript read that prompted the check had the culprit
+    exactly backwards. Never attribute a pathology to a model or
+    config from reads alone.
+27. **Cap sweeps on construct validity, not on metric plateaus.** The
+    provocation-rate monotone never plateaued (third continuation at
+    P=0.80) and mechanically never would — more directives create
+    more reaction opportunities. The sweep was capped at 0.80 because
+    the construct being measured (UNPROMPTED wit) ceases to exist at
+    the limit. If you wait for the metric to tell you when to stop,
+    Goodhart decides for you.
+28. **No audience is neutral; orderings can flip with the judge.**
+    GLM-as-audience favored GLM's lane; 235B-as-audience favored the
+    other lane; rank agreement between them was rho 0.53-0.72. And
+    the "neutral" alternative had co-written half of every transcript
+    it would judge. Within-judge comparisons stay valid; cross-model
+    claims need judge-swapped verification, always.

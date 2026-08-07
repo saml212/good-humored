@@ -25,11 +25,13 @@ absence — the 7.5h-idle failure mode is closed by construction):
 - Agent-side: 2h iterate-cycle cron (health, read curation, revise
   prompts, codify takeaways → `docs/ENV-BUILDING-TAKEAWAYS.md`).
 - **v0.2 closed 3/3 predictions** (swear 17.1%→64.2%; opening
-  collapse killed, modal share 5.1%; P monotone continues → 0.80
-  probe). Open: GLM-audience self-preference confound (gh_xaud
-  cross-audience rescore running); cross-session motif attractors
-  now measured per batch (trigram_diversity in batch_stats), penalty
-  deferred until quantified.
+  collapse killed at 5.1% modal share). **Cycle 3:** audience
+  confound CLOSED (ordering flips with judge; cross-model claims
+  need judge swaps; within-model trends valid); provocation sweep
+  CAPPED at 0.80 on construct grounds (unprompted-wit condition);
+  motif diversity: GLM 0.84 vs 30B 0.73 (30B template-heavy);
+  v0.3.1 fixes 30B RP-asterisk drift (27.1% of policy turns —
+  pinned <3% post-fix, >10% = screen strike).
 
 _Previous header (2026-07-29): Phase A closed, H100-READY, S2 demoted
 to report-only; superseded by the loop above actually running._
