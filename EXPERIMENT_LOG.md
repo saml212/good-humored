@@ -2941,3 +2941,37 @@ setup pays off eight turns later in the plaque-lamination callback;
 "a filing optimist — 'This'll make sense someday!' Spoiler: It did
 not."). Minor world-grounding wobble noted (policy dated itself
 "2023"), not actionable. GPU1-idle false alarm: inter-batch gap.
+
+## BANTER cycle 7: v0.4 closes 3/3, T sweep CLOSED, sampling phase mature (2026-08-07)
+
+**v0.4 mix predictions CLOSED — 3/3 HIT (26k/24k provoked turns per
+lane):** realized mix matches spec (mock 0.278 vs 0.28); provoked-turn
+reaction rose (GLM −13.20→−12.71, 30B −13.97→−13.84); per-type yields
+stable (no elicitor diluted by the shift).
+
+**GLM T=1.2 probe CLOSED — KEPT:** cur 0.994 / tridiv 0.885 (highest
+any cell has posted) / agree 0.237 / react −13.10, floor slid −0.019
+(inside the pinned 0.02 cap), and the mandatory read shows zero
+incoherence (top: River's-hoodie/eBay-guy; median: "The Brine That
+Broke HR" — both fully coherent). Note: floor decline with T is
+partially theory-EXPECTED (wit = expectation-breaking lowers context
+similarity); the gate exists for non-sequiturs and the read found
+none.
+
+**TEMPERATURE SWEEP CLOSED at GLM {1.0, 1.1, 1.2}, 30B {1.0, 0.9,
+1.1}.** T=1.3 not probed: the floor trend (−0.009/step) predicts a
+cap breach, gains 1.1→1.2 were already second-order, and the loop
+must not become a knob-tuning treadmill.
+
+**STRATEGIC NOTE (for Sam):** the sampling/eval loop is MATURE —
+config axes are all closed-or-settled (provocation rate capped 0.80
+on construct grounds, type mix weighted by yield, temperature closed
+per-model, prompts at v0.4 with register/opening/compliance solved),
+the characterization battery is standing (report card), and the bank
+holds 200k+ scored policy-lane sessions spanning three quality tiers.
+The next first-order lever on "make the model funnier" is TRAINING:
+emulator/quantile-RM on the bank + human-rated corpora, screen
+decision, then GRPO with the certified gates + curation machinery as
+reward shell. That re-allocates GPUs from serving to training
+(STOP_LANES + verl), so it needs Sam's go. The loop keeps banking
+v0.4 data meanwhile.

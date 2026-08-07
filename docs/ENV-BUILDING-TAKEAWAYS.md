@@ -209,3 +209,10 @@ Newest lessons appended at the bottom of each section.
     1.1) and nothing for the other (30B, flat at n=14/cell). A global
     temperature decision would have been wrong for one of them in
     whichever direction it went.
+36. **Close sweeps deliberately, or they become treadmills.** Every
+    config axis got an explicit terminal state: retired by evidence
+    (P=0.25/0.35), capped on construct grounds (P=0.80), closed
+    per-model with a guard (temperature), or weighted with types
+    retained (provocation mix). An always-running optimization loop
+    with no closure rule will happily tune knobs forever while the
+    first-order lever (training on the banked data) waits.

@@ -4,6 +4,13 @@ _Last updated: 2026-08-07 (self-driving box loop LIVE)_
 
 ## NOW RUNNING (box: youthful-indigo-turkey, 8×H100, all GPUs 100%)
 
+**SAMPLING PHASE MATURE (cycle 7):** all config axes closed-or-
+settled; prompts at v0.4; standing eval battery + report card; 200k+
+scored policy-lane sessions banked. NEXT FIRST-ORDER LEVER = training
+(emulator RM → screen → GRPO), which needs Sam's go to re-allocate
+GPUs from serving to training. Loop keeps banking v0.4 data until
+then.
+
 Perpetual generate→score→curate loop, fully box-side (survives agent
 absence — the 7.5h-idle failure mode is closed by construction):
 - **Serving:** 8B :8001 (GPU0), 30B-A3B :8002 (GPU1), GLM-4.5-Air fp8
