@@ -50,6 +50,27 @@ def motif_stats(batch_sessions):
             "top_motifs": top}
 
 
+# policy agreement-opener rate: the RLHF sycophancy attractor showing
+# up as conversational risk-aversion (policy yes-ands everything, the
+# partner does the comedic lifting). ENV-CHARACTERIZATION metric, not
+# a bug to prompt away -- the neutral policy prompt exists precisely
+# so the env exposes this attractor for RL training to fix.
+_AGREE = re.compile(
+    r"^(absolutely|agreed|totally|exactly|perfect|good call|nice|right\??"
+    r"|yes|yeah|deal|definitely|for sure|great idea|love it|haha,? (yes|yeah|true))\b",
+    re.I)
+
+
+def agreement_rate(batch_sessions):
+    n = h = 0
+    for s in batch_sessions:
+        for t in s.get("per_turn", []):
+            n += 1
+            if _AGREE.search(t["text"].strip()):
+                h += 1
+    return round(h / n, 3) if n else 0
+
+
 def load_batch(scored_path, transcripts_dir):
     """Scored sessions + the generation config from the twin .jsonl."""
     data = json.loads(Path(scored_path).read_text())
@@ -100,9 +121,17 @@ def main():
     args = ap.parse_args()
 
     sessions, batch_stats = [], {}
-    for path in sorted(glob.glob(args.scored_glob)):
+    # prompt revisions shift the curation scale (v0.3.1 register fix
+    # moved it -0.07..-0.13), so the human-read file draws from the
+    # most RECENT batches only; the all-time master keeps everything
+    paths = sorted(glob.glob(args.scored_glob))
+    recent_paths = set(sorted(paths, key=lambda p: Path(p).stat().st_mtime)[-40:])
+    recent = []
+    for path in paths:
         batch = load_batch(path, args.transcripts_dir)
         sessions.extend(batch)
+        if path in recent_paths:
+            recent.extend(batch)
         if batch:
             n = len(batch)
             batch_stats[batch[0]["batch"]] = {
@@ -114,6 +143,7 @@ def main():
                 "mean_reaction_L": round(
                     sum(s["mean_reaction_L"] for s in batch) / n, 3),
                 "motifs": motif_stats(batch),
+                "policy_agreement_rate": agreement_rate(batch),
             }
     sessions.sort(key=lambda s: -s["curation_score"])
     top = sessions[:TOP_K]
@@ -135,8 +165,9 @@ def main():
     # human-read file: cap 2 per task -- an uncapped top-N collapses to
     # one high-affordance task's trajectory family (observed: 9/10
     # supply-closet), and the read must sample the env's breadth
+    recent.sort(key=lambda s: -s["curation_score"])
     picked, per_task = [], {}
-    for s in sessions:
+    for s in recent:
         if per_task.get(s["task"], 0) >= 2:
             continue
         picked.append(s)

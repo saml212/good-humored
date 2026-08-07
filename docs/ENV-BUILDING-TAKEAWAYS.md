@@ -163,3 +163,23 @@ Newest lessons appended at the bottom of each section.
     the "neutral" alternative had co-written half of every transcript
     it would judge. Within-judge comparisons stay valid; cross-model
     claims need judge-swapped verification, always.
+29. **Test the flattering explanation before logging it.** When the
+    register fix dropped the curation metric, the comfortable stories
+    were "the artifact was inflating scores" and "the partner never
+    needed the constraint." Both were falsified by five-minute
+    measurements (asterisk turns scored WORSE in-era; the partner
+    asterisked at 25.9%). The real account — the constraint taxes
+    every turn's expressiveness — was less flattering and only
+    reachable after killing the easy stories.
+30. **Model attractors the env exposes are product, not bugs.** The
+    policy agreement attractor (28-30% of strong-model turns open
+    with yes-and; the WEAKER 8B agrees less) is trained-in
+    conversational risk-aversion. Prompt-patching it would blind the
+    env to exactly the behavior a buyer's RL is supposed to move.
+    Characterize baselines; leave the neutral prompt alone; let the
+    delta be the demo.
+31. **Prompt revisions shift metric scales; window your comparisons.**
+    Any change to system prompts moves the whole scoring
+    distribution (here -0.07 to -0.13). Cross-version score
+    comparisons are invalid by default; human-read artifacts and
+    leaderboards must draw from a recent same-version window.

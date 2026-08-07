@@ -2848,3 +2848,36 @@ FIX (v0.3.1): "plain chat messages only, never narrate actions in
 rate <3% over v0.3.1 batches; if it stays >10%, the 30B is judged
 register-unstable under neutral prompts (a screen strike, since
 buyers get the neutral-prompt env).
+
+## BANTER cycle 4: asterisk close HIT, two micro-hypotheses falsified, agreement attractor quantified (2026-08-07)
+
+**v0.3.1 asterisk prediction CLOSED — HIT:** banter lane 2.39%
+(3350/140k policy turns, bar <3%, from 27.1%); glm 0.15%. No screen
+strike: the 30B is register-compliant when told.
+
+**Post-fix curation dropped (GLM −0.065, 30B −0.13) and BOTH of my
+first explanations were falsified by 5-minute measurements:**
+1. "Asterisk turns inflated the metric" — REFUTED: within pre-fix
+   batches, asterisk turns scored WORSE (anchor 0.489 vs 0.498,
+   reaction −13.87 vs −13.54). Removing them should have raised it.
+2. "The partner constraint was unnecessary" — REFUTED: the 235B
+   partner asterisked at 25.9%, same as the policy. Constraint needed
+   in both prompts.
+Settled account: the plain-chat line costs expressiveness on EVERY
+turn (instruction burden, double for the 3B-active 30B), outweighing
+the removal of slightly-worse RP turns. Price accepted — register-
+correct chat data is the product; the metric serves the construct,
+not vice versa. RULE ADOPTED: curation scores are comparable only
+within a prompt version; the human-read file now draws from the most
+recent 40 batches (recency window in curate_banter).
+
+**Fresh v0.3.1 read:** register fix held (zero asterisks), wit intact
+("IT guy will need a Ouija board to read them"). NEW characterization:
+the policy AGREEMENT ATTRACTOR — agree-and-amplify openers
+("Absolutely!", "Perfect") while the partner does the comedic lifting.
+QUANTIFIED as policy_agreement_rate (now in batch_stats): 30B
+0.28–0.30, GLM 0.26–0.29, 8B 0.21–0.23. The attractor is STRONGER in
+stronger instruction-tuned models — RLHF sycophancy as conversational
+risk-aversion. DOCTRINE: not prompt-fixed. The neutral policy prompt
+exists so the env EXPOSES this attractor; moving it is RL training's
+job and part of the product's measurable-improvement story.

@@ -30,8 +30,13 @@ absence — the 7.5h-idle failure mode is closed by construction):
   need judge swaps; within-model trends valid); provocation sweep
   CAPPED at 0.80 on construct grounds (unprompted-wit condition);
   motif diversity: GLM 0.84 vs 30B 0.73 (30B template-heavy);
-  v0.3.1 fixes 30B RP-asterisk drift (27.1% of policy turns —
-  pinned <3% post-fix, >10% = screen strike).
+  v0.3.1 asterisk fix CLOSED at 2.39% (HIT; no screen strike).
+  Register fix costs curation −0.07/−0.13 (GLM/30B) — accepted as
+  the price of chat-register data; scores comparable only within a
+  prompt version (read file = recent-40-batch window). NEW env
+  characterization: policy agreement attractor 28–30% (strong
+  models) vs 21–23% (8B) — measured, deliberately NOT prompt-fixed;
+  it's the behavior RL training is sold to move.
 
 _Previous header (2026-07-29): Phase A closed, H100-READY, S2 demoted
 to report-only; superseded by the loop above actually running._
