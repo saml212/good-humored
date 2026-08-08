@@ -3191,3 +3191,20 @@ finding. FIX: shortlist excludes glmself (like contrast) — the demo
 channel carries the PRODUCT configuration (strong partner) only;
 self-play scores are usable for within-lane trends, never cross-lane
 ranking. First health.sh cycle: HEALTH OK.
+
+## BANTER cycle 18: steady state; multi-character universes are the ceiling class (2026-08-08)
+
+HEALTH OK (first-try green, health.sh). Backlog 72 (was 51) — four
+generation lanes vs two scorers; ratio on watch, capacity decision
+next cycle if it keeps growing.
+
+**Read (glm_156, "Great Coffee Machine Ascension", 1.529): arguably
+the env's best transcript yet** — FOUR named absent characters
+(Sarah, Karen's dead keyboard, Janice's embroidered towels, and Dave
+of the "FBI Surveillance Van #4" Wi-Fi rename) woven into one
+coherent office universe, with the policy co-authoring ("Official
+Documentation of Cable Management", "laminated laminator
+certificate"). Strengthens the codified third-party-character
+pattern to its limit: MULTI-character universes are the ceiling
+class of this env's material. Post-training check remains pinned:
+does RL amplify exactly this? No config changes.
