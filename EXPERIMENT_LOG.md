@@ -3051,3 +3051,25 @@ defect class gets instrumented. Qwen lanes measure 0.01-0.04%
 **Read (pre-reversal top):** still strong ("Call Bob about the
 thing" mystery; the zombie plant "following Bob's example and
 refusing to retire") — callback ecology healthy in v0.4 material.
+
+## BANTER cycle 11: steady state, CJK instrument confirmed, character-comedy pattern (2026-08-07)
+
+Health: 8/8 GPUs, 0 failures, backlog draining on trend (106→84→66).
+Standing policy_cjk_rate CONFIRMS the ad-hoc gradient (glm 0.0006/
+0.0016/0.0032 for T=0.9/1.0/1.1; retired T=1.2 residue 0.0115 aging
+out) — instrument and one-off counter agree.
+
+**Observation codified (no action needed): third-party characters
+are the env's most reliable wit affordance.** Every recent top
+transcript builds its best material around an ABSENT third party —
+Dave's space heater arc ("the only thing glaring is your
+entitlement" / "ghost voltage" / heater "on suicide watch"), Sandy's
+sticky-note apocalypse, Greg's thumbs-up, Bob's mystery note, Dennis
+the raccoon. Models riff measurably better about absent characters
+than about objects. The env already affords this (tasks + the
+relay-a-coworker opening angle); logged as a PREDICTION about where
+RL will find reward, checkable post-training.
+
+No config changes: all axes closed and stable. This is the loop's
+intended steady state — bank data, verify instruments, read, wait
+on the training go.
