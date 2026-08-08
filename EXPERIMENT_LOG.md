@@ -3250,3 +3250,13 @@ Read (glm_183 at #1, 1.638): mid-tier honestly — "jiggle it like
 you're trying to start a sketchy car" is nice texture but no
 callback architecture; scores rank within noise, the read stays the
 calibrator.
+
+## BANTER cycle 21: equilibrium reached (2026-08-08)
+
+HEALTH OK. The scoring pipeline is in genuine equilibrium for the
+first time: sampled contrast working as designed (53 markered,
+effective gap 69→40 and falling), policy lanes steady at 15-18.
+Read (glm_197): the absent-character pattern via the task's built-in
+character — the retiree drawn entirely through stationery lore
+(three pens for a handwriting compliment; intimidating all-caps
+print; "inspire chaos from beyond the cubicle"). No changes.

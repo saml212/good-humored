@@ -23,11 +23,14 @@ absence — the 7.5h-idle failure mode is closed by construction):
   70k+ sessions scored across 140 batches and climbing.
 - **gh_contrast_lane**: 8B self-play negative-contrast data (curation
   distribution must span bad-to-good for emulator training).
-- **gh_score_keeper**: certified gates + GLM-audience reaction
-  diagnostic over every completed batch (500-subsample), rebuilds
-  `runs/curation_master.json` (per-config table — env defaults get
-  picked empirically from this) + `runs/curation_top5.txt` (full
-  transcripts, human read is the quality bar).
+- **gh_score_keeper / gh_score_keeper2**: dual lock-claimed scorers
+  (desc = policy-newest-first; asc = contrast-first then policy);
+  contrast SAMPLED 1-in-4 at half subsample (information saturated);
+  certified gates + GLM-audience reaction diagnostic; rebuilds
+  `runs/curation_master.json` (per-config table + 7 standing defect/
+  quality metrics) + `runs/curation_top5.txt` (product-config lanes
+  only, CJK-screened, 2-per-task cap — human read is the quality
+  bar). Health = `env/box_keepers/health.sh` (never log tails).
 - **Stop all:** `touch /data/good-humored/STOP_LANES`.
 - Agent-side: 2h iterate-cycle cron (health, read curation, revise
   prompts, codify takeaways → `docs/ENV-BUILDING-TAKEAWAYS.md`).
