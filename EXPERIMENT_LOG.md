@@ -3073,3 +3073,22 @@ RL will find reward, checkable post-training.
 No config changes: all axes closed and stable. This is the loop's
 intended steady state — bank data, verify instruments, read, wait
 on the training go.
+
+## BANTER cycle 12: steady state; era-contamination near-miss in my own query (2026-08-07)
+
+Health: 8/8 GPUs, 0 failures, backlog 52 (106→84→66→52 — dual
+scorers will clear it), disk trivial (runs = 5.5G).
+
+**Near-miss worth recording:** my ad-hoc "recent card" query showed
+banter asterisk at 8.35% vs the 2.39% close — because it filtered on
+METRIC PRESENCE (= scored recently), which includes pre-v0.3.1
+batches the asc scorer is draining from the old backlog. Era split
+confirms: pre-fix batches ast=0.2247, current era ast=0.0251 (close
+remains valid). The cross-version trap (#31) generalizes: era
+filters must key on GENERATION batch number, never scoring recency —
+and ad-hoc queries are where codified rules get silently violated;
+the standing tool (report_card --min-batch) was already correct.
+Use the tool, not fresh one-liners, for anything decision-relevant.
+
+Top transcript unchanged (glm_147, read last cycle). No config
+changes.
