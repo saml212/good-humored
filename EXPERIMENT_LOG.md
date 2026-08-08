@@ -3224,3 +3224,29 @@ Read (banter_354, 30B at #1 this window — top-tail parity holding):
 glitter reindeer "declared dead after the Christmas of 2013", closet
 as "digital landfill", table "covered in dust and regret." No config
 changes beyond the scoring limit.
+
+## BANTER cycle 20: contrast scoring goes SAMPLED; priority-starvation duality (2026-08-08)
+
+**Decision on information grounds:** contrast scoring is now 1-in-4
+sampled (rest markered .skipped; raw transcripts banked regardless).
+With ~180k scored contrast sessions banked, marginal information
+from exhaustive scoring of redundant weak-model data is ~zero, and
+its generation rate outran both scorers permanently.
+
+**The diagnosis that mattered:** the half-limit fix (cycle 19) never
+had a chance — scanners NEVER REACHED contrast at all. Fresh policy
+batches exactly saturate both scoring instances, and contrast sat
+last in every scan order. The same lane has now been on both sides
+of the priority coin: it monopolized the scanners at cycle 10
+(newest-first order) and starved completely under policy-first
+order. FIX: asc instance scans contrast FIRST (cheap now: ~3/4
+markered instantly, every 4th at half limit — ~10% of its time),
+then falls through to policy. Verified live: markers firing, batch
+scored, HEALTH OK. Honest note: I checked for markers twice before
+a sweep could have arrived — "verify across the boundary" for sweep
+loops means waiting a FULL SWEEP PERIOD, not a polite interval.
+
+Read (glm_183 at #1, 1.638): mid-tier honestly — "jiggle it like
+you're trying to start a sketchy car" is nice texture but no
+callback architecture; scores rank within noise, the read stays the
+calibrator.

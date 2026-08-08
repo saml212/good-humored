@@ -273,3 +273,15 @@ Newest lessons appended at the bottom of each section.
     inflates further. Scores from different judge-participant
     configurations support within-lane trends only; demo channels
     must carry the product configuration exclusively.
+45. **When a stream's marginal information saturates, sample it —
+    don't scale scoring to match generation.** The contrast lane's
+    scores stopped informing anything at ~180k sessions; its raw
+    data stays banked, its scoring became 1-in-4 sampled, and the
+    permanent backlog race ended by decision instead of capacity.
+46. **Strict priority orders starve the bottom whenever the top
+    saturates capacity.** The same lane monopolized both scanners
+    under newest-first order, then starved to zero under
+    policy-first order — two failures, one mechanism, opposite
+    signs. Priorities need either capacity headroom or an explicit
+    share for the lowest class (here: one scanner visits it FIRST,
+    cheaply, then rejoins the priority order).
