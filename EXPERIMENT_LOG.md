@@ -3125,3 +3125,22 @@ curate handles the new lane automatically (per-prefix windows).
 Read (#3, GLM catering): sad-olive riff ("the MVP of corporate
 catering... never shows up sweating at a client meeting") + Dave's
 curry incident — character pattern holding. Backlog 31.
+
+## BANTER cycle 15: partner A/B first data — doctrine quantified (2026-08-08)
+
+**The self-play lane's first scored batch gives the controlled
+partner comparison (same GLM policy, partner swapped):** with GLM as
+partner vs the 235B — curation 0.913 vs 0.985, reaction −15.08 vs
+−13.39 (−1.7 logits), agreement 0.293 vs 0.254 (MORE sycophancy),
+tridiv 0.848 vs 0.865. Read concurs: self-play material is pleasant
+but FLAT — GLM-as-partner executes provocation directives without
+teeth, and the policy relaxes into yes-and. The partner-quality
+doctrine ("the partner is part of the env spec") now has a
+same-policy controlled A/B behind it — product-grade evidence that
+buyers must run the env with the strong partner.
+PRELIMINARY (n=1 batch): confirm at n>=5 next cycle before quoting
+numbers anywhere buyer-facing. PINNED: the gap holds direction
+(curation and reaction both lower under the weak partner) at n>=5.
+
+Health: 4 lanes generating, backlog stable ~30, 0 failures. No
+config changes.
