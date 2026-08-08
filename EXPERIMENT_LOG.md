@@ -3106,3 +3106,22 @@ lane MEANS differ (0.917 vs 0.978) but top tails overlap — the
 cheaper model reaches the demo class, less often. Third-party
 characters carry the material again (Dave watering "Karen's Plant";
 Jan) — pattern holding. No config changes.
+
+## BANTER cycle 14: GLM duty-cycle hole -> self-play lane (2026-08-08)
+
+**Third member of the synchronization-hole class:** GPUs 2-3 (GLM)
+measured ~60% idle across a 30s sample — all 96 GLM-lane sessions
+bunch-synchronize queuing on the shared 235B partner (the fleet
+bottleneck), then flood back. More workers would only deepen the
+bottleneck queue. FIX: a GLM SELF-PLAY lane (policy AND partner on
+:8003, glmself_stream_*, offsets 750k+) soaks the idle capacity with
+dependency-free work via continuous batching. Verified: GPUs 2-3 from
+0%-bursts to sustained activity. Bonus: the new stream is a second
+partner variant — partner-robustness evidence for the env spec (the
+partner is part of the spec; now we measure the same policy under
+two partners). Scorers restarted with the new prefix in the glob;
+curate handles the new lane automatically (per-prefix windows).
+
+Read (#3, GLM catering): sad-olive riff ("the MVP of corporate
+catering... never shows up sweating at a client meeting") + Dave's
+curry incident — character pattern holding. Backlog 31.

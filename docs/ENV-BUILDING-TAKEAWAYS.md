@@ -244,3 +244,11 @@ Newest lessons appended at the bottom of each section.
     window, quota, and queue in the pipeline needs explicit
     per-population handling — audit them all at once, not as each
     one breaks.
+41. **Servers upstream of a shared bottleneck starve in bursts —
+    feed them dependency-free work.** Sessions bunch-synchronize on
+    the slowest shared stage (the 235B partner), so the faster GLM
+    server idled ~60% in bursts that instant-checks missed. Adding
+    workers just deepens the bottleneck queue; the fix is work with
+    no external dependency (a self-play lane on the starved server),
+    interleaved by continuous batching. Duty-cycle SAMPLING (not
+    instant snapshots) is what found it.
