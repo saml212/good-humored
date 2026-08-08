@@ -62,7 +62,10 @@ def pick(runs_dir, min_batch, n):
     best = {}
     for f in sorted(glob.glob(str(Path(runs_dir) / "*_stream_*.scored.json"))):
         name = Path(f).name
-        if name.startswith("contrast"):
+        # product-config lanes only: contrast is negative training
+        # data; glmself scores are audience-inflated (judge = both
+        # participants) and read a tier below their score twins
+        if name.startswith(("contrast", "glmself")):
             continue
         if int(name.split("_")[-1].split(".")[0]) < min_batch:
             continue
@@ -74,6 +77,11 @@ def pick(runs_dir, min_batch, n):
             first = json.loads(jsonl.read_text().split("\n", 1)[0])
             cfg = first.get("config", {})
         for s in d["sessions"]:
+            # language-defect screen (CJK leakage): never demo material
+            if any("一" <= ch <= "鿿" or "぀" <= ch <= "ヿ"
+                   or "가" <= ch <= "힯"
+                   for t in s.get("per_turn", []) for ch in t["text"]):
+                continue
             s["config"] = {k: cfg.get(k) for k in
                            ("model", "temperature", "provocation_rate")}
             key = s["task"]

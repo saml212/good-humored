@@ -3260,3 +3260,19 @@ Read (glm_197): the absent-character pattern via the task's built-in
 character — the retiree drawn entirely through stationery lore
 (three pens for a handwriting compliment; intimidating all-caps
 print; "inspire chaos from beyond the cubicle"). No changes.
+
+## BANTER cycle 22: demo pack v2 — generator caught missing two screens (2026-08-08)
+
+HEALTH OK; contrast effective gap 40→38. Report card regenerated at
+--min-batch 112 (era-clean, n=100 GLM / 293 30B batches).
+
+**Generator hygiene catch:** demo_pack.py predated two curation
+fixes — it excluded contrast but NOT glmself (audience-inflated
+lane) and had no CJK screen. Both added before regeneration; the
+refreshed pack is verified all product-config (4 GLM + 4 30B, eight
+tasks) and QC-read clean (new #1: Bob-through-relics, 30B T=0.9
+P=0.8 at 1.670 — top-tail parity again). Lesson noted inline with
+takeaway #40's spirit: when a selection rule changes, every OTHER
+selector over the same data needs the same change — curate, demo,
+and report tooling should share screens, not reimplement them.
+Pack v2 sent to Sam.
