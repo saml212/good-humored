@@ -34,9 +34,15 @@ while [ ! -f $GH/STOP_LANES ]; do
     grep -q run_summary "$f" || continue   # still generating
     mkdir "$out.lock" 2>/dev/null || continue   # claimed by other instance
     found=1
-    echo "=== scoring $(basename $f) ===" >> $GH/logs/score_keeper.log
+    # contrast batches: half subsample -- they feed distribution
+    # stats and emulator negatives, not the demo channel, and their
+    # 3-4x generation rate is the entire scoring backlog (gap 57 vs
+    # 11-16 on policy lanes, cycle 19)
+    LIMIT=500
+    case "$f" in *contrast*) LIMIT=250;; esac
+    echo "=== scoring $(basename $f) (limit $LIMIT) ===" >> $GH/logs/score_keeper.log
     $GH/venv/bin/python -m env.score_banter \
-      --transcripts "$f" --limit 500 --workers 24 \
+      --transcripts "$f" --limit $LIMIT --workers 24 \
       --audience-url http://127.0.0.1:8003/v1 --audience-model glm-4.5-air \
       --out "$out" >> $GH/logs/score_keeper.log 2>&1 \
       || { echo "SCORE FAILED: $f" >> $GH/logs/score_keeper.log; rm -f "$out"; touch "$out.failed"; }

@@ -3208,3 +3208,19 @@ certificate"). Strengthens the codified third-party-character
 pattern to its limit: MULTI-character universes are the ceiling
 class of this env's material. Post-training check remains pinned:
 does RL amplify exactly this? No config changes.
+
+## BANTER cycle 19: backlog decision — contrast scoring halved (2026-08-08)
+
+HEALTH OK. Backlog watch resolved by decision, not drift: total gap
+72→99 but the breakdown is contrast 57 vs policy lanes 11-16 (the
+desc scorer keeps policy fresh by design). Contrast batches now
+score at --limit 250 (they feed distribution stats and emulator
+negatives, not the demo channel); scorer restart verified across a
+full batch boundary. GPU 0/1/4 low instants cleared by sampling
+(100% sustained — between-batch snapshots again; the health script's
+freshness checks stay authoritative over any snapshot).
+
+Read (banter_354, 30B at #1 this window — top-tail parity holding):
+glitter reindeer "declared dead after the Christmas of 2013", closet
+as "digital landfill", table "covered in dust and regret." No config
+changes beyond the scoring limit.
