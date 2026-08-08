@@ -25,8 +25,11 @@ i=${i:-0}
 PROVS=(0.65 0.50 0.80)
 while [ ! -f $GH/STOP_LANES ]; do
   i=$((i+1))
-  T="${TEMPS[$((i % 3))]}"
-  R="${PROVS[$(((i / 3) % 3))]}"
+  # modulo by ACTUAL array length -- indexing by a hardcoded 3 killed
+  # two 2-temp lanes instantly under set -u (TEMPS[2] unbound), one of
+  # them silently on its first post-restart iteration
+  T="${TEMPS[$((i % ${#TEMPS[@]}))]}"
+  R="${PROVS[$(((i / ${#TEMPS[@]}) % ${#PROVS[@]}))]}"
   echo "=== $PREFIX batch $i temp=$T prov=$R ===" >> "$LOG"
   $GH/venv/bin/python -m env.banter_rollout \
     --base-url "$URL" --model "$MODEL" \

@@ -252,3 +252,17 @@ Newest lessons appended at the bottom of each section.
     no external dependency (a self-play lane on the starved server),
     interleaved by continuous batching. Duty-cycle SAMPLING (not
     instant snapshots) is what found it.
+42. **Verify restarts ACROSS the boundary that killed them.** A
+    keeper that crashes on its first loop iteration looks launched:
+    the tmux session existed, the old log had plausible lines. The
+    relaunch "verification" read a dying process's last output as
+    fresh. After any restart, confirm the process completes one full
+    unit AND starts the next — the boundary is where between-batch
+    crashes live.
+43. **Log tails are not liveness; encode health as an executable
+    check.** Five consecutive cycles tailed a dead lane's log and
+    read its restart note without alarm — humans (and agents)
+    normalize a stale line they've seen before. Health = session
+    existence + output freshness + produced/consumed ratios,
+    encapsulated in a script that exits nonzero, run every cycle.
+    If a check can't fail loudly, it isn't a check.

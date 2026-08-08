@@ -3144,3 +3144,29 @@ numbers anywhere buyer-facing. PINNED: the gap holds direction
 
 Health: 4 lanes generating, backlog stable ~30, 0 failures. No
 config changes.
+
+## BANTER cycle 16: GLM lane was DEAD ~10h — my bug, my missed checks (2026-08-08)
+
+**Honest incident report.** The cycle-10 GLM-lane restart killed the
+old keeper mid-batch-157 and the relaunch crashed INSTANTLY on its
+first iteration: I passed 2 temps but policy_lane.sh indexed
+TEMPS[$((i % 3))] — i=158 → TEMPS[2] unbound → set -u exit, before
+writing one log line. The lane was dead ~10 hours. The self-play
+lane launched at cycle 14 died of the SAME bug after its first batch
+(i=2). Compounding failures on my side:
+1. Cycle-10 "verification" read the dying keeper's stale progress
+   line as fresh output.
+2. Cycles 11-15 health checks tailed a log whose last line was the
+   restart note FIVE TIMES without flagging it.
+3. Cycle 14's duty-cycle diagnosis was partly WRONG: GPUs 2-3 were
+   idle mostly because the lane was dead (the 40-60% "bunching"
+   activity I sampled was scorer audience traffic). The self-play
+   fix was built on a misdiagnosis — then died of the same bug.
+**Fixes:** (a) modulo by ${#TEMPS[@]}/${#PROVS[@]} (the bug class is
+gone, not patched); (b) both lanes relaunched and verified ACROSS
+the iteration boundary that killed them (glmself batch 2→3
+confirmed); (c) env/box_keepers/health.sh — standing check: tmux
+session EXISTENCE for all 10 expected sessions + newest-output
+FRESHNESS per lane + scored freshness, exits nonzero on any failure;
+(d) the iterate-cycle health procedure now runs health.sh instead of
+tail-reading. Current status: HEALTH OK, 4 lanes generating.
