@@ -3092,3 +3092,17 @@ Use the tool, not fresh one-liners, for anything decision-relevant.
 
 Top transcript unchanged (glm_147, read last cycle). No config
 changes.
+
+## BANTER cycle 13: steady state; 30B top-tail parity observed (2026-08-07)
+
+Health: 8/8 GPUs, 0 failures, backlog 41 (106→84→66→52→41).
+
+**Read (#2, 30B T=1.1 P=0.8, curation 1.586): the 30B's top tail
+reaches GLM-class material** — the "TechSpa" bit (cord-queen Jan's
+cucumber mask → outlet aromatherapy → "crystal charging only" hard
+drive → "blessed by a power strip" → router as chakra blockage) is
+sustained, disciplined collaborative escalation. Screen-relevant:
+lane MEANS differ (0.917 vs 0.978) but top tails overlap — the
+cheaper model reaches the demo class, less often. Third-party
+characters carry the material again (Dave watering "Karen's Plant";
+Jan) — pattern holding. No config changes.
