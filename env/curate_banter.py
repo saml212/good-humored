@@ -224,7 +224,13 @@ def main():
     recent.sort(key=lambda s: -s["curation_score"])
     picked, per_task = [], {}
     for s in recent:
-        if s["batch"].startswith("contrast"):
+        # contrast = negative training data; glmself = utilization
+        # filler + partner-A/B arm whose scores are audience-inflated
+        # (GLM judging GLM x GLM -- read-verified: a 1.633 self-play
+        # session read a full tier below its 235B-partner score twin).
+        # The shortlist is the DEMO channel: product config (strong
+        # partner) only.
+        if s["batch"].startswith(("contrast", "glmself")):
             continue
         if session_has_cjk(s):  # language defect: never demo material
             continue

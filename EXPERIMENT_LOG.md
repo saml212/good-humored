@@ -3170,3 +3170,24 @@ session EXISTENCE for all 10 expected sessions + newest-output
 FRESHNESS per lane + scored freshness, exits nonzero on any failure;
 (d) the iterate-cycle health procedure now runs health.sh instead of
 tail-reading. Current status: HEALTH OK, 4 lanes generating.
+
+## BANTER cycle 17: partner A/B CLOSED (confirmed); self-play tail inflation caught (2026-08-08)
+
+**Pinned partner A/B close — CONFIRMED at n=10 glmself batches:**
+curation 0.920 [0.894,0.950] vs 0.980 [0.951,1.006] under the strong
+partner; reaction −14.97 [−15.43,−14.34] vs −13.45 [−13.94,−12.85]
+— both directions as pinned, ranges (essentially) non-overlapping.
+The partner-quality doctrine is now controlled, quotable evidence:
+same policy, partner swap moves curation −0.06, reaction −1.5
+logits, sycophancy +0.036.
+
+**Self-play tail inflation caught by the read:** glmself sessions
+took 3 of 5 shortlist slots (top at 1.633 ≈ the all-time #1) but the
+read places that session a FULL TIER below its score twin — one-shot
+gags, no callback structure, and self-play tonal homogeneity (both
+voices share a cadence). This is audience self-preference at its
+maximum (GLM judging GLM×GLM), predicted by the cycle-3 confound
+finding. FIX: shortlist excludes glmself (like contrast) — the demo
+channel carries the PRODUCT configuration (strong partner) only;
+self-play scores are usable for within-lane trends, never cross-lane
+ranking. First health.sh cycle: HEALTH OK.

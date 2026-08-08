@@ -266,3 +266,10 @@ Newest lessons appended at the bottom of each section.
     existence + output freshness + produced/consumed ratios,
     encapsulated in a script that exits nonzero, run every cycle.
     If a check can't fail loudly, it isn't a check.
+44. **Cross-lane score comparability requires judge independence.**
+    Self-play sessions (judge = both participants) posted tail
+    scores at all-time-#1 level that read a full tier lower. Every
+    additional identity shared between judge and participants
+    inflates further. Scores from different judge-participant
+    configurations support within-lane trends only; demo channels
+    must carry the product configuration exclusively.
