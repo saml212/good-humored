@@ -3380,3 +3380,16 @@ environment prompts; moving them requires training or decoding
 intervention. This is a clean, evidence-backed argument for the
 training phase — the env has taken material quality as far as
 env-side levers reach. No changes.
+
+## BANTER cycle 33: steady; warmth as a demo-grade register (2026-08-09)
+
+HEALTH OK; gaps at floor; eleventh intervention-free cycle. Read
+(glm_335, retiring desk, 1.639): tier-1 — and the first read where
+WARMTH carries the material alongside wit: the grandkid's crooked-
+eyed t-rex mug wrapped "like the crown jewels", the squeaky stress
+ball surviving under old performance reviews. Affection + wit
+coexisting is what real workplace banter sounds like; noted as a
+demo-grade register the env elicits unprompted (and one more thing
+a pure joke-metric would miss — the human read keeps earning its
+place as the quality bar). Minor: one garbled token ("theouncy"),
+single instance, no counter warranted. No changes.
