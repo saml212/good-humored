@@ -3286,3 +3286,16 @@ fought back", Janice's "Hygiene Failures and Moral Decline"
 PowerPoint, and the 4:57 zombie-apocalypse closer calling back the
 turn-1 deadline: the TIME-PRESSURE opening angle functioning as
 narrative spine (structural payoff, not just flavor). No changes.
+
+## BANTER cycle 24: steady; commit-to-the-bit move class observed (2026-08-08)
+
+HEALTH OK; gaps: banter 18 / glm 11 / glmself 9 / contrast effective
+18 (nearly converged). Read (banter_422, 30B, expense software):
+high riposte quality under sustained mocking, and a NEW move class —
+the policy ACTS the joke into the shared task world (literally types
+"Nice buttons… wanna connect?" into the expense form, then reports
+the system's non-response as emotional unavailability). Bit
+commitment inside the task frame is exactly the improvised-comedy
+skill the env exists to elicit; noted for the post-training
+comparison. Minor: emoji in 30B output (😂🫣) — chat-authentic,
+not a defect, no action. No changes.
