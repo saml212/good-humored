@@ -3317,3 +3317,15 @@ last quarter's "disembodied voices", "witness protection program
 orientation" lighting): shared fictional history as comedy fuel, a
 variant of the absent-character pattern where the absent entity is
 the team's past. Catalog note only; no changes.
+
+## BANTER cycle 27: steady; echo-affirmation noted at the top end (2026-08-09)
+
+HEALTH OK; gaps banter 11 / glm 13 / glmself 6 / contrast 21. Read
+(banter_494, kitchen memo): tier-2 — Karen's March yogurt, Dave's
+espresso-cup "timeshare", "guilty of fridge terrorism", condiments
+"disposed of with prejudice". Honest note: the policy's last turn
+VERBATIM-echoes the partner's courtroom line before extending —
+repetition-as-affirmation works socially but is the weak cousin of
+the transformed callback; it's context_overlap territory and a
+reminder the parrot diagnostic earns its place even in top-tier
+sessions. No changes.
