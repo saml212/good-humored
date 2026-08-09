@@ -3276,3 +3276,13 @@ takeaway #40's spirit: when a selection rule changes, every OTHER
 selector over the same data needs the same change — curate, demo,
 and report tooling should share screens, not reimplement them.
 Pack v2 sent to Sam.
+
+## BANTER cycle 23: equilibrium holds (2026-08-08)
+
+HEALTH OK; gaps: banter 18 / glm 12 / glmself 7 / contrast effective
+33 (still converging). Top-5 fully rotated to fresh batches
+(205-216). Read (glm_213 fridge cleanout): tier-1 — "lasagna that
+fought back", Janice's "Hygiene Failures and Moral Decline"
+PowerPoint, and the 4:57 zombie-apocalypse closer calling back the
+turn-1 deadline: the TIME-PRESSURE opening angle functioning as
+narrative spine (structural payoff, not just flavor). No changes.
