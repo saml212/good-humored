@@ -3307,3 +3307,13 @@ HEALTH OK; gaps banter 12 / glm 14 / glmself 9 / contrast effective
 Read (banter_454, expense software): tier-2 solid — "who hurt the
 barista?", "creative accounting", totals that mustn't "scream
 vacation in Tulum". Natural pacing, task-grounded. No changes.
+
+## BANTER cycle 26: steady; institutional-memory variant noted (2026-08-09)
+
+HEALTH OK (8/8 at 100% in one snapshot); gaps converged (banter 16 /
+glm 10 / glmself 8 / contrast 17). Read (glm_240, video setup):
+tier-1/2 — the material runs on INSTITUTIONAL MEMORY (the muted CEO,
+last quarter's "disembodied voices", "witness protection program
+orientation" lighting): shared fictional history as comedy fuel, a
+variant of the absent-character pattern where the absent entity is
+the team's past. Catalog note only; no changes.
