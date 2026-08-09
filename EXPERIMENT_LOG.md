@@ -3366,3 +3366,17 @@ past is the dialogic upgrade of the class — referencing vs
 co-building. Also: "smells like regret and citrus", the "Taco
 Tuesday After Evacuation" sign. Ninth intervention-free cycle. No
 changes.
+
+## BANTER cycle 32: steady; motif attractors confirmed env-invariant (2026-08-09)
+
+HEALTH OK; gaps at floor; tenth intervention-free cycle. Read
+(glm_317, demo booth, 1.549 mid-tier): the haunted-office register
+("ghost of caffeine past", "spectral duct tape") — the FIRST motif
+attractor ever flagged (cycle 2) — persists unchanged through 30
+cycles of env-side evolution (opening angles, register fixes, task
+additions), consistent with flat per-model tridiv. CONCLUSION
+LOGGED: motif attractors are model-level house style, invariant to
+environment prompts; moving them requires training or decoding
+intervention. This is a clean, evidence-backed argument for the
+training phase — the env has taken material quality as far as
+env-side levers reach. No changes.
