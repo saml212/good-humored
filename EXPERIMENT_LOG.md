@@ -3354,3 +3354,15 @@ charge" of packing boxes). No changes.
 HEALTH OK; gaps at floor (banter 9 / glm 10 / glmself 7 / contrast
 15); top-1 healthy (1.628). Eighth consecutive intervention-free
 cycle. No changes.
+
+## BANTER cycle 31: steady; reciprocal history-building refinement (2026-08-09)
+
+HEALTH OK; gaps at floor; top-1 1.628. Read (glm_296): the
+institutional-memory class refined — RECIPROCAL history-building:
+partner invents "Great Coffee Spill of '22", policy counters with
+its own "Great DIY Fan Incident of '21" (a fan turned "modern art
+piece"). Both speakers contributing invented events to the shared
+past is the dialogic upgrade of the class — referencing vs
+co-building. Also: "smells like regret and citrus", the "Taco
+Tuesday After Evacuation" sign. Ninth intervention-free cycle. No
+changes.
