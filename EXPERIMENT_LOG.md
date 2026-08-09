@@ -3339,3 +3339,12 @@ kombucha tap). Likely recency-window rotation noise between
 exceptional sessions, not decay — but WATCH PINNED: top-1 curation
 <1.60 for 3 consecutive cycles triggers investigation (temp-mix or
 drift). No changes.
+
+## BANTER cycle 29: shortlist-peak watch CLEARED (2026-08-09)
+
+HEALTH OK; gaps banter 11 / glm 9 / glmself 8 / contrast 15. The
+cycle-28 watch resolves benign: top-1 back to 1.610 (>1.60) after
+one sub-threshold cycle — recency-window rotation noise, as
+hypothesized; the 3-cycle trigger never armed. Read (glm_284): mid-
+tier, institutional-memory flavor ("printer trauma", the cat "in
+charge" of packing boxes). No changes.
