@@ -3329,3 +3329,13 @@ repetition-as-affirmation works socially but is the weak cousin of
 the transformed callback; it's context_overlap territory and a
 reminder the parrot diagnostic earns its place even in top-tier
 sessions. No changes.
+
+## BANTER cycle 28: steady; shortlist peak on watch (2026-08-09)
+
+HEALTH OK; gaps banter 12 / glm 12 / glmself 5 / contrast 15
+(converged). Read (glm_260 at #1, 1.593): weakest #1 in a while —
+policy yes-and heavy, partner carrying the wit (the "just testing"
+kombucha tap). Likely recency-window rotation noise between
+exceptional sessions, not decay — but WATCH PINNED: top-1 curation
+<1.60 for 3 consecutive cycles triggers investigation (temp-mix or
+drift). No changes.
