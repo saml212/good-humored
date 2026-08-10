@@ -3489,3 +3489,61 @@ generalizes across contest topics, not just within-topic phrasing.
    decoupling monitors; policy = qwen3-30b-a3b per the screen
    evidence (verified RL path, top-tail reaches demo class, cheapest
    sampling); 235B partner frozen in env.
+
+## EMULATOR-TRANSFER — pre-registered (2026-08-09, BEFORE run)
+
+**Question:** does the NYCC-trained emulator's ranking transfer to
+banter policy turns (out-of-distribution: captions → conversation)?
+This gates whether it enters the GRPO reward stack as-is.
+**Design:** score ~20k policy turns from recent scored policy-lane
+batches (context = preceding partner turn, text = policy turn);
+correlate with reaction_L WITHIN after-provocation strata (reaction
+varies by type — pooled correlation would confound composition with
+quality); report stratified mean + pooled. Qualitative: read top-10
+vs bottom-10 emulator-ranked turns from the unprovoked stratum.
+**PINNED: predicted stratified mean rho +0.12; wire bar >= 0.08
+(modest reward weight); <= 0.02 → NOT transferable as-is, domain
+adaptation required before reward use (and the GRPO reward design
+pauses on that fork). Read must agree directionally (top-10 wittier
+than bottom-10) or wiring waits regardless of rho.**
+Caveat noted: reaction_L is itself a demoted diagnostic — agreement
+between two imperfect signals is evidence of shared truth, not proof;
+the read is the tiebreaker.
+
+## EMULATOR-TRANSFER — CLOSED: FALSIFIED for naive wiring (2026-08-09)
+
+**stratified mean rho = −0.0897, pooled −0.1087, NEGATIVE in all six
+strata (n=20,003 policy turns).** Decisively below the wire bar
+(0.08) and the kill line (0.02). Pinned consequence EXECUTED: the
+NYCC emulator does NOT enter the GRPO reward as-is; the reward
+design forks.
+
+**The read explains the failure richly:** the emulator's top-ranked
+banter turns contain genuine CAPTION-GRADE standalone wit ("That
+plant lived the office dream: zero meetings, no deadlines, and still
+got all the credit for just being green") interleaved with plain
+logistics; the bottom is mid conversational texture. The emulator
+transfers as a DECONTEXTUALIZED-WIT detector; reaction_L tracks an
+in-context conversational signal; aphoristic zingers may anti-select
+responsiveness. TWO DIFFERENT CONSTRUCTS — and neither is validated
+banter ground truth (reaction is a demoted diagnostic; the
+registration's caveat anticipated exactly this ambiguity).
+
+[LEARN] reward-transfer: an RM certified on-domain (0.395 held-out)
+can ANTI-correlate with the target domain's best available signal.
+Mistake risk avoided: wiring it sight-unseen would have rewarded
+caption-zingers and punished conversational responsiveness — a
+Goodhart trap certified by our own instruments.
+Correction: every reward component gets a cross-domain transfer
+check against the deployment distribution BEFORE wiring, with kill
+bars pinned first.
+
+**FORK DECISION (next experiment):** we currently possess NO
+validated per-turn banter-funniness signal — gates are necessary
+conditions, emulator is off-construct, reaction is demoted. Next:
+HUMAN-ANCHORED comparator — blind pairwise reads (~50 pairs, three
+authors if possible; at minimum blinded self) scoring which of
+emulator vs reaction agrees with human banter judgment; the winner
+(if either) gets calibrated into the reward with the loser as a
+decoupling monitor. GRPO infra work (verl install, env assembly)
+CONTINUES in parallel — only the reward-weights decision is gated.
