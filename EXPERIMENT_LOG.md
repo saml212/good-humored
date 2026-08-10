@@ -3695,3 +3695,14 @@ profiling ("cancelled") — suspected FSDP-materializes-before-vllm-
 profiles ordering. A focused debug agent now owns the iteration
 loop (bounded: 6 attempts, GPUs 0-1 only, no env/reward changes
 allowed, success = 2 complete GRPO steps with metrics).
+
+## Training-era transition housekeeping (2026-08-10)
+
+health.sh rewritten for the new topology (partner + audience serving
+checks; frozen-bank tally; trainer sessions excluded — they carry
+their own stall-aware watchers). First training-era health: OK. The
+iterate-cycle cron replaced with a training-era prompt (progress
+gates: smoke pass → pre-registered GRPO-V1 → pre/post demo delta;
+explicit do-not-duplicate rule while the debug agent owns
+gh_grpo_smoke). GRPO smoke debugging continues under the bounded
+agent; no result yet — not predicted, per discipline.
