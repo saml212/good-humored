@@ -3625,3 +3625,31 @@ end-to-end through training, no partner-swap data-quality cost
 FSDP documented as the alternative (needs the partner's GPUs; only
 if LoRA underperforms). Sampling lanes stop when the verl run
 starts; scored bank (~1.1M sessions) is the SFT-warmstart reservoir.
+
+## GRPO ASSEMBLY step 2: verl recon + bridge written (2026-08-10)
+
+**Installed-package recon (subagent, file:line-cited) reshaped the
+design:** verl 0.8.0 has NO interaction API — multi-turn = custom
+AgentLoopBase subclass; response_mask 1/0 separates policy tokens
+(trained) from partner tokens (excluded); in-loop reward_score SKIPS
+the reward manager (which only sees a flat decoded string —
+structurally unable to carry our session dict). Landmines caught
+before they cost a run: venv-verl was missing cachetools AND any
+rollout backend (install kicked, tmux gh_verl_deps); Qwen3 needs
+tokenization_sanity_check=disable; LoRA must be attention-only
+(all-linear would lora-ize MoE experts, no vLLM guard); 10 rounds
+must fit response_length (8k+).
+
+**Bridge shipped (env/verl_bridge/):** HumorSessionAgentLoop — same
+partner system / opening angles / weighted provocation scheduler as
+banter_rollout (imported, not duplicated: trained-on distribution ==
+banked distribution), frozen 235B partner + GLM audience via httpx,
+reactions PRECOMPUTED async before the sync reward call (a
+run_until_complete bridge would deadlock — caught at write time),
+reward stack in-loop, components logged to extra_fields for the
+decoupling monitor. Plus agent_loop.yaml registry + parquet
+session-opener builder (seed space 2M+, disjoint from banked lanes).
+VERIFY-ON-SMOKE markers on the unconfirmed API calls.
+
+**Next: deps done → loop smoke inside venv-verl → tiny GRPO smoke
+(needs lane-shutdown decision) → full run.**
