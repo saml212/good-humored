@@ -106,6 +106,10 @@ def main():
     ap.add_argument("--lr", type=float, default=2e-5)
     ap.add_argument("--evals-per-epoch", type=int, default=2)
     ap.add_argument("--model", default=MODEL_NAME)
+    ap.add_argument("--workers", type=int, default=0,
+                    help="DataLoader workers; 0 (main-process) is the "
+                         "default after a fork-after-CUDA hang froze the "
+                         "first full run mid-loop at step ~400 for 2h+")
     ap.add_argument("--precision", choices=["fp32", "bf16"], default="fp32",
                     help="deberta-v3 NaN'd immediately under bf16 autocast "
                          "(disentangled-attention half-precision fragility); "
@@ -139,10 +143,11 @@ def main():
     val_ds = CaptionDataset(Path(args.data_dir) / "nycc_val.jsonl")
     log("train=%d val=%d" % (len(train_ds), len(val_ds)))
     train_dl = DataLoader(train_ds, batch_size=args.batch_size, shuffle=True,
-                          collate_fn=collate(tokenizer), num_workers=4,
-                          drop_last=True)
+                          collate_fn=collate(tokenizer),
+                          num_workers=args.workers, drop_last=True)
     val_dl = DataLoader(val_ds, batch_size=512, shuffle=False,
-                        collate_fn=collate(tokenizer), num_workers=4)
+                        collate_fn=collate(tokenizer),
+                        num_workers=args.workers)
 
     steps_total = len(train_dl) * args.epochs
     opt = torch.optim.AdamW(model.parameters(), lr=args.lr)

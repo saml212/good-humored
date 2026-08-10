@@ -3440,3 +3440,17 @@ emulator training.
    step (the first launch burned 400 NaN steps before I checked).
 3. Full run launched fp32 (proven), seed 0, 2 epochs, bs 256:
    loss 0.35 → 0.07 by step 100, GPU 0 at 100%. Result watcher armed.
+
+**EMULATOR-V1 hang incident (2026-08-09, logged during run):** the
+first full run froze mid-loop at step ~400 for 2h+ — session up,
+process spinning (104% CPU, 50GB GPU, GPU busy-looping), log frozen.
+Suspect: DataLoader workers forked after CUDA init (classic silent
+deadlock; the smoke's 8 steps never tripped it). Fixed: workers=0
+default (main-process tokenization — measured zero slowdown at this
+model size), re-smoked, re-registered, relaunched; verified past BOTH
+the step-400 freeze point (step 1100+, ~3 steps/s) and toward first
+eval. Watcher lesson (same class as takeaway 15): the completion-only
+watcher sat silent through a 2h hang — replaced with a stall-aware
+watcher (fires on RESULT, FATAL, or 15-min log staleness). Health
+note: health.sh doesn't cover transient training sessions; the
+stall-aware watcher is the coverage for those.
