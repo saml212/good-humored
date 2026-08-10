@@ -3775,3 +3775,19 @@ rate expected to FALL); a higher reward number alone certifies
 nothing.
 **Run hygiene:** stall-aware watcher (RESULT/FATAL/30-min staleness);
 ~200 steps x ~3-6 min ≈ 10-20h wall.
+
+## GRPO-V1 wedge after step 1 (2026-08-10, diagnosis in progress)
+
+Stall-aware watcher fired on 30-min silence. Evidence chain: double
+LoRA adapter sync (14:47, 14:51) says STEP 1 COMPLETED; partner
+traffic stopped 14:49; py-spy shows trainer awaiting in fit
+(ray_trainer.py:1470) and all AgentLoopWorkers idle with pending
+coroutines — a wedged trainer→worker→engine handoff at step-2
+rollout start. The batch-8 smoke survived this exact transition;
+batch-16 (or another registered delta, incl. my CPU-gate bridge
+change) may matter. Debug agent RESUMED with the evidence and
+bounded mission (past step 5 with metrics, ≤6 attempts, smallest
+deviation from registered config, reward semantics untouchable).
+Watcher discipline note: py-spy before hypothesis — the first
+suspicion (my CPU gate deadlocking encode) was WRONG per the dumps
+(no thread in encode); evidence redirected to the engine handoff.
