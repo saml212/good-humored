@@ -3821,3 +3821,31 @@ freshness on a block-buffered driver.
 Mistake: single py-spy snapshot + stale tail declared a wedge; I
 reported it as fact.
 Correction: paired dumps + cadence checks before any hang verdict.
+
+## GRPO-V1 monitoring saga — consolidated close (2026-08-10)
+
+Three watcher fires, zero real problems. Final accounting: the run
+has been metronome-steady at ~220s/step throughout (flushed timings
+for steps 1-11: 215-235s; scores 0.57-0.66 oscillating around the
+0.602 baseline; KL ~0.0077; response lengths stable ~690-740 — no
+verbosity drift, no saturation, no tripwire). Every "stall" was the
+MONITORING CHANNEL: (1) block-buffered driver flushes metrics/sync
+lines in bursts minutes late, making grep-count cadence measurements
+jumpy; (2) my Traceback trigger matched vLLM's benign startup
+import-probe WARNINGs; (3) eager-decode spin-wait mimics deadlock in
+GPU-util snapshots. Final watcher: LAUNCH SCRIPT EXIT CODE line +
+whole-file mtime >60min (buffering-immune). The movement protocol
+(paired dumps + live traffic deltas) resolved each false fire in
+minutes without touching the run.
+
+[LEARN] monitor-the-monitor: on a block-buffered driver, every
+line-level signal (grep counts, tail freshness, specific-pattern
+triggers) inherits burst-flush noise; watchers must key on
+buffering-immune signals (file mtime, definitive terminal lines,
+server-side traffic) and every trigger pattern must be validated
+against the log's BENIGN content first (vLLM logs "Traceback" as a
+WARNING at startup).
+Mistake: three escalating watchers tuned to noisy signals; two hang
+misdiagnoses reported before correction.
+Correction: mtime + terminal-line only; movement protocol before any
+verdict; trigger patterns grepped against a healthy log first.
