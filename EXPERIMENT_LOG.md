@@ -3869,3 +3869,18 @@ inter-phase instant by movement protocol (partner +389 lines/30s).
 Pin checkpoint: rolling(20) >= 0.70 by step 100 — on current
 trajectory this is plausible but not yet met; judged at step 100,
 not extrapolated.
+
+## GRPO-V1 at step 71: rise then plateau; pin currently behind (2026-08-10 19:26)
+
+Checkpoint 50 banked. Decade means: 0.597→0.639→0.660→0.657→0.673→
+0.651→0.624; rolling20 = 0.642, last5 = 0.657. Read: genuine early
+gain (+0.06-0.07 over baseline by step ~50), then plateau ~0.65 with
+decade wobble at/near the noise floor (64-session decade sigma
+~0.034). **The step-100 pin (rolling20 >= 0.70) is currently NOT on
+track** — the remaining 30 steps would need ~0.73 average. Judged at
+step 100 per registration; no mid-run intervention. Candidate
+explanations to test AT EVAL, not now: (a) LoRA rank/lr capacity,
+(b) the reward's easily-improvable components (screens, self-rep)
+saturate quickly and the taste term is the hard residual, (c) noise
+plateau. Component decomposition at eval will separate these —
+extra_fields logged per session make it possible.
