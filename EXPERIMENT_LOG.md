@@ -3454,3 +3454,38 @@ watcher sat silent through a 2h hang — replaced with a stall-aware
 watcher (fires on RESULT, FATAL, or 15-min log staleness). Health
 note: health.sh doesn't cover transient training sessions; the
 stall-aware watcher is the coverage for those.
+
+## EMULATOR-V1 — CLOSED: SUCCESS at 0.3947 (2026-08-09)
+
+**best_mean_within_contest_spearman = 0.3947** (77/77 held-out
+contests sign-positive; best at final step 4808; curve 0.376 → 0.392
+→ 0.393 → 0.395). Against the pins: predicted 0.35 → actual 0.395
+(prediction EXCEEDED, well-calibrated); success bar 0.25 cleared by
++0.14; kill bar nowhere close. Same-population baselines: random
+0.006, char-length −0.099. Indicative (different population): ~3.2x
+the zero-training reaction-logprob 0.122. The tie-block ceiling
+(41/77 contests with >=100-way ties) makes 0.395 an UNDERSTATEMENT
+of ranking quality on untied pairs.
+
+**Consequence executed: the taste stack's TRAINED layer is
+certified.** Checkpoint: box:/data/good-humored/runs/emulator_v1/best
+(roberta-base + scalar head, 2 epochs, fp32, seed 0; exact script
+archived alongside). frac_positive=1.000 means the emulator
+generalizes across contest topics, not just within-topic phrasing.
+
+**Decisions recorded:**
+1. The emulator does NOT get wired into the curation/scoring pipeline
+   — curation stays on the certified gates (wiring the new RM into
+   its own future training-data selector would Goodhart the loop and
+   break era comparability). Its role is the GRPO reward stack.
+2. Curve was still rising at the end — a 3rd epoch might add ~0.01;
+   not worth blocking GRPO assembly; revisit only if the RM is the
+   binding constraint later.
+3. Calibration note: the prediction was pre-registered via the
+   git-committed log entry (a5b96fb, BEFORE results) rather than the
+   calibration CLI — the prior is provable from git history.
+4. NEXT: GRPO reward-shell assembly (verl) — reward = certified band
+   floor x anti-parrot/self-rep x emulator quantile, with the
+   decoupling monitors; policy = qwen3-30b-a3b per the screen
+   evidence (verified RL path, top-tail reaches demo class, cheapest
+   sampling); 235B partner frozen in env.

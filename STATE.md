@@ -4,6 +4,13 @@ _Last updated: 2026-08-07 (self-driving box loop LIVE)_
 
 ## NOW RUNNING (box: youthful-indigo-turkey, 8×H100, all GPUs 100%)
 
+**EMULATOR V1 CERTIFIED (2026-08-09): 0.3947 within-contest
+Spearman on 77/77 sign-positive held-out contests (predicted 0.35,
+bar 0.25). The taste stack's trained layer exists. Checkpoint:
+box:/data/good-humored/runs/emulator_v1/best. NEXT: GRPO reward
+shell (verl; 30B policy; gates x emulator reward; frozen 235B
+partner).**
+
 **SAMPLING PHASE MATURE (cycle 7):** all config axes closed-or-
 settled; prompts at v0.4; standing eval battery + report card; 200k+
 scored policy-lane sessions banked. NEXT FIRST-ORDER LEVER = training
