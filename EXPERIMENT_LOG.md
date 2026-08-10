@@ -3849,3 +3849,11 @@ Mistake: three escalating watchers tuned to noisy signals; two hang
 misdiagnoses reported before correction.
 Correction: mtime + terminal-line only; movement protocol before any
 verdict; trigger patterns grepped against a healthy log first.
+
+## Training-era cycle: GRPO-V1 mid-run, healthy (2026-08-10)
+
+HEALTH OK; log actively flushing (mtime current). Flushed through
+step 11: scores 0.516-0.662 oscillating around baseline, no trend
+yet (expected at LoRA lr this early), no tripwire. Buffering-immune
+watcher armed and silent. health.sh trainer-session reference
+updated (gh_grpo_v1). Nothing else to do but let it train.
