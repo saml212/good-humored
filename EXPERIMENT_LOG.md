@@ -3600,3 +3600,28 @@ The blind file (pairs_blind.txt) + key are preserved; Sam is invited
 to replicate — a second reader at >=32 hardens the wiring, at <32
 reopens it. The wiring proceeds at MODEST weight partly because of
 this marginality.
+
+## GRPO ASSEMBLY step 1: reward stack shipped and validated (2026-08-09)
+
+**env/reward_stack.py** — the adjudicated stack as a pure injectable
+module: floor_rate (certified gate, hard) x (1 − max_self_rep)
+(certified anti-parrot) x (1 + 0.5·taste) (reaction_L, modest weight
+per the marginal adjudication pass) x hard screens (CJK/asterisk
+zero the session). Emulator stays a decoupling monitor. 8/8 unit
+tests (multiplicative structure, screens, parrot crush, taste
+normalization at exactly 1.5x ceiling, offline path).
+
+**Real-data sanity (50 banked sessions, real BandGate):** mean 0.602,
+range 0–0.882, stdev 0.271, 7/50 zeros (all screen-triggered —
+strict by design; a register defect anywhere zeroes the rollout).
+Discriminating and unsaturated: the group-relative advantage
+structure GRPO needs is present in the wild distribution.
+
+**Topology recommendation (next assembly step):** v1 = LoRA on
+qwen3-30b-a3b across GPUs 0-1, keeping the 235B partner (GPUs 4-7)
+and GLM audience (2-3) serving — the PRODUCT configuration preserved
+end-to-end through training, no partner-swap data-quality cost
+(partner A/B: −0.06 curation under weaker partner). Full-param
+FSDP documented as the alternative (needs the partner's GPUs; only
+if LoRA underperforms). Sampling lanes stop when the verl run
+starts; scored bank (~1.1M sessions) is the SFT-warmstart reservoir.
