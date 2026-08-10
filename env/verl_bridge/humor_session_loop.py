@@ -70,8 +70,17 @@ class HumorSessionAgentLoop(AgentLoopBase):
     def _ensure_gate(self):
         if self._gate is None:
             from env.band_term import BandGate
-            from env.score_banter import make_embed_fn
-            self._gate = BandGate(make_embed_fn())
+            from sentence_transformers import SentenceTransformer
+            # CPU-pinned: every AgentLoop worker loads this; on GPU it
+            # parked ~1.4GB x 8 workers of CUDA context on GPU 0 (98%
+            # peak in the smoke -- debug-agent flag)
+            model = SentenceTransformer("all-MiniLM-L6-v2", device="cpu")
+
+            def embed(texts):
+                return [list(map(float, v)) for v in
+                        model.encode(list(texts), normalize_embeddings=True,
+                                     show_progress_bar=False)]
+            self._gate = BandGate(embed)
         return self._gate
 
     async def _chat(self, base_url, model, system, messages, seed,

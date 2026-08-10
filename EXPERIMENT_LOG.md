@@ -3706,3 +3706,72 @@ gates: smoke pass → pre-registered GRPO-V1 → pre/post demo delta;
 explicit do-not-duplicate rule while the debug agent owns
 gh_grpo_smoke). GRPO smoke debugging continues under the bounded
 agent; no result yet — not predicted, per discipline.
+
+## GRPO SMOKE — PASSED (2026-08-10): first RL steps on conversational humor
+
+**2 complete steps, exit 0.** step1: pg_loss 0.0114, grad_norm 0.204,
+score/mean 0.5985 (min 0, max 0.974 — matches the reward stack's
+wild mean 0.602: REAL rewards, full gate+taste stack in the loop);
+step2: kl_loss 0.0077 NONZERO — the step-1 LoRA update changed the
+policy vs ref. ~170s/step (gen 85s through the live 235B partner),
+training mem 32.5GB/GPU. Five root causes fixed by the debug agent
+(15 attempts, all evidence-first):
+1. expandable_segments breaks vLLM custom-allreduce CUDA-IPC →
+   disable_custom_all_reduce (env var must stay for FSDP fragmentation).
+2. max_model_len defaulted 262144 (24GB KV for one seq) → 16384.
+3. Weight-sync OOM: fp32 model_dtype + dummy load_format = FSDP shard
+   + full base sync colliding with vLLM → bf16 + load_format=
+   safetensors + layered_summon (adapter-only syncs).
+4. verl↔vllm BUG (upstream-worthy): LoRA hijack passes Qwen3MoE's
+   fused-qkv hf_to_vllm_mapper into the LoRA name parser → q/k/v
+   adapters collapse → IndexError. Local fix: mapper=None in the
+   hijack (patched installed verl; backup kept).
+5. flash_attn imported unconditionally by padding utils → pure-python
+   bert_padding stub (no dist-info; FA2 detection stays off).
+CAVEAT for future installs: the verl patch + stub must be re-applied
+after any verl reinstall. Risk flagged: aux workers park ~11GB of
+CUDA contexts on GPU 0 (98% peak) → fix applied post-smoke: bridge
+gate pinned to CPU; rollout util 0.45 for the real run.
+
+[LEARN] verl-lora-colocation: LoRA+vLLM colocated GRPO on verl 0.8
+needs load_format=safetensors + layered_summon + model_dtype=bf16.
+Mistake: assuming defaults (dummy/fp32) are sized for colocation.
+Correction: budget the weight-SYNC phase (both copies resident), not
+just steady state.
+
+[LEARN] expandable-segments-vs-ipc: expandable_segments:True breaks
+vLLM custom-allreduce CUDA IPC; pair with disable_custom_all_reduce
+when TP>1 vLLM and FSDP share a box.
+
+[LEARN] verl-qwen3moe-lora-bug: verl's TensorLoRARequest hijack +
+fused-qkv hf_to_vllm_mapper collapses q/k/v LoRA entries (dim-1
+IndexError). Upstream-worthy; local fix mapper=None.
+
+## GRPO-V1 — pre-registered (2026-08-10, BEFORE launch)
+
+**Hypothesis:** GRPO against the adjudicated reward stack (floor x
+anti-parrot x reaction-taste x screens) raises session reward on the
+product-config env — primarily via fewer screen-zeros, lower
+self-repetition, higher audience reaction — without KL blowup or
+wit collapse.
+**Config:** v15 smoke config (battle-proven through 15 debug
+attempts) with deltas ONLY: train_batch_size 16 (was 8), rollout.n=4
+(64 sessions/step), total_training_steps=200, save_freq=25 →
+checkpoints to runs/grpo_v1, gpu_memory_utilization 0.45 (GPU-0
+headroom), bridge gate CPU-pinned (verified: no CUDA init). Delta
+review in lieu of full re-audit, honestly labeled: the base config
+was forged adversarially; the deltas are scale + the two flagged
+mitigations.
+**PINNED predictions:** critic/score/mean rolling(20) >= 0.70 by
+step 100 and >= 0.72 by step 150 (baseline wild mean 0.602);
+kl_loss stays < 0.05 throughout; screen-zero fraction of sessions
+falls vs the smoke's 7/50 baseline.
+**PINNED hack-tripwire:** reward > 0.95 sustained before step 50 =
+suspected reward hacking → STOP, inspect transcripts + decoupling
+monitors (emulator, read) before any continuation. The post-run
+quality bar remains the HUMAN READ of fresh rollouts + report card
+delta (tridiv >= 0.70 on post-training rollouts; agreement-opener
+rate expected to FALL); a higher reward number alone certifies
+nothing.
+**Run hygiene:** stall-aware watcher (RESULT/FATAL/30-min staleness);
+~200 steps x ~3-6 min ≈ 10-20h wall.
