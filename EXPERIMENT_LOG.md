@@ -3653,3 +3653,25 @@ VERIFY-ON-SMOKE markers on the unconfirmed API calls.
 
 **Next: deps done → loop smoke inside venv-verl → tiny GRPO smoke
 (needs lane-shutdown decision) → full run.**
+
+## GRPO ASSEMBLY step 3: bridge smoke PASSES end-to-end (2026-08-10)
+
+Deps verified by re-running the exact failing imports (main_ppo,
+agent_loop, vllm 0.26; note pip resolved torch 2.13→2.11 for vllm).
+**Driver smoke (live 235B partner + GLM audience + 30B standing in
+for the rollout server + real MiniLM gate + real reward stack): two
+full 10-round sessions.** Session A: reward 0.983 (floor 1.0,
+self-rep 0.11, taste 0.21 — reactions flowing). Session B: hard 0.0
+via screen_rate 0.9 — the one-defective-turn-zeroes rule firing in
+the wild, as designed. Mask split verified (policy ~400 trained
+tokens vs partner ~470 masked per session); 10 rounds ≈ 950 response
+tokens — comfortable in the 8192 budget. Two stub-only bugs fixed en
+route (transformers-5 apply_chat_template return shape;
+sentence_transformers missing in venv-verl). Session dataset built:
+4096 train / 128 val session-opener rows (seed space 2M+, disjoint).
+
+**Remaining before RL step 1: the GRPO smoke itself — the lane-
+shutdown moment. Planned topology: verl on GPUs 0-1 (vllm rollout +
+FSDP-LoRA actor, attention-only targets), 235B partner (4-7) + GLM
+audience (2-3) stay serving; sampling lanes STOP. Next cycle is that
+event, solo-focused.**
