@@ -3857,3 +3857,15 @@ step 11: scores 0.516-0.662 oscillating around baseline, no trend
 yet (expected at LoRA lr this early), no tripwire. Buffering-immune
 watcher armed and silent. health.sh trainer-session reference
 updated (gh_grpo_v1). Nothing else to do but let it train.
+
+## GRPO-V1 progress: checkpoint 25 banked, trend emerging (2026-08-10 17:26)
+
+Step ~41+; first checkpoint (global_step_25) exists in runs/grpo_v1.
+**Rolling score (last 15 flushed steps): 0.6597** — up from the
+0.602 wild baseline and the early-step ~0.60 oscillation; the
+reward trend is emerging within 40 steps. KL/lengths remain stable
+in flushed lines; no tripwire. All-GPU 0% snapshot resolved as
+inter-phase instant by movement protocol (partner +389 lines/30s).
+Pin checkpoint: rolling(20) >= 0.70 by step 100 — on current
+trajectory this is plausible but not yet met; judged at step 100,
+not extrapolated.
