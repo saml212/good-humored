@@ -3884,3 +3884,27 @@ explanations to test AT EVAL, not now: (a) LoRA rank/lr capacity,
 saturate quickly and the taste term is the hard residual, (c) noise
 plateau. Component decomposition at eval will separate these —
 extra_fields logged per session make it possible.
+
+## GRPO-V1 step-100 PIN: MISSED (2026-08-10 21:26)
+
+**rolling20 at step 100 = 0.6637 vs pinned bar 0.70 — MISS.** The
+prediction overshot by ~0.04. What holds: a stable +0.06 plateau
+over the 0.602 baseline (10% relative, >> noise over 100 steps;
+decades 8-10: 0.668/0.664/0.663 — recovered from the decade-7 dip,
+so plateau not decay). KL/lengths stable throughout; no gaming
+signatures; checkpoints 25/50/75/100 banked. The step-150 pin
+(0.72) is transparently unlikely and will be judged, not rescued.
+Honest frame: cheap LoRA RL bought +10% reward in 100 steps; whether
+that's mechanical-component cleanup or actual taste movement is THE
+eval question (component decomposition per session is logged).
+
+**EVAL HARNESS PLAN (executes at run completion, ~03:30 UTC):** the
+sampling machinery IS the eval harness — after GPUs 0-1 free:
+relaunch 30B serving WITH the LoRA adapter (vllm --enable-lora),
+then A/B: banter_rollout base-vs-adapter on IDENTICAL seeds/config
+(same 235B partner, same schedules), score both with score_banter
+(GLM audience), report_card both, demo_pack from the adapter arm,
+component decomposition (floor/self-rep/taste/screens deltas), and
+the HUMAN READ side-by-side. Pre-pinned eval bars from the
+registration stand: tridiv >= 0.70 on trained rollouts; agreement-
+opener rate expected to FALL; the read decides quality.
