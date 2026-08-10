@@ -3675,3 +3675,23 @@ shutdown moment. Planned topology: verl on GPUs 0-1 (vllm rollout +
 FSDP-LoRA actor, attention-only targets), 235B partner (4-7) + GLM
 audience (2-3) stay serving; sampling lanes STOP. Next cycle is that
 event, solo-focused.**
+
+## GRPO SMOKE — the sampling era ends; launch debugging in progress (2026-08-10)
+
+**SAMPLING ERA CLOSED at 2,947 batches (~2.9M sessions generated,
+~1.19M scored).** STOP_LANES set; all keepers drained cleanly; 30B
+serving retired; GPUs 0-1 handed to verl. Partner (235B) + audience
+(GLM) remain serving — product config preserved.
+
+**GRPO smoke launch: three failures in, each one structural and
+fixed:** (1) missing ref/rollout log-prob micro-batch keys (config
+validation) → added; (2) FSDP worker demands FlashAttention2 (not
+installed, no nvcc on box) → attn_implementation=sdpa via
+override_config (found the switch at workers/config/model.py:185);
+(3) OOM: rollout TP=1 needs the full 61GB model on one GPU alongside
+the FSDP shard — impossible geometry → TP=2 + util 0.45 +
+expandable_segments; (4) current: vllm EngineCore dies in memory
+profiling ("cancelled") — suspected FSDP-materializes-before-vllm-
+profiles ordering. A focused debug agent now owns the iteration
+loop (bounded: 6 attempts, GPUs 0-1 only, no env/reward changes
+allowed, success = 2 complete GRPO steps with metrics).
