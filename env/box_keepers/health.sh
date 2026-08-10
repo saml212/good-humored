@@ -14,13 +14,14 @@ check_fresh() {  # file, max-age-minutes, label
     echo "STALE: $3 ($1 older than $2 min)"; FAIL=1
   fi
 }
-for s in gh_serve_8b gh_serve_30b gh_serve_glm gh_serve_235b \
-         gh_lane_30b gh_lane_glm gh_lane_glmself gh_contrast_lane \
+# 8B server + contrast lane retired 2026-08-09 (GPU0 -> emulator)
+for s in gh_serve_30b gh_serve_glm gh_serve_235b \
+         gh_lane_30b gh_lane_glm gh_lane_glmself \
          gh_score_keeper gh_score_keeper2; do
   check_session "$s"
 done
 # newest output file per lane must be recent (batches take ~4-9 min)
-for pref in banter_stream glm_stream glmself_stream contrast_stream; do
+for pref in banter_stream glm_stream glmself_stream; do
   newest=$(ls -t $GH/runs/${pref}_*.jsonl 2>/dev/null | head -1)
   [ -n "$newest" ] && check_fresh "$newest" 30 "$pref lane output"
 done

@@ -3393,3 +3393,50 @@ demo-grade register the env elicits unprompted (and one more thing
 a pure joke-metric would miss — the human read keeps earning its
 place as the quality bar). Minor: one garbled token ("theouncy"),
 single instance, no counter warranted. No changes.
+
+## EMULATOR-V1 — pre-registered (2026-08-09, BEFORE training; Sam's training GO)
+
+**Hypothesis:** a DeBERTa-v3-base regressor on within-contest
+percentile targets learns humor ranking that generalizes to held-out
+contests — the trained-emulator layer of the taste stack works where
+zero-training reaction-logprob (rho=0.122, different population)
+was sub-bar.
+**Data:** NYCC-Zhang, 615,444 train rows / 308 contests, 77,000 val
+rows / 77 DISJOINT contests (train/val disjointness empirically
+verified by the pre-run audit). research_only firewall: this emulator
+serves the INTERNAL loop; buyer-facing variant retrains on
+commercial-safe data.
+**Metric:** mean within-contest Spearman across the 77 val contests.
+**Baselines computed on the EXACT val population (audit finding 1 —
+the 0.122 chain figure is a different population, 12 contests x 24
+stratified, and is NOT the bar):** char-length −0.099, word-count
+−0.092, random 0.006.
+**PINNED: predicted 0.35; success >= 0.25; if < 0.15 the v1
+percentile-regression approach is insufficient → v2 (pairwise loss /
+bigger backbone) BEFORE any GRPO wiring.** Known ceiling caveat
+(audit finding 2): 41/77 val contests contain >=100-way score-floor
+tie blocks (worst 885/1000), depressing achievable rho — reported
+alongside, not excused after the fact.
+**Audit:** adversarial pre-run audit PASSED (SAFE TO RUN; tie
+handling, Spearman, split hygiene empirically fuzz-verified against
+scipy); minor fixes applied (seed, out-dir guard, script archival,
+best_step). Smoke (forward+backward+eval at real batch sizes) gated
+by the harness dry-run sentinel, run before launch.
+**Infra:** GPU 0 freed by RETIRING the contrast lane + 8B server
+(contrast information saturated since cycle 20; ~840 banked batches
+remain available). Policy lanes keep sampling on GPUs 1-7 during
+emulator training.
+
+**EMULATOR-V1 amendments (logged before results):**
+1. BACKBONE AMENDED deberta-v3-base → roberta-base: deberta NaN'd on
+   the FIRST optimizer step in BOTH bf16 and fp32 (step-1 loss sane
+   both times — the box's very new transformers' rewritten DebertaV2
+   path is the suspect, not the training math). roberta-base smoked
+   clean (descending losses, sane evals). The hypothesis is about
+   percentile-regression, not the backbone; deberta retry possible
+   later in a pinned venv. Prediction/bars UNCHANGED.
+2. Smoke blind spot closed: sub-100-step runs logged no loss values;
+   trainer now logs steps 1-3 and FAILS FAST on NaN at any logged
+   step (the first launch burned 400 NaN steps before I checked).
+3. Full run launched fp32 (proven), seed 0, 2 epochs, bs 256:
+   loss 0.35 → 0.07 by step 100, GPU 0 at 100%. Result watcher armed.
