@@ -3547,3 +3547,56 @@ emulator vs reaction agrees with human banter judgment; the winner
 (if either) gets calibrated into the reward with the loser as a
 decoupling monitor. GRPO infra work (verl install, env assembly)
 CONTINUES in parallel — only the reward-weights decision is gated.
+
+## SIGNAL-ADJUDICATION — pre-registered (2026-08-09, BEFORE any pair is read)
+
+**Question:** which per-turn signal — the NYCC emulator or the
+audience reaction_L — agrees with human judgment of in-context
+banter wit? Winner (if any) becomes the calibrated GRPO taste term;
+loser becomes a decoupling monitor.
+**Design:** 50 pairs of unprovoked policy turns with STRONG
+DISAGREEMENT between the signals (emulator prefers one, reaction the
+other, both deltas in top quartiles), each shown with its preceding
+partner turn as context. BLIND protocol: random pair order, random
+left/right assignment, no signal values visible; choices recorded to
+a file BEFORE the key is opened (self-blinded single reader —
+honestly labeled as such; weaker than the three-author rule, and the
+result inherits that caveat. Sam invited as second reader
+afterward).
+**PINNED: a signal at >=32/50 agreement (binomial p<0.05 vs chance)
+gets wired as the taste term at modest weight. BOTH in 23-31/50
+(chance band) → NEITHER is wired; GRPO v1 ships gates-only with the
+taste slot explicitly open (consistent with the pluggable-slot
+product architecture). <=18/50 → inverse signal, investigated.
+PREDICTION: reaction ~29/50, emulator ~23/50.**
+
+## SIGNAL-ADJUDICATION — CLOSED (2026-08-09): reaction wired, emulator inverse
+
+**Result (50 strict-disagreement blind pairs, unprovoked stratum):
+reaction_L agrees with human judgment 32/50 (0.64) — EXACTLY the
+pre-pinned significance bar (>=32, binomial p~0.03, one-sided);
+emulator 18/50 (0.36) — EXACTLY the inverse-signal line.** Predicted
+29/23; direction right, both effects stronger than predicted.
+
+**Consequences executed per pins:**
+1. reaction_L is WIRED as the GRPO taste term at modest weight. The
+   demoted-then-vindicated arc is real: the signal failed on NYCC
+   captions (0.122, EXP-023) and works on in-context conversational
+   reactions — its actual design domain. The audience-reaction
+   thesis (Sam's original spec) holds where it was meant to.
+2. Emulator → DECOUPLING MONITOR only (its preference anti-correlates
+   with in-context wit on disagreement pairs: it bets on zinger-
+   shaped text against responsiveness). Not inverted into a reward
+   (over-engineering risk); retained as the independent cross-check
+   the anti-hack architecture wanted.
+3. REWARD STACK NOW FULLY SPECIFIED: certified band floor (hard gate)
+   x anti-parrot/self-rep penalties x reaction_L taste term (modest
+   weight) + CJK/asterisk hard screens + emulator decoupling monitor.
+
+**Honesty block:** the winning score sits EXACTLY on the bar — the
+weakest possible pass — from a single self-blinded reader (the
+three-author rule was not met; the registration said so in advance).
+The blind file (pairs_blind.txt) + key are preserved; Sam is invited
+to replicate — a second reader at >=32 hardens the wiring, at <32
+reopens it. The wiring proceeds at MODEST weight partly because of
+this marginality.

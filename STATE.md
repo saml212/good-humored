@@ -4,6 +4,13 @@ _Last updated: 2026-08-07 (self-driving box loop LIVE)_
 
 ## NOW RUNNING (box: youthful-indigo-turkey, 8×H100, all GPUs 100%)
 
+**REWARD STACK SPECIFIED (2026-08-09, signal adjudication closed):
+band floor x anti-parrot x reaction_L taste term (human-adjudicated
+32/50 vs emulator 18/50 on blind disagreement pairs — vindicated in
+its home domain) + hard screens + emulator as decoupling monitor.
+NEXT: verl env assembly (verl 0.8.0 installed, venv-verl). Sam
+invited to replicate the blind read (scratchpad pairs_blind.txt).**
+
 **EMULATOR V1 CERTIFIED (2026-08-09): 0.3947 within-contest
 Spearman on 77/77 sign-positive held-out contests (predicted 0.35,
 bar 0.25). The taste stack's trained layer exists. Checkpoint:
