@@ -3791,3 +3791,33 @@ deviation from registered config, reward semantics untouchable).
 Watcher discipline note: py-spy before hypothesis — the first
 suspicion (my CPU gate deadlocking encode) was WRONG per the dumps
 (no thread in encode); evidence redirected to the engine handoff.
+
+## GRPO-V1 "wedge" — CORRECTION: false alarm, run healthy throughout (2026-08-10)
+
+**My wedge diagnosis was WRONG; the debug agent proved it with
+paired py-spy dumps 12s apart showing the TP workers MOVING** (MoE
+Triton → symm-mem allreduce → LoRA-expand → sampler). The
+deadlock-mimicking signature: eager-mode decode is CPU-launch-bound
+(GPU0 worker at 9% python-side launches) while the
+disable_custom_all_reduce fallback SPIN-WAITS on GPU1 (100% "busy"
+doing nothing) — and 64-session turn-waves legitimately silence the
+partner for 4-6 min between rounds. The missing step-metrics were
+stdio BLOCK-BUFFERING on the redirected driver (metrics landed ~12
+min late). The agent made ZERO changes — correctly refusing to fix
+a healthy run. Steps 1-5: score/mean 0.634/0.662/0.578/0.574/0.615,
+kl 0.0077-0.0078 nonzero from step 2, 215-235s/step. At last check:
+step 7 rolling out, ETA ~03:30 UTC, checkpoint 25 → runs/grpo_v1.
+
+**Monitoring rule for THIS run (adopted): liveness = adapter-sync
+cadence (grep -c "loaded_params: 384", +2 per ~4-min step), never
+log-tail freshness or sub-8-min partner gaps.** Next relaunch only:
+stdbuf -oL / PYTHONUNBUFFERED=1.
+
+[LEARN] slow-vs-wedged: eager TP decode + spin-wait allreduce mimics
+deadlock (one GPU 100%, one near-idle, workers awaiting, downstream
+silence). Liveness = py-spy stack DELTAS (two dumps ~10s apart) +
+periodic artifact cadence — never single snapshots or log-tail
+freshness on a block-buffered driver.
+Mistake: single py-spy snapshot + stale tail declared a wedge; I
+reported it as fact.
+Correction: paired dumps + cadence checks before any hang verdict.
