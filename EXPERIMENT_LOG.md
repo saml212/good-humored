@@ -3940,3 +3940,52 @@ checkpoint 200 → servable HF model (tmux gh_merge). Then: A/B
 rollouts base-vs-trained on identical seeds through the identical
 fleet, scoring, component decomposition, report cards, demo pack
 v3, read.
+
+## GRPO-V1 EVAL — CLOSED: NO GENERALIZABLE GAIN (2026-08-11)
+
+**Held-out A/B (500 paired sessions, identical seeds, identical
+fleet): NULL-to-negative on every axis.** Curation: base 0.888 vs
+trained 0.882 (sign test p=0.23). EXACT trained objective
+(reward_stack incl. screens): base 0.6781 vs trained 0.6526 —
+trained WORSE by 0.026, wins 223/483 (46%). Components all flat
+(floor −0.006, self-rep −0.002, reaction −0.07 logits, agreement
+−0.003, tridiv −0.004; screens slightly worse: 97 vs 83 zero
+sessions). No register regressions, no gains.
+
+**The reframe that matters: base scores 0.678 on FRESH seeds — equal
+to the training curve's FINAL value (0.669). The +0.07 "training
+gain" (0.60→0.67) was therefore not the policy improving toward the
+base ceiling on new sessions; it was ADAPTATION TO THE TRAINING SET
+— 4096 fixed prompts × ~3 epochs of identical seeded schedules
+(12,800 rollouts) gave the policy repeats to adapt to, and our own
+seeded-schedule reproducibility (a deliberate env feature) created
+the overfitting surface.** The early-training scores were the true
+out-of-distribution readings; the "trend" was the train/eval gap
+opening, textbook-style, at the RL level.
+
+**Classification: bad-hyperparam/bad-design (fixed prompt set), NOT
+bad-hypothesis** — the approach was never tested with proper prompt
+freshness. V2 prescription, in order of expected leverage:
+1. FRESH SEEDS EVERY BATCH (stream the session-seed space like the
+   bank did — never repeat a schedule during training);
+2. larger group (n=8+) for advantage SNR (reward sigma 0.27 at n=4
+   gives noisy advantages);
+3. taste-term weight/shaping revisit (0.5 x mean-taste ~0.1 range is
+   small vs floor/self-rep variance — the hard component may need
+   more gradient share once the mechanical ones saturate);
+4. LoRA rank / KL tether only after 1-3.
+
+**Product honesty:** the pre/post demo delta does NOT exist for v1
+and will not be fabricated; the eval machinery, the null itself, and
+the diagnosis are the deliverable — exactly what the discipline is
+for. Both models remain SERVED for Sam's talk-test: base :8002
+(qwen3-30b-base), trained :8005 (qwen3-30b-trained).
+
+[LEARN] rl-train-curves-measure-adaptation: a rising GRPO reward on
+a FIXED prompt set is compatible with zero generalization — the
+policy can adapt to repeated seeded schedules (env determinism
+becomes the overfitting surface). Hold out SEEDS and eval the exact
+objective on fresh sessions before believing any training trend.
+Mistake: 4096 fixed prompts x 3 epochs; trend read as learning.
+Correction: stream unique seeds at training time; A/B on held-out
+seeds is the only reward claim that counts.
