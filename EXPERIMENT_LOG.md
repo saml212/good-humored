@@ -4103,3 +4103,29 @@ successive small-n readings produced three contradictory stories.
 Mistake: "mechanism found" shipped on a 1.5-SE level difference.
 Correction: power calculation first; matched pairs; conclusions only
 at 3+ SE.
+
+## GRPO-V2 — pre-registered (2026-08-11, BEFORE launch)
+
+**Instrument status: generation-parity gate PASSED at n=200 matched
+pairs (delta +0.014, t=0.46) — v2's training pathway is verified
+against the clean pipeline, which v1's never was.**
+**Config = v1's proven config with these deltas ONLY:** dataset
+data-v2 (16,384 rows, seed base 6M, verified disjoint from v1-train/
+eval/parity spaces; 200 steps x 8 prompts = 1,600 draws — no
+repeats, 10x headroom); rollout.n=8 with train_batch_size=8 (64
+sessions/step — v1 cost, doubled group size for advantage SNR);
+GH_SESSION_DUMP_DIR set (per-worker transcript dumps — the evidence
+v1 lacked); fixed loop (initial-render structure, verified);
+save_freq 25 → runs/grpo_v2.
+**PINNED (calibrated on v1's misses — priors cut ~half):**
+1. Training curve: rolling20 >= 0.68 by step 100 (v2 baseline-parity
+   starts at ~0.65 per the gate; this asks +0.03 generalized-scale).
+2. PRIMARY (the only claim that counts): held-out A/B at 7M seeds,
+   500 paired sessions, exact objective: trained - base >= +0.03
+   with paired t >= 2. SUCCESS = both; training-curve miss with A/B
+   hit still = SUCCESS (the curve is secondary instrumentation).
+3. Hack tripwire unchanged (>0.95 before step 50 = STOP).
+4. FAILURE consequence: A/B null again at verified pathway + n=8 +
+   fresh data => the finding becomes "LoRA r32 GRPO cannot move this
+   reward at 200-step scale" => v3 decision point (rank/steps/full-
+   param/taste-shaping) goes to Sam with the full evidence file.

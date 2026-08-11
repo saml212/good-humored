@@ -24,6 +24,8 @@ be confirmed the first time this actually runs.
 """
 
 import asyncio
+import json as _json
+import os
 import random
 
 try:  # box venv-verl dependency; guarded so the module (and its
@@ -190,6 +192,14 @@ class HumorSessionAgentLoop(AgentLoopBase):
                 break
 
         session = {"session_id": session_id, "task": task, "turns": turns}
+        # v2: training transcript dumps (per-worker files -- concurrent
+        # processes must not interleave one file). The missing evidence
+        # that forced the v1 archaeology.
+        dump_dir = os.environ.get("GH_SESSION_DUMP_DIR")
+        if dump_dir:
+            with open(os.path.join(
+                    dump_dir, "sessions.%d.jsonl" % os.getpid()), "a") as f:
+                f.write(_json.dumps(session) + "\n")
         reaction_fn = None
         if self.audience_base_url:
             # precompute reactions ASYNC here (session_reward is sync and

@@ -42,14 +42,17 @@ def main():
     ap.add_argument("--n-train", type=int, default=4096)
     ap.add_argument("--n-val", type=int, default=128)
     ap.add_argument("--out-dir", required=True)
+    ap.add_argument("--seed-base", type=int, default=2_000_000,
+                    help="session-seed base; keep every run/eval space "
+                         "DISJOINT (v1 train 2M, eval 4M, parity 5M)")
     args = ap.parse_args()
     import pandas as pd
     out = Path(args.out_dir)
     out.mkdir(parents=True, exist_ok=True)
     # seed bases far from every banked lane's offset space
-    pd.DataFrame(rows(args.n_train, 2_000_000)).to_parquet(
+    pd.DataFrame(rows(args.n_train, args.seed_base)).to_parquet(
         out / "sessions_train.parquet")
-    pd.DataFrame(rows(args.n_val, 3_000_000)).to_parquet(
+    pd.DataFrame(rows(args.n_val, args.seed_base + 900_000)).to_parquet(
         out / "sessions_val.parquet")
     print("train=%d val=%d -> %s" % (args.n_train, args.n_val, out))
 
