@@ -215,4 +215,5 @@ class HumorSessionAgentLoop(AgentLoopBase):
             metrics={},
             extra_fields={"reward_components":
                           {k: v for k, v in r.items() if k != "total"},
+                          "session_turns": turns,
                           "task": task})

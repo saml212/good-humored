@@ -4030,3 +4030,45 @@ Mistake: assumed loop-reward == eval-reward because they share
 modules; shipped a diagnosis (epochs) without checking arithmetic.
 Correction: parity check is a pre-launch gate; arithmetic in every
 close-out gets recomputed, not recalled.
+
+## GRPO-V1 mechanism FOUND: generation-pathway malformation (2026-08-11)
+
+**Parity diagnostic (30 driver sessions, transcripts dumped, cross-
+scored):** reward-path parity HOLDS — loop-path vs eval-path reward
+on identical transcripts: mean diff +0.0034, sd 0.030. Hypothesis
+(a) refuted. **The LEVELS localize the true mechanism: driver-
+generated sessions score 0.615 ≈ the training curve's early 0.60,
+vs 0.678 for banter_rollout-generated sessions — same base model,
+same partner, same instruments. The agent loop's PROMPT CONSTRUCTION
+is defective: chat template rendered with add_generation_prompt=
+False, so policy generations continue raw text rather than opening a
+proper assistant turn — off-distribution prompts → degraded
+conversations → the 0.60 training floor.** The +0.07 "training gain"
+was the policy adapting to its own malformed context; that
+adaptation is worthless under the clean pipeline → the held-out
+null. Every observation is now explained by one bug.
+
+**V2 UNBLOCKED with concrete requirements:**
+1. Fix generation-prompt handling in HumorSessionAgentLoop (assistant
+   -start marker before every policy generate; delta-template
+   construction verified against the ToolAgentLoop pattern AND
+   against banter_rollout's rendered text).
+2. PRE-LAUNCH GENERATION-PARITY GATE: loop-generated base sessions
+   must score within noise of banter_rollout-generated base sessions
+   (~0.68) BEFORE any training step — the gate that would have
+   caught this before spending 12.5 GPU-hours.
+3. Training transcript dumps ON (already patched).
+4. Fresh-seed streaming + n=8 groups (carried from the earlier
+   prescription; still good practice).
+
+[LEARN] generation-parity: in RL-with-external-eval, the TRAINING
+rollout pathway and the EVAL rollout pathway are different
+instruments too — template malformation in one silently trains the
+policy against a corrupted distribution while eval measures the
+clean one. Gate training launches on generation parity (same model
+scores the same through both pathways), not just reward parity.
+Mistake: assumed verl's apply_chat_template + my delta construction
+produced well-formed chat prompts; never diffed rendered text.
+Correction: parity gates on BOTH the reward path and the generation
+path before any run; diff the rendered prompts against the
+known-good serving path.

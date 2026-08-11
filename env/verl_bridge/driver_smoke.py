@@ -72,11 +72,14 @@ def build_stub(loop_cls, tokenizer, policy_url, policy_model):
 async def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--n-sessions", type=int, default=2)
+    ap.add_argument("--dump", default=None,
+                    help="jsonl path: dump session turns + loop-path reward "
+                         "components (for reward-path parity checks)")
     args = ap.parse_args()
     from transformers import AutoTokenizer
     tokenizer = AutoTokenizer.from_pretrained("Qwen/Qwen3-30B-A3B-Instruct-2507")
     loop = build_stub(HumorSessionAgentLoop, tokenizer,
-                      "http://127.0.0.1:8002/v1", "qwen3-30b-a3b")
+                      "http://127.0.0.1:8002/v1", "qwen3-30b-base")
     from env.banter_rollout import POLICY_SYSTEM, TASKS
     for i in range(args.n_sessions):
         task = TASKS[i % len(TASKS)]
@@ -96,6 +99,14 @@ async def main():
             "partner_tokens": len(mask) - sum(mask),
             "components": out.extra_fields.get("reward_components"),
         }, indent=2))
+        if args.dump:
+            with open(args.dump, "a") as f:
+                f.write(json.dumps({
+                    "session_id": 5_100_000 + i, "task": task,
+                    "turns": out.extra_fields.get("session_turns"),
+                    "loop_reward": out.reward_score,
+                    "loop_components": out.extra_fields.get(
+                        "reward_components")}) + "\n")
 
 
 if __name__ == "__main__":
