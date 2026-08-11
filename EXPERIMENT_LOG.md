@@ -4147,3 +4147,15 @@ in-context ("yanked it like it owed me money", "a sneeze of
 signal") — the training distribution is healthy; the question is
 whether the gradient moves anything. 3,392 transcripts banked. No
 intervention.
+
+## GRPO-V2 step-100 PIN: MISSED — flat at baseline (2026-08-11)
+
+rolling20 at 100 = 0.6504 vs bar 0.68 — MISS. Decades through 110:
+0.62-0.66 band, no trend, on the VERIFIED pathway with disjoint
+data and n=8 groups. Unlike v1 there is no artifact to blame: this
+is the honest reading that rank-32 LoRA GRPO gradients are not
+moving this reward at this scale. Per registration the A/B at 7M
+seeds remains the primary claim, but a parity-flat curve makes a
++0.03 A/B gain unlikely; the pre-signed failure consequence (v3
+capacity fork to Sam with the evidence file) is the probable
+destination. Run completes (~7h); judged then.
