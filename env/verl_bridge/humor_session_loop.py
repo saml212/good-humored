@@ -132,16 +132,10 @@ class HumorSessionAgentLoop(AgentLoopBase):
                     types, weights=[PROVOCATION_WEIGHTS[t] for t in types])[0]
 
         partner_sys = PARTNER_SYSTEM.format(task=task)
-        # policy-side token stream starts from the dataset prompt
-        # (system message with the neutral policy prompt for this task)
-        messages = list(kwargs["raw_prompt"])
-        prompt_ids = await self.apply_chat_template(messages)
-        prompt_len = len(prompt_ids)  # VERIFY-ON-SMOKE: helper returns ids
         response_mask, turns = [], []
         partner_view = []
 
-        for rnd in range(self.num_rounds):
-            # partner speaks first each round (mask 0)
+        async def partner_turn(rnd):
             p_sys = partner_sys
             if rnd == 0:
                 p_sys = ("TO OPEN THIS CONVERSATION: " + opening_angle
@@ -149,23 +143,37 @@ class HumorSessionAgentLoop(AgentLoopBase):
             elif schedule.get(rnd):
                 p_sys = ("THIS TURN, before anything else: "
                          + PROVOCATIONS[schedule[rnd]] + " ") + partner_sys
-            partner_text = await self._chat(
+            text = await self._chat(
                 self.partner_base_url, self.partner_model, p_sys,
                 partner_view, _seed(session_id, "partner%d" % rnd),
                 self.partner_max_tokens)
-            partner_view.append({"role": "assistant",
-                                 "content": partner_text})
-            turns.append({"role": "partner", "turn": rnd,
-                          "text": partner_text,
-                          "provocation": schedule.get(rnd)
-                          if rnd else None})
-            delta = await self.apply_chat_template(
-                [{"role": "user", "content": partner_text}],
-                remove_system_prompt=True)  # VERIFY-ON-SMOKE: delta form
-            prompt_ids += delta
-            response_mask += [0] * len(delta)
-            if len(response_mask) >= self.rollout_config.response_length:
-                break
+            partner_view.append({"role": "assistant", "content": text})
+            turns.append({"role": "partner", "turn": rnd, "text": text,
+                          "provocation": schedule.get(rnd) if rnd else None})
+            return text
+
+        # GRPO-V1 post-mortem fix: the FIRST partner turn joins the
+        # INITIAL render (system + user together, ToolAgentLoop
+        # pattern). The old system-only initial render left a dangling
+        # empty assistant block (verl's helper hardcodes
+        # add_generation_prompt=True) -- the malformation behind the
+        # depressed training scores and the held-out null.
+        first_partner = await partner_turn(0)
+        messages = list(kwargs["raw_prompt"]) + [
+            {"role": "user", "content": first_partner}]
+        prompt_ids = await self.apply_chat_template(messages)
+        prompt_len = len(prompt_ids)
+
+        for rnd in range(self.num_rounds):
+            if rnd > 0:
+                partner_text = await partner_turn(rnd)
+                delta = await self.apply_chat_template(
+                    [{"role": "user", "content": partner_text}],
+                    remove_system_prompt=True)
+                prompt_ids += delta
+                response_mask += [0] * len(delta)
+                if len(response_mask) >= self.rollout_config.response_length:
+                    break
 
             # policy turn (mask 1, trained)
             out = await self.server_manager.generate(

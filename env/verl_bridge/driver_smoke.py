@@ -40,10 +40,11 @@ def build_stub(loop_cls, tokenizer, policy_url, policy_model):
     obj.rollout_config = types.SimpleNamespace(response_length=8192)
 
     async def apply_chat_template(messages, remove_system_prompt=False):
-        # version-proof: render text, then tokenize (transformers 5.x
-        # changed apply_chat_template's tokenize-return shape)
+        # mirrors verl semantics: add_generation_prompt=True ALWAYS
+        # (agent_loop.py:301); Qwen3 inserts no default system on
+        # user-only renders, so remove_system_prompt strips nothing
         text = tokenizer.apply_chat_template(
-            messages, add_generation_prompt=False, tokenize=False)
+            messages, add_generation_prompt=True, tokenize=False)
         return list(tokenizer(text, add_special_tokens=False).input_ids)
 
     obj.apply_chat_template = apply_chat_template
@@ -56,11 +57,15 @@ def build_stub(loop_cls, tokenizer, policy_url, policy_model):
                 r = await c.post(
                     policy_url + "/completions",
                     json={"model": policy_model, "prompt": text,
-                          "max_tokens": 90, "temperature": 1.0},
+                          "max_tokens": 90, "temperature": 1.0,
+                          "stop": ["<|im_end|>"]},
                     headers={"Authorization": "Bearer gh-local"})
                 r.raise_for_status()
                 out_text = r.json()["choices"][0]["text"]
-            ids = tokenizer(out_text, add_special_tokens=False).input_ids
+            # closure parity: real vllm token streams end the assistant
+            # block; re-append im_end after the stop-string trim
+            ids = tokenizer(out_text.strip() + "<|im_end|>\n",
+                            add_special_tokens=False).input_ids
             return types.SimpleNamespace(token_ids=list(ids),
                                          log_probs=None,
                                          stop_reason="stop")
@@ -81,14 +86,27 @@ async def main():
     loop = build_stub(HumorSessionAgentLoop, tokenizer,
                       "http://127.0.0.1:8002/v1", "qwen3-30b-base")
     from env.banter_rollout import POLICY_SYSTEM, TASKS
-    for i in range(args.n_sessions):
+    sem = asyncio.Semaphore(16)
+
+    async def one(i):
+      async with sem:
         task = TASKS[i % len(TASKS)]
+        # MATCHED-PAIRS gate: do NOT override the task -- the loop's
+        # seeded rng then reproduces banter_rollout's exact task,
+        # opening angle, schedule, and partner seeds at this
+        # session_id, isolating the generation pathway as the only
+        # difference. (raw_prompt task must match the rng task, so
+        # compute it the same way.)
+        from env.banter_rollout import _seed as _s, TASKS as _T
+        import random as _r
+        rng_task = _r.Random(_s(5_000_000 + i, "schedule")).choice(_T)
         out = await loop.run(
             {"temperature": 1.0, "max_tokens": 90},
             raw_prompt=[{"role": "system",
-                         "content": POLICY_SYSTEM.format(task=task)}],
-            extra_info={"task": task, "session_seed": 5_000_000 + i},
+                         "content": POLICY_SYSTEM.format(task=rng_task)}],
+            extra_info={"session_seed": 5_000_000 + i},
             index=i)
+        task = rng_task
         mask = out.response_mask
         print(json.dumps({
             "session": i, "task": task,
@@ -107,6 +125,8 @@ async def main():
                     "loop_reward": out.reward_score,
                     "loop_components": out.extra_fields.get(
                         "reward_components")}) + "\n")
+
+    await asyncio.gather(*[one(i) for i in range(args.n_sessions)])
 
 
 if __name__ == "__main__":

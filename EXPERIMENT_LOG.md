@@ -4072,3 +4072,34 @@ produced well-formed chat prompts; never diffed rendered text.
 Correction: parity gates on BOTH the reward path and the generation
 path before any run; diff the rendered prompts against the
 known-good serving path.
+
+## Parity gate: RETRACTION #2 and the powered redo (2026-08-11)
+
+**RETRACTION: the "mechanism found" conclusion (template
+malformation proven by driver levels) was OVERCONFIDENT — n=30
+pathway comparisons have SE ≈ 0.05, and successive 30-session
+measurements bounced 0.598-0.660 across arms (the matched gate even
+INVERTED, loop 0.660 > clean 0.598).** The template malformation is
+a real FACT about v1 (the dangling assistant block existed) but its
+EFFECT SIZE is unmeasured; the training-floor mechanism is
+UNPROVEN. What remains solid: the v1 training floor (0.597, SE
+0.011) vs clean-pipeline base (0.678, SE 0.012) is a real 5+ SE
+anomaly; the held-out null stands.
+
+**Resolution: v2 does not require v1's floor to be explained — it
+requires v2's OWN instrument verified. Powered generation-parity
+gate running: 200 MATCHED pairs (same seeds → same tasks, angles,
+schedules, partner seeds; only the pathway differs), fixed loop vs
+clean pipeline, full scoring. GATE PIN: |delta| <= 0.03 passes (SE
+of the paired mean ~0.015-0.02); a real gap >0.05 fails and gets
+diagnosed on n=200 evidence.** Loop fixes shipped regardless (first
+partner turn in initial render per ToolAgentLoop; stub stop-string +
+closure parity; concurrent driver).
+
+[LEARN] power-before-mechanism: pathway/instrument comparisons need
+n such that SE << the effect sought BEFORE any mechanism conclusion;
+at sigma 0.27, n=30 (SE 0.05) cannot resolve a 0.06 gap. Three
+successive small-n readings produced three contradictory stories.
+Mistake: "mechanism found" shipped on a 1.5-SE level difference.
+Correction: power calculation first; matched pairs; conclusions only
+at 3+ SE.
