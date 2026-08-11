@@ -3908,3 +3908,14 @@ component decomposition (floor/self-rep/taste/screens deltas), and
 the HUMAN READ side-by-side. Pre-pinned eval bars from the
 registration stand: tridiv >= 0.70 on trained rollouts; agreement-
 opener rate expected to FALL; the read decides quality.
+
+## GRPO-V1 step-150 PIN: MISSED; late slow climb resumed (2026-08-11 01:26)
+
+**rolling20 at step 150 = 0.6743 vs bar 0.72 — MISS** (both reward
+pins missed; predictions overshot by ~0.04-0.05 consistently — a
+calibration datum in itself). REAL and noteworthy: after ~30 flat
+steps the curve resumed a slow climb (decades 14-16: 0.677/0.672/
+0.680; rolling20 now 0.684 at step 167) — the plateau was not a hard
+ceiling. Run on pace to finish ~step 200 at roughly +0.08 over
+baseline. Checkpoints through 150 banked. Eval unchanged: component
+decomposition decides what the +0.08 is made of.
