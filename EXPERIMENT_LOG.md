@@ -4136,3 +4136,14 @@ adapter syncs cycling; eval servers retired to free GPUs 0-1 (talk-
 test re-servable from disk on request). Buffering-immune watcher
 armed. ~200 steps ≈ 12h; the held-out A/B at 7M seeds is the
 verdict, per registration.
+
+## GRPO-V2 at step 50: flat at baseline; training reads healthy (2026-08-11)
+
+Rolling20 0.637; decades 0.646/0.643/0.636/0.651/0.623 — flat at the
+gate baseline (~0.65), no learning signal at 50 steps. Step-100 pin
+(0.68) currently behind; judged at 100. Mid-run transcript read
+(the v1-missing capability): training material is genuinely witty
+in-context ("yanked it like it owed me money", "a sneeze of
+signal") — the training distribution is healthy; the question is
+whether the gradient moves anything. 3,392 transcripts banked. No
+intervention.
