@@ -4159,3 +4159,18 @@ seeds remains the primary claim, but a parity-flat curve makes a
 +0.03 A/B gain unlikely; the pre-signed failure consequence (v3
 capacity fork to Sam with the evidence file) is the probable
 destination. Run completes (~7h); judged then.
+
+## GRPO-V2: late climb is REAL (2026-08-11, step 173)
+
+After 110 flat steps, the curve moved: decades 15-17 = 0.668/0.668/
+0.673 (~3 SE over the 0.64 flatline at decade-n=640), last 7 steps
+average ~0.71 with peaks 0.742-0.747 — accelerating into the final
+stretch ON THE VERIFIED SCALE (v2's curve means what it says, unlike
+v1's). No tripwire (max 0.747 << 0.95). Interpretation candidates:
+LoRA needed ~100+ steps of accumulation before the reward gradient
+found purchase; or late-run variance. The A/B at 7M seeds decides,
+per registration; the run STOPS at its registered 200 steps — if the
+A/B confirms a real gain, a REGISTERED v2.1 continuation from
+checkpoint 200 becomes the natural follow-up (the curve's slope at
+stop is the argument). KL trend to be checked at close-out alongside
+the A/B.
