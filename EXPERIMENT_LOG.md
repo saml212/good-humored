@@ -4174,3 +4174,41 @@ A/B confirms a real gain, a REGISTERED v2.1 continuation from
 checkpoint 200 becomes the natural follow-up (the curve's slope at
 stop is the argument). KL trend to be checked at close-out alongside
 the A/B.
+
+## GRPO-V2 — CLOSED: A/B MISS; the finding is now sharp (2026-08-12)
+
+**Held-out A/B (500 paired, 7M seeds): delta +0.0084 (t=0.41) vs
+pinned >= +0.03 at t>=2 — MISS.** Components: floor delta +0.0000,
+screens identical (83/83 zeros), self-rep -0.002, reaction +0.06
+logits; wins 253/500. The late training climb (0.65 → ~0.73-0.75
+final steps, ~3 SE, real on the verified scale) DID NOT TRANSFER.
+
+**The sharpened finding (pre-signed consequence executes):** rank-32
+LoRA GRPO on this env produces TRAINING-reward gains that do not
+generalize — even with a gate-verified pathway, never-repeating
+prompts, and n=8 groups. Suggestive mechanism: mode-sharpening —
+score/max stayed flat (~1.10-1.13) all run while the mean rose late,
+i.e., the policy concentrated sampling mass toward its existing good
+modes rather than acquiring competence; fresh contexts don't benefit.
+12,800 dumped training transcripts permit a deeper post-hoc if ever
+needed. Both v1 (corrupted pathway) and v2 (clean pathway) now
+tell one coherent story from different angles: at this adapter
+scale, the training curve measures the policy's relationship to its
+own rollouts, not transferable conversational skill.
+
+**V3 FORK — goes to Sam with this file (options priced):**
+A. LoRA rank 128-256 + 400-600 steps (~1-2 days, same topology) —
+   cheapest probe of the capacity hypothesis.
+B. Full-param FSDP (needs GPUs 4-7 → partner swap to GLM during
+   training, known -0.06 data-quality cost, or accept 2-GPU
+   offloaded slowness) — the real capacity test.
+C. Reward reshaping first: raise taste weight / per-turn dense
+   reward (currently one sparse session-level signal over ~40
+   masked-token-group turns — credit assignment over 10 turns from
+   one scalar is brutal at any rank; THIS may matter more than
+   capacity).
+D. SFT warm-start on the bank's curated top tier before RL (the
+   1.19M scored sessions exist; classic RLHF ordering).
+Recommendation: C+D before A/B-scale spend — the credit-assignment
+and initialization arguments explain flat-then-sharpen better than
+raw capacity does.
