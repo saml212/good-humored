@@ -3989,3 +3989,44 @@ objective on fresh sessions before believing any training trend.
 Mistake: 4096 fixed prompts x 3 epochs; trend read as learning.
 Correction: stream unique seeds at training time; A/B on held-out
 seeds is the only reward claim that counts.
+
+## GRPO-V1 diagnosis — CORRECTION AND OPEN QUESTION (2026-08-11)
+
+**RETRACTION: the "3 epochs of repeats / set adaptation" close-out
+was ARITHMETICALLY WRONG.** 200 steps x 16 prompts = 3,200 draws
+from 4,096 rows — no prompt was ever repeated; there was no repeat
+surface to adapt to. The adaptation story is withdrawn.
+
+**Two replacement hypotheses tested THIS cycle, both refuted:**
+1. Sampling params: verl rollout defaults (T=1.0, top_p=1, top_k=-1,
+   rep=1.0) match eval exactly. Ruled out.
+2. Per-turn token cap: uncapped-base probe (512 tok cap, 50
+   sessions) scores 0.905 at 19.3 words/turn vs capped 0.888 at
+   20.0 — the "one or two sentences" prompt governs length; the cap
+   never binds. Ruled out.
+
+**OPEN: why did training-time rollouts score ~0.60 (first-decade
+mean, SE 0.011 — real) when the base policy scores 0.678 on fresh
+seeds through the standalone pipeline?** The rise to 0.67 = closing
+that gap, whatever it is. Remaining candidates: (a) the training
+loop's reward path scores identical text differently from
+score_banter (decode artifacts, turn construction, reaction-msgs
+deltas); (b) verl-engine-generated text differs distributionally
+from standalone-server text (same nominal params). Next diagnostic:
+drive the loop's OWN reward path (driver smoke, N=30) and cross-
+score the same transcripts with score_banter — a reward-path
+mismatch shows immediately.
+**V2 IS BLOCKED until this mechanism is identified** — the held-out
+A/B null stands regardless (that comparison is internally valid),
+but interpreting any future training curve requires knowing what
+the training-time number measures. MANDATORY for v2: dump training
+transcripts (the missing evidence that forced this archaeology).
+
+[LEARN] instrument-parity: a training-time reward and an eval-time
+reward are DIFFERENT INSTRUMENTS until proven identical on the same
+text — verify reward-path parity (same transcripts through both
+pipelines) BEFORE training, or the curve is uninterpretable.
+Mistake: assumed loop-reward == eval-reward because they share
+modules; shipped a diagnosis (epochs) without checking arithmetic.
+Correction: parity check is a pre-launch gate; arithmetic in every
+close-out gets recomputed, not recalled.

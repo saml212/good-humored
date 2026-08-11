@@ -138,7 +138,7 @@ def chat(base_url, model, system, messages, seed, temperature, max_tokens=90):
 
 def run_session(session_id, base_url, policy_model, partner_model,
                 n_turns, provocation_rate, temperature,
-                partner_base_url=None):
+                partner_base_url=None, max_policy_tokens=90):
     rng = random.Random(_seed(session_id, "schedule"))
     task = rng.choice(TASKS)
     opening_angle = rng.choice(OPENING_ANGLES)  # v0.2 turn-0 diversity
@@ -180,7 +180,8 @@ def run_session(session_id, base_url, policy_model, partner_model,
         turns.append({"role": "partner", "turn": turn, "text": partner_text,
                       "provocation": provocation})
         policy_text = chat(base_url, policy_model, policy_sys, policy_view,
-                           _seed(session_id, "policy%d" % turn), temperature)
+                           _seed(session_id, "policy%d" % turn), temperature,
+                           max_tokens=max_policy_tokens)
         policy_view.append({"role": "assistant", "content": policy_text})
         partner_view.append({"role": "user", "content": policy_text})
         turns.append({"role": "policy", "turn": turn, "text": policy_text,
@@ -212,6 +213,9 @@ def main():
     ap.add_argument("--turns", type=int, default=10)
     ap.add_argument("--provocation-rate", type=float, default=0.35)
     ap.add_argument("--temperature", type=float, default=1.0)
+    ap.add_argument("--max-policy-tokens", type=int, default=90,
+                    help="per-turn cap for POLICY generations (diagnostic: "
+                         "v1 training had no per-turn cap; eval caps at 90)")
     ap.add_argument("--out", required=True)
     args = ap.parse_args()
     partner = args.partner_model or args.model
@@ -229,7 +233,8 @@ def main():
                 rec = run_session(sid, args.base_url, args.model, partner,
                                   args.turns, args.provocation_rate,
                                   args.temperature,
-                                  partner_base_url=args.partner_base_url)
+                                  partner_base_url=args.partner_base_url,
+                                  max_policy_tokens=args.max_policy_tokens)
             except Exception as e:
                 rec = {"session_id": sid, "error": str(e)[:300]}
             with lock:
