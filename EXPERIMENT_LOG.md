@@ -3919,3 +3919,24 @@ steps the curve resumed a slow climb (decades 14-16: 0.677/0.672/
 ceiling. Run on pace to finish ~step 200 at roughly +0.08 over
 baseline. Checkpoints through 150 banked. Eval unchanged: component
 decomposition decides what the +0.08 is made of.
+
+## GRPO-V1 — RUN COMPLETE (2026-08-11): 200 steps, exit 0
+
+**The first full RL training run on conversational humor finished
+clean.** Final-step score 0.648; closing rolling20 ~0.669; final
+decades 0.679/0.666/0.652/0.686 — ends ~+0.07 over the 0.602
+baseline with the slope still mildly positive at stop. Both reward
+pins were judged and MISSED (0.664 vs 0.70 @100; 0.674 vs 0.72
+@150 — predictions consistently ~0.04-0.05 optimistic, logged as
+calibration data). Training hygiene clean end-to-end: KL bounded
+(~0.008), response lengths flat (~700 — no verbosity gaming), no
+saturation, no tripwire. 8 checkpoints banked (25..200; 58GB each,
+FSDP-sharded + optim states; lora r=32 alpha=64 per
+lora_train_meta). Wall ~12.5h at ~220s/step on 2 GPUs while the
+partner+audience served from the other 6.
+
+**EVAL EXECUTION begins:** verl model_merger extracting/merging
+checkpoint 200 → servable HF model (tmux gh_merge). Then: A/B
+rollouts base-vs-trained on identical seeds through the identical
+fleet, scoring, component decomposition, report cards, demo pack
+v3, read.
