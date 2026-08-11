@@ -22,7 +22,7 @@ for s in gh_serve_glm gh_serve_235b; do
   check_session "$s"
 done
 echo "bank: gen=$(ls $GH/runs/*_stream_*.jsonl 2>/dev/null | wc -l) scored=$(ls $GH/runs/*.scored.json 2>/dev/null | wc -l) (frozen)"
-tmux has-session -t gh_grpo_v1 2>/dev/null && echo "grpo_v1: session up" || echo "grpo_v1: no session"
+tmux has-session -t gh_grpo_v2 2>/dev/null && echo "grpo_v2: session up" || echo "grpo_v2: no session"
 nvidia-smi --query-gpu=utilization.gpu --format=csv,noheader | tr "\n" " "; echo
 [ "$FAIL" = 0 ] && echo "HEALTH OK" || echo "HEALTH FAIL"
 exit $FAIL
