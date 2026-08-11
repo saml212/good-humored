@@ -4129,3 +4129,10 @@ save_freq 25 → runs/grpo_v2.
    fresh data => the finding becomes "LoRA r32 GRPO cannot move this
    reward at 200-step scale" => v3 decision point (rank/steps/full-
    param/taste-shaping) goes to Sam with the full evidence file.
+
+**GRPO-V2 LAUNCHED (2026-08-11):** step-1 rollout complete with
+transcript dumps verified flowing (64 sessions, per-worker files);
+adapter syncs cycling; eval servers retired to free GPUs 0-1 (talk-
+test re-servable from disk on request). Buffering-immune watcher
+armed. ~200 steps ≈ 12h; the held-out A/B at 7M seeds is the
+verdict, per registration.
