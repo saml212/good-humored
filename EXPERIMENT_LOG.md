@@ -4318,3 +4318,22 @@ signal (94% within-context variance, mostly discontinuity noise).
 Decompose reward variance (within vs between context) BEFORE
 training; design objectives for smoothness separately from
 instruments for validity.
+
+## SMOOTH OBJECTIVE designed and validated OFFLINE (2026-08-12)
+
+**Candidate:** r_t = 0.4·soft_floor(anchor; sigmoid margin at the
+certified 0.30) + 0.2·(1−selfrep_t) + 0.3·taste_t − 0.5·screen_t;
+session R = MEAN over turns. Additive, dense, bounded — no products,
+no cliffs, no max-terms.
+**Validation on existing data (zero training spend):**
+1. Same-context chaos: relative within-sd 0.52 → 0.10 of scale
+   (5x smoother); within-share 94% → 67% of a much smaller total.
+2. Construct preserved: rank agreement with the CERTIFIED objective
+   rho = 0.769 (500 eval sessions).
+**Architecture position:** the certified stack remains the EVAL and
+curation instrument (unchanged, its certifications intact); the
+smooth objective is a TRAINING artifact whose validity is anchored
+by (a) offline rank agreement and (b) final judgment ALWAYS on the
+certified metric via the matched-seed A/B. Train smooth, judge
+certified. RL-C registration next: GRPO on the smooth objective,
+same adapter class, pinned on the certified A/B as ever.
