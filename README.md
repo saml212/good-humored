@@ -2,8 +2,15 @@
 
 **RL environments and benchmarks for machine humor.**
 
-Public repository, **all rights reserved** — see [NOTICE](NOTICE). Status: design
-validated, first experiment (rejector validation) in progress.
+Public repository, **all rights reserved** — see [NOTICE](NOTICE).
+
+**Status:** the conversational-humor environment is built, instrumented, and
+characterized (~2.9M banked sessions). Three training runs (two GRPO, one SFT)
+have been run and honestly closed as nulls on a held-out harness; the failure
+was then *diagnosed* — a variance decomposition showed the reward's geometry,
+not the model, was the problem — and a redesigned training objective, validated
+offline, is training now. The story of how each result was verified is most of
+what this README is about.
 
 ---
 
@@ -162,80 +169,165 @@ Details and citations: [`references/`](references/README.md).
 3. **Diversity-preserving RL against live human humor preferences** — attempted
    with standard tools, failed, failures published. The opportunity is the fix.
 
-## The benchmark: the rejection cascade
+## What we built: a banter environment, not a joke generator
 
-Ask a model for a joke. A cheap rejector model replies *"I don't find that topic
-funny — tell me a different joke."* Repeat ~50 turns, with rejections
-**accumulating**. The jokes are not the measurement — **the trajectory of topics
-is the measurement.**
+Early on this project pivoted away from standalone joke generation (see the
+rejection-cascade work preserved in `benchmark/` and `docs/BENCHMARK.md`)
+toward what actually matters for a conversational model: **wit in context** —
+banter, comebacks, callbacks, timing. The environment is deliberately simple
+to describe:
 
-| Metric | Question | Collapse signature |
-|---|---|---|
-| Within-model path divergence | Does the same model walk the same topic path every run? | Identical paths = the "distribution" is a lookup table |
-| Cross-model path overlap | Do *different* models walk the same path? | Shared path = ecosystem-level collapse from a shared pretraining prior |
-| Depth-to-degradation | How many turns before repeats, refusals, or visible quality decay? | Shallow depth = a small well |
+- A **policy model** chats with a coworker while they do a mundane office
+  task together (move desks, clean the fridge, write the meeting agenda).
+- The **policy's prompt is neutral**. It is never told to be funny. That is
+  the load-bearing design decision: the dataset's value is what wit a model
+  produces *unprompted*, and how it responds when an opening appears.
+- A frozen **partner model** (much larger) drives the conversation and, at
+  seeded random turns, is directed to provoke: tease the policy, crack a
+  joke, swear in frustration, make an observation. Every session's schedule
+  is reproducible from its seed.
+- A frozen **audience model** watches and, at each policy turn, we read the
+  probability mass it puts on laughing next — not a judge being *asked* to
+  rate funniness (the documented hacked reward), but a spontaneous reaction.
 
-Why this beats sampling-based diversity metrics: spread over N samples can be
-bought with temperature. A model reading down a memorized list at temperature
-1.0 looks "diverse" to every sampling metric. Path-based exhaustion cannot be
-faked that way — forced topic switching under accumulating constraints reveals
-the actual structure of the model's topic space, the way a verbal-fluency task
-reveals the structure of human semantic memory.
+Why a strong partner? We measured it: with the policy held constant and only
+the partner swapped for a weaker model, session quality dropped, audience
+reaction dropped, and the policy slid into yes-and sycophancy (a controlled
+same-seed A/B, 500 paired sessions). **The partner is part of the
+environment's spec, not an implementation detail.**
 
-The benchmark is grounded in multiple fields on purpose: cognitive psychology
-(semantic foraging and category-fluency trajectory measures), philosophy of
-humor (incongruity — a joke's value decays with familiarity), sociology (joke
-cycles and topic structure), and NLP (embedding-based trajectory similarity).
-Full specification, design decisions, and the load-bearing validation risk:
-[`docs/BENCHMARK.md`](docs/BENCHMARK.md).
+Why provocations? Also measured: being *teased* elicits the best comebacks —
+post-mock turns draw roughly two logits more audience laughter than
+unprovoked turns, consistently across models — and raising the provocation
+rate measurably reduces the policy's yes-and rate. The provocation scheduler
+is an adjustable anti-sycophancy dial.
 
-**Internal validity comes first:** no cascade number is trustworthy until the
-rejector is shown to reject *topics* (not jokes) consistently. Rejector
-validation is the first experiment in this repo — see
-[`benchmark/`](benchmark/).
+## How we verify everything (and why)
 
-## The RL environment
+This project's working assumption is that in open-ended domains, **most
+exciting results are artifacts**, and the only defense is machinery that
+makes it hard to fool yourself. Every rule below exists because it caught
+something real here:
 
-Never train humor on a judge alone — that is the documented hacked reward.
-The reward stack decomposes:
+- **Pre-registration with pinned predictions.** Every experiment states its
+  hypothesis, its predicted number, its success bar, and — critically — its
+  *failure consequence* before the data arrives. When our reaction-logprob
+  signal scored ρ=0.122 against a pinned bar of 0.15, the pre-signed
+  consequence executed (demotion to diagnostic) instead of a debate.
+- **Blind, multi-author fixtures.** Every instrument certified on
+  same-author test data later failed a blind set. The anchoring gate that
+  survives is the one certified cross-author, blind.
+- **The human read is the quality bar, never the metric.** Scores rank
+  candidates; a person reads the top transcripts. Reads caught what metrics
+  could not: a roleplay-register drift infecting 27% of turns, a Chinese
+  token leak that scaled 20× with temperature, and a case where the metric
+  ranked an objectively weaker transcript first because its lane had 50× the
+  sample size to get lucky in. Each read-discovery then became a standing
+  automated counter — reads *discover* defect classes; counters establish
+  prevalence.
+- **Adversarial pre-run audits.** A separate agent reviews every experiment
+  before it runs. The audit of our reward-model trainer caught that the
+  baseline we planned to compare against was computed on a different
+  population — the comparison would have been silently meaningless.
+- **Matched-seed A/B evaluation.** Training claims are judged only on
+  held-out sessions where base and trained models face *identical* seeds —
+  same tasks, same provocation schedules, same partner behavior — so every
+  session is its own control. Fresh seed spaces are never reused.
+- **Instrument-parity gates.** Before believing any training curve, we now
+  verify (a) the training-time reward and the eval-time reward score the
+  same transcripts identically, and (b) the training rollout pathway
+  produces text the clean pipeline scores the same (n=200 matched pairs).
+  Our first RL run failed to have either, and its entire curve turned out
+  to be uninterpretable.
+- **Statistical power before mechanism claims.** Three successive n=30
+  comparisons produced three contradictory explanations of the same
+  phenomenon (SE ≈ the effect size). The rule now: compute the n the effect
+  demands, then conclude. We publicly retracted two of our own diagnoses on
+  this basis — the retractions are in the experiment log, dated.
 
-| Term | Supplies | Weight |
-|---|---|---|
-| judge / human preference | "is it funny" | primary |
-| corpus novelty penalty | "is it not a joke the internet already told" | −1.5 |
-| self-repetition penalty | "is it not a joke *you* already told" | −1.0 |
-| intra-group diversity reward | "is the GRPO group not collapsing" | +0.5 |
-| comprehensibility reward | the "familiar" half; stops novelty runaway | +0.3 |
+## Results so far — the honest version
 
-The novelty terms outweigh what a memorized joke can gain on judge score —
-that weighting *is* the anti-hacking mechanism. Implementation:
-`.claude/skills/humor-rl/examples/humor_reward_functions.py`.
+**The environment works.** ~2.9M banked sessions. From neutral prompts, the
+material at the top is genuinely funny: multi-character office universes
+(the coworker who renamed the Wi-Fi "FBI Surveillance Van #4" and is managed
+via a fake "Cable Integrity and Compliance Officer" badge), transformed
+callbacks that pay off eight turns later, a policy that types a flirtation
+*into the expense-report form* to commit to a bit. We catalogued the move
+classes — and their weak shadows (echo-affirmation, yes-and drift) — because
+a reward model eventually needs to tell them apart.
 
-## Roadmap
+**Characterization findings** (each from the config table, most confirmed by
+targeted A/B): partner quality gates everything; teasing is the best wit
+elicitor; provocation density suppresses sycophancy; temperature response is
+model-specific; strong instruction-tuned models yes-and *more* than weak
+ones (trained-in conversational risk-aversion — the thing RL is supposed to
+fix); model "house-style" motifs survive every prompt intervention and will
+only move with training.
 
-1. **Rejector validation** (running) — fixed joke fixture, repeat-labeling
-   consistency, topic-vs-joke discrimination, vs. a cheap noun-extraction
-   baseline. Nothing downstream is meaningful without this.
-2. **Memorized-joke corpus** — scraped internet jokes behind the novelty
-   penalty; without it the anti-collapse layer is inert.
-3. **Cascade pilot** (running) — 12 models across 4 provider families,
-   depth 30, N=4, pre-registered predictions.
-4. **Full benchmark** — same roster, N=10 runs × depth 50, raw APIs with
-   temperature control; publish trajectories.
-5. **Reward-stack training run** vs. a well-curated SFT baseline (the honest bar
-   set by HumorGen's negative result).
-6. **Reverse-transfer measurement** — MMLU/GPQA before/after humor training vs.
-   a compute-matched control.
+**A trained reward model certified — then honestly disqualified.** We
+trained a caption-ranking model on ~600k New Yorker Caption Contest ratings:
+0.395 mean within-contest correlation on fully held-out contests,
+sign-correct on 77 of 77. A real instrument. Then we checked whether it
+transfers to banter turns before wiring it into training — it
+*anti-correlates* (−0.09): it detects decontextualized zinger-ness, which is
+a different thing from conversational wit. It now serves as an independent
+cross-check, not a reward. The check that caught this cost an hour; wiring
+it blind would have trained a model to produce captions instead of banter.
+
+**Three training runs, three nulls — and that is the finding.**
+1. *GRPO v1* (LoRA rank 32, 200 steps): training reward rose +0.07; held-out
+   A/B showed nothing. Post-mortem found the training prompts were
+   malformed (a template-construction bug) — the policy had adapted to its
+   own corrupted context. The curve was never measuring skill.
+2. *GRPO v2* (pathway verified by a 200-pair parity gate first): the curve
+   rose again, late and real (~3 standard errors). Held-out A/B: +0.008,
+   t=0.41 — nothing transferred. The mechanism signature: max reward flat
+   all run while the mean rose — the policy was concentrating onto its
+   existing good modes, not acquiring new competence.
+3. *SFT distillation* of the bank's certified top 9.3% (38,823 sessions):
+   delta −0.012. No mode collapse (diversity guards all held) and no gain.
+   The model absorbed its own best behavior and came out unchanged.
+
+**Then we diagnosed it, quantitatively.** Scoring 8 rollouts each for 64
+identical contexts: **94% of reward variance is within-context** — same
+prompt, same partner, wildly different scores — driven by the reward's hard
+cliffs (one flagged turn zeroes a session), multiplicative gates, and
+max-terms. Instruments that are excellent for *ranking and curation* were
+drowning the gradient in discontinuity noise. The project's deepest lesson,
+now a design rule: **a certified measurement is not automatically a
+trainable objective.** Validity and trainability are different properties.
+
+**The fix, validated before spending GPUs on it.** A smoothed training
+objective — per-turn, additive, bounded, no cliffs — cuts same-context noise
+five-fold while agreeing with the certified metric at ρ=0.77. It trains the
+policy; the certified instruments still judge it (train smooth, judge
+certified — the verdict cannot be gamed by the training signal). That run
+is in progress; its held-out A/B, on yet another fresh seed space, will be
+reported the same way whether it is the project's first positive delta or
+its fourth instructive null.
+
+**Why publish nulls?** Because the alternative is the literature this
+project was built against: exciting curves, no held-out verification, and
+mode collapse discovered by users. An environment plus a harness that
+*reliably distinguishes real learning from its imitations* — demonstrated on
+its own failures — is the asset. Fifty-three evidence-backed lessons from
+building it are in
+[`docs/ENV-BUILDING-TAKEAWAYS.md`](docs/ENV-BUILDING-TAKEAWAYS.md).
 
 ## Repo layout
 
-- `benchmark/` — rejection-cascade benchmark: rejector, cascade runner,
-  trajectory metrics, validation fixtures
-- `docs/BENCHMARK.md` — benchmark specification and design decisions
-- `references/` — verified literature corpus: papers, negative results,
-  datasets, psychology grounding
-- `experiment-runs/` — archived exact scripts + results per experiment
-- `STATE.md` / `EXPERIMENT_LOG.md` — current state, every experiment and result
+- `env/` — the banter environment: rollout engine, certified reward stack +
+  smooth training objective (with tests), scoring, curation, report card,
+  demo-pack generator, verl training bridge, box-side keepers
+- `rm/` — reward-model training and transfer evaluation (NYCC emulator)
+- `benchmark/` — instruments and validators, incl. the earlier
+  rejection-cascade benchmark work
+- `data_adapters/` — licensed-dataset loaders (license firewall enforced)
+- `references/` — verified literature corpus with evidence-strength tags
+- `experiment-runs/` — archived exact scripts per experiment
+- `STATE.md` — current state; `EXPERIMENT_LOG.md` — every experiment,
+  registration, result, retraction, and close-out, in order
+- `docs/ENV-BUILDING-TAKEAWAYS.md` — the field manual distilled from all of it
 
 ## License
 
