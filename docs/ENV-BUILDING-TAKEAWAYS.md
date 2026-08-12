@@ -332,4 +332,9 @@ Newest lessons appended at the bottom of each section.
     runs also linger and read like fresh results (a v2 step-200
     curve was briefly misread as RL-C finishing +0.15 up). After
     compaction: list live tasks, re-arm anything missing, and match
-    every output file to its run before believing it.
+    every output file to its run before believing it. Corollary:
+    never watch a multi-hour remote job over ONE long-lived ssh
+    connection — an idle session gets dropped by the remote host
+    (broken pipe, exit 255). Poll with fresh short connections and
+    alert on consecutive probe failures too, so "watcher dead" and
+    "box unreachable" are events rather than silence.
