@@ -89,6 +89,8 @@ def main():
     ap.add_argument("--min-batch", type=int, default=300)
     ap.add_argument("--max-turns", type=int, default=20000)
     ap.add_argument("--out", required=True)
+    ap.add_argument("--dump-rows", default=None,
+                    help="write all scored rows (for pair sampling)")
     args = ap.parse_args()
 
     rows = collect_turns(args.runs_dir, args.min_batch, args.max_turns)
@@ -122,6 +124,11 @@ def main():
     result["read_bottom10"] = [{"emulator": round(r["emulator"], 3),
                                 "text": r["text"]} for r in none_rows[-10:]]
     Path(args.out).write_text(json.dumps(result, indent=2))
+    if args.dump_rows:
+        with open(args.dump_rows, "w") as f:
+            for r in rows:
+                f.write(json.dumps(r) + "\n")
+        print("rows ->", args.dump_rows)
     print("->", args.out)
 
 
