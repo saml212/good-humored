@@ -4366,3 +4366,21 @@ steps, dumps on, verified pathway).
    pauses training and the complete evidence file (env + harness +
    4 instrumented runs + variance analysis) becomes the product as
    the honest state-of-knowledge.
+
+### RL-C mid-run observation (step 92/200, logged before eval)
+
+Smooth-score mean is FLAT: oscillating 0.548–0.580 around the 0.575
+open through 92 steps (~230 s/step). Entropy stable 0.75–0.83; score
+max ~0.79 (no runaway); saturation tripwire not hit; checkpoints
+banked at 25/50/75. Interpretation pinned NOW, before the A/B: the
+pins already declare the training curve secondary instrumentation —
+a flat mean neither confirms nor refutes; v2's curve ROSE and still
+nulled (mode-sharpening), so curve movement in either direction is
+weak evidence here. The decision rests entirely on the pre-registered
+certified A/B at 10M seeds. But honestly noted: a flat smooth curve
+at half-run is consistent with the pre-signed failure consequence
+(learnable signal below detection at r32/200-step), not with the
+hypothesis. eval4_ab.sh pre-staged on box (10M seeds, 500 paired).
+Completion watcher re-armed (b2g26obxl) after the original was lost
+to context compaction — watchers are session-local state; re-verify
+them after every compaction.

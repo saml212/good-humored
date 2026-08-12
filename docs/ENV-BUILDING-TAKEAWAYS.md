@@ -325,3 +325,11 @@ Newest lessons appended at the bottom of each section.
     signals** (file mtime, terminal lines, server-side traffic) and
     trigger patterns validated against a healthy log first; liveness
     verdicts need paired stack dumps and movement, never snapshots.
+54. **Watchers are session-local state — re-verify after every
+    context compaction.** The RL-C completion watcher silently
+    vanished when the supervising session compacted; the run kept
+    training unwatched for hours. Stale watcher outputs from PRIOR
+    runs also linger and read like fresh results (a v2 step-200
+    curve was briefly misread as RL-C finishing +0.15 up). After
+    compaction: list live tasks, re-arm anything missing, and match
+    every output file to its run before believing it.
