@@ -4278,3 +4278,43 @@ error → save dir on /data; (4) PASS exit 0: train/loss 1.97, grad
 during the run). Full run: 38,823 rows, 1 epoch, ~150-180 dynamic
 steps, save_freq 50 → runs/sft_d; exact script saved
 (launch_sft_d.sh); mtime watcher armed.
+
+## SFT-D CLOSED (MISS) + THE UNIFYING DIAGNOSIS (2026-08-12)
+
+**SFT-D held-out A/B (500 paired, 8M seeds): delta −0.012 (t=−0.57)
+— MISS.** Guards all HELD (tridiv +0.001, screens clean, agreement
+flat): a clean null — no mode collapse, no gain; reaction −0.33
+logits. Three training approaches, three nulls, one honest harness:
+GRPO-corrupted (+adaptation artifact), GRPO-verified (+0.008),
+SFT-distillation (−0.012).
+
+**VARIANCE DECOMPOSITION (64 contexts x 8 same-context rollouts from
+v2 dumps): 94% of reward variance is WITHIN-context (sd 0.349), only
+~18% between contexts.** The situational-luck hypothesis is REFUTED;
+the diagnosis lands on REWARD GEOMETRY: hard screen-zeros (~17% of
+sessions, a 0-vs-0.67 cliff), multiplicative floor fractions, and
+max-self-rep terms make same-context rollout rewards swing
+near-randomly (sd 0.35 on a ~0-1.1 scale). The causal path from a
+policy's token choices to its session reward is so discontinuous
+and diffuse that neither group-relative gradients (GRPO) nor
+top-tier imitation (SFT) can extract the learnable component. The
+instruments are CERTIFIED AS MEASUREMENTS; that never made them
+good TRAINING OBJECTIVES — measurement validity and gradient
+trainability are different properties (the program's deepest
+lesson).
+
+**Direction this evidences (option C, now quantitatively grounded):
+reward SMOOTHING + densification** — per-turn rewards instead of
+session products; screens as bounded per-turn penalties instead of
+session-zeroing cliffs; floor as a soft margin; taste
+variance-reduced (multi-sample audience or turn-averaged). Redesign
+touches the certified stack's ROLE (measurement vs objective), so
+this goes to Sam as a designed decision, not a config tweak.
+
+[LEARN] measurement-vs-objective: certified measurement instruments
+are not automatically trainable objectives — cliffs, products, and
+max-terms that are FINE for ranking/curation destroy the gradient
+signal (94% within-context variance, mostly discontinuity noise).
+Decompose reward variance (within vs between context) BEFORE
+training; design objectives for smoothness separately from
+instruments for validity.
