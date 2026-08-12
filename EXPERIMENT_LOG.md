@@ -4244,3 +4244,24 @@ to +0.05, since it distills the bank's top 9.3% back into the
 policy), smoke through the dry-run gate, then train (~hours, LoRA
 or full per memory budget). RL-on-top (with C's reshaping) follows
 as a separate registration.
+
+## SFT-D — pre-registered (2026-08-12, BEFORE training)
+
+**Hypothesis:** supervised distillation of the bank's certified top
+tier (38,823 sessions, top 9.3%) into the base policy moves the
+exact objective on held-out seeds — the mechanical version of "be
+your best self more often" that RL's sparse gradient failed to do.
+**Config:** verl sft_trainer_engine; Qwen3-30B LoRA r32/a64
+attention-only + sdpa (IDENTICAL adapter class to GRPO v1/v2 — the
+comparison isolates the training signal, not capacity); max_length
+2048; 1 epoch; GPUs 0-1.
+**PINNED:** held-out A/B (SFT vs base, NEW 8M seed space, 500
+paired, exact objective): predicted +0.02..+0.05; SUCCESS >= +0.02
+at t>=2. GUARDS (mode-collapse is THE documented failure of
+training-on-own-best): trained-arm cross-session trigram diversity
+must not drop more than 0.05 below base; asterisk/CJK screens stay
+clean; read must not find monoculture. A reward gain that costs the
+diversity guard = FAILURE regardless of delta (the product is a
+funny CONVERSATIONALIST, not a mode).
+**Post-SFT: C (dense per-turn reward RL) registers separately on top
+of whichever checkpoint stands.**
