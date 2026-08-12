@@ -4265,3 +4265,16 @@ diversity guard = FAILURE regardless of delta (the product is a
 funny CONVERSATIONALIST, not a mode).
 **Post-SFT: C (dense per-turn reward RL) registers separately on top
 of whichever checkpoint stands.**
+
+## SFT-D — smoke passed, full run launched (2026-08-12)
+
+Smoke chain (4 attempts, each root-caused): (1) OOM — MY parked V2
+eval servers still holding 73GB on GPUs 0-1 (housekeeping, not
+code); (2) wandb default logger demanding login → logger=[console];
+(3) end-of-epoch torch.save to /tmp (67GB root disk) → iostream
+error → save dir on /data; (4) PASS exit 0: train/loss 1.97, grad
+2.69, mem 69/77GB. Known non-blocker: trainer val/loss logs NaN
+(aux metric; the registered eval is the matched-seed A/B; one look
+during the run). Full run: 38,823 rows, 1 epoch, ~150-180 dynamic
+steps, save_freq 50 → runs/sft_d; exact script saved
+(launch_sft_d.sh); mtime watcher armed.
