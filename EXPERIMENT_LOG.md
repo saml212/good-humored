@@ -4337,3 +4337,32 @@ by (a) offline rank agreement and (b) final judgment ALWAYS on the
 certified metric via the matched-seed A/B. Train smooth, judge
 certified. RL-C registration next: GRPO on the smooth objective,
 same adapter class, pinned on the certified A/B as ever.
+
+## RL-C — pre-registered (2026-08-12, BEFORE launch)
+
+**Hypothesis:** GRPO on the SMOOTH objective (validated: 5x less
+same-context chaos, rho=0.769 vs certified) extracts the learnable
+component that the certified objective's geometry hid — the
+diagnosis-driven run.
+**Config = v2's verified config with deltas ONLY:** agent loop
+objective=smooth (agent_loop_smooth.yaml); dataset data-v3 (16,384
+rows, seed base 9M, disjoint from all prior spaces); everything
+else identical (LoRA r32 attention-only, n=8 groups, batch 8, 200
+steps, dumps on, verified pathway).
+**PINNED:**
+1. Training curve (smooth scale, starts ~0.58 per offline mean):
+   secondary instrumentation only.
+2. PRIMARY: held-out A/B at 10M seeds, 500 paired, judged on the
+   CERTIFIED objective (train smooth, judge certified): success =
+   delta >= +0.03 at t >= 2. Diversity guards as SFT-D (tridiv
+   within 0.05, screens clean, read).
+3. Tripwires: smooth-curve saturation > 0.85 before step 50 = STOP
+   (screen-avoidance + floor-gaming inspection); certified-metric
+   A/B is immune to smooth-objective gaming by construction, but
+   transcripts get read regardless.
+4. FAILURE consequence: if this diagnosis-driven run ALSO nulls on
+   the certified A/B, the finding is "the learnable signal in this
+   env at r32/200-step scale is below detection" — the program
+   pauses training and the complete evidence file (env + harness +
+   4 instrumented runs + variance analysis) becomes the product as
+   the honest state-of-knowledge.

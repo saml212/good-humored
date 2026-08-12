@@ -85,3 +85,26 @@ class TestRewardStack(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+from env.reward_stack import smooth_session_reward
+
+
+class TestSmoothObjective(unittest.TestCase):
+    def test_no_cliff_on_screen(self):
+        clean = make_session(["fine reply", "another distinct line"])
+        dirty = make_session(["fine reply", "*grabs tape* okay"])
+        rc = smooth_session_reward(clean, StubGate())
+        rd = smooth_session_reward(dirty, StubGate())
+        self.assertGreater(rc["total"], rd["total"])   # penalized...
+        self.assertGreater(rd["total"], -0.5)          # ...not annihilated
+
+    def test_additive_bounded(self):
+        s = make_session(["a", "b", "c"])
+        r = smooth_session_reward(s, StubGate(), reaction_fn=lambda m: 0.0)
+        self.assertLessEqual(r["total"], 0.9 + 1e-9)   # max 0.4+0.2+0.3
+        self.assertEqual(r["n_policy_turns"], 3)
+
+    def test_empty(self):
+        self.assertEqual(smooth_session_reward({"turns": []},
+                                               StubGate())["total"], 0.0)

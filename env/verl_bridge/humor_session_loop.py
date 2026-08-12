@@ -36,7 +36,7 @@ except ImportError:  # pragma: no cover
 
 from env.banter_rollout import (OPENING_ANGLES, PARTNER_SYSTEM,
                                 PROVOCATIONS, TASKS, _seed)
-from env.reward_stack import session_reward
+from env.reward_stack import session_reward, smooth_session_reward
 
 try:  # importable only inside the verl venv; keep module testable outside
     from verl.experimental.agent_loop.agent_loop import (AgentLoopBase,
@@ -55,7 +55,7 @@ class HumorSessionAgentLoop(AgentLoopBase):
     def __init__(self, *args, partner_base_url, partner_model,
                  audience_base_url=None, audience_model=None,
                  num_rounds=10, provocation_rate=0.5,
-                 partner_max_tokens=90, **kwargs):
+                 partner_max_tokens=90, objective="certified", **kwargs):
         super().__init__(*args, **kwargs)
         self.partner_base_url = partner_base_url.rstrip("/")
         self.partner_model = partner_model
@@ -64,6 +64,7 @@ class HumorSessionAgentLoop(AgentLoopBase):
         self.num_rounds = num_rounds
         self.provocation_rate = provocation_rate
         self.partner_max_tokens = partner_max_tokens
+        self.objective = objective  # "certified" | "smooth" (train smooth, judge certified)
         if httpx is None:  # pragma: no cover
             raise RuntimeError("httpx required at runtime (venv-verl)")
         self._http = httpx.AsyncClient(timeout=300)
@@ -220,8 +221,9 @@ class HumorSessionAgentLoop(AgentLoopBase):
 
             def reaction_fn(msgs):
                 return precomputed.get(len(msgs), -18.4)
-        r = session_reward(session, self._ensure_gate(),
-                           reaction_fn=reaction_fn)
+        reward_fn = (smooth_session_reward if self.objective == "smooth"
+                     else session_reward)
+        r = reward_fn(session, self._ensure_gate(), reaction_fn=reaction_fn)
 
         n = min(len(response_mask), self.rollout_config.response_length)
         return AgentLoopOutput(

@@ -93,3 +93,62 @@ def session_reward(session, gate, reaction_fn=None):
             "max_self_rep": round(max_self_rep, 4),
             "taste": round(taste, 4),
             "screen_rate": round(screen_rate, 4)}
+
+
+# ---------------------------------------------------------------------
+# SMOOTH TRAINING OBJECTIVE (validated offline 2026-08-12): additive,
+# dense, bounded -- no products, cliffs, or max-terms. Same-context
+# relative sd 0.10 vs the certified objective's 0.52 (5x smoother);
+# rank agreement with certified rho=0.769 on 500 eval sessions. The
+# certified stack above remains the EVAL/curation instrument; this is
+# the TRAINING signal only. Train smooth, judge certified.
+import math as _math
+
+W_SM_FLOOR, W_SM_SELFREP, W_SM_TASTE, W_SM_SCREEN = 0.4, 0.2, 0.3, 0.5
+_SM_MARGIN = 0.06  # sigmoid width around the certified 0.30 threshold
+
+
+def _soft_floor(sim):
+    return 1.0 / (1.0 + _math.exp(-(sim - 0.30) / _SM_MARGIN))
+
+
+def smooth_session_reward(session, gate, reaction_fn=None):
+    """Per-turn additive reward; session value = mean over policy turns.
+
+    Same injected dependencies as session_reward; components returned
+    for the decoupling monitors (never collapse before logging).
+    """
+    turns = session["turns"]
+    per_turn = []
+    comp = {"floor": 0.0, "selfrep": 0.0, "taste": 0.0, "screens": 0.0}
+    for i, t in enumerate(turns):
+        if t["role"] != "policy":
+            continue
+        ctx = [x["text"] for x in turns[max(0, i - 4):i]]
+        sim = gate.score(ctx, t["text"])["anchor_sim"]
+        prior = [x["text"] for x in turns[:i] if x["role"] == "policy"]
+        sr = max((wordset_jaccard(t["text"], p) for p in prior), default=0.0)
+        scr = 0.0 if screens_pass(t["text"]) else 1.0
+        taste = 0.0
+        if reaction_fn is not None:
+            msgs = [{"role": ("assistant" if x["role"] == "partner"
+                              else "user"), "content": x["text"]}
+                    for x in turns[:i + 1]]
+            L = reaction_fn(msgs)
+            taste = max(L - REACTION_FLOOR, 0.0) / -REACTION_FLOOR
+        sf = _soft_floor(sim)
+        r = (W_SM_FLOOR * sf + W_SM_SELFREP * (1.0 - sr)
+             + W_SM_TASTE * taste - W_SM_SCREEN * scr)
+        per_turn.append(r)
+        comp["floor"] += sf
+        comp["selfrep"] += sr
+        comp["taste"] += taste
+        comp["screens"] += scr
+    n = len(per_turn)
+    if n == 0:
+        return {"total": 0.0, "n_policy_turns": 0}
+    return {"total": round(sum(per_turn) / n, 5), "n_policy_turns": n,
+            "floor_soft_mean": round(comp["floor"] / n, 4),
+            "mean_self_rep": round(comp["selfrep"] / n, 4),
+            "taste": round(comp["taste"] / n, 4),
+            "screen_turns": int(comp["screens"])}
