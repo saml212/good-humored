@@ -285,3 +285,43 @@ Newest lessons appended at the bottom of each section.
     signs. Priorities need either capacity headroom or an explicit
     share for the lowest class (here: one scanner visits it FIRST,
     cheaply, then rejoins the priority order).
+
+## The RL era (GRPO v1-v2) — what training taught about training
+
+47. **A rising training reward is not learning until fresh contexts
+    say so.** Two 200-step GRPO runs produced real training-curve
+    gains (+0.07 and a late ~3-SE climb); both transferred ~nothing
+    to held-out seeds (+0.008, t=0.41). At small-adapter scale the
+    curve measures the policy's relationship to its own rollouts —
+    v2's signature: score/max flat all run, mean rising late =
+    mode-sharpening onto existing good modes, not new competence.
+    The held-out matched-seed A/B is the only reward claim.
+48. **Verify BOTH parities before any training step.** Reward-path
+    parity (same transcripts through training-time and eval-time
+    scoring) and generation parity (same model scores the same
+    through the training pathway and the clean serving pathway,
+    n>=200 matched pairs). v1 lacked both; its entire curve was
+    uninterpretable. The one-hour gates are cheaper than one
+    uninterpretable 13-hour run.
+49. **Dump training transcripts always.** v1's post-mortem was
+    archaeology because rollouts weren't saved; v2's 12,800 dumped
+    sessions turned every hypothesis into a five-minute measurement.
+    Per-worker files; the cost is megabytes.
+50. **Power before mechanism.** Three successive n=30 pathway
+    comparisons produced three contradictory mechanism stories
+    (SE 0.05 vs a 0.06 effect); the n=200 gate settled it in one
+    shot. Compute the SE the effect demands BEFORE concluding.
+51. **Credit assignment eats sparse session rewards.** One scalar
+    over 10 masked-turn groups gave gradients nothing to grip for
+    110 steps, then sharpened modes instead of skill. Dense
+    per-turn shaping (the reaction term exists per turn already)
+    is the first lever to pull before buying capacity.
+52. **Colocated RL memory budgets are set by the SYNC phase, not
+    steady state** (FSDP shard + engine weights resident together);
+    and the training/serving stacks disagree about templates,
+    stop-token inclusion, and LoRA-on-MoE — every seam between them
+    is a place the two distributions silently diverge.
+53. **Watchers on block-buffered drivers need buffering-immune
+    signals** (file mtime, terminal lines, server-side traffic) and
+    trigger patterns validated against a healthy log first; liveness
+    verdicts need paired stack dumps and movement, never snapshots.
