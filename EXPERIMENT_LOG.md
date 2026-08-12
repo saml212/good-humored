@@ -4212,3 +4212,14 @@ D. SFT warm-start on the bank's curated top tier before RL (the
 Recommendation: C+D before A/B-scale spend — the credit-assignment
 and initialization arguments explain flat-then-sharpen better than
 raw capacity does.
+
+## Post-V2 no-regret prep (2026-08-12)
+
+RL-era takeaways 47-53 consolidated into the takeaways doc (curve
+vs learning, dual parity gates, transcript dumps, power discipline,
+credit assignment, sync-phase budgets, watcher signals). SFT
+warm-start candidate pool curated: 39,847 sessions (top 9.3% of
+429k current-era scored; certified criteria; 18/18 tasks) →
+runs/sft_candidates.json — option D ready on demand. V3 fork
+remains with Sam (C+D recommended). Health OK; fleet idle-warm
+(serving pair up, GPUs 0-1 free).
