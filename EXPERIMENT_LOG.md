@@ -4223,3 +4223,24 @@ warm-start candidate pool curated: 39,847 sessions (top 9.3% of
 runs/sft_candidates.json — option D ready on demand. V3 fork
 remains with Sam (C+D recommended). Health OK; fleet idle-warm
 (serving pair up, GPUs 0-1 free).
+
+## GRPO-V3 program opened under standing directive (2026-08-12)
+
+Sam's standing directives (GPUs looping indefinitely; keep iterating
+toward the goal) govern while the fork answer is pending; C+D (the
+recommended branch) proceeds as the registered program — same env,
+models, and budget scale as v1/v2, no scope change. Logged
+explicitly: if Sam picks a different branch, D's artifacts (an SFT
+checkpoint + dataset) serve every branch anyway.
+
+**Step D build:** verl ships fsdp sft_trainer + multiturn_sft_dataset
+(loss on assistant turns; messages-column parquet). SFT dataset
+built from the certified candidate pool: 38,823 train / 1,024 val
+sessions in the policy's exact view (system + user/assistant
+alternation; malformed alternations dropped). Next: SFT registration
+with pins (held-out A/B vs base after SFT — the same matched-seed
+harness; prediction: SFT alone moves the exact objective by +0.02
+to +0.05, since it distills the bank's top 9.3% back into the
+policy), smoke through the dry-run gate, then train (~hours, LoRA
+or full per memory budget). RL-on-top (with C's reshaping) follows
+as a separate registration.
