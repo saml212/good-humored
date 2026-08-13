@@ -5,12 +5,22 @@
 Public repository, **all rights reserved** — see [NOTICE](NOTICE).
 
 **Status:** the conversational-humor environment is built, instrumented, and
-characterized (~2.9M banked sessions). Three training runs (two GRPO, one SFT)
-have been run and honestly closed as nulls on a held-out harness; the failure
-was then *diagnosed* — a variance decomposition showed the reward's geometry,
-not the model, was the problem — and a redesigned training objective, validated
-offline, is training now. The story of how each result was verified is most of
-what this README is about.
+characterized (~2.9M banked sessions), and the training campaign has reached an
+honest, fully-documented resting point. The headline results: (1) a redesigned
+smooth objective produced the program's **first valid positive result** — RL
+reliably teaches defect-cleanup and topical grounding (certified held-out
+delta +0.02–0.06 across four measurements, guards clean); (2) the *taste*
+dimension — making the frozen audience actually laugh more — resisted
+training even when it dominated the objective, and a four-stage redesign
+waterfall (brainstorm → literature → adversarial attack → validation) then
+killed every proposed replacement construct *by measurement* before another
+GPU-hour was spent. Along the way the verification machinery caught a silent
+merge bug that had voided two earlier "null" evals, a laughter-bait reward
+exploit measured at +7.3 logits for two tokens, a partner-echo lottery
+channel in the audience judge, and a word-shuffle attack that beats any
+embedding-based surprise gate. The story of how each of these was caught —
+and why the negatives are as load-bearing as the positive — is most of what
+this README is about.
 
 ---
 
@@ -297,21 +307,46 @@ drowning the gradient in discontinuity noise. The project's deepest lesson,
 now a design rule: **a certified measurement is not automatically a
 trainable objective.** Validity and trainability are different properties.
 
-**The fix, validated before spending GPUs on it.** A smoothed training
-objective — per-turn, additive, bounded, no cliffs — cuts same-context noise
-five-fold while agreeing with the certified metric at ρ=0.77. It trains the
-policy; the certified instruments still judge it (train smooth, judge
-certified — the verdict cannot be gamed by the training signal). That run
-is in progress; its held-out A/B, on yet another fresh seed space, will be
-reported the same way whether it is the project's first positive delta or
-its fourth instructive null.
+**The fix worked — with a twist that voided the earlier nulls.** A smoothed
+training objective — per-turn, additive, bounded, no cliffs — cut
+same-context noise five-fold while agreeing with the certified metric at
+ρ=0.77 (train smooth, judge certified — the verdict cannot be gamed by the
+training signal). While staging its eval, a pre-serve weight check caught
+something worse than a bug: the merge tool had **never folded the LoRA
+adapters** — the two earlier "null" A/Bs had compared the base model against
+itself. Their ±0.01 deltas were retroactively reframed as blind measurements
+of the eval instrument's noise floor, and the smooth-objective run (RL-C)
+became the program's **first valid trained-arm A/B — and its first positive
+result**: certified delta +0.059 (t=2.9), later honestly restated as a
++0.02–0.06 range once a day-shift experiment showed between-day sampling
+variance rivals the effect sizes. Decomposed: two-thirds fewer
+product-defect zeros, one-third topical grounding. The audience's laughter
+did not move.
+
+**Then the taste frontier fought back, and we mapped exactly why.** A
+follow-up run (RL-D) made the laughter term dominate the objective — 0.6
+weight, warm-started, laughter-bait channel closed after measuring the
+exploit at +7.3 logits for appending "Haha!" — and the held-out taste delta
+was +0.003 (t=0.6): decisively flat. The post-mortem measurements are the
+finding: the audience roleplays the conversation partner, so
+partner-emitted laughter primes its reaction (+0.10/turn, causally probed —
+a lottery the policy cannot steer); 61% of all reactions sit exactly at the
+construct's floor (the median turn carries zero gradient); and
+policy-attributable observable variance is ~1%. A four-stage redesign
+waterfall then killed every replacement candidate by measurement — the
+cheap-feature surrogate (R²=0.08, its best feature was the bait channel),
+the contrastive baseline (floor-censored 95.7%), and an
+incongruity-theoretic gate that word-shuffled gibberish defeats, because
+bag-of-words embeddings keep their topical identity when syntax dies.
+Nothing survived to registration, and no GPU-hours were spent finding that
+out the slow way.
 
 **Why publish nulls?** Because the alternative is the literature this
 project was built against: exciting curves, no held-out verification, and
 mode collapse discovered by users. An environment plus a harness that
 *reliably distinguishes real learning from its imitations* — demonstrated on
-its own failures — is the asset. Fifty-three evidence-backed lessons from
-building it are in
+its own failures, including two evals it voided itself — is the asset.
+Sixty-three evidence-backed lessons from building it are in
 [`docs/ENV-BUILDING-TAKEAWAYS.md`](docs/ENV-BUILDING-TAKEAWAYS.md).
 
 ## Repo layout

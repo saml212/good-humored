@@ -2,7 +2,24 @@
 
 _Last updated: 2026-08-13 (RL-C closed: first valid positive result)_
 
-## HEADLINE (2026-08-13, evening)
+## HEADLINE (2026-08-14)
+
+**TASTE-REDESIGN WATERFALL CLOSED: ZERO SURVIVORS. No training
+queued; program at a Sam decision point.** All five top candidates
+killed by measurement (attack + validation stages): distilled
+surrogate (R2 .077), contrastive-neutral (floor-censored 95.7%),
+windowed-context (superseded), incongruity gate (shuffle-hackable,
+lottery variance, 27/50 < audience 32/50). Mechanistic findings
+now in the record: partner-echo channel (+0.102/turn, causal),
+61% floor censoring, anchor-vs-taste conflict, MiniLM shuffle
+attack (takeaways 60-63). Instrument v2 live (all-speaker laughter
+strip both sides + batch-invariant audience, 4x noise cut).
+Options logged for Sam: (a) waterfall pass on gate x chat-NLL
+composite, (b) LoRA-vs-full-param capacity ablation, (c) ship
+evidence + env with cleanup as the demonstrated result. Talk-test
+up: qwen3-30b-base :8002 vs qwen3-30b-rld :8005.
+
+## PREVIOUS (2026-08-13, evening)
 
 **RL-D CLOSED: FAIL on both pins — the decisive taste negative.**
 Taste-dominant objective (0.6 weight, bait channel closed, two
