@@ -4507,6 +4507,17 @@ eval5's to make. But this is the first run in the program where the
 taste component moves at all; the reweight+strip design is doing
 what it was registered to do ON the training distribution.
 
+**Step-125 correction (same honesty rule, next look):** the decile
+trajectory shows the step-92 snapshot was taken at the local PEAK.
+Full shape: 0.2155 (deciles 0-1) -> ~0.233 plateau (deciles 2-6,
+peak 0.2402 at steps ~75-88) -> regression to 0.2218-0.2287
+(deciles 7-9). Residual early-vs-now gain ~+0.007-0.009, not
++0.019. Laughter rate stays flat/down throughout (no bait). Lesson
+logged for the close: repeated looks at a noisy trajectory WILL
+find a t=3.9 somewhere — a mid-run split is a snapshot of a moving
+curve, not a result; only the pre-registered eval measures the
+endpoint. No tripwire fired; run continues to 200.
+
 i. AUDIT VERIFICATION ROUND (2026-08-13): 5/6 fixes verified; the
    strip class was found NARROWER than the strict audience class —
    "Ha!", "hah", "heh", "LMFAO", "💀", "laugh*", embedded
