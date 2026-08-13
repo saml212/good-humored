@@ -4367,6 +4367,44 @@ steps, dumps on, verified pathway).
    4 instrumented runs + variance analysis) becomes the product as
    the honest state-of-knowledge.
 
+## WATERFALL CLOSED: ZERO SURVIVORS (2026-08-14) — the taste
+## redesign has no registrable candidate; this IS the finding
+
+Validation stage killed the incongruity-gate port, the last
+survivor (full artifacts box:runs/validate_incongruity/):
+- P1 fresh-session AUC 0.667 [0.558, 0.770] — marginal PASS (the
+  fixture 1.000 was fixture-flattered as feared; and the research
+  doc's "strongest unclaimed lead" framing was STALE — EXP-020 had
+  already killed chat cold-surprisal at 0.507 on 2026-07-29).
+- P2 adversarial incoherence FAIL: word-SHUFFLED replies beat real
+  wit on the reward statistic (gate_pass 13/50 vs 12/50, AUC
+  0.511). Mechanism: MiniLM embeddings are near bag-of-words — a
+  shuffled reply keeps its topical embedding while gaining
+  "surprise." GRPO-discoverable hack. (The gate's historical
+  anti-gaming tests only covered CROSS-topic incoherence.)
+- P3 Dark Room profile FAIL: within-group var 0.0126 ~= the dead
+  taste term's 0.0124, flat across deciles, policy-observable R^2
+  0.026 — the same lottery shape, despite being computed from
+  policy tokens.
+- P4 human agreement FAIL: 27/50 vs the audience's own 32/50 on
+  the blind pairs (bar: >=30).
+[DEAD-END] incongruity-gate port as banter taste term (evidence:
+box:runs/validate_incongruity/analysis_output.txt).
+
+**Program state, stated plainly:** every candidate of the redesign
+waterfall is dead or blocked. The environment has ONE proven
+learnable quality dimension (defect-cleanup + grounding, RL-C,
+range +0.02-0.06) and NO validated learnable taste construct.
+Salvage for a FUTURE waterfall pass (not registrable now):
+gate x chat-NLL composite (NLL screens shuffle/gibberish at AUC
+1.000/0.905; base-arm gate AUC 0.757) — but P3/P4 failures attach
+to the gate component regardless. Honest options at this decision
+point: (a) new waterfall pass on composite/other constructs, (b)
+the capacity ablation (LoRA vs full-param on the same judge reward
+— the literature's open question, would be first controlled test),
+(c) ship the evidence file + env with cleanup as the demonstrated
+result. This is a Sam decision.
+
 ## INFRA PAIR EXECUTED (2026-08-13, night) — instrument v2 live
 
 1. **All-speaker laughter strip** shipped on BOTH the training loop

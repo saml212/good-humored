@@ -403,3 +403,21 @@ Newest lessons appended at the bottom of each section.
     cancels nothing. Also check sub-terms for internal conflict:
     our grounding gate anti-correlated with the taste term
     (beta -0.54) — the objective was fighting itself.
+62. **Adversarial suites for embedding-based rewards must include
+    word-shuffled positives.** MiniLM-class embeddings are near
+    bag-of-words: a shuffled reply keeps its topical embedding
+    while gaining "surprise," so any embedding-distance surprise
+    gate scores syntax-destroyed text ABOVE real wit (measured:
+    gate-pass 13/50 shuffle vs 12/50 witty). Historical anti-gaming
+    tests only covered cross-topic incoherence — the attack that
+    preserves the embedding and destroys the meaning is the one
+    that matters. Pair every embedding gate with a fluency/NLL
+    screen (chat-NLL separated shuffle at AUC 1.000).
+63. **A candidate computed from policy tokens can still be a
+    lottery.** The incongruity gate read only the policy's own
+    text, yet its within-group variance was the same flat
+    lottery shape as the audience construct (policy-observable
+    R^2 0.026) — token provenance does not guarantee attributable
+    signal. Run the variance-profile + feature-attribution check
+    on ANY candidate reward before registering, regardless of how
+    attributable it looks structurally.
