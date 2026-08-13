@@ -4367,6 +4367,52 @@ steps, dumps on, verified pathway).
    4 instrumented runs + variance analysis) becomes the product as
    the honest state-of-knowledge.
 
+## MERGE-GATE FINDING (2026-08-13, logged BEFORE eval4 results):
+## the V2 and SFT-D A/B evals were VOID — identity comparisons
+
+RL-C training completed (exit 0, 200 steps, smooth curve flat
+0.55–0.60 start to finish). While staging its eval, a pre-serve
+weight check caught this:
+
+**verl model_merger does NOT fold LoRA adapters.** For LoRA runs it
+exports base weights + a separate `lora_adapter/` dir. Tensor
+evidence (q_proj layer 0, a LoRA target): merged-vs-base max|diff|
+= 0.0 exactly for rl_c/merged_200, grpo_v2/merged_200, AND
+sft_d/merged_151. The adapters themselves are real and trained —
+lora_B norms ~0.0066 (nonzero; B inits at 0) — but every "trained"
+eval server loaded the unfolded safetensors, i.e. base weights.
+
+**Consequences (each stated honestly):**
+1. GRPO-V2's A/B close (+0.008 "null at 7M seeds") is VOID as a test
+   of the trained policy — both arms served identical weights. The
+   mode-sharpening analysis from training curves/dumps stands (it
+   used the trainer's live LoRA); the A/B verdict does not.
+2. SFT-D's A/B close (−0.012 "guards held, distillation moved
+   nothing") is VOID the same way.
+3. V1's A/B (−0.025) is unverifiable — checkpoints deleted — but
+   presumed same defect. V1 was already closed as artifact.
+4. Silver lining, and it is real: two vacuous A/Bs are two blind
+   measurements of the instrument's noise floor — |delta| ≈ 0.01
+   between IDENTICAL models at n=500 paired. The registered +0.03
+   success bar sits 3× above the measured floor. The instrument is
+   calibrated; the comparisons just never had a treated arm.
+5. RL-C's eval4, run on a true merge, is therefore the FIRST valid
+   trained-arm A/B of the program.
+
+**Fix:** peft merge_and_unload → runs/rl_c/merged_200_true, with a
+mandatory post-merge gate: tensor-diff merged vs base on a LoRA
+target (must be nonzero) AND on a non-target (must be zero) before
+any serve. The mislabeled :8005 server was killed before any eval
+traffic reached it.
+
+**Process note (amending takeaway 54's first claim):** the original
+RL-C watcher (b14nf030e) was NOT killed by compaction — it fired on
+schedule hours later. TaskList showing empty after compaction did
+not mean the task was dead. The redundant re-armed watchers were
+harmless; the durable lesson is "absence from the task list is not
+evidence of death — verify against the output file before
+re-arming," not "compaction kills watchers."
+
 ### RL-C mid-run observation (step 92/200, logged before eval)
 
 Smooth-score mean is FLAT: oscillating 0.548–0.580 around the 0.575

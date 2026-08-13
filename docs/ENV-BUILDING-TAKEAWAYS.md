@@ -325,16 +325,28 @@ Newest lessons appended at the bottom of each section.
     signals** (file mtime, terminal lines, server-side traffic) and
     trigger patterns validated against a healthy log first; liveness
     verdicts need paired stack dumps and movement, never snapshots.
-54. **Watchers are session-local state — re-verify after every
-    context compaction.** The RL-C completion watcher silently
-    vanished when the supervising session compacted; the run kept
-    training unwatched for hours. Stale watcher outputs from PRIOR
-    runs also linger and read like fresh results (a v2 step-200
-    curve was briefly misread as RL-C finishing +0.15 up). After
-    compaction: list live tasks, re-arm anything missing, and match
-    every output file to its run before believing it. Corollary:
+54. **After a context compaction, verify watcher liveness against
+    OUTPUT FILES, not the task list.** (Amended on new evidence:
+    the "vanished" RL-C watcher was alive the whole time and fired
+    on schedule — an empty task list after compaction is not
+    evidence of death, and re-armed duplicates are harmless but
+    conclusions drawn from the empty list are not.) Stale watcher
+    outputs from PRIOR runs also linger and read like fresh results
+    (a v2 step-200 curve was briefly misread as RL-C finishing
+    +0.15 up) — match every output file to its run before believing
+    it. Corollary:
     never watch a multi-hour remote job over ONE long-lived ssh
     connection — an idle session gets dropped by the remote host
     (broken pipe, exit 255). Poll with fresh short connections and
     alert on consecutive probe failures too, so "watcher dead" and
     "box unreachable" are events rather than silence.
+55. **Tensor-diff the "trained" model against base BEFORE serving
+    any A/B arm.** verl's model_merger does not fold LoRA — it
+    exports base weights beside an unfolded lora_adapter/ dir, so
+    two eval campaigns silently compared base against base and
+    produced structurally guaranteed "nulls" (+0.008, −0.012). The
+    gate is two cheap safetensors reads: a LoRA-target tensor must
+    differ from base, a non-target must not. Inverted silver
+    lining: a vacuous identity A/B is a perfect blind measurement
+    of the eval instrument's noise floor (~±0.01 at n=500 paired
+    here) — worth running ON PURPOSE once, but only on purpose.
