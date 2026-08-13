@@ -4367,6 +4367,24 @@ steps, dumps on, verified pathway).
    4 instrumented runs + variance analysis) becomes the product as
    the honest state-of-knowledge.
 
+## INFRA PAIR EXECUTED (2026-08-13, night) — instrument v2 live
+
+1. **All-speaker laughter strip** shipped on BOTH the training loop
+   and score_banter certification sides (commit 45d914c). The
+   certified instrument is now v2; all prior evals (through eval5)
+   are v1 and not directly comparable.
+2. **VLLM_BATCH_INVARIANT=1 on the audience server: PARTIAL.**
+   Repeat-call probe (n=40, sequential vs concurrent batch
+   composition): 23-24/40 calls exactly zero |dL|, residual mean
+   0.44 logits, max 2.2-4.4 — identical with and without prefix
+   caching, so the residual lives in fp8-MoE/TP2 kernel paths the
+   invariance branches don't cover. Net: ~4x noise reduction vs
+   the 1.79-logit pre-fix sd; per-session taste noise now ~0.008
+   (0.5% of within-group variance) — negligible for training.
+   Final serving config: batch-invariant + prefix caching (cache
+   on/off measured noise-equivalent; cache kept for GRPO shared-
+   prefix throughput). No further infra chase (2-attempt rule).
+
 ## WATERFALL ATTACK STAGE CLOSED (2026-08-13, late) — two
 ## candidates dead by measurement, one survivor, three findings
 
