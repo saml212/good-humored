@@ -4490,6 +4490,23 @@ h. BAIT SLOPE MEASURED (check f, n=50 banked turns, live audience
    continuity) — the eval5 bait screen (amendment b) is the guard
    there; if training works, the policy has no bait incentive to
    carry into eval.
+### RL-D mid-run observation (step 92/200, logged before eval)
+
+Boundary check passed at launch (opened 0.465 vs 0.4813 pin — the
+gap is the laughter-strip removing reaction mass, right direction).
+Tripwire battery green every cycle (audience errors 0 across all
+calls). At step 92, clean per-file quartile split on 6,000 dumps:
+**taste component 0.2153 (se .0034) early -> 0.2346 (se .0036)
+late, delta +0.019 at t~3.9** — the pinned prediction (+0.02 by
+step 150 IF learnable) is tracking true, and with the healthy
+signature: strict-laughter rate DOWN 5.16%->4.96%, screens down,
+floor/selfrep flat. Taste is rising WITHOUT bait. Standing caution
+pinned NOW: v2 taught that training-distribution movement can be
+mode-sharpening that nulls on held-out seeds — the claim remains
+eval5's to make. But this is the first run in the program where the
+taste component moves at all; the reweight+strip design is doing
+what it was registered to do ON the training distribution.
+
 i. AUDIT VERIFICATION ROUND (2026-08-13): 5/6 fixes verified; the
    strip class was found NARROWER than the strict audience class —
    "Ha!", "hah", "heh", "LMFAO", "💀", "laugh*", embedded
