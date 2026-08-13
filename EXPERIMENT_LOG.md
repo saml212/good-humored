@@ -4411,6 +4411,20 @@ at r32/200: the lever was tested at its extreme and moved nothing.
    day-dependent ~+0.02-0.06.
 Calibration: rl_d predicted +0.015, actual +0.0032 — closed.
 
+**INSTRUMENT FINDING SHARPENED (same evening, n=40 identical
+day-1 transcripts re-scored):** the audience call itself carries
+per-call noise sd 1.79 logits (max |dL| 8.77) across days with
+near-zero mean bias (−0.12) — same-day repeats were deterministic
+(EXP-023c), so this is vLLM batch-composition nondeterminism, not
+model drift. Decomposition: (a) the eval day-shift (+0.039) is
+predominantly ROLLOUT sampling, not audience bias; (b) ~27% of the
+within-group taste advantage variance RL-D trained on was pure
+measurement noise (call noise 0.031 taste units/session vs 0.06
+within-group sd), a mechanistic contributor to the taste
+negative and direct evidence for K-call ensembling (noise / sqrt K)
+and contrastive differencing in the redesign. Feeds the waterfall
+attack stage.
+
 ## RL-D — pre-registered (2026-08-13, BEFORE any code/launch)
 
 **Evidence basis (measured this cycle, variance_shift.py on the
