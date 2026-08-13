@@ -4367,6 +4367,19 @@ steps, dumps on, verified pathway).
    4 instrumented runs + variance analysis) becomes the product as
    the honest state-of-knowledge.
 
+## ROBUSTNESS CHECK pinned (2026-08-14, BEFORE running): does the
+## cleanup result survive instrument v2?
+
+Re-score the existing eval5 transcripts (both arms, same text)
+under instrument v2 (all-speaker laughter strip + batch-invariant
+audience) and recompute the certified paired delta. PREDICTION,
+pinned now: the v1 delta (+0.0257 at t=1.81) was carried by
+screens/floor, not taste, so the v2 paired delta changes by
+LESS THAN 0.01 in absolute value; both arms' taste components drop
+roughly equally (stripping + no echo). If the delta instead
+collapses, the cleanup result was partially echo-carried and gets
+restated — either way the evidence file gains the check.
+
 ## WATERFALL CLOSED: ZERO SURVIVORS (2026-08-14) — the taste
 ## redesign has no registrable candidate; this IS the finding
 
