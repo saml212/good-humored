@@ -1,8 +1,36 @@
 # STATE
 
-_Last updated: 2026-08-07 (self-driving box loop LIVE)_
+_Last updated: 2026-08-13 (RL-C closed: first valid positive result)_
 
-## NOW RUNNING (box: youthful-indigo-turkey, 8×H100, all GPUs 100%)
+## HEADLINE (2026-08-13)
+
+**RL-C CLOSED: SUCCESS on pre-registered pins — the program's first
+valid positive training result.** GRPO on the smooth objective
+(LoRA r32, 200 steps) beat base on the held-out certified A/B:
+**+0.059 at t=2.87** (bar +0.03 at t>=2; measured noise floor
+±0.01), diversity guards passed, screens improved, read clean.
+Honest decomposition: ~2/3 defect-cliff avoidance + ~1/3 topical
+grounding; **audience laughter unchanged** — cleaner and more
+grounded, not yet funnier. Full close in EXPERIMENT_LOG.
+
+**MERGE-GATE FINDING (same day): verl model_merger never folds
+LoRA** — the V2 and SFT-D A/B "nulls" were void identity
+comparisons (base vs base; their ±0.01 deltas are the instrument's
+blind-measured noise floor). Takeaway 55 = mandatory tensor-diff
+gate before serving any trained arm. RL-C was evaluated on a
+verified true peft merge (max attention delta 3e-5, experts
+untouched).
+
+**Sampling era CLOSED** (bank frozen 2,947 batches / ~2.9M
+sessions). Training-era topology: partner 235B :8004 (GPU4-7),
+audience GLM :8003 (GPU2-3), eval servers base :8002 / trained
+:8005 (GPU0-1) currently up from eval4 — both live for Sam's
+talk-test (base vs qwen3-30b-rlc). NEXT: regenerate demo pack +
+report card on the trained checkpoint (pre/post delta IS the
+product); any training extension (r128 / longer / taste-weighted)
+gets its own registration first.
+
+## PREVIOUS (2026-08-07): self-driving box loop (now retired)
 
 **REWARD STACK SPECIFIED (2026-08-09, signal adjudication closed):
 band floor x anti-parrot x reaction_L taste term (human-adjudicated

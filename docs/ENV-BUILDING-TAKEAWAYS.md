@@ -350,3 +350,17 @@ Newest lessons appended at the bottom of each section.
     lining: a vacuous identity A/B is a perfect blind measurement
     of the eval instrument's noise floor (~±0.01 at n=500 paired
     here) — worth running ON PURPOSE once, but only on purpose.
+56. **What RL learns FIRST from a product-shaped reward is defect
+    avoidance, not the skill you care about.** The first valid
+    positive A/B (+0.059, t 2.9) decomposed as ~2/3 screen-cliff
+    avoidance and ~1/3 topical grounding; audience laughter moved
+    zero. Dense penalties get learned before dense rewards at small
+    adapter capacity — budget for a defect-cleanup phase before
+    expecting taste to move, and always decompose the delta into
+    components before celebrating the headline number.
+57. **A flat training curve and a real effect coexist** whenever the
+    effect size sits below curve visibility (here: +0.02–0.06 vs
+    per-step smooth sd ~0.10 at 64 sessions/step). Weight motion
+    can be 3e-5 max|delta| and still produce a detectable behavior
+    change. The powered held-out A/B is the measurement; the curve
+    only bounds what it can see.

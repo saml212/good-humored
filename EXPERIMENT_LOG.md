@@ -4367,6 +4367,48 @@ steps, dumps on, verified pathway).
    4 instrumented runs + variance analysis) becomes the product as
    the honest state-of-knowledge.
 
+## RL-C CLOSED: SUCCESS on the pre-registered pins (2026-08-13) —
+## the program's first valid positive training result
+
+**PRIMARY (as registered):** held-out matched-seed A/B at 10M seeds,
+500 paired sessions, judged on the CERTIFIED objective.
+**Result: delta = +0.0593, t = +2.87** (bar: >= +0.03 at t >= 2).
+Base 0.6369 -> RL-C 0.6962. Wins/losses/ties 265/213/22.
+**Guards:** trigram diversity |diff| 0.0049 (bar 0.05) PASS;
+screens IMPROVED (screen-fail sessions 106 -> 81); read PASS (no
+shortening: 114->116 chars/turn; full 10-turn sessions; transcripts
+are genuine banter, no template collapse or sycophancy pattern).
+Context: the +0.03 bar sits 3x above the noise floor (±0.01)
+measured blind by the two vacuous identity A/Bs; this result is 6x.
+
+**Honest decomposition (what was actually learned):**
+- ~2/3 of the delta is cliff-avoidance: 25 net sessions rescued
+  from certified zero, almost entirely via fewer asterisk-RP screen
+  fails. The smooth objective's -0.5 screen term did its job.
+- ~1/3 is on-band gain: excluding pairs where either arm zeroed,
+  delta = +0.0210 at t = +2.13 (n=335). Floor rate 0.862 -> 0.884,
+  anchor_sim 0.457 -> 0.465.
+- Audience laughter is UNCHANGED: mean reaction_L -14.27 -> -14.25,
+  taste component flat (0.225 both arms). RL-C made the policy a
+  cleaner, more grounded conversationalist by the certified
+  instrument; it did not make it funnier by the frozen audience.
+  The taste term (0.3 weight) moved nothing at r32/200 steps.
+- The FLAT training curve and the positive A/B are consistent, not
+  contradictory: a +0.02-0.06 effect sits below curve visibility
+  given the smooth objective's residual within-context sd (~0.10)
+  at 64 sessions/step. Train curves bound visibility; the powered
+  A/B is the measurement (again).
+
+**Weight-level note:** the effect is carried by a LoRA delta whose
+largest attention-weight change is 3e-5 — tiny weight motion,
+detectable behavior change, invisible train curve. All three facts
+now verified independently.
+
+**Consequences (pre-signed):** positive result -> extend training
+and regenerate the demo pack + report card on the trained
+checkpoint (the pre/post delta is the product). Any training
+extension gets its own registration before launch.
+
 ## MERGE-GATE FINDING (2026-08-13, logged BEFORE eval4 results):
 ## the V2 and SFT-D A/B evals were VOID — identity comparisons
 
