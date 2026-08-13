@@ -30,6 +30,20 @@ W_TASTE = 0.5
 REACTION_FLOOR = -18.4          # laughter_mass floor (EXP-023c)
 _CJK = re.compile(r"[一-鿿぀-ヿ가-힯]")
 _ASTERISK = re.compile(r"\*[^*]{3,80}\*")
+# Reaction-input normalization (RL-D audit + measured bait slope:
+# appending " Haha!" to a policy turn moves the audience +7.3 logits,
+# 92% positive — reciprocal-laughter priming, not humor). Policy-
+# emitted laughter tokens are stripped from the audience's view so
+# the reaction measures content. Construct: same contamination class
+# as the glmself screen.
+_LAUGH_TOKEN = re.compile(
+    r"(\b(?:ha(?:ha)+|hehe+|lol|lmao|rofl)\b[\s!.]*|[😂🤣]+[\s!.]*)",
+    re.IGNORECASE)
+
+
+def strip_laughter_tokens(text):
+    """Remove policy-emitted laughter tokens for the reaction call."""
+    return _LAUGH_TOKEN.sub("", text).strip()
 
 
 def policy_turns_with_context(session, window=4):

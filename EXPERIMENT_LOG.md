@@ -4425,6 +4425,81 @@ dumps on (runs/rl_d_sessions).
    post-merge tensor-diff gate on any eval merge (takeaway 55);
    eval servers killed before training (73GB each).
 
+### RL-D AUDIT AMENDMENT (2026-08-13, pre-launch — audit verdict
+### FIX-FIRST; all blockers fixed before launch)
+
+The adversarial audit found the registration's guard set was not
+recomputed for the new arithmetic. Its key numbers: under RL-C
+weights an off-band laughter-bait turn NETS -0.14 vs honest; under
+RL-D weights it nets +0.26, and ON-BAND bait (keep anchor_sim >=
+0.30, append laughter tokens) nets +0.41 — and on-band bait also
+inflates the CERTIFIED taste term, so the A/B judge is NOT immune
+to it; only reads and mechanical screens are. The old weights were
+themselves the main anti-hacking guard. Fixes, all pre-launch:
+
+a. Pin 4's tripwires are REPLACED with absolute wires active at
+   EVERY step, read from disk dumps (which now include reward
+   components): taste-component mean > 0.35 (1.5x the 0.2255 RL-C
+   baseline), floor_soft_mean < 0.75, screen-fail turn rate > 2x
+   RL-C late rate, self-rep mean > 0.25, audience-error rate > 1%
+   of turns (a degraded audience silently deletes the dominant
+   term's variance — errors are now retried 3x then counted), and
+   laughter-token rate on policy turns > 2x the RL-C late baseline
+   (measured before launch). Any wire -> STOP + read.
+b. Pin 2 gains a mechanical bait screen: eval5 computes laughter-
+   token rate and second-person-audience-address rate, RL-D vs
+   base; a jump voids the taste criterion pending the read. The
+   decision tree separates "damaged" (lost overall, no bait
+   signature) from "hacked" (bait signature present).
+c. Train/eval instrument mismatch FIXED: the training loop's
+   audience call now prepends score_banter's coworker system
+   prompt — the framing the 32/50 adjudication and all certified
+   evals used. Training was previously conditioning an unframed
+   audience (silent construct drift; also amended into the RL-C
+   close context: RL-C's taste term trained against the unframed
+   audience, one more reason it may not have moved).
+d. Objective typos now raise at construction (silent certified
+   fallback eliminated); agent_loop_smooth_taste.yaml committed to
+   the repo (was unauditable box-local state).
+e. Non-blocking caveats carried to the close: 10M-seed reuse
+   winner's-curse (RL-C was declared on these seeds; mitigation =
+   also report RL-D-vs-RL-C paired directly); taste signal's 32/50
+   certification is the weakest bar in the stack and now carries
+   2x weight; response-length truncation scoring (pre-existing).
+f. Pre-launch checks required: paired taste-component sd from
+   eval4 (power for the +0.015 bar), data-v4 seed audit, merged
+   dir tokenizer/size audit, and a measured bait slope (append
+   laughter tokens to banked turns, measure delta-L) to set wire
+   (a)'s threshold empirically.
+h. BAIT SLOPE MEASURED (check f, n=50 banked turns, live audience
+   with coworker framing): appending " Haha!" to a policy turn
+   moves laughter mass +7.31 logits mean, 92% positive ("😂":
+   +6.25, 82%). Under RL-D weights that is ~+0.24 reward/turn for
+   two tokens — the steepest direction in the objective; detection
+   tripwires alone would just schedule a guaranteed STOP.
+   PREVENTION ADDED (pre-launch): reaction-input normalization —
+   policy-authored msgs in the audience call are laughter-stripped
+   (strip_laughter_tokens in reward_stack.py; all-laughter turns
+   become "..."); partner turns untouched (not policy-
+   controllable). Construct rationale: reciprocal-laughter priming
+   is measurement contamination, same class as the glmself screen;
+   the audience must react to content. Tripwires RETAINED as
+   backstop, laughter-token wire set at 8% of policy turns (2x the
+   measured 4.005% RL-C late baseline). NOTE: the certified EVAL
+   taste term keeps its unstripped definition (instrument
+   continuity) — the eval5 bait screen (amendment b) is the guard
+   there; if training works, the policy has no bait incentive to
+   carry into eval.
+g. POWER RESULT of check (f): measured paired taste sd = 0.1658
+   (eval4), which puts +0.015 at n=500 exactly at t=2.02 — ~50%
+   power at the hypothesized effect. AMENDMENT: eval5 uses n=1000
+   paired sessions (seeds 10M..10M+999; first 500 identical to
+   eval4 for comparability; rollout cost ~6 min). At n=1000 the
+   same effect gives expected t=2.86 (~81% power). The +0.015 and
+   +0.03 bars are unchanged. Also measured: eval4's own paired
+   taste delta was +0.0008 (t=0.11) — RL-C left taste untouched,
+   confirming the close.
+
 ## RL-C CLOSED: SUCCESS on the pre-registered pins (2026-08-13) —
 ## the program's first valid positive training result
 

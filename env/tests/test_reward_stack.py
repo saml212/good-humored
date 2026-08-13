@@ -134,6 +134,19 @@ class TestSmoothObjective(unittest.TestCase):
                                   weights=SMOOTH_TASTE_WEIGHTS)
         self.assertLessEqual(r["total"], 1.0 + 1e-9)   # 0.2+0.2+0.6
 
+    def test_strip_laughter_tokens(self):
+        from env.reward_stack import strip_laughter_tokens as strip
+        self.assertEqual(strip("great point haha"), "great point")
+        self.assertEqual(strip("Hahaha! that broke me lmao"),
+                         "that broke me")
+        self.assertEqual(strip("nice one \U0001F602"), "nice one")
+        self.assertEqual(strip("HAHAHA \U0001F923\U0001F923"), "")
+        # legit words containing 'ha' are untouched
+        self.assertEqual(strip("that was harsh, Han"),
+                         "that was harsh, Han")
+        self.assertEqual(strip("the lollipop challenge"),
+                         "the lollipop challenge")
+
     def test_default_weights_unchanged(self):
         # the RL-C-validated default path must be bit-identical
         s = make_session(["reply one", "distinct reply two"])

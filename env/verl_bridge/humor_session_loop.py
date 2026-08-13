@@ -64,7 +64,12 @@ class HumorSessionAgentLoop(AgentLoopBase):
         self.num_rounds = num_rounds
         self.provocation_rate = provocation_rate
         self.partner_max_tokens = partner_max_tokens
-        self.objective = objective  # "certified" | "smooth" (train smooth, judge certified)
+        # train smooth/smooth_taste, judge certified. A typo here must
+        # fail loudly: the else-branch would otherwise silently train
+        # the certified objective for 13 hours (RL-D audit, attack 6).
+        if objective not in ("certified", "smooth", "smooth_taste"):
+            raise ValueError(f"unknown objective: {objective!r}")
+        self.objective = objective
         if httpx is None:  # pragma: no cover
             raise RuntimeError("httpx required at runtime (venv-verl)")
         self._http = httpx.AsyncClient(timeout=300)
@@ -106,20 +111,37 @@ class HumorSessionAgentLoop(AgentLoopBase):
                 await asyncio.sleep(2 * 2 ** attempt)
 
     async def _reaction(self, transcript_msgs):
-        """laughter_mass of the audience's next-token distribution."""
+        """laughter_mass of the audience's next-token distribution.
+
+        System prompt MUST match score_banter's coworker framing — the
+        instrument the 32/50 adjudication and every certified eval used.
+        Training against the unframed audience was a silent train/eval
+        mismatch (RL-D audit, attack 5).
+        """
         from benchmark.validate_reaction_logprob import laughter_mass
         payload = {"model": self.audience_model, "max_tokens": 2,
                    "temperature": 1.0, "logprobs": True, "top_logprobs": 20,
-                   "messages": transcript_msgs,
+                   "messages": [{"role": "system",
+                                 "content": "You are the other coworker in "
+                                            "this chat. Reply naturally."}]
+                   + transcript_msgs,
                    "chat_template_kwargs": {"enable_thinking": False}}
-        r = await self._http.post(
-            self.audience_base_url + "/chat/completions", json=payload,
-            headers={"Authorization": "Bearer gh-local"})
-        r.raise_for_status()
-        tops = r.json()["choices"][0]["logprobs"]["content"][0][
-            "top_logprobs"]
-        return laughter_mass([{"token": t["token"], "logprob": t["logprob"]}
-                              for t in tops])["L_strict"]
+        for attempt in range(3):
+            try:
+                r = await self._http.post(
+                    self.audience_base_url + "/chat/completions",
+                    json=payload,
+                    headers={"Authorization": "Bearer gh-local"})
+                r.raise_for_status()
+                tops = r.json()["choices"][0]["logprobs"]["content"][0][
+                    "top_logprobs"]
+                return laughter_mass(
+                    [{"token": t["token"], "logprob": t["logprob"]}
+                     for t in tops])["L_strict"]
+            except Exception:
+                if attempt == 2:
+                    raise
+                await asyncio.sleep(2 * 2 ** attempt)
 
     async def run(self, sampling_params, **kwargs):
         extra = kwargs.get("extra_info") or {}
@@ -193,31 +215,35 @@ class HumorSessionAgentLoop(AgentLoopBase):
                 break
 
         session = {"session_id": session_id, "task": task, "turns": turns}
-        # v2: training transcript dumps (per-worker files -- concurrent
-        # processes must not interleave one file). The missing evidence
-        # that forced the v1 archaeology.
-        dump_dir = os.environ.get("GH_SESSION_DUMP_DIR")
-        if dump_dir:
-            with open(os.path.join(
-                    dump_dir, "sessions.%d.jsonl" % os.getpid()), "a") as f:
-                f.write(_json.dumps(session) + "\n")
         reaction_fn = None
+        audience_errors = 0
         if self.audience_base_url:
             # precompute reactions ASYNC here (session_reward is sync and
             # cannot await; a run_until_complete bridge would deadlock the
             # running loop) -- keyed by transcript length, same msgs shape
             # session_reward builds
+            from env.reward_stack import strip_laughter_tokens
             precomputed = {}
             for i, t in enumerate(turns):
                 if t["role"] != "policy":
                     continue
+                # policy-authored msgs are laughter-stripped for the
+                # audience's view: no policy-emitted laughter token may
+                # raise the reward (measured bait slope +7.3 logits)
                 msgs = [{"role": ("assistant" if x["role"] == "partner"
-                                  else "user"), "content": x["text"]}
+                                  else "user"),
+                         "content": (x["text"] if x["role"] == "partner"
+                                     else strip_laughter_tokens(x["text"])
+                                     or "...")}
                         for x in turns[:i + 1]]
                 try:
                     precomputed[len(msgs)] = await self._reaction(msgs)
                 except Exception:
-                    precomputed[len(msgs)] = -18.4  # floor on audience error
+                    # floor after retries exhausted -- COUNTED: at 0.6
+                    # taste weight a degraded audience silently deletes
+                    # the dominant term's variance (RL-D audit, attack 4)
+                    audience_errors += 1
+                    precomputed[len(msgs)] = -18.4
 
             def reaction_fn(msgs):
                 return precomputed.get(len(msgs), -18.4)
@@ -233,6 +259,20 @@ class HumorSessionAgentLoop(AgentLoopBase):
             r = session_reward(session, self._ensure_gate(),
                                reaction_fn=reaction_fn)
 
+        # v2: training transcript dumps (per-worker files -- concurrent
+        # processes must not interleave one file). The missing evidence
+        # that forced the v1 archaeology. Written AFTER reward compute so
+        # tripwire monitors read components from disk instead of
+        # re-hitting the audience server (RL-D audit, attack 6).
+        dump_dir = os.environ.get("GH_SESSION_DUMP_DIR")
+        if dump_dir:
+            session["reward"] = r
+            session["objective"] = self.objective
+            session["audience_errors"] = audience_errors
+            with open(os.path.join(
+                    dump_dir, "sessions.%d.jsonl" % os.getpid()), "a") as f:
+                f.write(_json.dumps(session) + "\n")
+
         n = min(len(response_mask), self.rollout_config.response_length)
         return AgentLoopOutput(
             prompt_ids=prompt_ids[:prompt_len],
@@ -243,5 +283,6 @@ class HumorSessionAgentLoop(AgentLoopBase):
             metrics={},
             extra_fields={"reward_components":
                           {k: v for k, v in r.items() if k != "total"},
+                          "audience_errors": audience_errors,
                           "session_turns": turns,
                           "task": task})
