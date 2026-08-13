@@ -4380,6 +4380,15 @@ roughly equally (stripping + no echo). If the delta instead
 collapses, the cleanup result was partially echo-carried and gets
 restated — either way the evidence file gains the check.
 
+**CLOSED TRUE (same day):** v1 +0.0257 (t=1.81) -> v2 +0.0242
+(t=1.73) on identical transcripts — shift 0.0015, well under the
+pinned 0.01 bar. Taste components dropped near-identically in both
+arms (base 0.2276->0.2059, rld 0.2308->0.2060) and the between-arm
+taste gap collapsed to 0.0001 under v2: even v1's tiny taste gap
+was channel noise. THE CLEANUP RESULT SURVIVES THE INSTRUMENT
+CORRECTION — it was never carried by laughter channels. This is
+the robustness certificate the evidence file wanted.
+
 ## WATERFALL CLOSED: ZERO SURVIVORS (2026-08-14) — the taste
 ## redesign has no registrable candidate; this IS the finding
 
