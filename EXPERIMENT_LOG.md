@@ -4367,6 +4367,64 @@ steps, dumps on, verified pathway).
    4 instrumented runs + variance analysis) becomes the product as
    the honest state-of-knowledge.
 
+## RL-D — pre-registered (2026-08-13, BEFORE any code/launch)
+
+**Evidence basis (measured this cycle, variance_shift.py on the
+12,800 RL-C training dumps, 50 early vs 50 late groups):** within-
+group smooth-reward variance decomposes early as floor 38% / taste
+38% / screen 23%, late as floor 35% / taste 37% / screen 28%. The
+taste term had CO-DOMINANT gradient signal for all 200 steps and
+moved zero. This kills "continue and taste moves next" (no variance
+shift to wait for) and weakens the capacity story (weight motion
+3e-5 says capacity was never the binding constraint). The
+evidence-selected lever is REWARD RE-WEIGHTING: make taste dominate
+the objective and test whether it is learnable at all at this scale.
+
+**Hypothesis:** with taste weighted 2x (0.6) and floor demoted
+(0.2), GRPO from RL-C's merged weights moves the frozen-audience
+taste component; if it stays flat DESPITE dominating both objective
+and advantage variance, reaction-taste is not learnable at
+r32/200-step scale and the taste signal itself needs redesign
+(denser attribution or contrastive reaction) — a decisive negative.
+
+**Config = RL-C verbatim with THREE deltas ONLY:** (1) model path =
+runs/rl_c/merged_200_true (warm start; fresh r32 LoRA on top);
+(2) objective smooth_taste: W = floor 0.2 / selfrep 0.2 / taste 0.6
+/ screen -0.5 (bound still <= 1.0); (3) dataset data-v4, seed base
+11M, disjoint from all prior spaces. 200 steps, n=8, batch 8,
+dumps on (runs/rl_d_sessions).
+
+**PINNED predictions:**
+1. Training curve: smooth_taste mean opens ~0.48 (measured 0.4813
+   offline on the 500 eval4 RL-C sessions; first draft of this pin
+   guessed 0.40-0.44 unmeasured — corrected pre-launch, and the
+   guess-then-measure gap is itself the lesson: compute the pin,
+   never estimate it).
+   Taste-component training mean: prediction +0.02 by step 150 IF
+   learnable; flat = decisive negative (calibration: rl_d,
+   taste_component_paired_delta, predicted +0.015).
+2. PRIMARY: held-out A/B at the SAME 10M eval seeds (never trained
+   on; reused deliberately for comparability with eval4), 500
+   paired vs BASE, judged on the CERTIFIED objective: must RETAIN
+   >= +0.03 at t >= 2 overall, AND the paired taste component
+   (mean normalized reaction) must improve vs base by >= +0.015 at
+   t >= 2 for SUCCESS. Retained-overall + flat-taste = "cleanup
+   robust, taste unlearnable at this scale" (negative close).
+   Lost-overall (< +0.03) = taste-weighting DAMAGED the learned
+   cleanup — also decisive, also a close.
+3. Diversity guards as eval4 (tridiv within 0.05, screens not worse
+   than base's 106/500, read).
+4. Tripwires (training dumps, checked each cycle): screen-fail turn
+   rate > 2x RL-C late rate, self-rep mean > 0.25, or smooth_taste
+   > 0.85 pre-step-50 -> STOP and inspect for audience-hacking
+   (the documented LLM-judge failure mode; the certified A/B judge
+   is immune by construction but transcripts get read regardless).
+5. Process gates: smooth_taste weights land in reward_stack.py with
+   unit tests BEFORE launch; adversarial audit of the full config
+   by a separate agent BEFORE launch; dry-run-gate registration;
+   post-merge tensor-diff gate on any eval merge (takeaway 55);
+   eval servers killed before training (73GB each).
+
 ## RL-C CLOSED: SUCCESS on the pre-registered pins (2026-08-13) —
 ## the program's first valid positive training result
 

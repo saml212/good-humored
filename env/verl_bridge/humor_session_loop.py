@@ -221,9 +221,17 @@ class HumorSessionAgentLoop(AgentLoopBase):
 
             def reaction_fn(msgs):
                 return precomputed.get(len(msgs), -18.4)
-        reward_fn = (smooth_session_reward if self.objective == "smooth"
-                     else session_reward)
-        r = reward_fn(session, self._ensure_gate(), reaction_fn=reaction_fn)
+        if self.objective == "smooth":
+            r = smooth_session_reward(session, self._ensure_gate(),
+                                      reaction_fn=reaction_fn)
+        elif self.objective == "smooth_taste":
+            from env.reward_stack import SMOOTH_TASTE_WEIGHTS
+            r = smooth_session_reward(session, self._ensure_gate(),
+                                      reaction_fn=reaction_fn,
+                                      weights=SMOOTH_TASTE_WEIGHTS)
+        else:
+            r = session_reward(session, self._ensure_gate(),
+                               reaction_fn=reaction_fn)
 
         n = min(len(response_mask), self.rollout_config.response_length)
         return AgentLoopOutput(

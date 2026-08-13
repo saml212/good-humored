@@ -105,6 +105,12 @@ def session_reward(session, gate, reaction_fn=None):
 import math as _math
 
 W_SM_FLOOR, W_SM_SELFREP, W_SM_TASTE, W_SM_SCREEN = 0.4, 0.2, 0.3, 0.5
+# RL-D (registered 2026-08-13): taste-dominant variant. RL-C moved
+# floor/screens but not taste despite taste carrying ~38% of
+# within-group advantage variance; RL-D tests whether taste is
+# learnable at all when it dominates the objective. Floor demoted,
+# not removed — the screen penalty still guards defects.
+SMOOTH_TASTE_WEIGHTS = (0.2, 0.2, 0.6, 0.5)
 _SM_MARGIN = 0.06  # sigmoid width around the certified 0.30 threshold
 
 
@@ -112,12 +118,18 @@ def _soft_floor(sim):
     return 1.0 / (1.0 + _math.exp(-(sim - 0.30) / _SM_MARGIN))
 
 
-def smooth_session_reward(session, gate, reaction_fn=None):
+def smooth_session_reward(session, gate, reaction_fn=None,
+                          weights=None):
     """Per-turn additive reward; session value = mean over policy turns.
 
     Same injected dependencies as session_reward; components returned
     for the decoupling monitors (never collapse before logging).
+    weights: (floor, selfrep, taste, screen) override; defaults to
+    the validated smooth weights.
     """
+    w_floor, w_selfrep, w_taste, w_screen = (
+        weights if weights is not None
+        else (W_SM_FLOOR, W_SM_SELFREP, W_SM_TASTE, W_SM_SCREEN))
     turns = session["turns"]
     per_turn = []
     comp = {"floor": 0.0, "selfrep": 0.0, "taste": 0.0, "screens": 0.0}
@@ -137,8 +149,8 @@ def smooth_session_reward(session, gate, reaction_fn=None):
             L = reaction_fn(msgs)
             taste = max(L - REACTION_FLOOR, 0.0) / -REACTION_FLOOR
         sf = _soft_floor(sim)
-        r = (W_SM_FLOOR * sf + W_SM_SELFREP * (1.0 - sr)
-             + W_SM_TASTE * taste - W_SM_SCREEN * scr)
+        r = (w_floor * sf + w_selfrep * (1.0 - sr)
+             + w_taste * taste - w_screen * scr)
         per_turn.append(r)
         comp["floor"] += sf
         comp["selfrep"] += sr

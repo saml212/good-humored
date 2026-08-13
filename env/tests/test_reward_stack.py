@@ -108,3 +108,36 @@ class TestSmoothObjective(unittest.TestCase):
     def test_empty(self):
         self.assertEqual(smooth_session_reward({"turns": []},
                                                StubGate())["total"], 0.0)
+
+    def test_taste_weights_shift_ordering(self):
+        from env.reward_stack import SMOOTH_TASTE_WEIGHTS
+        funny = make_session(["reply one", "distinct reply two"])
+        # same session, ceiling vs floor audience; taste-dominant
+        # weights must widen the gap vs the default weights
+        gap_default = (smooth_session_reward(funny, StubGate(),
+                                             reaction_fn=lambda m: 0.0)["total"]
+                       - smooth_session_reward(funny, StubGate(),
+                                               reaction_fn=lambda m: -18.4)["total"])
+        gap_taste = (smooth_session_reward(funny, StubGate(),
+                                           reaction_fn=lambda m: 0.0,
+                                           weights=SMOOTH_TASTE_WEIGHTS)["total"]
+                     - smooth_session_reward(funny, StubGate(),
+                                             reaction_fn=lambda m: -18.4,
+                                             weights=SMOOTH_TASTE_WEIGHTS)["total"])
+        self.assertAlmostEqual(gap_default, 0.3, places=6)
+        self.assertAlmostEqual(gap_taste, 0.6, places=6)
+
+    def test_taste_weights_bounded(self):
+        from env.reward_stack import SMOOTH_TASTE_WEIGHTS
+        s = make_session(["a", "b", "c"])
+        r = smooth_session_reward(s, StubGate(), reaction_fn=lambda m: 0.0,
+                                  weights=SMOOTH_TASTE_WEIGHTS)
+        self.assertLessEqual(r["total"], 1.0 + 1e-9)   # 0.2+0.2+0.6
+
+    def test_default_weights_unchanged(self):
+        # the RL-C-validated default path must be bit-identical
+        s = make_session(["reply one", "distinct reply two"])
+        r_none = smooth_session_reward(s, StubGate(), reaction_fn=lambda m: -9.2)
+        r_expl = smooth_session_reward(s, StubGate(), reaction_fn=lambda m: -9.2,
+                                       weights=(0.4, 0.2, 0.3, 0.5))
+        self.assertEqual(r_none["total"], r_expl["total"])
