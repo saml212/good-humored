@@ -386,3 +386,20 @@ Newest lessons appended at the bottom of each section.
     of a frozen model over whole turns) appears too diffuse for
     r32/200-step credit assignment; redesign means denser
     attribution or a different construct, not more weight.
+60. **An LLM audience roleplaying a participant echoes the OTHER
+    participant.** Our audience predicts the partner's next token,
+    so partner-emitted laughter primes laughter logprob (+0.102
+    taste/turn, causally probed) — a channel the policy cannot
+    steer (a within-group lottery) that we only noticed after
+    stripping the POLICY side. Normalize every speaker's tokens in
+    a judge's context, not just the trained one's; and remember an
+    in-character judge's next-token distribution is about the
+    CHARACTER's habits as much as the content.
+61. **Check a logprob-derived reward for floor censoring before
+    training on it.** 61% of 220k banked turns sat exactly at the
+    laughter-mass floor — the construct's median turn carries zero
+    gradient information, and a "neutral counterfactual" baseline
+    is floored 95.7% of the time, so contrastive differencing
+    cancels nothing. Also check sub-terms for internal conflict:
+    our grounding gate anti-correlated with the taste term
+    (beta -0.54) — the objective was fighting itself.

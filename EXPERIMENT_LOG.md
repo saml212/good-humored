@@ -4367,6 +4367,63 @@ steps, dumps on, verified pathway).
    4 instrumented runs + variance analysis) becomes the product as
    the honest state-of-knowledge.
 
+## WATERFALL ATTACK STAGE CLOSED (2026-08-13, late) — two
+## candidates dead by measurement, one survivor, three findings
+
+Attack agent ran the three kill-tests on real data (scripts + raw
+probes at box:/data/good-humored/runs/attack_taste_redesign/).
+
+**CORRECTION (retracting my own logged claim):** the "~27% of taste
+advantage variance is measurement noise" figure was a UNITS ERROR —
+I divided raw-unit call noise by a WEIGHTED-term sd (and used the
+wrong weight's square). Same-units share is (0.031/0.108)^2 =
+**8.2%**, gradient attenuation ~4%: the noise-corrected-GRPO
+account of the RL-D flatline is quantitatively DEAD. [LEARN]
+never form a ratio from a weighted denominator and an unweighted
+numerator; compute both sides in raw construct units.
+
+**FINDING 1 — the partner-echo channel (causally confirmed, 2,000
+identity-controlled audience calls):** the top observable predictor
+of within-group taste spread is laughter tokens in the PARTNER's
+turns (r=+0.261, t=30.6); turns after a partner laugh gain +0.102
+taste units (t=9.3) from the tokens alone (clean null on controls).
+Mechanism: the audience predicts the partner's next token, so
+partner "haha" history primes persona-consistent laughter. Our
+laughter-strip covers POLICY turns only. Partner laughter is not
+policy-steerable (policy->partner-laugh R^2=0.02, r=-0.13) — it is
+a within-group LOTTERY worth ~7% of variance.
+**FINDING 2 — policy-attributable headroom ~1%:** all 20 observable
+text features explain R^2=0.10 of within-group taste spread;
+policy-side features alone R^2=0.012; ~82% invisible to every
+observable. Transcript-level spread is real (97.6% of groups exceed
+2x noise) but it is partner/context lottery, not steerable signal.
+**FINDING 3 — the construct is majority-censored:** 61% of 220k
+banked per-turn reactions sit AT the -18.4 floor (median = floor);
+most turns carry zero taste-gradient information. Bonus defect:
+anchor_sim anti-correlates with taste (surrogate beta -0.54) — the
+floor gate and the taste term actively fight.
+
+**Verdicts:** distilled surrogate DEAD (held-out R^2 0.077, and its
+top feature IS the bait channel; 0.038 without it — vs 0.3 bar).
+Contrastive fixed-neutral DEAD (L(neutral) floor-censored 95.7%;
+contrast RAISES variance). Windowed-context DEAD/superseded.
+Teacher-forced per-token surprisal WOUNDED (held behind survivor).
+**Incongruity-gate port SURVIVES conditionally** — the only
+candidate computed from the policy's own tokens, structurally
+immune to echo, censoring, and call noise. Pretests required before
+registration: fresh-session AUC replication (the 1.000 was
+unregistered + fixture risk), adversarial-incoherence test (EXP-014
+gap), Dark Room variance profile, human-label correlation.
+**Validation-stage queue:** (1) infra pair FIRST — partner-laughter
+strip in reaction calls (BOTH training and certification sides —
+NOTE: this versions the certified instrument; prior evals become
+v1, not directly comparable) + VLLM_BATCH_INVARIANT=1 on the
+audience server (verified supported in vLLM 0.26.0, restart-only);
+post-change noise re-measurement. (2) candidate-2 pretests.
+Also: the 32/50 adjudication pairs file was missing box-side —
+rescued from session scratchpad to
+box:/data/good-humored/runs/adjudication_pairs_blind_2026-08-09.txt.
+
 ## RL-D CLOSED: FAIL on both registered pins (2026-08-13) — the
 ## taste negative is decisive; plus a new instrument finding
 
