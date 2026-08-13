@@ -227,14 +227,16 @@ class HumorSessionAgentLoop(AgentLoopBase):
             for i, t in enumerate(turns):
                 if t["role"] != "policy":
                     continue
-                # policy-authored msgs are laughter-stripped for the
-                # audience's view: no policy-emitted laughter token may
-                # raise the reward (measured bait slope +7.3 logits)
+                # ALL speakers are laughter-stripped in the audience's
+                # view. Policy side: bait channel (measured +7.3
+                # logits). Partner side: the audience roleplays the
+                # partner, so partner "haha" primes its own laughter
+                # (+0.102 taste/turn, causally probed) — a lottery the
+                # policy can't steer. Instrument v2 (2026-08-13).
                 msgs = [{"role": ("assistant" if x["role"] == "partner"
                                   else "user"),
-                         "content": (x["text"] if x["role"] == "partner"
-                                     else strip_laughter_tokens(x["text"])
-                                     or "...")}
+                         "content": strip_laughter_tokens(x["text"])
+                         or "..."}
                         for x in turns[:i + 1]]
                 try:
                     precomputed[len(msgs)] = await self._reaction(msgs)

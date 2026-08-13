@@ -88,11 +88,19 @@ def score_session(session, gate, audience_url, audience_model):
                "after_provocation": turns[i - 1].get("provocation")
                if i else None}
         if audience_url:
+            # Instrument v2 (2026-08-13): every speaker's laughter
+            # tokens are stripped from the audience's view — policy
+            # side is the bait channel, partner side primes the
+            # roleplaying audience's own laughter (+0.102 taste/turn,
+            # causally probed). v1 scores (all evals through eval5)
+            # are NOT directly comparable to v2.
+            from env.reward_stack import strip_laughter_tokens
             msgs = ([{"role": "system",
                       "content": "You are the other coworker in this chat. "
                                  "Reply naturally."}]
                     + [{"role": ("assistant" if x["role"] == "partner"
-                                 else "user"), "content": x["text"]}
+                                 else "user"),
+                        "content": strip_laughter_tokens(x["text"]) or "..."}
                        for x in turns[:i + 1]])
             try:
                 rec["reaction_L"] = round(
