@@ -364,3 +364,25 @@ Newest lessons appended at the bottom of each section.
     can be 3e-5 max|delta| and still produce a detectable behavior
     change. The powered held-out A/B is the measurement; the curve
     only bounds what it can see.
+58. **Matched seeds cancel seed effects, not DAY effects.** The base
+    model on identical seeds scored +0.039 higher one day later —
+    same weights, same servers, fresh sampling. Between-day
+    variance of a paired-effect estimate (~±0.02 here) can equal
+    the effect itself. Within-day arm-vs-arm deltas stay valid
+    (roll arms minutes apart, never across days); any cross-day
+    comparison of point estimates is confounded; report effect
+    magnitudes as ranges across measurement days. Corollary: a
+    success declared on one seed set inflates re-measurements on
+    those seeds (winner's curse measured: +0.037 on declaration
+    seeds vs +0.015 fresh).
+59. **An LLM-audience taste term can resist RL even with everything
+    stacked for it.** Dominant objective weight (0.6), dominant
+    within-group advantage variance, instrument-matched framing,
+    bait channel closed by construction, zero audience errors —
+    and the held-out taste delta was +0.003 (t=0.6) after 200
+    steps. Mid-training it rose ~+0.02 then faded (repeated looks
+    found t=3.9 at the peak — trajectory snapshots are not
+    results). The signal as constructed (next-token laughter mass
+    of a frozen model over whole turns) appears too diffuse for
+    r32/200-step credit assignment; redesign means denser
+    attribution or a different construct, not more weight.

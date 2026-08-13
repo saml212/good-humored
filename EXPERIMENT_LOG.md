@@ -4367,6 +4367,50 @@ steps, dumps on, verified pathway).
    4 instrumented runs + variance analysis) becomes the product as
    the honest state-of-knowledge.
 
+## RL-D CLOSED: FAIL on both registered pins (2026-08-13) — the
+## taste negative is decisive; plus a new instrument finding
+
+**PRIMARY results (eval5, n=1000 paired at 10M seeds, certified):**
+- Retention: **+0.0257 at t=1.81** vs bar >=+0.03 at t>=2 — FAIL
+  (narrowly; every guard clean).
+- Taste component: **+0.0032 at t=0.61** vs bar >=+0.015 at t>=2 —
+  FAIL decisively. The training-distribution residual (~+0.01,
+  itself faded from a step-80 peak) did not transfer.
+**Guards (all clean — this is the "taste unlearnable" branch, not
+"hacked" or "damaged"):** tridiv diff 0.0016; strict-laughter 5.87%
+vs base 5.79% (no bait); audience-address DOWN (0.68% vs 0.73%);
+screen-fail turns 1.75% vs base 2.20% (improved); zero-cert
+sessions 145 vs 170. Secondary RL-D-vs-RL-C on shared seeds: +0.017
+certified (t=0.82), +0.010 taste (t=1.43) — no damage, no
+significant gain. Training-side: 12,800 dumps, 0 audience errors in
+~128k calls, all tripwires green the entire run.
+
+**Registered consequence executed:** reaction-taste is NOT
+learnable at r32/200-step scale in this env even when it dominates
+the objective (0.6 weight) AND carries dominant advantage variance
+AND the bait channel is closed. The taste signal itself needs
+redesign (denser per-token attribution, contrastive reaction, or a
+different audience construct) — that redesign goes through the full
+waterfall before any new run. [DEAD-END] taste-weight amplification
+at r32/200: the lever was tested at its extreme and moved nothing.
+
+**NEW INSTRUMENT FINDING (split-half + day-shift decomposition):**
+1. Split-half of eval5: +0.0367 on the 500 seeds where RL-C was
+   declared vs +0.0147 on 500 fresh seeds — the winner's curse the
+   audit predicted, measured. Honest generalization estimate of the
+   cleanup effect is the fresh-seed half: ~+0.015.
+2. DAY SHIFT: the BASE model on IDENTICAL seeds scored +0.0393
+   (t=1.91) higher on day 2 than day 1 — same model, same seeds,
+   same servers. Between-day variance of the paired-effect estimate
+   is ~+-0.02: eval4's +0.059 and eval5's +0.026 for near-identical
+   policies differ mostly by DAY, not by policy. Within-day paired
+   deltas stay valid (arms run minutes apart); CROSS-day point
+   estimates must be stated as ranges. RL-C's cleanup result is
+   restated honestly as: positive in every measurement (+0.059,
+   +0.037, +0.026, +0.015 fresh-seed), direction robust, magnitude
+   day-dependent ~+0.02-0.06.
+Calibration: rl_d predicted +0.015, actual +0.0032 — closed.
+
 ## RL-D — pre-registered (2026-08-13, BEFORE any code/launch)
 
 **Evidence basis (measured this cycle, variance_shift.py on the

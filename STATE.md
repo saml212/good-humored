@@ -2,16 +2,27 @@
 
 _Last updated: 2026-08-13 (RL-C closed: first valid positive result)_
 
-## HEADLINE (2026-08-13)
+## HEADLINE (2026-08-13, evening)
 
-**RL-C CLOSED: SUCCESS on pre-registered pins — the program's first
-valid positive training result.** GRPO on the smooth objective
-(LoRA r32, 200 steps) beat base on the held-out certified A/B:
-**+0.059 at t=2.87** (bar +0.03 at t>=2; measured noise floor
-±0.01), diversity guards passed, screens improved, read clean.
-Honest decomposition: ~2/3 defect-cliff avoidance + ~1/3 topical
-grounding; **audience laughter unchanged** — cleaner and more
-grounded, not yet funnier. Full close in EXPERIMENT_LOG.
+**RL-D CLOSED: FAIL on both pins — the decisive taste negative.**
+Taste-dominant objective (0.6 weight, bait channel closed, two
+adversarial audit rounds) moved the held-out taste component
+**+0.003 at t=0.6** at n=1000: reaction-taste as constructed is not
+learnable at r32/200-step scale. Guards all clean — no bait, no
+damage (RL-D >= RL-C everywhere, screens improved further). The
+taste signal needs REDESIGN (denser attribution / different
+construct), through the full waterfall before any new run.
+**NEW INSTRUMENT FINDING:** base model on identical seeds scored
++0.039 higher across days — between-day variance ≈ the effect
+sizes; within-day paired deltas valid, cross-day comparisons
+confounded, magnitudes are ranges (takeaway 58).
+
+**RL-C stands (restated honestly):** cleanup effect positive in
+every measurement (+0.059, +0.037, +0.026, +0.015 fresh-seed);
+direction robust, magnitude day-dependent ~+0.02-0.06. ~2/3
+defect-cliff avoidance + ~1/3 topical grounding; audience laughter
+never moved in any run. Best checkpoint: runs/rl_d/merged_200_true
+(base + cleanup + no damage).
 
 **MERGE-GATE FINDING (same day): verl model_merger never folds
 LoRA** — the V2 and SFT-D A/B "nulls" were void identity
