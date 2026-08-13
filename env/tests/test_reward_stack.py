@@ -144,8 +144,39 @@ class TestSmoothObjective(unittest.TestCase):
         # legit words containing 'ha' are untouched
         self.assertEqual(strip("that was harsh, Han"),
                          "that was harsh, Han")
+        self.assertEqual(strip("aha, got it"), "aha, got it")
+
+    def test_strip_covers_strict_class(self):
+        # audit verification round: every policy-emittable member of
+        # the STRICT audience class must die, incl. the seven gaps
+        from env.reward_stack import strip_laughter_tokens as strip
+        self.assertEqual(strip("Ha! Good one."), "Good one.")
+        self.assertEqual(strip("hah, classic"), ", classic")
+        self.assertEqual(strip("heh"), "")
+        self.assertEqual(strip("LMFAO that shelf"), "that shelf")
+        self.assertEqual(strip("\U0001F480\U0001F480 dead"), "dead")
+        self.assertEqual(strip("laughing so hard"), "so hard")
+        self.assertEqual(strip("Bahahaha fair"), "fair")
+        # superset rule: 'lollipop' starts with strict prefix 'lol' —
+        # over-stripping is conservative (under-reward, never over)
         self.assertEqual(strip("the lollipop challenge"),
-                         "the lollipop challenge")
+                         "the challenge")
+
+    def test_strip_is_superset_of_strict(self):
+        # structural guarantee: any single token the audience metric
+        # classifies as strict laughter must not survive stripping
+        from benchmark.validate_reaction_logprob import (classify_token,
+                                                         STRICT_PREFIXES,
+                                                         STRICT_EXACT)
+        from env.reward_stack import strip_laughter_tokens as strip
+        probes = list(STRICT_EXACT) + list(STRICT_PREFIXES) + [
+            "Haha", "hahaha", "heheh", "LOL", "Lmao", "lmfao",
+            "laughs", "laughing", "\U0001F602", "\U0001F923",
+            "\U0001F480"]
+        for p in probes:
+            self.assertEqual(classify_token(p), "strict",
+                             f"probe {p!r} not strict — update test")
+            self.assertEqual(strip(p), "", f"strict token {p!r} survived")
 
     def test_default_weights_unchanged(self):
         # the RL-C-validated default path must be bit-identical

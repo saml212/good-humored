@@ -4490,6 +4490,27 @@ h. BAIT SLOPE MEASURED (check f, n=50 banked turns, live audience
    continuity) — the eval5 bait screen (amendment b) is the guard
    there; if training works, the policy has no bait incentive to
    carry into eval.
+i. AUDIT VERIFICATION ROUND (2026-08-13): 5/6 fixes verified; the
+   strip class was found NARROWER than the strict audience class —
+   "Ha!", "hah", "heh", "LMFAO", "💀", "laugh*", embedded
+   "Bahahaha" survived stripping while their echoes count as
+   laughter mass. FIXED: strip class now built FROM the strict-
+   class constants (STRICT_PREFIXES/STRICT_EXACT) as a verified
+   superset; structural test asserts every strict-classified token
+   strips to empty; channels-dead check passed (strip(text+bait) ==
+   strip(text) for 45 turn x bait combinations, so the bait slope
+   through the training pathway is zero BY CONSTRUCTION).
+   Detector for the tripwire and the eval5 bait screen is PINNED to
+   classify_token-per-word (never the strip regex); RL-C late
+   baseline re-measured with that detector: 4.761% of policy turns
+   -> wire at 9.5% (2x). Known conservative over-strip ("lollipop")
+   accepted: audience view degrades toward under-reward only.
+   Residual (tripwired, non-blocking): second-order bait via the
+   partner ("say haha" -> partner complies -> unstripped partner
+   laughter primes the next reaction); indirect payoff, eats the
+   floor penalty, covered by the audience-address rate screen.
+   Auditor pre-cleared launch on these items landing with tests
+   green (17/17 local).
 g. POWER RESULT of check (f): measured paired taste sd = 0.1658
    (eval4), which puts +0.015 at n=500 exactly at t=2.02 — ~50%
    power at the hypothesized effect. AMENDMENT: eval5 uses n=1000

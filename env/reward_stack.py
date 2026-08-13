@@ -36,8 +36,30 @@ _ASTERISK = re.compile(r"\*[^*]{3,80}\*")
 # emitted laughter tokens are stripped from the audience's view so
 # the reaction measures content. Construct: same contamination class
 # as the glmself screen.
+#
+# The strip class MUST be a SUPERSET of the strict class the metric
+# counts (validate_reaction_logprob.STRICT_PREFIXES/STRICT_EXACT) —
+# the audit's verification round found the first draft left "Ha!",
+# "heh", "LMFAO", "💀", "laugh*" and embedded "Bahahaha" alive as
+# bait channels. Built from those shared constants so the two
+# classes cannot drift apart again. Over-stripping is conservative:
+# the audience view degrades toward under-reward, never over.
+from benchmark.validate_reaction_logprob import (STRICT_EXACT,
+                                                 STRICT_PREFIXES)
+
+_LAUGH_PREFIX_WORDS = sorted(p for p in STRICT_PREFIXES if p.isalpha())
+_LAUGH_EXACT_WORDS = sorted(STRICT_EXACT)
+_LAUGH_EMOJI = "".join(p for p in STRICT_PREFIXES if not p.isalpha())
 _LAUGH_TOKEN = re.compile(
-    r"(\b(?:ha(?:ha)+|hehe+|lol|lmao|rofl)\b[\s!.]*|[😂🤣]+[\s!.]*)",
+    # words STARTING WITH a strict prefix ("hah...", "hehe", "lmfao",
+    # "laughing", even "lollipop" — over-strip is conservative), words
+    # CONTAINING a haha/hehe run ("Bahahaha"), the EXACT word "ha"
+    # (no \w*: "harsh"/"hand" must survive), or strict emoji — plus
+    # trailing !/. whitespace.
+    r"(\b(?:" + "|".join(_LAUGH_PREFIX_WORDS) + r")\w*\b[\s!.]*"
+    r"|\b\w*(?:haha|hehe|ahah)\w*\b[\s!.]*"
+    r"|\b(?:" + "|".join(_LAUGH_EXACT_WORDS) + r")\b[\s!.]*"
+    r"|[" + _LAUGH_EMOJI + r"]+[\s!.]*)",
     re.IGNORECASE)
 
 
