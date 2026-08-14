@@ -434,3 +434,16 @@ Newest lessons appended at the bottom of each section.
     suite; and a hard penalty spliced into a reward can triple
     within-group advantage variance (Dark Room hazard) even when
     it fires on 4% of turns.
+65. **Adapter capacity is a dose lever on the learnable dimension
+    only.** r32->r128 (4x) quadrupled weight motion (3e-5 ->
+    1.2e-4 max attention delta) and roughly tripled the certified
+    cleanup delta (+0.09 at t=6.9, zero-sessions -40%) — while the
+    taste term stayed under its bar (+0.009 vs +0.015 required).
+    When a reward has learnable and unlearnable components,
+    capacity amplifies the split rather than closing it; scaling
+    the model is not a substitute for fixing the signal. (Also
+    measured en route: vLLM preallocates max_lora_rank slots over
+    ALL modules including untargeted MoE experts — r256 cost 22GB/
+    GPU of dead reservation and was infeasible colocated; probe
+    the memory ledger standalone before assuming adapter size is
+    free.)

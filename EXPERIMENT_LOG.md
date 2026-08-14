@@ -4468,6 +4468,37 @@ amplification; P4 anti-parallel-to-humans). Redesign waterfall
 remains ZERO SURVIVORS. Program options unchanged; RL-E capacity
 probe is the live track.
 
+## RL-E CLOSED (2026-08-14): taste FAIL / retention STRONG PASS —
+## capacity scales the learnable dimension, not the unlearnable one
+
+**Eval6 (n=1000 paired, fresh 12M seeds, instrument v2 BOTH arms —
+not directly comparable to v1 evals):**
+- **Taste: +0.0092 at t=1.99 — FAIL** vs the >= +0.015 at t>=2 bar
+  (calibration predicted +0.005; actual +0.0092 — the prior held).
+  Between r32's +0.003 and this +0.009 there is a hint of dose-
+  response but it is not statistically separable across evals.
+- **Certified retention: +0.0903 at t=6.89 — the program's largest
+  and most significant delta.** Zero-cert sessions 184 -> 110
+  (-40%). The r128 adapter (weight motion 1.2e-4, 4x the r32 runs)
+  amplified CLEANUP learning dramatically.
+- Guards: tridiv diff 0.0005; read clean (121.6 chars/turn, full
+  sessions, grounded); strict-laughter 5.99% vs base 5.39% (+0.6pp,
+  noted honestly — under v2 the stripped channel cannot carry
+  reward, and taste failed anyway, so no false-success path);
+  audience-address 0.65% vs 0.55%.
+**THE FINDING (takeaway 65): adapter capacity is a dose lever on
+the LEARNABLE dimension only.** 4x capacity quadrupled weight
+motion and roughly tripled the certified cleanup delta, while the
+taste construct stayed under its bar — the cleanest demonstration
+yet that the binding constraint on taste is the SIGNAL, not the
+model. [DEAD-END] capacity as the taste lever at feasible adapter
+scales (r128 max on 2xH100 colocated; r256 hardware-infeasible,
+probe-measured). Best checkpoint of the program:
+runs/rl_e/merged_200_true (base + cleanup, strongest certified
+gain). Program returns to the Sam decision point with ALL cells
+filled: signal redesign exhausted (waterfall zero survivors),
+capacity exhausted (this), one robust positive dimension.
+
 ## RL-E (CAPACITY PROBE) — pre-registered (2026-08-14, BEFORE
 ## launch; Sam's go = "gpu's at 100 percent?" after options)
 
