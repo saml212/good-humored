@@ -421,3 +421,16 @@ Newest lessons appended at the bottom of each section.
     signal. Run the variance-profile + feature-attribution check
     on ANY candidate reward before registering, regardless of how
     attributable it looks structurally.
+64. **Fluency screens structurally fight taste.** On blind human
+    pairs, the human preferred the HIGHER-NLL reply 31/50 — wit is
+    unpredictable text, so an NLL screen's real-data action is a
+    false-positive channel that eats exactly the turns you want
+    (8/19 screened turns were witty; humans preferred the screened
+    side 17/24 when it bound). Adversarial incoherence never
+    occurred on the training distribution — the screen fixed a
+    hack that only exists off-distribution, at the price of
+    anti-correlating with taste on-distribution. Screens must be
+    validated on the DEPLOYMENT distribution, not just the attack
+    suite; and a hard penalty spliced into a reward can triple
+    within-group advantage variance (Dark Room hazard) even when
+    it fires on 4% of turns.

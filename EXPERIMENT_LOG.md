@@ -4367,6 +4367,31 @@ steps, dumps on, verified pathway).
    4 instrumented runs + variance analysis) becomes the product as
    the honest state-of-knowledge.
 
+## COMPOSITE (gate x chat-NLL) CLOSED: DEAD (2026-08-14) — the
+## waterfall stays at zero survivors; one new mechanism finding
+
+Attack-first pass (evidence box:runs/validate_composite/): the
+composite beat the shuffle hack decisively (P2 AUC 0.511 -> 1.000)
+but died on the same two tests as the bare gate:
+- P3 FAIL: fluent-region within-group variance 0.0133 ~= bare
+  0.0126 ~= dead taste 0.0124 (same lottery); the -1.0 screen
+  penalty TRIPLES advantage variance non-safely (0.0314, rising
+  late) — a worse Dark Room hazard than the bare gate. On real
+  data the screen fires 4% and 8/19 fired turns are WITTY (max
+  resolution +0.201): adversarial incoherence does not occur on
+  the training distribution, so the screen's only real-data action
+  is eating unpredictable — i.e. witty — text. (Agent also logged
+  an honest override: its first "decile-decreasing" proxy passed
+  on noise; corrected to pinned intent -> FAIL.)
+- P4 FAIL: 23/50 human agreement, WORSE than bare 27/50 (bar 30).
+  **MECHANISM FINDING: humans prefer the HIGHER-NLL side 31/50 —
+  human taste is anti-parallel to fluency on these pairs.** Any
+  fluency-flavored screen structurally fights taste in this env.
+[DEAD-END] gate x chat-NLL composite (P3 lottery + variance
+amplification; P4 anti-parallel-to-humans). Redesign waterfall
+remains ZERO SURVIVORS. Program options unchanged; RL-E capacity
+probe is the live track.
+
 ## RL-E (CAPACITY PROBE) — pre-registered (2026-08-14, BEFORE
 ## launch; Sam's go = "gpu's at 100 percent?" after options)
 
