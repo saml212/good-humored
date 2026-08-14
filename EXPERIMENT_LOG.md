@@ -4367,6 +4367,25 @@ steps, dumps on, verified pathway).
    4 instrumented runs + variance analysis) becomes the product as
    the honest state-of-knowledge.
 
+## UNBLOCK ATTEMPTS (2026-08-14, later): two partner-launch
+## failures diagnosed; recovery chain armed
+
+Queue drained once; relaunch raced their idle_launcher (it seated
+a 1GB job on GPU 5 mid-launch). Partner then failed twice, each a
+DIFFERENT root cause: (1) my reconstructed serve command pointed
+at the bf16 235B repo + --quantization fp8 — the original fleet
+served the dedicated -FP8 repo; the bf16 cache is partial, vLLM
+tried to DOWNLOAD missing shards, died on a network error
+(LESSON: the exact-script rule applies to serving commands too —
+recover args from logs, never reconstruct from memory; HF_HUB_
+OFFLINE=1 now forced). (2) On the correct FP8 repo, VllmWorker-1
+(= GPU 5) died silently during weight load — coexistence with
+their 1GB job fails at load-time despite 0.88 headroom; loading
+transients want the whole GPU. Current: GLM alive (kept WARM by
+watcher pings so the idle-reaper spares it — it kills idle
+processes only); chain watcher relaunches partner when GPU 5
+clears, then RL-E if trainer GPUs still free.
+
 ## BOX INCIDENT (2026-08-14): serving fleet reaped by the
 ## learned-reps idle-soak; RL-E parked pending Sam arbitration
 
