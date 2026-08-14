@@ -4367,6 +4367,13 @@ steps, dumps on, verified pathway).
    4 instrumented runs + variance analysis) becomes the product as
    the honest state-of-knowledge.
 
+### RL-E launch attempt 1 FAILED (same hour): trainer vLLM "No
+### available memory for the cache blocks" — the r256 LoRA slot
+### buffers scale with max_num_seqs (default 1024, absurd for our
+### 64-session batches), which the audit's +0.19GB estimate missed.
+### Fix: rollout.gpu_memory_utilization 0.45->0.52 + max_num_seqs
+### 256 (config-only; registered deltas unchanged). Relaunched.
+
 ## RL-E LAUNCHED (2026-08-14) — fleet recovered; the silent
 ## worker deaths were the 0.88 memory guess
 
