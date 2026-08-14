@@ -4380,10 +4380,18 @@ where r32 could not.
 objective, now under INSTRUMENT V2 (all-speaker strip +
 batch-invariant audience — first training run on v2). Warm start
 from rl_d/merged_200_true. 200 steps, n=8, batch 8, dumps on.
-**PINNED predictions:** (1) opening smooth_taste mean ~0.44-0.46
-(v2 strips lower the taste term ~0.02 vs the 0.465 RL-D open —
-compute the exact pin from a 200-session offline v2 re-score
-before step 1 if time allows; else this range stands). (2) PRIMARY
+**PINNED predictions:** (1) opening smooth_taste mean 0.465-0.47
+(AUDIT-CORRECTED pre-launch via the registration's compute-the-pin
+clause: exact all-1000 v2 re-score mean = 0.4685; my guessed
+0.44-0.46 was ~0.01 low — the v2 strip did NOT lower the composite
+as assumed. Boundary check MUST use all-session or random-draw
+means, never sessions[:200] — the file is front-loaded, first-200
+reads 0.5522, +15 SEM). Audit also executed the tensor-diff gate
+this run's warm start was missing: rl_d/merged_200_true attention
+deltas nonzero (3.1e-5–6.1e-5), experts/embeddings exactly zero —
+chain genuine. Audit fix applied: sampler log renamed so RL-E
+cannot clobber RL-D's memory record. Memory verified: r256 adds
+~0.6GB worst-phase vs 12.7GB measured headroom. (2) PRIMARY
 eval6: 1000 paired at 12M seeds (fresh, never declared on), both
 arms scored on certified-v2. Success = taste component >= +0.015
 at t>=2 AND retention >= +0.02. (3) MY CALIBRATION PREDICTION:
