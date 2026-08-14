@@ -4367,6 +4367,41 @@ steps, dumps on, verified pathway).
    4 instrumented runs + variance analysis) becomes the product as
    the honest state-of-knowledge.
 
+## RL-E (CAPACITY PROBE) — pre-registered (2026-08-14, BEFORE
+## launch; Sam's go = "gpu's at 100 percent?" after options)
+
+**Hypothesis (the literature's open cell, arXiv:2606.04923 vs our
+r32 negatives):** adapter capacity was the binding constraint —
+8x rank extracts learnable taste signal from the same objective
+where r32 could not.
+**Config = RL-D verbatim with TWO deltas ONLY:** (1) LoRA r256
+(alpha scaled proportionally, attention-only targets unchanged);
+(2) dataset data-v5 at seed base 13M (fresh). Same smooth_taste
+objective, now under INSTRUMENT V2 (all-speaker strip +
+batch-invariant audience — first training run on v2). Warm start
+from rl_d/merged_200_true. 200 steps, n=8, batch 8, dumps on.
+**PINNED predictions:** (1) opening smooth_taste mean ~0.44-0.46
+(v2 strips lower the taste term ~0.02 vs the 0.465 RL-D open —
+compute the exact pin from a 200-session offline v2 re-score
+before step 1 if time allows; else this range stands). (2) PRIMARY
+eval6: 1000 paired at 12M seeds (fresh, never declared on), both
+arms scored on certified-v2. Success = taste component >= +0.015
+at t>=2 AND retention >= +0.02. (3) MY CALIBRATION PREDICTION:
+taste delta +0.005 (i.e., I predict the capacity hypothesis is
+FALSE — the attack stage's ~1% policy-attributable variance says
+there is nothing for capacity to grab). A null here KILLS the
+capacity story at practical adapter scales and completes the
+evidence file's missing cell; a positive would be the first
+evidence that judge-reward learnability is capacity-gated in this
+regime. (4) Tripwires as RL-D (all six wires, v2 detector,
+laughter wire 9.5%). (5) Process: adversarial audit of the
+rank/alpha/memory deltas BEFORE launch; tensor-diff gate on any
+merge; boundary check on opening value.
+**FAILURE consequence pre-signed:** null -> [DEAD-END] capacity at
+adapter scales for this construct; program ships evidence file
+unless the composite waterfall (running in parallel) produces a
+registrable construct.
+
 ## ROBUSTNESS CHECK pinned (2026-08-14, BEFORE running): does the
 ## cleanup result survive instrument v2?
 
