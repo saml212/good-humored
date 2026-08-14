@@ -2,7 +2,20 @@
 
 _Last updated: 2026-08-13 (RL-C closed: first valid positive result)_
 
-## HEADLINE (2026-08-14)
+## HEADLINE (2026-08-14, evening): PROGRAM COMPLETE, PAUSED ON SAM
+
+**All cells filled.** RL-E (capacity probe, r128 = max feasible)
+closed: taste FAIL +0.0092 vs +0.015 bar (calibration prediction
++0.005 held — capacity is not the taste lever) / **retention
++0.0903 at t=6.89, the program's strongest result** (zero-sessions
+-40%; capacity amplifies the learnable dimension only, takeaway
+65). Best checkpoint: runs/rl_e/merged_200_true, serving as
+qwen3-30b-rle :8005 beside base :8002 for the talk-test. Full
+fleet kept warm by monitor during the pause. Options to Sam:
+ship evidence+env / commission new taste-construct research /
+talk-test first. Below: the prior decision-point headline.
+
+## PREVIOUS HEADLINE (2026-08-14)
 
 **TASTE-REDESIGN WATERFALL CLOSED: ZERO SURVIVORS. No training
 queued; program at a Sam decision point.** All five top candidates
