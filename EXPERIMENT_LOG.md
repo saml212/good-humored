@@ -4367,6 +4367,22 @@ steps, dumps on, verified pathway).
    4 instrumented runs + variance analysis) becomes the product as
    the honest state-of-knowledge.
 
+### RL-E AMENDMENT (2026-08-14, pre-first-step): r256 is
+### HARDWARE-INFEASIBLE on this box — probe-measured, not guessed.
+### Four launch failures traced by standalone engine probe: vLLM
+### max_lora_rank=256 preallocates LoRA slots over ALL modules
+### (incl. MoE experts we never target) — model load 50.38 GiB,
+### Available KV = -15.7 GiB at the only budget (0.45) that fits
+### colocated FSDP. Linear in rank: r128 measured GOOD (load
+### 39.45, KV +3.15 GiB at util 0.55; sync-peak projection 76.8 <
+### 80). REGISTERED CONFIG AMENDED: rank 256->128 (alpha 512->256,
+### ratio 2 kept) = 4x RL-D capacity, the MAXIMAL feasible probe
+### on 2xH100 colocated. Hypothesis/prediction unchanged
+### (calibration rl_e, +0.005: capacity not binding). If 4x nulls,
+### the capacity cell closes as "not binding at feasible adapter
+### scales"; a true 8x/full-param test requires different
+### hardware topology (noted for the evidence file).
+
 ### RL-E launch attempt 1 FAILED (same hour): trainer vLLM "No
 ### available memory for the cache blocks" — the r256 LoRA slot
 ### buffers scale with max_num_seqs (default 1024, absurd for our
