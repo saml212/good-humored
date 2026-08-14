@@ -4367,6 +4367,20 @@ steps, dumps on, verified pathway).
    4 instrumented runs + variance analysis) becomes the product as
    the honest state-of-knowledge.
 
+## RL-E LAUNCHED (2026-08-14) — fleet recovered; the silent
+## worker deaths were the 0.88 memory guess
+
+Resolution: at gpu_memory_utilization 0.92 on the free box the FP8
+235B loaded cleanly, fleet completed, RL-E launched (tmux gh_rl_e,
+watcher armed, boundary pin 0.4685). The two "silent worker
+deaths" were the 0.88 budget — fp8 235B load needs >70.4GB/GPU and
+aborts WITHOUT a python traceback when short (exit code None; a
+third "failure" was my own watcher racing its log truncation —
+false positive). Ops lessons: memory-budget shortfalls in vLLM
+weight loading kill workers silently (no OOM message); recover
+original serve args from logs, never guess; watchers must not grep
+a log that a relaunch is about to truncate.
+
 ## UNBLOCK ATTEMPTS (2026-08-14, later): two partner-launch
 ## failures diagnosed; recovery chain armed
 
