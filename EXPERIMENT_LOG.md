@@ -4367,7 +4367,27 @@ steps, dumps on, verified pathway).
    4 instrumented runs + variance analysis) becomes the product as
    the honest state-of-knowledge.
 
-## COMPOSITE (gate x chat-NLL) CLOSED: DEAD (2026-08-14) — the
+## BOX INCIDENT (2026-08-14): serving fleet reaped by the
+## learned-reps idle-soak; RL-E parked pending Sam arbitration
+
+Health FAIL this cycle: ALL gh_* sessions gone. Post-mortem: both
+server logs end mid-operation with routine throughput lines — no
+crash, no OOM. The 235B partner died ~15:55 (minutes after eval5's
+last request), GLM ~23:31 (right after the noise probes) — killed
+externally while idle. The learned-reps project runs an
+idle_launcher (created 08-12) + per-GPU queue_workers that reap
+idle GPU processes and soak freed GPUs; their run_matrix_codi jobs
+now occupy GPUs 0, 2-3, 5. This also explains the eval servers'
+earlier disappearance (composite agent found :8002/:8003 down).
+STRUCTURAL COLLISION: our architecture assumes persistent servers;
+their system consumes idle GPUs. Actions taken: RL-E auto-launcher
+STOPPED deliberately (launching the trainer without partner/
+audience servers would produce a doomed run); NOT killing or
+relaunching over their jobs (standing do-not-disturb order).
+RL-E needs the full fleet (~14h: trainer 0-1, audience 2-3,
+partner 4-7). Sam owns both projects — escalated by push for a
+window or a standing arbitration policy. Note: bank scored-count
+creep (2438->2440) was my own eval5 v2 re-score files, benign.
 ## waterfall stays at zero survivors; one new mechanism finding
 
 Attack-first pass (evidence box:runs/validate_composite/): the
